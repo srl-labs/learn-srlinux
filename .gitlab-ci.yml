@@ -1,0 +1,10 @@
+pages:
+  image: squidfunk/mkdocs-material
+  stage: deploy
+  only:
+    - master
+  script:
+    - build --clean --site-dir public
+  artifacts:
+    paths:
+      - public

@@ -1,0 +1,116 @@
+site_name: SR Linux documentation
+nav:
+  - Home: index.md
+  - Interface Configuration Guide:
+      - 2 CLI Interface: interface-configuration-guide/2-cli-interface.md
+  - EVPN-VXLAN User Guide:
+      - 1 Getting started: evpn-vxlan-user-guide/1-getting-started.md
+      - 2 Overview: evpn-vxlan-user-guide/2-overview.md
+      - 3 Layer 2 services infrastructure: evpn-vxlan-user-guide/3-layer-2-services-infrastructure.md
+      - 4 VXLAN v4: evpn-vxlan-user-guide/4-vxlan-v4.md
+      - 5 EVPN for VXLAN tunnels (layer 2): evpn-vxlan-user-guide/5-evpn-for-vxlan-tunnels-layer-2.md
+      - 6 EVPN for VXLAN tunnels (layer 3): evpn-vxlan-user-guide/6-evpn-for-vxlan-tunnels-layer-3.md
+      - 7 BGP and routing policy extensions for EVPN: evpn-vxlan-user-guide/7-bgp-and-routing-policy-extensions-for-evpn.md
+      - 8 EVPN configuration examples: evpn-vxlan-user-guide/8-evpn-configuration-examples.md
+
+site_author: SR Linux
+site_description: >-
+  Nokia SR Linux documentation
+# Repository
+repo_name: learn-srlinux/docs
+repo_url: https://github.com/learn-srlinux/docs
+edit_uri: ""
+theme:
+  name: material
+  custom_dir: docs/overrides
+
+  # 404 page
+  static_templates:
+    - 404.html
+
+  # Don't include MkDocs' JavaScript
+  include_search_page: false
+  search_index_only: true
+
+  features:
+    - navigation.top
+    - navigation.instant
+
+  language: en
+  palette:
+    # Light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: white
+      accent: cyan
+      toggle:
+        icon: material/toggle-switch-off-outline
+        name: Switch to dark mode
+    # Dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: black
+      accent: cyan
+      toggle:
+        icon: material/toggle-switch
+        name: Switch to light mode
+  font:
+    text: Roboto
+    code: Fira Mono
+  icon:
+    logo: fontawesome/solid/flask
+  # favicon: images/flask.svg
+
+# Plugins
+plugins:
+  - search
+  - minify:
+      minify_html: true
+
+# Customization
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/hellt
+    - icon: fontawesome/brands/twitter
+      link: https://twitter.com/ntdvps
+
+# Extensions
+markdown_extensions:
+  - markdown.extensions.admonition
+  - markdown.extensions.attr_list
+  - markdown.extensions.codehilite:
+      guess_lang: false
+  - markdown.extensions.def_list
+  - markdown.extensions.footnotes
+  - markdown.extensions.meta
+  - markdown.extensions.toc:
+      permalink: "#"
+  - pymdownx.arithmatex
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.critic
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
+  - pymdownx.highlight:
+      linenums_style: pymdownx-inline
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.magiclink:
+      repo_url_shorthand: true
+      user: squidfunk
+      repo: mkdocs-material
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.snippets:
+      check_paths: true
+  - pymdownx.superfences
+  - pymdownx.tabbed
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+# google_analytics:
+#   - auto
