@@ -1,10 +1,12 @@
 pages:
-  image: squidfunk/mkdocs-material
+  image:
+    name: squidfunk/mkdocs-material
+    entrypoint: [""]
   stage: deploy
   only:
     - master
   script:
-    - build --clean --site-dir public
+    - mkdocs build --clean --site-dir public
   artifacts:
     paths:
       - public
