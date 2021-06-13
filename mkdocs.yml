@@ -15,12 +15,12 @@ nav:
 
 site_author: SR Linux
 site_description: >-
-  Nokia SR Linux documentation
+  Learn SR Linux
 # Repository
-repo_name: learn-srlinux/docs
+repo_name: learn-srlinux/site
 repo_url: https://github.com/learn-srlinux/site
 edit_uri: ""
-site_url: ""
+site_url: "https://learn.srlinux.dev/"
 theme:
   name: material
   custom_dir: docs/overrides
@@ -42,16 +42,12 @@ theme:
     # Light mode
     - media: "(prefers-color-scheme: light)"
       scheme: default
-      # primary: white
-      # accent: cyan
       toggle:
         icon: material/toggle-switch-off-outline
         name: Switch to dark mode
     # Dark mode
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
-      # primary: black
-      # accent: cyan
       toggle:
         icon: material/toggle-switch
         name: Switch to light mode
@@ -60,7 +56,7 @@ theme:
     code: Fira Mono
   icon:
     logo: nokia/srlinux
-  # favicon: images/flask.svg
+  favicon: images/srlinux.svg
 
 # Plugins
 plugins:
