@@ -1,6 +1,6 @@
 pages:
   image:
-    name: squidfunk/mkdocs-material
+    name: squidfunk/mkdocs-material:7.1.0
     entrypoint: [""]
   stage: deploy
   only:
