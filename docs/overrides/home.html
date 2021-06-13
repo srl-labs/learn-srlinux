@@ -6,6 +6,21 @@
 
 <!-- Additional styles for landing page -->
 <style>
+    /* rdodin additions */
+    /* Hide main content for now */
+    /* .md-container {
+        background-color: #124191;
+    } */
+
+    /* .md-header {
+        background-color: #124191;
+    } */
+
+    /* Hide palette switcher */
+    /* .md-header__option {
+        display: none;
+    } */
+
     /* Apply box shadow on smaller screens that don't display tabs */
     @media only screen and (max-width: 1220px) {
         .md-header {
@@ -54,7 +69,7 @@
         text-align: center;
     }
 
-    .tx-hero h1 {
+    /* .tx-hero h1 {
         font-weight: 700;
         font-size: 38px;
         line-height: 46px;
@@ -66,7 +81,7 @@
         font-weight: 400;
         font-size: 20px;
         line-height: 32px;
-    }
+    } */
 
     .tx-hero__image {
         max-width: 1000px;
@@ -86,7 +101,7 @@
 
     /* Secondary content styles */
     .secondary-section {
-        background: rgb(245, 245, 245) none repeat scroll 0% 0%;
+        background: #edf3f5 none repeat scroll 0% 0%;
         border-top: 1px solid rgb(222, 222, 222);
         border-bottom: 1px solid rgb(222, 222, 222)
     }
@@ -313,13 +328,13 @@
     <div class="md-grid md-typeset">
         <div class="md-main__inner">
             <div>
-                <h1>Your toolkit for containerized applications on AWS</h1>
-                <p>AWS Copilot is an open source command line interface that makes it easy for developers to <span
-                        class="em">build</span>,
-                    <span class="em">release</span>, and <span class="em">operate</span> production ready containerized
-                    applications on AWS App Runner, Amazon ECS, and AWS Fargate.
+                <h1>Learn Nokia SR Linux</h1>
+                <p><a href="https://www.nokia.com/networks/products/service-router-linux-NOS">Nokia Service Router
+                        Linux (SR Linux)</a> is a truly open network operating system (NOS) that makes your
+                    data center switching infrastructure more scalable, more flexible and simpler to operate.
                 </p>
-                <a href="docs/overview/" title="Get Started" class="md-button md-button--primary">
+                <a href="interface-configuration-guide/2-cli-interface.html" title="Get Started"
+                    class="md-button md-button--primary">
                     Get started
                     <svg width="11" height="10" viewBox="0 0 11 10" fill="none" style="margin-left:2px">
                         <path d="M1 5.16772H9.5M9.5 5.16772L6.5 1.66772M9.5 5.16772L6.5 8.66772" stroke="currentColor"
@@ -331,55 +346,73 @@
     </div>
 </div>
 
-<div class="md-container">
-    <div class="tx-hero__image">
-        <img src="{{config.site_url}}assets/images/screen.png" alt="" draggable="false">
-    </div>
-</div>
-
 <div class="md-container secondary-section">
     <div class="g">
         <!-- Architecture as building blocks -->
         <div class="section">
             <div class="component-wrapper">
                 <div class="first-column">
-                    <h3>Get started with architectures</h3>
+                    <h3>What is Nokia SR Linux?</h3>
                     <p>
-                        Run a <span class="em">single command</span> to quickly get started with a containerized
-                        application using best practices on AWS from a Dockerfile.
+                        SR Linux is a part of the Nokia Data
+                        Center Fabric solution that has been
+                        designed from the ground up to free
+                        your cloud builder networking teams
+                        to rapidly design and deploy, easily
+                        adapt and integrate and confidently
+                        operate and automate data center
+                        network fabrics: at scale.
                     </p>
                     <p>
-                        Instead of modeling individual resources, Copilot provides common cloud architectures:
-                        <a href="docs/concepts/services/#request-driven-web-service">Request-Driven Web Service</a>,
-                        <a href="docs/concepts/services/#load-balanced-web-service">Load Balanced Web Service</a>,
-                        <a href="docs/concepts/services/#backend-service">Backend Service</a>, <a
-                            href="docs/concepts/jobs/">Scheduled Job</a> and generates the necessary infrastructure from
-                        that.
-                        Focus your time on writing business logic instead of connecting AWS resources.
+                        SR Linux is a truly open, extensible and resilient network operating system (NOS) is the
+                        foundation of this
+                        next generation solution,
+                        enabling scalability, flexibility and efficiency across your data center and cloud environments.
                     </p>
                 </div>
                 <div class="second-column">
                     <div class="image-wrapper">
-                        <img src="{{config.site_url}}assets/images/copilot-init.png" alt="" draggable="false">
+                        <img src="https://gitlab.com/rdodin/pics/-/wikis/uploads/19a6591d8fbbbe5003312f0088d5cbeb/image.png"
+                            alt="" draggable="false">
                     </div>
                 </div>
             </div>
             <div class="component-wrapper" style="display: block;">
-                <h4>Explore features</h4>
+                <h4>Key features</h4>
 
-                <!-- Arch as code -->
+                <!-- Standard kernel -->
                 <div class="responsive-grid">
                     <a class="card-wrapper" href="docs/manifest/overview">
                         <div class="card">
                             <div class="logo">
                                 <span class="twemoji">
-                                    {% include ".icons/octicons/file-code-24.svg" %}
+                                    {% include ".icons/fontawesome/brands/linux.svg" %}
                                 </span>
                             </div>
                             <div class="card-content">
-                                <h5>Manifests</h5>
+                                <h5>Standard linux kernel</h5>
                                 <p>
-                                    Describe your services with architecture-as-code.
+                                    By using an unmodified Linux-based
+                                    kernel as the foundation on which a suite of network applications is built,
+                                    SR Linux provides reliability, portability and ease of application development.
+                                </p>
+                            </div>
+                        </div>
+                    </a>
+
+                    <!-- Modular arch kernel -->
+                    <a class="card-wrapper" href="docs/manifest/overview">
+                        <div class="card">
+                            <div class="logo">
+                                <span class="twemoji">
+                                    {% include ".icons/material/view-module.svg" %}
+                                </span>
+                            </div>
+                            <div class="card-content">
+                                <h5>Modular architecture</h5>
+                                <p>
+                                    Designed from the ground up architecture that meets
+                                    the demands of scalability, visibility and ease of operations.
                                 </p>
                             </div>
                         </div>
@@ -394,15 +427,56 @@
                                 </span>
                             </div>
                             <div class="card-content">
-                                <h5>Networking</h5>
+                                <h5>Proven protocol stack</h5>
                                 <p>
-                                    Service discovery is setup by default for your services to connect to each other.
+                                    By using SR Linux,
+                                    your data center operators benefit from the resilience, stability, scalability
+                                    and proven interoperability of Nokia SR OS.
                                 </p>
                             </div>
                         </div>
                     </a>
 
-                    <!-- Customize -->
+                    <!-- Telemetry -->
+                    <a class="card-wrapper" href="docs/developing/service-discovery">
+                        <div class="card">
+                            <div class="logo">
+                                <span class="twemoji">
+                                    {% include ".icons/material/chart-line.svg" %}
+                                </span>
+                            </div>
+                            <div class="card-content">
+                                <h5>Streaming telemetry</h5>
+                                <p>
+                                    SR Linux delivers an open and extensible infrastructure, which allows the
+                                    retrieval of fine-grained system state, configuration setting, and a scalable
+                                    interface to support more granular data with push-based streaming telemetry.
+                                </p>
+                            </div>
+                        </div>
+                    </a>
+
+                    <!-- CLI -->
+                    <a class="card-wrapper" href="docs/developing/service-discovery">
+                        <div class="card">
+                            <div class="logo">
+                                <span class="twemoji">
+                                    {% include ".icons/octicons/terminal-16.svg" %}
+                                </span>
+                            </div>
+                            <div class="card-content">
+                                <h5>Customizable CLI</h5>
+                                <p>
+                                    An advanced, Python-based CLI provides a flexible framework for accessing the
+                                    system’s underlying data models. Operators can leverage CLI plugins
+                                    to completely customize the way the CLI operates.
+                                </p>
+                            </div>
+                        </div>
+                    </a>
+
+
+                    <!-- NDK -->
                     <a class="card-wrapper" href="docs/developing/additional-aws-resources/">
                         <div class="card">
                             <div class="logo">
@@ -411,9 +485,10 @@
                                 </span>
                             </div>
                             <div class="card-content">
-                                <h5>Grow with Addons</h5>
+                                <h5>Network Development Kit (NDK)</h5>
                                 <p>
-                                    Integrate your services with databases or any other AWS resources.
+                                    The NDK enables operators to integrate their own and third-party
+                                    applications into the system with all the same benefits as Nokia applications.
                                 </p>
                             </div>
                         </div>
@@ -422,154 +497,85 @@
             </div>
         </div>
 
-        <!-- Continuous delivery -->
+        <!-- Getting started -->
         <div class="section follow">
             <div class="component-wrapper">
                 <div class="first-column">
-                    <h3>Continuous delivery</h3>
+                    <h3>Getting started with SR Linux</h3>
                     <p>
-                        No need to worry about gluing Copilot commands in a script to create an automated release
-                        process.
-                        Copilot provides commands to create multiple deployment <a
-                            href="docs/concepts/environments/">environments</a> in separate AWS accounts and regions,
-                        as well as creating an AWS CodePipeline <a href="docs/concepts/pipelines/">pipeline</a> to build
-                        your container images, deploy your services, and
-                        run automated tests.
+                        SR Linux packs a lot of unique features that datacenter networking teams can leverage.
+                        Some of the features being truly new to the networking domain.
+                        The goal of this portal is to demonstrate these features and make SR Linux familiar to every
+                        visitor.
+                    </p>
+                    <p>
+                        We believe that learning by doing yields the best results. With that in mind we made SR Linux
+                        container image available to everybody without any registration or licensing.
+                    </p>
+                    <p>
+                        The tutorials on this portal will be augmented with lab scenarios that anyone can spin locally
+                        at any time.
                     </p>
                 </div>
                 <div class="second-column">
                     <div class="image-wrapper">
-                        <img src="{{config.site_url}}assets/images/copilot-env-init.png" alt="" draggable="false">
+                        <img src="https://gitlab.com/rdodin/pics/-/wikis/uploads/5454094525d2171c529d40f8eedbe178/image.png"
+                            alt="" draggable="false">
                     </div>
                 </div>
             </div>
-            <div class="component-wrapper" style="display: block;">
-                <h4>Explore features</h4>
 
-                <!-- Environments -->
+            <div class="component-wrapper" style="display: block;">
+                <!-- cSRL -->
                 <div class="responsive-grid">
                     <a class="card-wrapper" href="docs/commands/env-init/">
                         <div class="card">
                             <div class="logo">
                                 <span class="twemoji">
-                                    {% include ".icons/octicons/copy-24.svg" %}
+                                    {% include ".icons/fontawesome/brands/docker.svg" %}
                                 </span>
                             </div>
                             <div class="card-content">
-                                <h5>Environments</h5>
+                                <h5>Open container image</h5>
                                 <p>
-                                    Deploy to multiple AWS accounts and regions.
+                                    Run SR Linux anywhere where Docker is installed. Free and easy.
                                 </p>
                             </div>
                         </div>
                     </a>
 
-                    <!-- Override -->
+                    <!-- Labs -->
                     <a class="card-wrapper" href="docs/manifest/lb-web-service/#environments">
                         <div class="card">
                             <div class="logo">
                                 <span class="twemoji">
-                                    {% include ".icons/octicons/pencil-24.svg" %}
+                                    {% include ".icons/material/flask.svg" %}
                                 </span>
                             </div>
                             <div class="card-content">
-                                <h5>Override per environment</h5>
+                                <h5>Learn by doing</h5>
                                 <p>
-                                    Adjust your service settings per environments in the manifest.
+                                    Get to the grips of SR Linux features by doing real labs built with SR Linux
+                                    container image.
                                 </p>
                             </div>
                         </div>
                     </a>
 
-                    <!-- Customize -->
-                    <a class="card-wrapper" href="docs/commands/pipeline-init/">
+                    <!-- Community -->
+                    <a class="card-wrapper" href="docs/manifest/lb-web-service/#environments">
                         <div class="card">
                             <div class="logo">
                                 <span class="twemoji">
-
+                                    {% include ".icons/material/chat.svg" %}
                                 </span>
                             </div>
                             <div class="card-content">
-                                <h5>Automated releases</h5>
+                                <h5>Engage with the community</h5>
                                 <p>
-                                    Create a continuous delivery pipeline with built-in commands.
-                                </p>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Operations -->
-        <div class="section follow">
-            <div class="component-wrapper">
-                <div class="first-column">
-                    <h3>Operations is part of the workflow</h3>
-                    <p>
-                        Modeling, provisioning, and deploying services are only part of the application lifecycle for
-                        the developer.
-                        Copilot also supports workflows around troubleshooting and debugging to help when things go
-                        wrong. <a href="docs/commands/svc-logs/">Tail
-                            your logs</a>, <a href="docs/commands/svc-exec">get a shell</a> to a running container, <a
-                            href="docs/commands/svc-status/">view the health</a> of your services
-                        from the comfort of your terminal.
-                    </p>
-                </div>
-                <div class="second-column">
-                    <div class="image-wrapper">
-                        <img src="{{config.site_url}}assets/images/copilot-svc-status.png" alt="" draggable="false">
-                    </div>
-                </div>
-            </div>
-            <div class="component-wrapper" style="display: block;">
-                <h4>Explore features</h4>
-
-                <!-- Tasks -->
-                <div class="responsive-grid">
-                    <a class="card-wrapper" href="docs/commands/task-run/">
-                        <div class="card">
-                            <div class="logo">
-                                <span class="twemoji">
-
-                                </span>
-                            </div>
-                            <div class="card-content">
-                                <h5>Run tasks</h5>
-                                <p>
-                                    Run one-off tasks for operational workloads.
-                                </p>
-                            </div>
-                        </div>
-                    </a>
-
-                    <a class="card-wrapper" href="docs/commands/svc-exec/">
-                        <div class="card">
-                            <div class="logo">
-                                <span class="twemoji">
-                                    {% include ".icons/octicons/terminal-24.svg" %}
-                                </span>
-                            </div>
-                            <div class="card-content">
-                                <h5>Exec</h5>
-                                <p>
-                                    Run commands in or get a shell to a container running on AWS Fargate.
-                                </p>
-                            </div>
-                        </div>
-                    </a>
-
-                    <a class="card-wrapper" href="docs/commands/svc-status/">
-                        <div class="card">
-                            <div class="logo">
-                                <span class="twemoji">
-
-                                </span>
-                            </div>
-                            <div class="card-content">
-                                <h5>Monitoring</h5>
-                                <p>
-                                    View logs or alarms from your services or tasks.
+                                    Like-minded people are always getting together. As to SR Linux we hang out in
+                                    Discord!<br />
+                                    <small>unofficial group</small>
                                 </p>
                             </div>
                         </div>

@@ -1,4 +1,4 @@
-site_name: SR Linux documentation
+site_name: Learn SR Linux
 nav:
   - Home: index.md
   - Interface Configuration Guide:
@@ -18,8 +18,9 @@ site_description: >-
   Nokia SR Linux documentation
 # Repository
 repo_name: learn-srlinux/docs
-repo_url: https://github.com/learn-srlinux/docs
+repo_url: https://github.com/learn-srlinux/site
 edit_uri: ""
+site_url: ""
 theme:
   name: material
   custom_dir: docs/overrides
@@ -41,24 +42,24 @@ theme:
     # Light mode
     - media: "(prefers-color-scheme: light)"
       scheme: default
-      primary: white
-      accent: cyan
+      # primary: white
+      # accent: cyan
       toggle:
         icon: material/toggle-switch-off-outline
         name: Switch to dark mode
     # Dark mode
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
-      primary: black
-      accent: cyan
+      # primary: black
+      # accent: cyan
       toggle:
         icon: material/toggle-switch
         name: Switch to light mode
   font:
-    text: Roboto
+    text: NokiaPureText
     code: Fira Mono
   icon:
-    logo: fontawesome/solid/flask
+    logo: nokia/srlinux
   # favicon: images/flask.svg
 
 # Plugins
@@ -114,3 +115,7 @@ markdown_extensions:
   - pymdownx.tilde
 # google_analytics:
 #   - auto
+
+extra_css:
+  - stylesheets/nokia.css
+  - stylesheets/nokia-fonts.css
