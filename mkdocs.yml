@@ -21,6 +21,7 @@ repo_name: learn-srlinux/site
 repo_url: https://github.com/learn-srlinux/site
 edit_uri: ""
 site_url: "https://learn.srlinux.dev/"
+copyright: Copyright &copy; 2021 Nokia
 theme:
   name: material
   custom_dir: docs/overrides
