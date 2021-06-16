@@ -10,3 +10,11 @@
     --md-typeset-a-color:  #00c9ff;
     --md-accent-fg-color: #ff3154;
   }
+
+  body, input {
+    font-weight: 300;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: NokiaPureHeadlineUltralight;
+  }

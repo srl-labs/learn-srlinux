@@ -1,17 +1,7 @@
 site_name: Learn SR Linux
 nav:
   - Home: index.md
-  - Interface Configuration Guide:
-      - 2 CLI Interface: interface-configuration-guide/2-cli-interface.md
-  - EVPN-VXLAN User Guide:
-      - 1 Getting started: evpn-vxlan-user-guide/1-getting-started.md
-      - 2 Overview: evpn-vxlan-user-guide/2-overview.md
-      - 3 Layer 2 services infrastructure: evpn-vxlan-user-guide/3-layer-2-services-infrastructure.md
-      - 4 VXLAN v4: evpn-vxlan-user-guide/4-vxlan-v4.md
-      - 5 EVPN for VXLAN tunnels (layer 2): evpn-vxlan-user-guide/5-evpn-for-vxlan-tunnels-layer-2.md
-      - 6 EVPN for VXLAN tunnels (layer 3): evpn-vxlan-user-guide/6-evpn-for-vxlan-tunnels-layer-3.md
-      - 7 BGP and routing policy extensions for EVPN: evpn-vxlan-user-guide/7-bgp-and-routing-policy-extensions-for-evpn.md
-      - 8 EVPN configuration examples: evpn-vxlan-user-guide/8-evpn-configuration-examples.md
+  - Get started with SR Linux: get-started.md
 
 site_author: SR Linux
 site_description: >-
@@ -37,6 +27,8 @@ theme:
   features:
     - navigation.top
     - navigation.instant
+    - navigation.tracking
+    - toc.integrate
 
   language: en
   palette:
