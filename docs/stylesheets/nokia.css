@@ -4,17 +4,23 @@
     --md-primary-fg-color--dark:  #90030C;
 
     --md-accent-fg-color: #00c9ff;
+
+    --nokia-heading-font-color: #124191;
   }
 
   [data-md-color-scheme="slate"] {
     --md-typeset-a-color:  #00c9ff;
     --md-accent-fg-color: #ff3154;
+
+    /* --nokia-heading-font-color: #bec8d2; this is a greyish version for comparison */
+    --nokia-heading-font-color: #00c9ff;
   }
 
   body, input {
     font-weight: 300;
   }
 
-  h1, h2, h3, h4 {
-    font-family: NokiaPureHeadlineUltralight;
+  .md-typeset h1, h2, h3, h4 {
+    font-family: NokiaPureHeadlineLight;
+    color: var(--nokia-heading-font-color)
   }
