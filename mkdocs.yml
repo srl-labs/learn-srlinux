@@ -28,7 +28,7 @@ theme:
     - navigation.top
     - navigation.instant
     - navigation.tracking
-    - toc.integrate
+    # - toc.integrate
 
   language: en
   palette:
