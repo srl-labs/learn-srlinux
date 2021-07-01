@@ -6,6 +6,12 @@
     --md-accent-fg-color: #00c9ff;
 
     --nokia-heading-font-color: #124191;
+    
+    /* get started home button */
+    --nokia-get-started-btn-color: #124191;
+    --nokia-get-started-text-color: #ffffff;
+    --nokia-get-started-hover-text-color: #ffffff;
+    --nokia-get-started-hover-btn-color: #00c9ff;
   }
 
   [data-md-color-scheme="slate"] {
@@ -14,6 +20,10 @@
 
     /* --nokia-heading-font-color: #bec8d2; this is a greyish version for comparison */
     --nokia-heading-font-color: #00c9ff;
+    --nokia-get-started-btn-color: #bec8d2;
+    --nokia-get-started-text-color: #124191;
+    --nokia-get-started-hover-text-color: #ffffff;
+    --nokia-get-started-hover-btn-color: #124191;
   }
 
   body, input {
