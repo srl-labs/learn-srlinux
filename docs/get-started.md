@@ -45,6 +45,11 @@ This approach is viable when all you need is to run a standalone container to ex
 For multi-node SR Linux deployments containerlab offers a better way.
 
 #### Containerlab
+
+<div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:4,&quot;zoom&quot;:1,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/srl-labs/containerlab/diagrams/containerlab.drawio&quot;}"></div>
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/hellt/drawio-js@main/embed2.js" async></script>
+
 [Containerlab](https://containerlab.srlinux.dev) provides a CLI for orchestrating and managing container-based networking labs. It starts the containers, builds a virtual wiring between them to create lab topologies of users choice and manages labs lifecycle.
 
 A [quickstart](https://containerlab.srlinux.dev/quickstart/) guide is a perfect place to start with containerlab. For the sake of completeness, we provide here a containerlab file that defines a lab with two SR Linux nodes connected back to back together:

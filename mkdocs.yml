@@ -2,6 +2,7 @@ site_name: Learn SR Linux
 nav:
   - Home: index.md
   - Get started with SR Linux: get-started.md
+  - Always-ON SR Linux: alwayson.md
 
 site_author: SR Linux
 site_description: >-
