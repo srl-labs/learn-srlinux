@@ -1,7 +1,9 @@
 site_name: Learn SR Linux
 nav:
   - Home: index.md
-  - Get started with SR Linux: get-started.md
+  - Get SR Linux: get-started.md
+  - SR Linux Quickstart Guide:
+      - Lab setup: quickstart/labsetup.md
   - Always-ON SR Linux: alwayson.md
 
 site_author: SR Linux

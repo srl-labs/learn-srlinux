@@ -1,0 +1,1 @@
+Now that we sorted out how to [get SR Linux container image](get-started.md), lets see how to get around this brand new Network Operating System by going through a short exercise of configuring an EVPN between the two SR Linux nodes. 
