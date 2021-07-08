@@ -12,25 +12,29 @@
     --nokia-get-started-text-color: #ffffff;
     --nokia-get-started-hover-text-color: #ffffff;
     --nokia-get-started-hover-btn-color: #00c9ff;
-  }
+}
 
-  [data-md-color-scheme="slate"] {
-    --md-typeset-a-color:  #00c9ff;
-    --md-accent-fg-color: #ff3154;
+[data-md-color-scheme="slate"] {
+  --md-typeset-a-color:  #00c9ff;
+  --md-accent-fg-color: #ff3154;
 
-    /* --nokia-heading-font-color: #bec8d2; this is a greyish version for comparison */
-    --nokia-heading-font-color: #00c9ff;
-    --nokia-get-started-btn-color: #bec8d2;
-    --nokia-get-started-text-color: #124191;
-    --nokia-get-started-hover-text-color: #ffffff;
-    --nokia-get-started-hover-btn-color: #124191;
-  }
+  /* --nokia-heading-font-color: #bec8d2; this is a greyish version for comparison */
+  --nokia-heading-font-color: #00c9ff;
+  --nokia-get-started-btn-color: #bec8d2;
+  --nokia-get-started-text-color: #124191;
+  --nokia-get-started-hover-text-color: #ffffff;
+  --nokia-get-started-hover-btn-color: #124191;
+}
 
-  body, input {
-    font-weight: 300;
-  }
+body, input {
+  font-weight: 300;
+}
 
-  .md-typeset h1, h2, h3, h4 {
-    font-family: NokiaPureHeadlineLight;
-    color: var(--nokia-heading-font-color)
-  }
+.md-typeset h1, h2, h3, h4 {
+  font-family: NokiaPureHeadlineLight;
+  color: var(--nokia-heading-font-color)
+}
+
+.md-typeset code {
+  font-size: .8em;
+}
