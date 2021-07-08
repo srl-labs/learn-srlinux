@@ -3,7 +3,11 @@ nav:
   - Home: index.md
   - Get SR Linux: get-started.md
   - SR Linux Quickstart Guide:
-      - Lab setup: quickstart/labsetup.md
+      - Introduction: quickstart/intro.md
+      - Core concepts:
+          - Hardware types: quickstart/hwtypes.md
+          - Management interfaces: quickstart/mgmt.md
+          - Configuration management: quickstart/cfgmgmt.md
   - Always-ON SR Linux: alwayson.md
 
 site_author: SR Linux
