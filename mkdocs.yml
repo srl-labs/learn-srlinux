@@ -8,6 +8,8 @@ nav:
           - Hardware types: quickstart/hwtypes.md
           - Management interfaces: quickstart/mgmt.md
           - Configuration management: quickstart/cfgmgmt.md
+          - Interfaces: quickstart/ifaces.md
+      - Fabric configuration: quickstart/fabric.md
   - Always-ON SR Linux: alwayson.md
 
 site_author: SR Linux
