@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2021-07-09T11:14:54.085Z" agent="5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36" etag="TdoCf6j2ww9AfbtNhQRn" version="14.8.5" type="github" pages="8">
+<mxfile host="app.diagrams.net" modified="2021-07-09T11:53:02.691Z" agent="5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36" etag="zsmx5WwjGcaJQdEZ6qLz" version="14.8.5" type="github" pages="8">
   <diagram name="[0] fabric" id="hkG6t74379osJoYyNQbO">
     <mxGraphModel dx="689" dy="387" grid="1" gridSize="2" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="#4D5766" math="0" shadow="0">
       <root>
@@ -256,7 +256,7 @@
     </mxGraphModel>
   </diagram>
   <diagram name="[1] fabric ip" id="R8MRYq31-Y0t2gJcLO0V">
-    <mxGraphModel dx="574" dy="323" grid="1" gridSize="2" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="#4D5766" math="0" shadow="0">
+    <mxGraphModel dx="480" dy="270" grid="1" gridSize="2" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="#4D5766" math="0" shadow="0">
       <root>
         <mxCell id="GPy6wxYxcPUDj5xJ8smu-0" />
         <mxCell id="GPy6wxYxcPUDj5xJ8smu-1" parent="GPy6wxYxcPUDj5xJ8smu-0" />
@@ -439,11 +439,11 @@
             <Array as="points" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="0-FNOhIPMK58uv60r9kV-59" value="&lt;div style=&quot;font-size: 6px&quot;&gt;&lt;span style=&quot;color: rgb(255 , 255 , 255) ; font-size: 6px&quot;&gt;192.168.11.0/24&lt;/span&gt;&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;fontSize=6;fontFamily=Fira Code;fontColor=#001135;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DFira%2BCode;connectable=0;rotation=309;fillColor=#4D5766;opacity=60;" vertex="1" parent="GPy6wxYxcPUDj5xJ8smu-1">
+        <mxCell id="0-FNOhIPMK58uv60r9kV-59" value="&lt;div style=&quot;font-size: 6px&quot;&gt;&lt;span style=&quot;color: rgb(255 , 255 , 255) ; font-size: 6px&quot;&gt;192.168.11.0/31&lt;/span&gt;&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;fontSize=6;fontFamily=Fira Code;fontColor=#001135;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DFira%2BCode;connectable=0;rotation=309;fillColor=#4D5766;opacity=60;" vertex="1" parent="GPy6wxYxcPUDj5xJ8smu-1">
           <mxGeometry x="142" y="350" width="66" height="12" as="geometry" />
         </mxCell>
-        <mxCell id="0-FNOhIPMK58uv60r9kV-61" value="&lt;div style=&quot;font-size: 6px&quot;&gt;&lt;span style=&quot;color: rgb(255 , 255 , 255) ; font-size: 6px&quot;&gt;192.168.12.0&lt;/span&gt;&lt;br style=&quot;font-size: 6px&quot;&gt;&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;fontSize=6;fontFamily=Fira Code;fontColor=#001135;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DFira%2BCode;connectable=0;rotation=51;fillColor=#4D5766;opacity=60;" vertex="1" parent="GPy6wxYxcPUDj5xJ8smu-1">
-          <mxGeometry x="230" y="348" width="54" height="12" as="geometry" />
+        <mxCell id="0-FNOhIPMK58uv60r9kV-61" value="&lt;div style=&quot;font-size: 6px&quot;&gt;&lt;span style=&quot;color: rgb(255 , 255 , 255) ; font-size: 6px&quot;&gt;192.168.12.0/31&lt;/span&gt;&lt;br style=&quot;font-size: 6px&quot;&gt;&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;fontSize=6;fontFamily=Fira Code;fontColor=#001135;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DFira%2BCode;connectable=0;rotation=51;fillColor=#4D5766;opacity=60;" vertex="1" parent="GPy6wxYxcPUDj5xJ8smu-1">
+          <mxGeometry x="224" y="348" width="66" height="12" as="geometry" />
         </mxCell>
         <mxCell id="0-FNOhIPMK58uv60r9kV-65" value="&lt;div style=&quot;font-size: 6px&quot;&gt;&lt;span style=&quot;color: rgb(255 , 255 , 255) ; font-size: 6px&quot;&gt;172.17.11.0/24&lt;/span&gt;&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;fontSize=6;fontFamily=Fira Code;fontColor=#001135;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DFira%2BCode;connectable=0;rotation=0;fillColor=#4D5766;opacity=60;" vertex="1" parent="GPy6wxYxcPUDj5xJ8smu-1">
           <mxGeometry x="110" y="448" width="60" height="11" as="geometry" />
