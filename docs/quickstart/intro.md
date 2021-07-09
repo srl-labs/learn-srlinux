@@ -1,16 +1,19 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/hellt/drawio-js@main/embed2.js" async></script>
 
-Now that we sorted out how to [get and run SR Linux container image](get-started.md), lets see how to get around this brand new Network Operating System by going through a short exercise of configuring a VXLAN based EVPN service in a tiny CLOS fabric.
+Now that we sorted out how to [get and run SR Linux container image](get-started.md), lets see how to get around this brand new Network Operating System by going through a short exercise of configuring a **VXLAN based EVPN service** in a tiny CLOS fabric.
 
 The fabric will consist of the two leaf switches and a single spine:
 
 <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:0,&quot;zoom&quot;:2,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/learn-srlinux/site/diagrams/quickstart.drawio&quot;}"></div>
 
-Service-wise the two servers will appear to be on the same L2 network by means of the EVPN service deployed.
+Service-wise the two servers will appear to be on the same L2 network by means of the deployed EVPN service.
 
 <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:1,&quot;zoom&quot;:2,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/learn-srlinux/site/diagrams/quickstart.drawio&quot;}"></div>
 
-To deploy this 3-node fabric we will use the following [containerlab](https://containerlab.srlinux.dev) file[^1]:
+To deploy this 3-node fabric we will need:
+
+1. a machine running Linux with 2vCPU and 4GB RAM
+2. and the following [containerlab](https://containerlab.srlinux.dev) file[^1]:
 
 ```yaml
 name: quickstart
@@ -46,7 +49,7 @@ topology:
     - endpoints: ["srv2:eth1", "leaf2:e1-1"]
 ```
 
-Save the contents of this file under `quickstart.clab.yml` and you are ready to deploy:
+Save the contents of this file under `quickstart.clab.yml` name and you are ready to deploy:
 ```
 $ containerlab deploy -t quickstart.clab.yml
 INFO[0000] Parsing & checking topology file: quickstart.clab.yml 
@@ -74,13 +77,16 @@ INFO[0003] Writing /etc/hosts file
 +---+------------------------+--------------+---------------------------------+-------+-------+---------+----------------+----------------------+
 ```
 
-Containerlab will finish the deployment with providing a summary table that will outline connection details of the deployed nodes. In the "Name" column we will have the names of the deployed containers and those names can be used to reach the nodes, for example:
+Containerlab will finish the deployment with providing a summary table that outlines connection details of the deployed nodes. In the "Name" column we have the names of the deployed containers and those names can be used to reach the nodes, for example:
 
 ```bash
 # connecting to the leaf1 device via SSH
 ssh admin@clab-quickstart-leaf1
 ```
 
-With the lab deployed we are ready to embark on our EVPN configuration journey, but we advise the newcomers to first start with reading the [SR Linux basic concepts](hwtypes.md) before diving into the configuration waters.
+With the lab deployed we are ready to embark on our learn-by-doing EVPN configuration journey!
+
+!!!note
+  We advise the newcomers to make a first stop at [SR Linux basic concepts](hwtypes.md) before diving into the configuration waters.
 
 [^1]: To ensure reproducibility and consistency of the examples provided in this quickstart, we will pin to a particular SR Linux version in the containerlab file.
