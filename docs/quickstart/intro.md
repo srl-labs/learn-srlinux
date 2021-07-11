@@ -87,6 +87,7 @@ ssh admin@clab-quickstart-leaf1
 With the lab deployed we are ready to embark on our learn-by-doing EVPN configuration journey!
 
 !!!note
-  We advise the newcomers to make a first stop at [SR Linux basic concepts](hwtypes.md) before diving into the configuration waters.
+    We advise the newcomers not to skip the next stop at [SR Linux basic concepts](hwtypes.md) as it provides just enough[^2] details to survive in the configuration waters we are about to get.
 
 [^1]: To ensure reproducibility and consistency of the examples provided in this quickstart, we will pin to a particular SR Linux version in the containerlab file.
+[^2]: For a complete documentation coverage don't hesitate to visit our [documentation portal](https://bit.ly/iondoc).
