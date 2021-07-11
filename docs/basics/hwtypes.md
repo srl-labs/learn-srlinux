@@ -1,13 +1,3 @@
-Likely the first question that rises after looking at the clab file we deployed in the [first step](intro.md) is "What are those SR Linux _type_ fields?".
-
-```yaml
-# part of the quickstart.clab.yml file
-  nodes:
-    leaf1:
-      kind: srl
-      type: ixrd2 # <- hardware type this node will emulate
-```
-
 The SR Linux software supports seven Nokia hardware platforms[^1]:
 
 * 7250 IXR-6
@@ -19,6 +9,16 @@ The SR Linux software supports seven Nokia hardware platforms[^1]:
 * 7220 IXR-H3
 
 Out of those seven hardware variants, the first five are available for emulation within SR Linux container image.
+
+The `type` field under the node configuration sets the emulated hardware type in the containerlab file:
+
+```yaml
+# part of the evpn01.clab.yml file
+  nodes:
+    leaf1:
+      kind: srl
+      type: ixrd2 # <- hardware type this node will emulate
+```
 
 The `type` field defines the hardware variant that this SR Linux node will emulate. The available `type` values are:
 

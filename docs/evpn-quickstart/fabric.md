@@ -14,7 +14,7 @@ Let's start with configuring the IP interfaces on the inter-switch links to ensu
 
 <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:2,&quot;zoom&quot;:2,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/learn-srlinux/site/diagrams/quickstart.drawio&quot;}"></div>
 
-On each leaf and spine we will bring up the relevant [interface](ifaces.md) and address its routed [subinterface](ifaces.md#subinterfaces) to achieve L3 connectivity.
+On each leaf and spine we will bring up the relevant [interface](../basics/ifaces.md) and address its routed [subinterface](../basics/ifaces.md#subinterfaces) to achieve L3 connectivity.
 
 We begin with connecting to the CLI of our nodes via SSH[^1]:
 
@@ -23,7 +23,7 @@ We begin with connecting to the CLI of our nodes via SSH[^1]:
 ssh admin@clab-quickstart-leaf1
 ```
 
-Then on each node we enter into [candidate configuration mode](cfgmgmt.md#configuration-modes) and proceed with the relevant interfaces configuration.
+Then on each node we enter into [candidate configuration mode](../basics/cfgmgmt.md#configuration-modes) and proceed with the relevant interfaces configuration.
 
 Let's see the step by step process of an interface configuration on leaf1 with providing the paste-ables snippets for the rest of the nodes
 
@@ -121,7 +121,7 @@ ethernet-1/1 is up, speed 10G, type None
 ====================================================
 ```
 
-At this moment, the configured interfaces can not be used as they are not yet associated with any [network instance](netwinstance.md). Below we are placing the interfaces to the network-instance `default` that is created automatically created by SR Linux.
+At this moment, the configured interfaces can not be used as they are not yet associated with any [network instance](../basics/netwinstance.md). Below we are placing the interfaces to the network-instance `default` that is created automatically created by SR Linux.
 
 === "leaf1 & leaf2"
     ```
@@ -405,7 +405,7 @@ EBGP configuration on `leaf2` and `spine1` is almost a twin from the one we did 
 ## Loopbacks
 As we will create a BGP based EVPN control plane at a later stage, we need to configure loopback addresses for our leaf devices so that they can build an iBGP peering over those interfaces.
 
-In the context of the VXLAN data plane, a special kind of a loopback needs to be created - [`system0`](ifaces.md#system) interface.
+In the context of the VXLAN data plane, a special kind of a loopback needs to be created - [`system0`](../basics/ifaces.md#system) interface.
 
 !!!info
     The `system0.0` interface hosts the loopback address used to originate and typically

@@ -16,7 +16,7 @@ To deploy this 3-node fabric we will need:
 2. and the following [containerlab](https://containerlab.srlinux.dev) file[^1]:
 
 ```yaml
-name: quickstart
+name: evpn01
 
 topology:
   kinds:
@@ -49,11 +49,11 @@ topology:
     - endpoints: ["srv2:eth1", "leaf2:e1-1"]
 ```
 
-Save the contents of this file under `quickstart.clab.yml` name and you are ready to deploy:
+Save the contents of this file under `evpn01.clab.yml` name and you are ready to deploy:
 ```
-$ containerlab deploy -t quickstart.clab.yml
-INFO[0000] Parsing & checking topology file: quickstart.clab.yml 
-INFO[0000] Creating lab directory: /root/learn.srlinux.dev/clab-quickstart 
+$ containerlab deploy -t evpn01.clab.yml
+INFO[0000] Parsing & checking topology file: evpn01.clab.yml 
+INFO[0000] Creating lab directory: /root/learn.srlinux.dev/clab-evpn01 
 INFO[0000] Creating root CA                             
 INFO[0001] Creating container: srv2                  
 INFO[0001] Creating container: srv1                  
@@ -66,28 +66,28 @@ INFO[0002] Creating virtual wire: leaf2:e1-49 <--> spine1:e1-2
 INFO[0002] Creating virtual wire: srv1:eth1 <--> leaf1:e1-1 
 INFO[0003] Writing /etc/hosts file                      
 
-+---+------------------------+--------------+---------------------------------+-------+-------+---------+----------------+----------------------+
-| # |          Name          | Container ID |              Image              | Kind  | Group |  State  |  IPv4 Address  |     IPv6 Address     |
-+---+------------------------+--------------+---------------------------------+-------+-------+---------+----------------+----------------------+
-| 1 | clab-quickstart-leaf1  | 4b81c65af558 | ghcr.io/nokia/srlinux           | srl   |       | running | 172.20.20.7/24 | 2001:172:20:20::7/64 |
-| 2 | clab-quickstart-leaf2  | de000e791dd6 | ghcr.io/nokia/srlinux           | srl   |       | running | 172.20.20.8/24 | 2001:172:20:20::8/64 |
-| 3 | clab-quickstart-spine1 | 231fd97d7e33 | ghcr.io/nokia/srlinux           | srl   |       | running | 172.20.20.6/24 | 2001:172:20:20::6/64 |
-| 4 | clab-quickstart-srv1   | 3a2fa1e6e9f5 | ghcr.io/hellt/network-multitool | linux |       | running | 172.20.20.3/24 | 2001:172:20:20::3/64 |
-| 5 | clab-quickstart-srv2   | fb722453d715 | ghcr.io/hellt/network-multitool | linux |       | running | 172.20.20.5/24 | 2001:172:20:20::5/64 |
-+---+------------------------+--------------+---------------------------------+-------+-------+---------+----------------+----------------------+
++---+--------------------+--------------+---------------------------------+-------+-------+---------+----------------+----------------------+
+| # |        Name        | Container ID |              Image              | Kind  | Group |  State  |  IPv4 Address  |     IPv6 Address     |
++---+--------------------+--------------+---------------------------------+-------+-------+---------+----------------+----------------------+
+| 1 | clab-evpn01-leaf1  | 4b81c65af558 | ghcr.io/nokia/srlinux           | srl   |       | running | 172.20.20.7/24 | 2001:172:20:20::7/64 |
+| 2 | clab-evpn01-leaf2  | de000e791dd6 | ghcr.io/nokia/srlinux           | srl   |       | running | 172.20.20.8/24 | 2001:172:20:20::8/64 |
+| 3 | clab-evpn01-spine1 | 231fd97d7e33 | ghcr.io/nokia/srlinux           | srl   |       | running | 172.20.20.6/24 | 2001:172:20:20::6/64 |
+| 4 | clab-evpn01-srv1   | 3a2fa1e6e9f5 | ghcr.io/hellt/network-multitool | linux |       | running | 172.20.20.3/24 | 2001:172:20:20::3/64 |
+| 5 | clab-evpn01-srv2   | fb722453d715 | ghcr.io/hellt/network-multitool | linux |       | running | 172.20.20.5/24 | 2001:172:20:20::5/64 |
++---+--------------------+--------------+---------------------------------+-------+-------+---------+----------------+----------------------+
 ```
 
 Containerlab will finish the deployment with providing a summary table that outlines connection details of the deployed nodes. In the "Name" column we have the names of the deployed containers and those names can be used to reach the nodes, for example:
 
 ```bash
 # connecting to the leaf1 device via SSH
-ssh admin@clab-quickstart-leaf1
+ssh admin@clab-evpn01-leaf1
 ```
 
 With the lab deployed we are ready to embark on our learn-by-doing EVPN configuration journey!
 
 !!!note
-    We advise the newcomers not to skip the next stop at [SR Linux basic concepts](hwtypes.md) as it provides just enough[^2] details to survive in the configuration waters we are about to get.
+    We advise the newcomers not to skip the next stop at [SR Linux basic concepts](../basics/hwtypes.md) as it provides just enough[^2] details to survive in the configuration waters we are about to get.
 
 [^1]: To ensure reproducibility and consistency of the examples provided in this quickstart, we will pin to a particular SR Linux version in the containerlab file.
 [^2]: For a complete documentation coverage don't hesitate to visit our [documentation portal](https://bit.ly/iondoc).

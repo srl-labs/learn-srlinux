@@ -2,15 +2,15 @@ site_name: Learn SR Linux
 nav:
   - Home: index.md
   - Get SR Linux: get-started.md
-  - SR Linux Quickstart Guide:
-      - Introduction: quickstart/intro.md
-      - Basic concepts:
-          - Hardware types: quickstart/hwtypes.md
-          - Management interfaces: quickstart/mgmt.md
-          - Configuration management: quickstart/cfgmgmt.md
-          - Interfaces: quickstart/ifaces.md
-          - Network instances: quickstart/netwinstance.md
-      - Fabric configuration: quickstart/fabric.md
+  - Basic concepts:
+      - Hardware types: basics/hwtypes.md
+      - Management interfaces: basics/mgmt.md
+      - Configuration management: basics/cfgmgmt.md
+      - Interfaces: basics/ifaces.md
+      - Network instances: basics/netwinstance.md
+  - EVPN Quickstart Guide:
+      - Introduction: evpn-quickstart/intro.md
+      - Fabric configuration: evpn-quickstart/fabric.md
   - Always-ON SR Linux: alwayson.md
 
 site_author: SR Linux
