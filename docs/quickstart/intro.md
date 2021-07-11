@@ -1,6 +1,6 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/hellt/drawio-js@main/embed2.js" async></script>
 
-Now that we sorted out how to [get and run SR Linux container image](get-started.md), lets see how to get around this brand new Network Operating System by going through a short exercise of configuring a **VXLAN based EVPN service** in a tiny CLOS fabric.
+Now that we sorted out how to [get and run SR Linux container image](../get-started.md), lets see how to get around this brand new Network Operating System by going through a short exercise of configuring a **VXLAN based EVPN service** in a tiny CLOS fabric.
 
 The fabric will consist of the two leaf switches and a single spine:
 
