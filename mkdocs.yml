@@ -74,6 +74,9 @@ extra:
       link: https://github.com/hellt
     - icon: fontawesome/brands/twitter
       link: https://twitter.com/ntdvps
+  analytics:
+    provider: google
+    property: G-VNYX781Q48
 
 # Extensions
 markdown_extensions:
@@ -112,8 +115,6 @@ markdown_extensions:
   - pymdownx.tasklist:
       custom_checkbox: true
   - pymdownx.tilde
-# google_analytics:
-#   - auto
 
 extra_css:
   - stylesheets/nokia.css
