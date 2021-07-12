@@ -204,8 +204,8 @@ Here is a breakdown of the steps that are needed to configure eBGP on `leaf1` to
     ```
 
 1. **Create export/import policies**  
-    The export/import policy is required for a eBGP peer to advertise and install routes.  
-    The policy named `all` that we create below will be used both as an import and export policy, effectively allowing all routes to be advertised and received.  
+    The export/import policy is required for an eBGP peer to advertise and install routes.  
+    The policy named `all` that we create below will be used both as an import and export policy, effectively allowing all routes to be advertised and received[^4].  
 
     The routing policies are configured at `/routing-policy` context, so first, we switch to it from the current `bgp` context:
     ```
@@ -654,6 +654,154 @@ PING 10.0.0.2 (10.0.0.2) from 10.0.0.1 : 56(84) bytes of data.
 
 Now the fabric underlay is properly configured, and we can proceed with EVPN service configuration!
 
+## Resulting configs
+Below you will find aggregated configuration snippets which contain the entire fabric configuration we did in the steps above. Those snippets are in the _flat_ format and were extracted with `info flat` command.
+
+!!!note
+    `enter candidate` and `commit now` commands are part of the snippets, so it is possible to paste them right after you logged into the devices as well as the changes will get commited to running config.
+
+=== "leaf1"
+    ```
+    enter candidate
+
+    # configuration of the physical interface and its subinterface
+    set / interface ethernet-1/49
+    set / interface ethernet-1/49 subinterface 0
+    set / interface ethernet-1/49 subinterface 0 ipv4
+    set / interface ethernet-1/49 subinterface 0 ipv4 address 192.168.11.1/30
+    
+    # system interface configuration
+    set / interface system0
+    set / interface system0 admin-state enable
+    set / interface system0 subinterface 0
+    set / interface system0 subinterface 0 ipv4
+    set / interface system0 subinterface 0 ipv4 address 10.0.0.1/32
+    
+    # associating interfaces with net-ins default
+    set / network-instance default
+    set / network-instance default interface ethernet-1/49.0
+    set / network-instance default interface system0.0
+
+    # routing policy
+    set / routing-policy
+    set / routing-policy policy all
+    set / routing-policy policy all default-action
+    set / routing-policy policy all default-action accept
+    
+    # BGP configuration
+    set / network-instance default protocols
+    set / network-instance default protocols bgp
+    set / network-instance default protocols bgp autonomous-system 101
+    set / network-instance default protocols bgp router-id 10.0.0.1
+    set / network-instance default protocols bgp group eBGP-underlay
+    set / network-instance default protocols bgp group eBGP-underlay export-policy all
+    set / network-instance default protocols bgp group eBGP-underlay import-policy all
+    set / network-instance default protocols bgp group eBGP-underlay peer-as 201
+    set / network-instance default protocols bgp ipv4-unicast
+    set / network-instance default protocols bgp ipv4-unicast admin-state enable
+    set / network-instance default protocols bgp neighbor 192.168.11.2
+    set / network-instance default protocols bgp neighbor 192.168.11.2 peer-group eBGP-underlay
+
+    commit now
+    ```
+=== "leaf2"
+    ```
+    enter candidate
+
+    # configuration of the physical interface and its subinterface
+    set / interface ethernet-1/49
+    set / interface ethernet-1/49 subinterface 0
+    set / interface ethernet-1/49 subinterface 0 ipv4
+    set / interface ethernet-1/49 subinterface 0 ipv4 address 192.168.12.1/30
+    
+    # system interface configuration
+    set / interface system0
+    set / interface system0 admin-state enable
+    set / interface system0 subinterface 0
+    set / interface system0 subinterface 0 ipv4
+    set / interface system0 subinterface 0 ipv4 address 10.0.0.2/32
+    
+    # associating interfaces with net-ins default
+    set / network-instance default
+    set / network-instance default interface ethernet-1/49.0
+    set / network-instance default interface system0.0
+
+    # routing policy
+    set / routing-policy
+    set / routing-policy policy all
+    set / routing-policy policy all default-action
+    set / routing-policy policy all default-action accept
+    
+    # BGP configuration
+    set / network-instance default protocols
+    set / network-instance default protocols bgp
+    set / network-instance default protocols bgp autonomous-system 102
+    set / network-instance default protocols bgp router-id 10.0.0.2
+    set / network-instance default protocols bgp group eBGP-underlay
+    set / network-instance default protocols bgp group eBGP-underlay export-policy all
+    set / network-instance default protocols bgp group eBGP-underlay import-policy all
+    set / network-instance default protocols bgp group eBGP-underlay peer-as 201
+    set / network-instance default protocols bgp ipv4-unicast
+    set / network-instance default protocols bgp ipv4-unicast admin-state enable
+    set / network-instance default protocols bgp neighbor 192.168.12.2
+    set / network-instance default protocols bgp neighbor 192.168.12.2 peer-group eBGP-underlay
+
+    commit now
+    ```
+=== "spine1"
+    ```
+    enter candidate
+
+    # configuration of the physical interface and its subinterface
+    set / interface ethernet-1/1
+    set / interface ethernet-1/1 subinterface 0
+    set / interface ethernet-1/1 subinterface 0 ipv4
+    set / interface ethernet-1/1 subinterface 0 ipv4 address 192.168.11.2/30
+    set / interface ethernet-1/2
+    set / interface ethernet-1/2 subinterface 0
+    set / interface ethernet-1/2 subinterface 0 ipv4
+    set / interface ethernet-1/2 subinterface 0 ipv4 address 192.168.12.2/30
+    
+    # system interface configuration
+    set / interface system0
+    set / interface system0 admin-state enable
+    set / interface system0 subinterface 0
+    set / interface system0 subinterface 0 ipv4
+    set / interface system0 subinterface 0 ipv4 address 10.0.1.1/32
+    
+    # associating interfaces with net-ins default
+    set / network-instance default
+    set / network-instance default interface ethernet-1/1.0
+    set / network-instance default interface ethernet-1/2.0
+    set / network-instance default interface system0.0
+
+    # routing policy
+    set / routing-policy
+    set / routing-policy policy all
+    set / routing-policy policy all default-action
+    set / routing-policy policy all default-action accept
+    
+    # BGP configuration
+    set / network-instance default protocols
+    set / network-instance default protocols bgp
+    set / network-instance default protocols bgp autonomous-system 201
+    set / network-instance default protocols bgp router-id 10.0.1.1
+    set / network-instance default protocols bgp group eBGP-underlay
+    set / network-instance default protocols bgp group eBGP-underlay export-policy all
+    set / network-instance default protocols bgp group eBGP-underlay import-policy all
+    set / network-instance default protocols bgp ipv4-unicast
+    set / network-instance default protocols bgp ipv4-unicast admin-state enable
+    set / network-instance default protocols bgp neighbor 192.168.11.1
+    set / network-instance default protocols bgp neighbor 192.168.11.1 peer-as 101
+    set / network-instance default protocols bgp neighbor 192.168.11.1 peer-group eBGP-underlay
+    set / network-instance default protocols bgp neighbor 192.168.12.1
+    set / network-instance default protocols bgp neighbor 192.168.12.1 peer-as 102
+    set / network-instance default protocols bgp neighbor 192.168.12.1 peer-group eBGP-underlay
+
+    commit now
+    ```
+
 [^1]: default SR Linux credentials are `admin:admin`.
 [^2]: the snippets were extracted with `info interface ethernet-1/x` command issued in running mode.
 [^3]: you can paste those snippets right after you do `enter candidate`
+[^4]: a more practical import/export policy would only export/import the loopback prefixes from leaf nodes. The spine nodes would export/import only the bgp-owned routes, as services are not typically present on the spines.
