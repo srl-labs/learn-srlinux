@@ -30,11 +30,19 @@ body, input {
   font-weight: 300;
 }
 
+/* colors for headings */
 .md-typeset h1, h2, h3, h4 {
   font-family: NokiaPureHeadlineLight;
   color: var(--nokia-heading-font-color)
 }
 
+/* setting the code font size a bit smaller */
 .md-typeset code {
   font-size: .8em;
 }
+
+/* need to have decide if it is better or not
+  making the content width bigger
+.md-grid {
+  max-width: 1440px;
+} */
