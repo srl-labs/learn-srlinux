@@ -71,8 +71,10 @@ plugins:
 # Customization
 extra:
   social:
+    - icon: fontawesome/brands/discord
+      link: https://discord.gg/tZvgjQ6PZf
     - icon: fontawesome/brands/github
-      link: https://github.com/hellt
+      link: https://github.com/srl-labs
     - icon: fontawesome/brands/twitter
       link: https://twitter.com/ntdvps
   analytics:
