@@ -658,7 +658,7 @@ Now the fabric underlay is properly configured, and we can proceed with EVPN ser
 Below you will find aggregated configuration snippets which contain the entire fabric configuration we did in the steps above. Those snippets are in the _flat_ format and were extracted with `info flat` command.
 
 !!!note
-    `enter candidate` and `commit now` commands are part of the snippets, so it is possible to paste them right after you logged into the devices as well as the changes will get commited to running config.
+    `enter candidate` and `commit now` commands are part of the snippets, so it is possible to paste them right after you logged into the devices as well as the changes will get committed to running config.
 
 === "leaf1"
     ```
