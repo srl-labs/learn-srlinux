@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2021-07-12T17:25:35.900Z" agent="5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36" etag="223thfcHuoFtTvarGzYC" version="14.8.5" type="github" pages="9">
+<mxfile host="app.diagrams.net" modified="2021-07-12T17:29:10.865Z" agent="5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36" etag="QxMXjkqHTlbaKLqAmX1q" version="14.8.5" type="github" pages="9">
   <diagram name="[0] fabric" id="hkG6t74379osJoYyNQbO">
     <mxGraphModel dx="574" dy="323" grid="1" gridSize="2" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="#4D5766" math="0" shadow="0">
       <root>
@@ -1090,8 +1090,8 @@
             <mxPoint x="353" y="418" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="dkakvumz7Rh2lwR49Cws-39" value="&lt;div style=&quot;font-size: 6px&quot;&gt;&lt;span style=&quot;font-size: 6px&quot;&gt;IBGP&lt;/span&gt;&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;fontSize=6;fontFamily=Fira Code;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DFira%2BCode;connectable=0;rotation=0;fillColor=#4D5766;fontColor=#BEC8D2;" vertex="1" parent="dkakvumz7Rh2lwR49Cws-1">
-          <mxGeometry x="392" y="412.5" width="24" height="11" as="geometry" />
+        <mxCell id="dkakvumz7Rh2lwR49Cws-39" value="&lt;div style=&quot;font-size: 8px;&quot;&gt;&lt;span style=&quot;font-size: 8px;&quot;&gt;IBGP&lt;/span&gt;&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;fontSize=8;fontFamily=Fira Code;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DFira%2BCode;connectable=0;rotation=0;fillColor=#4D5766;fontColor=#BEC8D2;" vertex="1" parent="dkakvumz7Rh2lwR49Cws-1">
+          <mxGeometry x="390" y="411.5" width="29" height="14" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
