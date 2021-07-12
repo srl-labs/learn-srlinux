@@ -38,20 +38,20 @@ Let's see the step by step process of an interface configuration on leaf1 with p
     ```
 2. The prompt will indicate the changed active mode
     ```
-    --{ candidate shared default }--[  ]--                                                                     
-    A:leaf1#                                                                                                   
+    --{ candidate shared default }--[  ]--
+    A:leaf1#                              
     ```
 3. Enter into the interface configuration context
     ```
-    --{ candidate shared default }--[  ]--                                                                     
-    A:leaf1# interface ethernet-1/49                                                                           
+    --{ candidate shared default }--[  ]--
+    A:leaf1# interface ethernet-1/49      
     ```
 4. Create a subinterface under the parent interface to configure IPv4 address on it
     ```
-    --{ * candidate shared default }--[ interface ethernet-1/49 ]--                                            
-    A:leaf1# subinterface 0                                                                                    
-    --{ * candidate shared default }--[ interface ethernet-1/49 subinterface 0 ]--                             
-    A:leaf1# ipv4 address 192.168.11.1/30                                                                      
+    --{ * candidate shared default }--[ interface ethernet-1/49 ]--
+    A:leaf1# subinterface 0                                        
+    --{ * candidate shared default }--[ interface ethernet-1/49 subinterface 0 ]--
+    A:leaf1# ipv4 address 192.168.11.1/30                                         
     ```
 5. Now apply the changes by issuing a `commit now` command
     ```
@@ -135,14 +135,14 @@ At this moment, the configured interfaces can not be used as they are not yet as
 
 === "spine1"
     ```
-    --{ + candidate shared default }--[  ]--                                                   
+    --{ + candidate shared default }--[  ]--                                                  
     A:spine1# network-instance default interface ethernet-1/1.0                               
     
     --{ +* candidate shared default }--[ network-instance default interface ethernet-1/1.0 ]--
-    A:spine1# /network-instance default interface ethernet-1/2.0                               
+    A:spine1# /network-instance default interface ethernet-1/2.0                              
     
     --{ +* candidate shared default }--[ network-instance default interface ethernet-1/2.0 ]--
-    A:spine2# commit now                                                                       
+    A:spine2# commit now                                                                      
     All changes have been committed. Leaving candidate mode.
     ```
 
