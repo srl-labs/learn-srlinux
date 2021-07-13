@@ -116,4 +116,89 @@ Summary:
 ```
 Right now, as we don't have any EVPN service created, there are no EVPN routes that are being sent/received, which is indicated in the last column of the table above.
 
+## Access interfaces
+Next we are configuring the interfaces from the leaf switches to the corresponding servers. According to our lab's wiring diagram, interface 1 is connected to the server on both leaf switches:
+
+<div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:6,&quot;zoom&quot;:2,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/learn-srlinux/site/diagrams/quickstart.drawio&quot;}"></div>
+
+Configuration of access interface is nothing special, we already [configured leaf-spine interfaces](fabric.md#leaf-spine-interfaces) at the fabric configuration stage, so the steps are all familiar. The only detail worth mentioning here is that we have to indicate the type of the subinterface to be [`bridged`](../basics/ifaces.md#subinterfaces), this makes the interfaces only attachable to a network instance of `mac-vrf` type with MAC learning and layer-2 forwarding enabled.
+
+The following config is applied to both leaf switches:
+
+```
+enter candidate
+    /interface ethernet-1/1 {
+        vlan-tagging true
+        subinterface 0 {
+            type bridged
+            admin-state enable
+            vlan {
+                encap {
+                    untagged {
+                    }
+                }
+            }
+        }
+    }
+commit now
+```
+
+As the config snippet shows, we are not using any VLAN classification on the subinterface, our intention is to send untagged frames from the servers.
+
+## Tunnel/VXLAN interface
+After creating the access sub-interfaces we are proceeding with creation of the VXLAN/Tunnel interfaces. The [VXLAN encapsulation](https://datatracker.ietf.org/doc/html/rfc8365#section-5) in the dataplane allows MAC-VRFs of the same BD to be connected throughout the IP fabric.
+
+The SR Linux models VXLAN as a tunnel-interface which has a vxlan-interface within. The tunnel-interface for VXLAN is configured with a name `vxlan<N>` where `N = 0..255`.
+
+A vxlan-interface is configured under a tunnel-interface. At a minimum, a vxlan-interface must have an index, type, and ingress VNI.
+
+- The index can be a number in the range 0-4294967295.
+- The type can be bridged or routed and indicates whether the vxlan-interface can be linked to a mac-vrf (bridged) or ip-vrf (routed).
+- The ingress VNI is the VXLAN Network Identifier that the system looks for in incoming VXLAN packets to classify them to this vxlan-interface and its
+network-instance. VNI can be in the range of `1..16777215`.  
+  The VNI is used to find the MAC-VRF where the inner MAC lookup is performed. The egress VNI is not configured and is determined by the imported EVPN routes.  
+  SR Linux requires that the egress VNI (discovered) matches the configured ingress VNI so that two leaf routers attached to the same BD can exchange packets.
+
+!!!note
+    The source IP used in the vxlan-interfaces is the IPv4 address of subinterface `system0.0` in the default network-instance.
+
+The above information translates to a configuration snippet which is applicable both to `leaf1` and `leaf2` nodes.
+
+```
+enter candidate
+    /tunnel-interface vxlan1 {
+        vxlan-interface 1 {
+            type bridged
+            ingress {
+                vni 1
+            }
+        }
+    }
+commit now
+```
+
+To verify the tunnel interface configuration:
+```
+A:leaf2# show tunnel-interface vxlan-interface brief
+---------------------------------------------------------------------------------
+Show report for vxlan-tunnels
+---------------------------------------------------------------------------------
++------------------+-----------------+---------+-------------+------------------+
+| Tunnel Interface | VxLAN Interface |  Type   | Ingress VNI | Egress source-ip |
++==================+=================+=========+=============+==================+
+| vxlan1           | vxlan1.1        | bridged | 1           | 10.0.0.2/32      |
++------------------+-----------------+---------+-------------+------------------+
+---------------------------------------------------------------------------------
+Summary
+  1 tunnel-interfaces, 1 vxlan interfaces
+  0 vxlan-destinations, 0 unicast, 0 es, 0 multicast, 0 ip
+---------------------------------------------------------------------------------
+```
+
+## MAC-VRF
+Now it is a turn of MAC-VRF to get configured.
+
+The network-instance type `mac-vrf` functions as a broadcast domain. Each mac-vrf network-instance builds a bridge table composed of MAC addresses that can be learned via the data path on network-instance interfaces or via static configuration.
+
+
 [^1]: as was verified [before](fabric.md#dataplane)

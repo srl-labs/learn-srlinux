@@ -71,3 +71,13 @@ classes or remarking traffic at egress before it leaves the router. DSCP classif
 policies map incoming packets to the appropriate forwarding classes, and DSCP
 rewrite-rule policies mark outgoing packets with an appropriate DSCP value based
 on the forwarding class
+
+SR Linux subinterfaces can be specified as type routed or bridged:
+
+* Routed subinterfaces can be assigned to a network-instance of type mgmt,
+default, or ip-vrf.
+* Bridged subinterfaces can be assigned to a network-instance of type mac-vrf.
+
+Routed subinterfaces allow for configuration of IPv4 and IPv6 settings, and bridged
+subinterfaces allow for configuration of bridge table and VLAN ingress/egress
+mapping.
