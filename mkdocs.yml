@@ -8,10 +8,11 @@ nav:
       - Configuration management: basics/cfgmgmt.md
       - Interfaces: basics/ifaces.md
       - Network instances: basics/netwinstance.md
-  - EVPN Quickstart Guide:
-      - Introduction: evpn-quickstart/intro.md
-      - Fabric configuration: evpn-quickstart/fabric.md
-      - EVPN configuration: evpn-quickstart/evpn.md
+  - Tutorials:
+      - Layer 2 EVPN:
+          - Introduction: tutorials/l2evpn/intro.md
+          - Fabric configuration: tutorials/l2evpn/fabric.md
+          - EVPN configuration: tutorials/l2evpn/evpn.md
   - Always-ON SR Linux: alwayson.md
 
 site_author: SR Linux

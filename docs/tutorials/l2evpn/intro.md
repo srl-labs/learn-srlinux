@@ -102,7 +102,7 @@ ssh admin@clab-evpn01-leaf1
 With the lab deployed we are ready to embark on our learn-by-doing EVPN configuration journey!
 
 !!!note
-    We advise the newcomers not to skip the next stop at [SR Linux basic concepts](../basics/hwtypes.md) as it provides just enough[^2] details to survive in the configuration waters we are about to get.
+    We advise the newcomers not to skip the next stop at [SR Linux basic concepts](../../basics/hwtypes.md) as it provides just enough[^2] details to survive in the configuration waters we are about to get.
 
 [topofile]: https://github.com/learn-srlinux/site/blob/master/labs/evpn01.clab.yml
 
