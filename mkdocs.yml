@@ -9,6 +9,7 @@ nav:
       - Interfaces: basics/ifaces.md
       - Network instances: basics/netwinstance.md
   - Tutorials:
+      - SR Linux tutorials: tutorials/about.md
       - Layer 2 EVPN:
           - Introduction: tutorials/l2evpn/intro.md
           - Fabric configuration: tutorials/l2evpn/fabric.md
