@@ -39,6 +39,7 @@ theme:
     - navigation.top
     - navigation.instant
     - navigation.tracking
+    - navigation.tabs
     # - toc.integrate
 
   language: en
