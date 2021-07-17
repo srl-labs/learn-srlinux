@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2021-07-13T18:06:36.316Z" agent="5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36" etag="bwgoiQQgKp6h7tHHVH6w" version="14.8.5" type="github" pages="11">
+<mxfile host="app.diagrams.net" modified="2021-07-17T20:09:17.071Z" agent="5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36" etag="cj5fcRW4l3YtWt9UVXin" version="14.8.5" type="github" pages="12">
   <diagram name="[0] fabric" id="hkG6t74379osJoYyNQbO">
     <mxGraphModel dx="574" dy="323" grid="1" gridSize="2" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="#4D5766" math="0" shadow="0">
       <root>
@@ -1251,7 +1251,7 @@
     </mxGraphModel>
   </diagram>
   <diagram name="[7] srv ifaces addr" id="rarEPTFEo-uitKp5cM6U">
-    <mxGraphModel dx="277" dy="156" grid="1" gridSize="2" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="#4D5766" math="0" shadow="0">
+    <mxGraphModel dx="826" dy="464" grid="1" gridSize="2" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="#4D5766" math="0" shadow="0">
       <root>
         <mxCell id="bD8XbOGkHtyAxIdbX0mz-0" />
         <mxCell id="bD8XbOGkHtyAxIdbX0mz-1" parent="bD8XbOGkHtyAxIdbX0mz-0" />
@@ -1354,6 +1354,138 @@
         </mxCell>
         <mxCell id="OVxJpK1y0xbwSBPhF3vo-14" value="eth1" style="rounded=0;whiteSpace=wrap;html=1;fontSize=8;align=center;fontFamily=Manrope;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DManrope;fontColor=#FFFFFF;fillColor=#98A2AE;rotation=0;strokeColor=none;horizontal=0;verticalAlign=middle;spacing=0;" vertex="1" parent="OVxJpK1y0xbwSBPhF3vo-12">
           <mxGeometry width="16.5" height="28" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram name="[8] vxlan tunnel" id="p021QkhxlLCjBpWUQJ-N">
+    <mxGraphModel dx="984" dy="553" grid="1" gridSize="2" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="#4D5766" math="0" shadow="0">
+      <root>
+        <mxCell id="E98vTd-C2dTbT_glgBiZ-0" />
+        <mxCell id="E98vTd-C2dTbT_glgBiZ-1" parent="E98vTd-C2dTbT_glgBiZ-0" />
+        <mxCell id="E98vTd-C2dTbT_glgBiZ-2" value="" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;align=center;fontFamily=Manrope;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DManrope;fontColor=#FFFFFF;dashed=1;strokeColor=none;fillColor=#DDE9F5;" vertex="1" parent="E98vTd-C2dTbT_glgBiZ-1">
+          <mxGeometry x="219" y="484" width="151" height="37" as="geometry" />
+        </mxCell>
+        <mxCell id="E98vTd-C2dTbT_glgBiZ-3" value="&lt;span style=&quot;font-size: 10px;&quot;&gt;srv1&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontSize=10;align=center;fontFamily=Manrope;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DManrope;dashed=1;strokeColor=none;fillColor=#98A2AE;fontColor=#FFFFFF;" vertex="1" parent="E98vTd-C2dTbT_glgBiZ-1">
+          <mxGeometry x="219" y="521" width="151" height="14" as="geometry" />
+        </mxCell>
+        <mxCell id="E98vTd-C2dTbT_glgBiZ-4" value="" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;align=center;fontFamily=Manrope;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DManrope;fontColor=#FFFFFF;dashed=1;strokeColor=none;fillColor=#DDE9F5;" vertex="1" parent="E98vTd-C2dTbT_glgBiZ-1">
+          <mxGeometry x="406" y="484" width="151" height="37" as="geometry" />
+        </mxCell>
+        <mxCell id="E98vTd-C2dTbT_glgBiZ-5" value="&lt;span style=&quot;font-size: 10px&quot;&gt;srv2&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontSize=10;align=center;fontFamily=Manrope;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DManrope;dashed=1;strokeColor=none;fillColor=#98A2AE;fontColor=#FFFFFF;" vertex="1" parent="E98vTd-C2dTbT_glgBiZ-1">
+          <mxGeometry x="406" y="521" width="151" height="14" as="geometry" />
+        </mxCell>
+        <mxCell id="E98vTd-C2dTbT_glgBiZ-6" value="" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;align=center;fontFamily=Manrope;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DManrope;fontColor=#FFFFFF;dashed=1;strokeColor=none;fillColor=#273142;" vertex="1" parent="E98vTd-C2dTbT_glgBiZ-1">
+          <mxGeometry x="219" y="354" width="151" height="92" as="geometry" />
+        </mxCell>
+        <mxCell id="E98vTd-C2dTbT_glgBiZ-7" value="&lt;span style=&quot;font-size: 10px&quot;&gt;leaf1&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontSize=10;align=center;fontFamily=Manrope;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DManrope;dashed=1;strokeColor=none;fontColor=#FFFFFF;fillColor=#001135;" vertex="1" parent="E98vTd-C2dTbT_glgBiZ-1">
+          <mxGeometry x="219" y="340" width="151" height="14" as="geometry" />
+        </mxCell>
+        <mxCell id="E98vTd-C2dTbT_glgBiZ-8" value="&lt;p style=&quot;line-height: 60%&quot;&gt;&lt;br&gt;&lt;/p&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;align=left;strokeColor=none;fontFamily=Manrope;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DManrope;fontColor=#DDE9F5;fillColor=#BEC8D2;" vertex="1" parent="E98vTd-C2dTbT_glgBiZ-1">
+          <mxGeometry x="241.5" y="368" width="122.5" height="47" as="geometry" />
+        </mxCell>
+        <mxCell id="E98vTd-C2dTbT_glgBiZ-9" value="vrf-1&lt;br style=&quot;font-size: 8px&quot;&gt;&lt;font style=&quot;font-size: 6px&quot;&gt;&lt;font color=&quot;#bec8d2&quot;&gt;type:&lt;/font&gt; mac-vrf&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontSize=8;align=center;fontFamily=Manrope;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DManrope;fontColor=#FFFFFF;fillColor=#98A2AE;rotation=0;strokeColor=none;horizontal=0;verticalAlign=middle;spacing=0;" vertex="1" parent="E98vTd-C2dTbT_glgBiZ-1">
+          <mxGeometry x="221" y="368" width="20.5" height="47" as="geometry" />
+        </mxCell>
+        <mxCell id="E98vTd-C2dTbT_glgBiZ-10" value="Int 1" style="rounded=0;whiteSpace=wrap;html=1;fontSize=8;align=center;fontFamily=Manrope;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DManrope;fontColor=#FFFFFF;fillColor=#98A2AE;rotation=90;strokeColor=none;horizontal=0;verticalAlign=middle;spacing=0;" vertex="1" parent="E98vTd-C2dTbT_glgBiZ-1">
+          <mxGeometry x="288.5" y="418.97" width="12" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="E98vTd-C2dTbT_glgBiZ-11" value="SubInt 0" style="rounded=0;whiteSpace=wrap;html=1;fontSize=8;align=center;fontFamily=Manrope;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DManrope;fontColor=#FFFFFF;fillColor=#98A2AE;rotation=90;strokeColor=none;horizontal=0;verticalAlign=middle;spacing=0;" vertex="1" parent="E98vTd-C2dTbT_glgBiZ-1">
+          <mxGeometry x="288.75" y="388.25" width="12" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="E98vTd-C2dTbT_glgBiZ-12" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startSize=6;endArrow=none;endFill=0;endSize=2;fontFamily=Manrope;fontSize=8;strokeColor=#98A2AE;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DManrope;entryX=0.93;entryY=0.514;entryDx=0;entryDy=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryPerimeter=0;dashed=1;" edge="1" parent="E98vTd-C2dTbT_glgBiZ-1" source="E98vTd-C2dTbT_glgBiZ-10" target="E98vTd-C2dTbT_glgBiZ-11">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="322" y="465" as="sourcePoint" />
+            <mxPoint x="322.0000000000001" y="441" as="targetPoint" />
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="E98vTd-C2dTbT_glgBiZ-13" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startSize=2;endArrow=oval;endFill=1;endSize=2;fontFamily=Manrope;fontSize=8;strokeColor=#98A2AE;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DManrope;entryX=0.434;entryY=0.013;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryPerimeter=0;startArrow=oval;startFill=1;" edge="1" parent="E98vTd-C2dTbT_glgBiZ-1" source="E98vTd-C2dTbT_glgBiZ-10" target="E98vTd-C2dTbT_glgBiZ-15">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="296.495" y="428.6250000000001" as="sourcePoint" />
+            <mxPoint x="296.2600000000001" y="412.735" as="targetPoint" />
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="E98vTd-C2dTbT_glgBiZ-14" value="" style="group;spacing=0;" vertex="1" connectable="0" parent="E98vTd-C2dTbT_glgBiZ-1">
+          <mxGeometry x="225" y="488" width="139" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="E98vTd-C2dTbT_glgBiZ-15" value="&lt;p style=&quot;line-height: 60%&quot;&gt;&lt;font style=&quot;font-size: 8px ; line-height: 8px&quot; color=&quot;#98a2ae&quot;&gt;IPv4:&lt;/font&gt;&lt;span style=&quot;font-size: 8px ; color: rgb(255 , 255 , 255)&quot;&gt;&amp;nbsp;&lt;/span&gt;&lt;font face=&quot;Fira Code&quot; data-font-src=&quot;https://fonts.googleapis.com/css?family=Fira+Code&quot; style=&quot;font-size: 8px&quot;&gt;&lt;font color=&quot;#ffffff&quot;&gt;192.168.0.1/24&lt;/font&gt;&lt;br&gt;&lt;span style=&quot;color: rgb(255 , 255 , 255) ; font-family: &amp;#34;manrope&amp;#34;&quot;&gt;&lt;font color=&quot;#98a2ae&quot;&gt;MAC:&lt;/font&gt;&amp;nbsp;&lt;/span&gt;&lt;font face=&quot;Fira Code&quot; data-font-src=&quot;https://fonts.googleapis.com/css?family=Fira+Code&quot; color=&quot;#ffffff&quot;&gt;00:C1:AB:00:00:01&lt;/font&gt;&lt;/font&gt;&lt;/p&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;align=left;strokeColor=none;fontFamily=Manrope;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DManrope;fontColor=#DDE9F5;fillColor=#BEC8D2;" vertex="1" parent="E98vTd-C2dTbT_glgBiZ-14">
+          <mxGeometry x="16.5" width="122.5" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="E98vTd-C2dTbT_glgBiZ-16" value="eth1" style="rounded=0;whiteSpace=wrap;html=1;fontSize=8;align=center;fontFamily=Manrope;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DManrope;fontColor=#FFFFFF;fillColor=#98A2AE;rotation=0;strokeColor=none;horizontal=0;verticalAlign=middle;spacing=0;" vertex="1" parent="E98vTd-C2dTbT_glgBiZ-14">
+          <mxGeometry width="16.5" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="E98vTd-C2dTbT_glgBiZ-17" value="vxlan 1.1" style="rounded=0;whiteSpace=wrap;html=1;fontSize=8;align=center;fontFamily=Manrope;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DManrope;fontColor=#FFFFFF;rotation=90;strokeColor=none;horizontal=0;verticalAlign=middle;spacing=0;fillColor=#001135;" vertex="1" parent="E98vTd-C2dTbT_glgBiZ-1">
+          <mxGeometry x="288.75" y="363.64" width="12" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="E98vTd-C2dTbT_glgBiZ-18" value="" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;align=center;fontFamily=Manrope;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DManrope;fontColor=#FFFFFF;dashed=1;strokeColor=none;fillColor=#273142;" vertex="1" parent="E98vTd-C2dTbT_glgBiZ-1">
+          <mxGeometry x="406" y="354" width="151" height="91.64" as="geometry" />
+        </mxCell>
+        <mxCell id="E98vTd-C2dTbT_glgBiZ-19" value="&lt;span style=&quot;font-size: 10px&quot;&gt;leaf2&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontSize=10;align=center;fontFamily=Manrope;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DManrope;dashed=1;strokeColor=none;fontColor=#FFFFFF;fillColor=#001135;" vertex="1" parent="E98vTd-C2dTbT_glgBiZ-1">
+          <mxGeometry x="406" y="340" width="151" height="14" as="geometry" />
+        </mxCell>
+        <mxCell id="E98vTd-C2dTbT_glgBiZ-20" value="&lt;p style=&quot;line-height: 60%&quot;&gt;&lt;br&gt;&lt;/p&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;align=left;strokeColor=none;fontFamily=Manrope;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DManrope;fontColor=#DDE9F5;fillColor=#BEC8D2;" vertex="1" parent="E98vTd-C2dTbT_glgBiZ-1">
+          <mxGeometry x="428.5" y="367.64" width="122.5" height="47" as="geometry" />
+        </mxCell>
+        <mxCell id="E98vTd-C2dTbT_glgBiZ-21" value="vrf-1&lt;br style=&quot;font-size: 8px&quot;&gt;&lt;font style=&quot;font-size: 6px&quot;&gt;&lt;font color=&quot;#bec8d2&quot;&gt;type:&lt;/font&gt; mac-vrf&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontSize=8;align=center;fontFamily=Manrope;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DManrope;fontColor=#FFFFFF;fillColor=#98A2AE;rotation=0;strokeColor=none;horizontal=0;verticalAlign=middle;spacing=0;" vertex="1" parent="E98vTd-C2dTbT_glgBiZ-1">
+          <mxGeometry x="408" y="367.64" width="20.5" height="47" as="geometry" />
+        </mxCell>
+        <mxCell id="E98vTd-C2dTbT_glgBiZ-22" value="Int 1" style="rounded=0;whiteSpace=wrap;html=1;fontSize=8;align=center;fontFamily=Manrope;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DManrope;fontColor=#FFFFFF;fillColor=#98A2AE;rotation=90;strokeColor=none;horizontal=0;verticalAlign=middle;spacing=0;" vertex="1" parent="E98vTd-C2dTbT_glgBiZ-1">
+          <mxGeometry x="475.5" y="418.61" width="12" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="E98vTd-C2dTbT_glgBiZ-23" value="SubInt 0" style="rounded=0;whiteSpace=wrap;html=1;fontSize=8;align=center;fontFamily=Manrope;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DManrope;fontColor=#FFFFFF;fillColor=#98A2AE;rotation=90;strokeColor=none;horizontal=0;verticalAlign=middle;spacing=0;" vertex="1" parent="E98vTd-C2dTbT_glgBiZ-1">
+          <mxGeometry x="475.75" y="387.89" width="12" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="E98vTd-C2dTbT_glgBiZ-24" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startSize=6;endArrow=none;endFill=0;endSize=2;fontFamily=Manrope;fontSize=8;strokeColor=#98A2AE;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DManrope;entryX=0.93;entryY=0.514;entryDx=0;entryDy=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryPerimeter=0;dashed=1;" edge="1" parent="E98vTd-C2dTbT_glgBiZ-1" source="E98vTd-C2dTbT_glgBiZ-22" target="E98vTd-C2dTbT_glgBiZ-23">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="509" y="464.64" as="sourcePoint" />
+            <mxPoint x="509.0000000000001" y="440.64" as="targetPoint" />
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="E98vTd-C2dTbT_glgBiZ-25" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startSize=2;endArrow=oval;endFill=1;endSize=2;fontFamily=Manrope;fontSize=8;strokeColor=#98A2AE;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DManrope;entryX=0.434;entryY=0.013;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryPerimeter=0;startArrow=oval;startFill=1;" edge="1" parent="E98vTd-C2dTbT_glgBiZ-1" source="E98vTd-C2dTbT_glgBiZ-22">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="483.495" y="428.2650000000001" as="sourcePoint" />
+            <mxPoint x="481.6650000000001" y="488.0039999999999" as="targetPoint" />
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="E98vTd-C2dTbT_glgBiZ-26" value="vxlan 1.1" style="rounded=0;whiteSpace=wrap;html=1;fontSize=8;align=center;fontFamily=Manrope;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DManrope;fontColor=#FFFFFF;rotation=90;strokeColor=none;horizontal=0;verticalAlign=middle;spacing=0;fillColor=#001135;" vertex="1" parent="E98vTd-C2dTbT_glgBiZ-1">
+          <mxGeometry x="475.75" y="363.64" width="12" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="E98vTd-C2dTbT_glgBiZ-27" value="" style="group;spacing=0;" vertex="1" connectable="0" parent="E98vTd-C2dTbT_glgBiZ-1">
+          <mxGeometry x="412" y="488" width="139" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="E98vTd-C2dTbT_glgBiZ-28" value="&lt;p style=&quot;line-height: 60%&quot;&gt;&lt;font style=&quot;font-size: 8px ; line-height: 8px&quot; color=&quot;#98a2ae&quot;&gt;IPv4:&lt;/font&gt;&lt;span style=&quot;font-size: 8px ; color: rgb(255 , 255 , 255)&quot;&gt;&amp;nbsp;&lt;/span&gt;&lt;font face=&quot;Fira Code&quot; data-font-src=&quot;https://fonts.googleapis.com/css?family=Fira+Code&quot; style=&quot;font-size: 8px&quot;&gt;&lt;font color=&quot;#ffffff&quot;&gt;192.168.0.2/24&lt;/font&gt;&lt;br&gt;&lt;span style=&quot;color: rgb(255 , 255 , 255) ; font-family: &amp;#34;manrope&amp;#34;&quot;&gt;&lt;font color=&quot;#98a2ae&quot;&gt;MAC:&lt;/font&gt;&amp;nbsp;&lt;/span&gt;&lt;font face=&quot;Fira Code&quot; data-font-src=&quot;https://fonts.googleapis.com/css?family=Fira+Code&quot; color=&quot;#ffffff&quot;&gt;00:C1:AB:00:00:02&lt;/font&gt;&lt;/font&gt;&lt;/p&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;align=left;strokeColor=none;fontFamily=Manrope;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DManrope;fontColor=#DDE9F5;fillColor=#BEC8D2;" vertex="1" parent="E98vTd-C2dTbT_glgBiZ-27">
+          <mxGeometry x="16.5" width="122.5" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="E98vTd-C2dTbT_glgBiZ-29" value="eth1" style="rounded=0;whiteSpace=wrap;html=1;fontSize=8;align=center;fontFamily=Manrope;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DManrope;fontColor=#FFFFFF;fillColor=#98A2AE;rotation=0;strokeColor=none;horizontal=0;verticalAlign=middle;spacing=0;" vertex="1" parent="E98vTd-C2dTbT_glgBiZ-27">
+          <mxGeometry width="16.5" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="E98vTd-C2dTbT_glgBiZ-30" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startSize=1;endArrow=oval;endFill=1;endSize=1;fontFamily=Manrope;fontSize=8;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DManrope;entryX=-0.057;entryY=0.122;entryDx=0;entryDy=0;startArrow=oval;startFill=1;exitX=0.01;exitY=0.889;exitDx=0;exitDy=0;strokeColor=#00C9FF;strokeWidth=3;entryPerimeter=0;exitPerimeter=0;" edge="1" parent="E98vTd-C2dTbT_glgBiZ-1" source="E98vTd-C2dTbT_glgBiZ-26" target="E98vTd-C2dTbT_glgBiZ-17">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="444" y="332" as="sourcePoint" />
+            <mxPoint x="384.16499999999996" y="323.894" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="430" y="314" />
+              <mxPoint x="340" y="314" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="E98vTd-C2dTbT_glgBiZ-31" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startSize=1;endArrow=oval;endFill=1;endSize=1;fontFamily=Manrope;fontSize=8;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DManrope;entryX=0;entryY=0.5;entryDx=0;entryDy=0;startArrow=oval;startFill=1;exitX=0;exitY=0.75;exitDx=0;exitDy=0;strokeWidth=3;strokeColor=#00C9FF;" edge="1" parent="E98vTd-C2dTbT_glgBiZ-1" target="E98vTd-C2dTbT_glgBiZ-17">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="480.25" y="375.14" as="sourcePoint" />
+            <mxPoint x="302.0000000000001" y="375.14" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="434" y="304" />
+              <mxPoint x="384" y="304" />
+              <mxPoint x="332" y="304" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="E98vTd-C2dTbT_glgBiZ-32" value="&lt;font color=&quot;#001135&quot; style=&quot;font-size: 10px&quot;&gt;Fabric&lt;/font&gt;" style="html=1;fillColor=#f5f5f5;strokeColor=#b1b3b3;gradientDirection=north;strokeWidth=1;shape=mxgraph.networks.cloud;fontColor=#ffffff;align=center;perimeterSpacing=0;fontFamily=Manrope;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DManrope;" vertex="1" parent="E98vTd-C2dTbT_glgBiZ-1">
+          <mxGeometry x="348" y="288" width="76" height="34" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
