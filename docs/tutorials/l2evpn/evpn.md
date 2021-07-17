@@ -355,7 +355,7 @@ The IMET route is advertised as soon as bgp-evpn is enabled in the MAC-VRF; it h
 * Auto-discovery of the remote VTEPs attached to the same EVI
 * Creation of a default flooding list in the MAC-VRF so that BUM frames are replicated
 
-The RT3 routes can be viewed in summary and detailed modes:
+The IMET/RT3 routes can be viewed in summary and detailed modes:
 
 === "RT3 summary"
     ```
@@ -405,8 +405,15 @@ The RT3 routes can be viewed in summary and detailed modes:
     --------------------------------------------------------------------------------------
     ```
 
+???info "Lets catch those routes?"
+    Since our lab is launched with containerlab, we can leverage the transparent sniffing of packets that [it offers](https://containerlab.srlinux.dev/manual/wireshark/).
+
+    By capturing on the `e1-49` interface of the `clab-evpn01-leaf1` container, we are able to collect all the packets that are flowing between the nodes. Then we simply flap the EVPN instance in the `vrf-1` network instance to trigger the BGP updates to flow and see them in the live capture.
+
+    [Here is](https://github.com/learn-srlinux/site/blob/master/docs/tutorials/l2evpn/evpn01-imet-routes.pcapng) the pcap file with the IMET routes advertisements between `leaf1` and `leaf2`.
+
 ### VXLAN tunnels
-After receiving EVPN routes from the remote leafs with VXLAN encapsulation, SR Linux creates VTEPs from the EVPN routes next-hops. The state of the two only remote VTEP we have in our lab is shown below from the `leaf1` switch.
+After receiving EVPN routes from the remote leafs with VXLAN encapsulation[^4], SR Linux creates VTEPs from the EVPN routes next-hops. The state of the two only remote VTEP we have in our lab is shown below from the `leaf1` switch.
 
 ```
 A:leaf1# /show tunnel vxlan-tunnel all
@@ -441,3 +448,4 @@ Show report for network instance "default" tunnel table
 [^1]: as was verified [before](fabric.md#dataplane)
 [^2]: containerlab assigns mac addresses to the interfaces with OUI `00:C1:AB`. We are changing the generated MAC with a more recognizable address, since we want to easily identify MACs in the bridge tables.
 [^3]: If the next hop is not resolved to a route in the default network-instance route-table, the index in the vxlan-tunnel table shows as “0” for the VTEP and no tunnel-table is created.
+[^4]: IMET routes have extended community that conveys the encapsulation type. And for VXLAN EVPN it states VXLAN encap. Check [pcap](https://github.com/learn-srlinux/site/blob/master/docs/tutorials/l2evpn/evpn01-imet-routes.pcapng) for reference.
