@@ -347,7 +347,14 @@ For your convenience, in case you want to jump over the config routines and star
                     }
                 }
             }
-
+            /tunnel-interface vxlan1 {
+                vxlan-interface 1 {
+                    type bridged
+                    ingress {
+                        vni 1
+                    }
+                }
+            }
             /network-instance default {
                 interface ethernet-1/49.0 {
                 }
@@ -464,7 +471,14 @@ For your convenience, in case you want to jump over the config routines and star
                     }
                 }
             }
-
+            /tunnel-interface vxlan1 {
+                vxlan-interface 1 {
+                    type bridged
+                    ingress {
+                        vni 1
+                    }
+                }
+            }
             /network-instance default {
                 interface ethernet-1/49.0 {
                 }
@@ -775,14 +789,13 @@ Show report for network instance "default" tunnel table
 1 VXLAN tunnels, 1 active, 0 inactive
 ```
 
-### Multicast and uniscast destinations
+### Multicast and unicast destinations
 When the IMET routes from `leaf2` are imported for `vrf-1` network-instance, the
 corresponding multicast VXLAN destinations are added and can be checked with the
 following command:
 
 ```
-A:leaf1# show tunnel-interface vxlan1 vxlan-interface 1 bridge-table multicast-
-destinations destination *
+A:leaf1# show tunnel-interface vxlan1 vxlan-interface 1 bridge-table multicast-destinations destination *
 -------------------------------------------------------------------------------
 Show report for vxlan-interface vxlan1.1 multicast destinations (flooding-list)
 -------------------------------------------------------------------------------
@@ -928,7 +941,12 @@ Summary
 !!!tip "packet capture"
     [The following pcap](https://github.com/learn-srlinux/site/blob/master/docs/tutorials/l2evpn/evpn01-macip-routes.pcapng) was captured a moment before `srv1` started to ping `srv2` on `leaf1` interface `e1-49`.
 
-    It shows how ARP frames were first exchanged using the multicast destination, then the MAC/IP EVPN routes were exchanged triggered by the MACs being learned in the dataplane.
+    It shows how:
+
+    1. ARP frames were first exchanged using the multicast destination, 
+    2. next the first ICMP request was sent out by `leaf1` again using the BUM destination, since RT2 routes were not received yet 
+    3. and then the MAC/IP EVPN routes were exchanged triggered by the MACs being learned in the dataplane.
+    4. after that event, the ICMP Requests and replies were using the unicast destinations, which were created after receiving the MAC/IP EVPN routes.
 
 This concludes the verification steps, as we have a working data plane connectivity between the servers.
 
@@ -938,5 +956,5 @@ This concludes the verification steps, as we have a working data plane connectiv
 [^3]: If the next hop is not resolved to a route in the default network-instance route-table, the index in the vxlan-tunnel table shows as “0” for the VTEP and no tunnel-table is created.
 [^4]: IMET routes have extended community that conveys the encapsulation type. And for VXLAN EVPN it states VXLAN encap. Check [pcap](https://github.com/learn-srlinux/site/blob/master/docs/tutorials/l2evpn/evpn01-imet-routes.pcapng) for reference.
 [^5]: Per [section 5.1.2 of RFC 8365](https://datatracker.ietf.org/doc/html/rfc8365#section-5.1.2)
-[^6]: Easily extracted with doing `info <container>` where `container` is `routing-policy`, `network-instance *`, `interface *`
+[^6]: Easily extracted with doing `info <container>` where `container` is `routing-policy`, `network-instance *`, `interface *`, `tunnel-interface *`
 [^7]: We did try to ping from `srv1` to `srv2` in [server interfaces](#server-interfaces) section which triggered MAC-VRF to insert a locally learned MAC into its MAC table, but since then this mac has aged out, and thus the table is empty again.

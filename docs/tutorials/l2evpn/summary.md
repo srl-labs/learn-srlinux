@@ -8,9 +8,9 @@ The highly detailed configuration & verification steps helped us achieve the goa
 
 <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:9,&quot;zoom&quot;:4,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/learn-srlinux/site/diagrams/quickstart.drawio&quot;}"></div>
 
-The more advanced EVPN topics listed below we will cover in separate tutorials:
+The more advanced EVPN topics listed below will be covered in separate tutorials:
 
-* EVPN L2 multihoming
+* EVPN L2 multi-homing
 * MAC mobility
 * MAC duplication and loop protection
 
