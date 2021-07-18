@@ -1,7 +1,7 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/hellt/drawio-js@main/embed2.js" async></script>
 
 Ethernet Virtual Private Network (EVPN) is a standard technology in multi-tenant Data Centers (DCs) and provides a control plane framework for many functions.  
-In this tutorial we will configure a **VXLAN based Layer 2 EVPN service** in a tiny CLOS fabric and at the same get to know SR Linux better!
+In this tutorial we will configure a **VXLAN based Layer 2 EVPN service**[^5] in a tiny CLOS fabric and at the same get to know SR Linux better!
 
 The DC fabric that we will build consists of the two leaf switches (acting as TOR) and a single spine:
 
@@ -110,3 +110,4 @@ With the lab deployed we are ready to embark on our learn-by-doing EVPN configur
 [^2]: For a complete documentation coverage don't hesitate to visit our [documentation portal](https://bit.ly/iondoc).
 [^3]: the following versions have been used to create this tutorial. The newer versions might work, but if they pin the version to the mentioned ones.
 [^4]: Or download it with `curl -LO https://github.com/learn-srlinux/site/blob/master/labs/evpn01.clab.yml`
+[^5]: Per [RFC 8365](https://datatracker.ietf.org/doc/html/rfc8365) & [RFC 7432](https://datatracker.ietf.org/doc/html/rfc7432)
