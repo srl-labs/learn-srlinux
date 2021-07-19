@@ -1,7 +1,7 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/hellt/drawio-js@main/embed2.js" async></script>
-As promised in the [introduction](intro.md), we are about to start configuring the EVPN service in our fabric to let the servers talk to each other as if they were on the same Layer 2 network. But prior to configuring EVPN based overlay, a routing protocol needs to be configured in the fabric to dynamically discover and advertise the reachability of all the leaf VXLAN Termination End Point (VTEP) addresses throughout the IP fabric.
+Prior to configuring EVPN based overlay, a routing protocol needs to be deployed in the fabric to advertise the reachability of all the leaf VXLAN Termination End Point (VTEP) addresses throughout the IP fabric.
 
-With SR Linux, the following routing protocols can be used in the underlay: 
+With SR Linux, the following routing protocols can be used in the underlay:
 
 * ISIS
 * OSPF
@@ -10,7 +10,7 @@ With SR Linux, the following routing protocols can be used in the underlay:
 We will use a BGP based fabric design as described in [RFC7938](https://tools.ietf.org/html/rfc7938) due to its simplicity, scalability, and ease of multi-vendor interoperability.
 
 ## Leaf-Spine interfaces
-Let's start with configuring the IP interfaces on the inter-switch links to ensure L3 connectivity is established. According to our lab topology configuration, and using the `192.168.xx.0/30` network to address the links, we will move towards the following underlay addressing design:
+Let's start with configuring the IP interfaces on the inter-switch links to ensure L3 connectivity is established. According to our lab topology configuration, and using the `192.168.xx.0/30` network to address the links, we will implement the following underlay addressing design:
 
 <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:2,&quot;zoom&quot;:2,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/learn-srlinux/site/diagrams/quickstart.drawio&quot;}"></div>
 
@@ -20,14 +20,14 @@ We begin with connecting to the CLI of our nodes via SSH[^1]:
 
 ```bash
 # connecting to leaf1
-ssh admin@clab-quickstart-leaf1
+ssh admin@clab-evpn01-leaf1
 ```
 
 Then on each node we enter into [candidate configuration mode](../../basics/cfgmgmt.md#configuration-modes) and proceed with the relevant interfaces configuration.
 
-Let's see the step by step process of an interface configuration on leaf1 with providing the paste-ables snippets for the rest of the nodes
+Let's witness the step by step process of an interface configuration on a `leaf1` switch with providing the paste-ables snippets for the rest of the nodes
 
-1. Enter the candidate configuration mode to make edits
+1. Enter the `candidate` configuration mode to make edits to the configuration
     ```
     Welcome to the srlinux CLI.
     Type 'help' (and press <ENTER>) if you need any help using this.
@@ -53,7 +53,7 @@ Let's see the step by step process of an interface configuration on leaf1 with p
     --{ * candidate shared default }--[ interface ethernet-1/49 subinterface 0 ]--
     A:leaf1# ipv4 address 192.168.11.1/30                                         
     ```
-5. Now apply the changes by issuing a `commit now` command
+5. Apply the configuration changes by issuing a `commit now` command. The changes will be written to the running configuration.
     ```
     --{ * candidate shared default }--[ interface ethernet-1/49 subinterface 0 ipv4 address 192.168.11.1/30 ]--
     A:leaf1# commit now                                                                                        
@@ -105,7 +105,7 @@ Below you will find the relevant configuration snippets[^2] for leafs and spine 
     }
     ```
 
-Once those snippets are committed to the running configuration with `commit now` command, we can ensure that the changes have been applied:
+Once those snippets are committed to the running configuration with `commit now` command, we can ensure that the changes have been applied by showing the interface status:
 
 ```
 --{ + running }--[  ]--                             
@@ -121,7 +121,7 @@ ethernet-1/1 is up, speed 10G, type None
 ====================================================
 ```
 
-At this moment, the configured interfaces can not be used as they are not yet associated with any [network instance](../../basics/netwinstance.md). Below we are placing the interfaces to the network-instance `default` that is created automatically created by SR Linux.
+At this moment, the configured interfaces can not be used as they are not yet associated with any [network instance](../../basics/netwinstance.md). Below we are placing the interfaces to the network-instance `default` that is created automatically by SR Linux.
 
 === "leaf1 & leaf2"
     ```
@@ -146,7 +146,7 @@ At this moment, the configured interfaces can not be used as they are not yet as
     All changes have been committed. Leaving candidate mode.
     ```
 
-When interfaces are owned by the network-instance default, we can ensure that the basic IP connectivity is working by issuing a ping between the pair of interfaces. For example from `spine1` to `leaf2`:
+When interfaces are owned by the network-instance `default`, we can ensure that the basic IP connectivity is working by issuing a ping between the pair of interfaces. For example from `spine1` to `leaf2`:
 
 ```
 --{ + running }--[  ]--                                     
@@ -164,13 +164,15 @@ rtt min/avg/max/mdev = 10.034/17.786/31.409/8.199 ms
 ```
 
 ## EBGP
-Since in this exercise the design decision was to use BGP in the data center, we need to configure EBGP peering for the leaf-spine pairs. The EBGP will make sure of advertising the VTEPs across the fabric. The VTEPs will be configured later, in this step we will take care of adding the eBGP peering.
+Since in this exercise the design decision was to use BGP in the data center, we need to configure BGP peering between the leaf-spine pairs. For that purpose we will use EBGP protocol.
 
-Using the following diagram with ASN/Router ID allocation let's turn this into working configuration:
+The EBGP will make sure of advertising the VTEP IP addresses (loopbacks) across the fabric. The VXLAN VTEPs themselves will be configured later, in this step we will take care of adding the EBGP peering.
+
+Let's turn this diagram with the ASN/Router ID allocation into a working configuration:
 
 <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:3,&quot;zoom&quot;:2,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/learn-srlinux/site/diagrams/quickstart.drawio&quot;}"></div>
 
-Here is a breakdown of the steps that are needed to configure eBGP on `leaf1` towards `spine1`:
+Here is a breakdown of the steps that are needed to configure EBGP on `leaf1` towards `spine1`:
 
 1. **Add BGP protocol to network-instance**  
     Routing protocols are configured under a network-instance context. By adding BGP protocol to the default network-instance we implicitly enable this protocol.  
@@ -179,8 +181,8 @@ Here is a breakdown of the steps that are needed to configure eBGP on `leaf1` to
     A:leaf1# network-instance default protocols bgp
     ```
 
-1. **Assign ASN**  
-    The ASN reported to peers when this network-instance opens a BGP session toward another router (unless it is overridden by a local-as configuration).  
+1. **Assign Autonomous System Number**  
+    The ASN is reported to peers when BGP speaker opens a session towards another router.  
     According to the diagram above, `leaf1` has ASN 101.  
     ```
     --{ +* candidate shared default }--[ network-instance default protocols bgp ]--
@@ -188,7 +190,7 @@ Here is a breakdown of the steps that are needed to configure eBGP on `leaf1` to
     ```
 
 1. **Assign Router ID**  
-    This is the BGP identifier reported to peers when this network-instance opens a BGP session toward another router. This overrides the router-id configuration at the network-instance level.  
+    This is the BGP identifier reported to peers when this network-instance opens a BGP session towards another router.  
     Leaf1 has a router-id of 10.0.0.1.
     ```
     --{ +* candidate shared default }--[ network-instance default protocols bgp ]--
@@ -197,14 +199,15 @@ Here is a breakdown of the steps that are needed to configure eBGP on `leaf1` to
 
 1. **Enable AF**  
     Enable all address families that should be enabled globally as a default for all peers of the BGP instance.  
-    When you later configure individual neighbors or groups, you can override the enabled families at those levels.
+    When you later configure individual neighbors or groups, you can override the enabled families at those levels.  
+    For the sake of IPv4 loopbacks advertisement, we only need to enable `ipv4-unicast` address family:
     ```
     --{ +* candidate shared default }--[ network-instance default protocols bgp ]--
     A:leaf1# ipv4-unicast admin-state enable
     ```
 
 1. **Create export/import policies**  
-    The export/import policy is required for an eBGP peer to advertise and install routes.  
+    The export/import policy is required for an EBGP peer to advertise and install routes.  
     The policy named `all` that we create below will be used both as an import and export policy, effectively allowing all routes to be advertised and received[^4].  
 
     The routing policies are configured at `/routing-policy` context, so first, we switch to it from the current `bgp` context:
@@ -215,7 +218,7 @@ Here is a breakdown of the steps that are needed to configure eBGP on `leaf1` to
     --{ * candidate shared default }--[ routing-policy ]--                        
     A:leaf1#
     ```
-    Now that we are in the right context, we can copy paste the policy definition:
+    Now that we are in the right context, we can paste the policy definition:
     ```
     --{ +* candidate shared default }--[ routing-policy ]--
     A:leaf1# info
@@ -232,7 +235,7 @@ Here is a breakdown of the steps that are needed to configure eBGP on `leaf1` to
     In this example, the peer group is named `eBGP-underlay` since it will be used to enable underlay routing between the leafs and spines.  
     New groups are administratively enabled by default.
 
-    First, we come back to our bgp from the routing-policy context:
+    First, we come back to the bgp context from the routing-policy context:
     ```
     --{ * candidate shared default }--[ routing-policy ]--
     A:leaf1# /network-instance default protocols bgp      
@@ -304,7 +307,7 @@ Here is a breakdown of the steps that are needed to configure eBGP on `leaf1` to
     A:leaf1# commit now
     ```
 
-EBGP configuration on `leaf2` and `spine1` is almost a twin from the one we did for `leaf1`. Here is a copy-paste-able[^3] config snippets for all of the nodes:
+EBGP configuration on `leaf2` and `spine1` is almost a twin of the one we did for `leaf1`. Here is a copy-paste-able[^3] config snippets for all of the nodes:
 
 === "leaf1"
     ```
@@ -403,7 +406,7 @@ EBGP configuration on `leaf2` and `spine1` is almost a twin from the one we did 
     ```
 
 ## Loopbacks
-As we will create a BGP based EVPN control plane at a later stage, we need to configure loopback addresses for our leaf devices so that they can build an iBGP peering over those interfaces.
+As we will create a IBGP based EVPN control plane at a later stage, we need to configure loopback addresses for our leaf devices so that they can build an IBGP peering over those interfaces.
 
 In the context of the VXLAN data plane, a special kind of a loopback needs to be created - [`system0`](../../basics/ifaces.md#system) interface.
 
@@ -467,7 +470,7 @@ Configuration of the `system0` interface is exactly the same as for the regular 
 As stated in the beginning of this section, the VXLAN VTEPs need to be advertised throughout the DC fabric. The `system0` interfaces we just configured are the VTEPs and they should be advertised via EBGP peering established before. The following verification commands can help ensure that.
 
 ### BGP status
-The first thing worth verifying is that BGP protocol is enabled and operational on all devices. Below is an example of a summary command issued on `leaf1`:
+The first thing worth verifying is that BGP protocol is enabled and operational on all devices. Below is an example of a BGP summary command issued on `leaf1`:
 
 ``` linenums="1"
 --{ + running }--[  ]--
@@ -513,7 +516,7 @@ EVPN-unicast AFI/SAFI
 ```
 
 ### BGP neighbor status
-Equally important is the neighbor summary status that we can observe like that:
+Equally important is the neighbor summary status that we can observe with the following:
 
 ```
 --{ + running }--[  ]--
@@ -538,10 +541,10 @@ Summary:
 0 dynamic peers
 ```
 
-### Received/Advertised routes
-The reason we configured eBGP in the fabric's the underlay is to advertise the VXLAN tunnel endpoints - `system0` interfaces. To check that our leafs advertise their system interfaces and receive routes with them:
+With this command we can ensure that the ipv4-unicast routes are exchanged between the BGP peers and all the sessions are in established state.
 
-In the example below we verify that `leaf1` advertise the prefix of `system0` (`10.0.0.1/32`) interface towards its EBGP `spine1` peer:
+### Received/Advertised routes
+The reason we configured EBGP in the fabric's the underlay is to advertise the VXLAN tunnel endpoints - `system0` interfaces. In the below output we verify that `leaf1` advertises the prefix of `system0` (`10.0.0.1/32`) interface towards its EBGP `spine1` peer:
 ```
 --{ + running }--[  ]--
 A:leaf1# show network-instance default protocols bgp neighbor 192.168.11.2 advertised-rou
@@ -641,7 +644,7 @@ Both `leaf2` and `spine1` prefixes are found in the route table of network-insta
 ### Dataplane
 To finish the verification process let's ensure that the datapath is indeed working, and the VTEPs on both leafs can reach each other via the routed fabric underlay.
 
-For that we will leverage the `ping` command with src/dst pair to use loopback addresses:
+For that we will use the `ping` command with src/dst set to loopback addresses:
 
 ```
 --{ running }--[  ]--
@@ -652,7 +655,7 @@ PING 10.0.0.2 (10.0.0.2) from 10.0.0.1 : 56(84) bytes of data.
 64 bytes from 10.0.0.2: icmp_seq=2 ttl=63 time=12.2 ms
 ```
 
-Now the fabric underlay is properly configured, and we can proceed with EVPN service configuration!
+Perfect, the VTEPs are reachable and the fabric underlay is properly configured. We can proceed with EVPN service configuration!
 
 ## Resulting configs
 Below you will find aggregated configuration snippets which contain the entire fabric configuration we did in the steps above. Those snippets are in the _flat_ format and were extracted with `info flat` command.

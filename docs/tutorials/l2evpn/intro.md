@@ -1,34 +1,36 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/hellt/drawio-js@main/embed2.js" async></script>
 
+|                                |                                                                                                                         |
+| ------------------------------ | ----------------------------------------------------------------------------------------------------------------------- |
+| **Tutorial name**              | L2 EVPN-VXLAN with SR Linux                                                                                             |
+| **Lab components**             | 3 SR Linux nodes                                                                                                        |
+| **Resource requirements**      | :fontawesome-solid-microchip: 2vCPU <br/>:fontawesome-solid-memory: 4 GB                                                |
+| **Containerlab topology file** | [evpn01.clab.yml][topofile]                                                                                             |
+| **Lab name**                   | evpn01                                                                                                                  |
+| **Packet captures**            | [EVPN IMET routes exchange][capture-imets], [RT2 routes exchange with ICMP in datapath][capture-rt2-datapath]           |
+| **Version information**[^3]    | [`containerlab:0.15.1`][clab-install], [`srlinux:21.6.1-235`][srlinux-container], [`docker-ce:20.10.2`][docker-install] |
+
 Ethernet Virtual Private Network (EVPN) is a standard technology in multi-tenant Data Centers (DCs) and provides a control plane framework for many functions.  
 In this tutorial we will configure a **VXLAN based Layer 2 EVPN service**[^5] in a tiny CLOS fabric and at the same get to know SR Linux better!
 
-The DC fabric that we will build consists of the two leaf switches (acting as TOR) and a single spine:
+The DC fabric that we will build for this tutorial consists of the two leaf switches (acting as Top-Of-Rack) and a single spine:
 
 <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:0,&quot;zoom&quot;:2,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/learn-srlinux/site/diagrams/quickstart.drawio&quot;}"></div>
 
-The two servers are connected to the leafs via a L2 interface. Service-wise the servers will appear to be on the same L2 network by means of the deployed EVPN service.
+The two servers are connected to the leafs via an L2 interface. Service-wise the servers will appear to be on the same L2 network by means of the deployed EVPN Layer 2 service.
 
 <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:1,&quot;zoom&quot;:2,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/learn-srlinux/site/diagrams/quickstart.drawio&quot;}"></div>
 
 The tutorial will consist of the following major parts:
 
-* [Fabric configuration](fabric.md) - here we will configure the routing protocol (eBGP) in the underlay of a fabric to advertise the Virtual Tunnel Endpoints (VTEP) of the leaf switches.
-* [EVPN configuration](evpn.md) - this chapter is dedicated to the actual EVPN service configuration.
+* [Fabric configuration](fabric.md) - here we will configure the routing protocol in the underlay of a fabric to advertise the Virtual Tunnel Endpoints (VTEP) of the leaf switches.
+* [EVPN configuration](evpn.md) - this chapter is dedicated to the EVPN service configuration and validation.
 
-## Lab
+## Lab deployment
 
 To let you follow along the configuration steps of this tutorial we created a lab that you can deploy on any Linux VM:
 
-|                             |                                                                          |
-| --------------------------- | ------------------------------------------------------------------------ |
-| **Description**             | L2 EVPN with SR Linux                                                    |
-| **Resource requirements**   | :fontawesome-solid-microchip: 2vCPU <br/>:fontawesome-solid-memory: 4 GB |
-| **Topology file**           | [evpn01.clab.yml][topofile]                                              |
-| **Lab name**                | evpn01                                                                   |
-| **Version information**[^3] | `containerlab:0.15.0`, `srlinux:21.6.1-235`, `docker-ce:20.10.2`         |
-
-The containerlab file contents are outlined below:
+The [containerlab file][topofile] that describes the lab topology is referenced below in full:
 
 ```yaml
 name: evpn01
@@ -92,10 +94,10 @@ INFO[0003] Writing /etc/hosts file
 +---+--------------------+--------------+---------------------------------+-------+-------+---------+----------------+----------------------+
 ```
 
-Containerlab will finish the deployment with providing a summary table that outlines connection details of the deployed nodes. In the "Name" column we have the names of the deployed containers and those names can be used to reach the nodes, for example:
+A few seconds later containerlab finishes the deployment with providing a summary table that outlines connection details of the deployed nodes. In the "Name" column we have the names of the deployed containers and those names can be used to reach the nodes, for example to connect to the SSH of `leaf1`:
 
 ```bash
-# connecting to the leaf1 device via SSH
+# default credentials admin:admin
 ssh admin@clab-evpn01-leaf1
 ```
 
@@ -105,6 +107,11 @@ With the lab deployed we are ready to embark on our learn-by-doing EVPN configur
     We advise the newcomers not to skip the [SR Linux basic concepts](../../basics/hwtypes.md) chapter as it provides just enough[^2] details to survive in the configuration waters we are about to get.
 
 [topofile]: https://github.com/learn-srlinux/site/blob/master/labs/evpn01.clab.yml
+[clab-install]: https://containerlab.srlinux.dev/install/
+[srlinux-container]: https://github.com/orgs/nokia/packages/container/package/srlinux
+[docker-install]: https://docs.docker.com/engine/install/
+[capture-imets]: https://github.com/learn-srlinux/site/blob/master/docs/tutorials/l2evpn/evpn01-imet-routes.pcapng
+[capture-rt2-datapath]: https://github.com/learn-srlinux/site/blob/master/docs/tutorials/l2evpn/evpn01-macip-routes.pcapng
 
 [^1]: To ensure reproducibility and consistency of the examples provided in this quickstart, we will pin to a particular SR Linux version in the containerlab file.
 [^2]: For a complete documentation coverage don't hesitate to visit our [documentation portal](https://bit.ly/iondoc).
