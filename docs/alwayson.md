@@ -1,3 +1,4 @@
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/hellt/drawio-js@main/embed2.js" async></script>
 It is extremely easy and hassle free to run SR Linux, thanks to the [public container image](get-started.md#getting-the-image) and topology builder tool - [containerlab](https://containerlab.srlinux.dev).
 
 But wouldn't it be nice to have an SR Linux instance running in the cloud open for everyone to tinker with? We think it would, so we created an **Always-ON SR Linux** instance that we invite you to try out.
@@ -45,4 +46,17 @@ The Always-ON sandbox consists of SR Linux node connected with a LAG interface t
 
 <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:0,&quot;zoom&quot;:2,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/learn-srlinux/site/diagrams/alwayson&quot;}"></div>
 
-<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/hellt/drawio-js@main/embed2.js" async></script>
+### Protocols and Services
+
+We pre-created a few services on the SR Linux node so that you would see a "real deal" configuration- and state-wise.
+
+The underlay configuration consists of the two L3 links between the nodes with eBGP peering built on link addresses. The system/loopback interfaces are advertised via eBGP to enable overlay services.
+
+In the overlay the following services are configured:
+
+1. Layer 2 EVPN with VXLAN dataplane[^1] with `mac-vrf-100` network instance created on SR Linux
+2. Layer 3 EVPN with VXLAN dataplane with `ip-vrf-200` network instance created on SR Linux
+
+
+[^1]: check [this tutorial](tutorials/l2evpn/intro.md) to understand how this service is configured
+
