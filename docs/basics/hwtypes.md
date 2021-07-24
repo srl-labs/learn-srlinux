@@ -31,6 +31,7 @@ The `type` field defines the hardware variant that this SR Linux node will emula
 | ixrd3      | 7220 IXR-D3 |
 
 
-By default, `ixr6` type is used by containerlab, and since in our topology we determined to run IXR-D2 variant on the leaf layer and IXR-D3 as a spine, we specifically set this in the clab file.
+!!!tip
+    Containerlab-launched nodes are started as `ixr6` hardware type unless set to a different [type](https://containerlab.srlinux.dev/manual/kinds/srl/#types) in the clab file.
 
 [^1]: SR Linux can also run on the whitebox/3rd party switches.
