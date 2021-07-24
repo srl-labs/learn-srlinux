@@ -669,7 +669,7 @@ For your convenience, in case you want to jump over the config routines and star
         ip addr add 192.168.0.2/24 dev eth1
         ```
 ## Verification
-### EVPN routes
+### EVPN IMET routes
 When the BGP-EVPN is configured in the mac-vrf instance, the leafs start to exchange EVPN routes, which we can verify with the following commands:
 
 ```
@@ -688,7 +688,7 @@ Flags: S static, D dynamic, L discovered by LLDP, B BFD enabled, - disabled, * s
 +-----------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+
 ```
 
-The single route that the leaf1 received/sent is an EVPN Inclusive Multicast Ethernet Tag route (IMET or type 3, RT3).
+The single route that the leaf1 received/sent is an [EVPN Inclusive Multicast Ethernet Tag](https://datatracker.ietf.org/doc/html/rfc8365#section-9) route (IMET or type 3, RT3).
 
 The IMET route is advertised as soon as bgp-evpn is enabled in the MAC-VRF; it has the following purpose:
 
@@ -752,6 +752,28 @@ The IMET/RT3 routes can be viewed in summary and detailed modes:
 
     [Here is the pcap file](https://github.com/learn-srlinux/site/blob/master/docs/tutorials/l2evpn/evpn01-imet-routes.pcapng) with the IMET routes advertisements between `leaf1` and `leaf2`.
 
+When the IMET routes from `leaf2` are imported for `vrf-1` network-instance, the corresponding multicast VXLAN destinations are added and can be checked with the following command:
+
+```
+A:leaf1# show tunnel-interface vxlan1 vxlan-interface 1 bridge-table multicast-destinations destination *
+-------------------------------------------------------------------------------
+Show report for vxlan-interface vxlan1.1 multicast destinations (flooding-list)
+-------------------------------------------------------------------------------
++--------------+------------+-------------------+----------------------+
+| VTEP Address | Egress VNI | Destination-index | Multicast-forwarding |
++==============+============+===================+======================+
+| 10.0.0.2     | 1          | 160078821962      | BUM                  |
++--------------+------------+-------------------+----------------------+
+-------------------------------------------------------------------------------
+Summary
+  1 multicast-destinations
+-------------------------------------------------------------------------------
+```
+
+This multicast destination means that BUM frames received on a bridged sub-interface are ingress-replicated to the VTEPs for that EVI as per the table above. For example any ARP traffic will be distributed (ingress-replicated) to the VTEPs from multicast destinations table.
+
+As to the unicast destinations there are none so far, and this is because we haven't yet received any MAC/IP RT2 EVPN routes. But before looking into the RT2 EVPN routes, let's zoom into VXLAN tunnels that got built right after we receive the first IMET RT3 routes.
+
 ### VXLAN tunnels
 After receiving EVPN routes from the remote leafs with VXLAN encapsulation[^4], SR Linux creates VXLAN tunnels towards remote VTEP, whose address is received in EVPN IMET routes. The state of a single remote VTEP we have in our lab is shown below from the `leaf1` switch.
 
@@ -789,30 +811,9 @@ Show report for network instance "default" tunnel table
 1 VXLAN tunnels, 1 active, 0 inactive
 ```
 
-### Multicast and unicast destinations
-When the IMET routes from `leaf2` are imported for `vrf-1` network-instance, the
-corresponding multicast VXLAN destinations are added and can be checked with the
-following command:
+### EVPN MAC/IP routes
 
-```
-A:leaf1# show tunnel-interface vxlan1 vxlan-interface 1 bridge-table multicast-destinations destination *
--------------------------------------------------------------------------------
-Show report for vxlan-interface vxlan1.1 multicast destinations (flooding-list)
--------------------------------------------------------------------------------
-+--------------+------------+-------------------+----------------------+
-| VTEP Address | Egress VNI | Destination-index | Multicast-forwarding |
-+==============+============+===================+======================+
-| 10.0.0.2     | 1          | 160078821962      | BUM                  |
-+--------------+------------+-------------------+----------------------+
--------------------------------------------------------------------------------
-Summary
-  1 multicast-destinations
--------------------------------------------------------------------------------
-```
-
-BUM frames received on a bridged sub-interface are ingress-replicated to the VTEPs for that EVI as per the table above.
-
-As to the unicast destinations, there are none so far:
+As was mentioned, when the leafs exchanged only EVPN IMET routes they build the BUM flooding tree (aka multicast destinations), but unicast destinations are yet unknown, which is seen in the below output:
 
 ```
 A:leaf1# show tunnel-interface vxlan1 vxlan-interface 1 bridge-table unicast-destinations destination *
@@ -830,7 +831,7 @@ Summary
   0 MAC addresses, 0 active, 0 non-active
 ```
 
-This is due to the fact that no MAC/IP EVPN routes are being advertised yet. If we take a look at the MAC table of the `vrf-1`, we will see that no local MAC addresses are there, and this is because the servers haven't yet sent any frames towards the leafs[^7].
+This is due to the fact that no [MAC/IP EVPN routes](https://datatracker.ietf.org/doc/html/rfc7432#section-7.2) are being advertised yet. If we take a look at the MAC table of the `vrf-1`, we will see that no local MAC addresses are there, and this is because the servers haven't yet sent any frames towards the leafs[^7].
 ```
 A:leaf1# show network-instance vrf-1 bridge-table mac-table all
 -------------------------------------------------------------------------------
@@ -887,7 +888,7 @@ Total Macs                :    2 Total    2 Active
 ---------------------------------------------------------------------------------------------------------------------------------------------
 ```
 
-When traffic is exchanged between `srv1` and `srv2`, the MACs are learned on the access bridged sub-interfaces and advertised in EVPN MAC/IP routes (type 2, RT2). The MAC/IP routes are imported, and the MACs programmed in the mac-table.
+When traffic is exchanged between `srv1` and `srv2`, the MACs are learned on the access bridged sub-interfaces and advertised in [EVPN MAC/IP routes (type 2, RT2)](https://datatracker.ietf.org/doc/html/rfc7432#section-7.2). The MAC/IP routes are imported, and the MACs programmed in the mac-table.
 
 The below output shows the MAC/IP EVPN route that `leaf1` received from its neighbor. The NLRI information contains the MAC of the `srv2`:
 
