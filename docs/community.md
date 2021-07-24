@@ -6,6 +6,8 @@ Automation engineers will appreciate the vast automation and programmability opt
 
 Monitoring-obsessed networkers would be pleased with SR Linux 100% YANG coverage and thus through-and-through gNMI-based telemetry support.
 
-**We are happy to chat with you all!** And the chosen venue for our new-forming SR Linux Community is the SR Linux Discord Server which everyone can join!
+**We are happy to chat with you all!** And the chosen venue for our new-forming SR Linux Community[^1] is the SR Linux Discord Server which everyone can join!
 
 <center>[:fontawesome-brands-discord: Join SR Linux Discord Server](https://discord.gg/tZvgjQ6PZf){ .md-button .md-button--primary }</center>
+
+[^1]: this is an unofficial community. Engineers to engineers.
