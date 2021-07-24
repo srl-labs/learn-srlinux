@@ -3,6 +3,8 @@ It is extremely easy and hassle free to run SR Linux, thanks to the [public cont
 
 But wouldn't it be nice to have an SR Linux instance running in the cloud open for everyone to tinker with? We think it would, so we created an **Always-ON SR Linux** instance that we invite you to try out.
 
+<div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:1,&quot;zoom&quot;:2,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/learn-srlinux/site/diagrams/alwayson&quot;}"></div>
+
 ## What is Always-ON SR Linux for?
 The Always-ON SR Linux instance is an Internet reachable SR Linux container running in the cloud. Although running in the read-only mode, the Always-ON instance can unlock some interesting use cases, which won't require anything but Internet connection from a curious user.
 
@@ -21,12 +23,11 @@ The Always-ON SR Linux instance is an Internet reachable SR Linux container runn
 
 Always-ON SR Linux instance comes up with the SSH and gNMI management interfaces exposed. The following table summarizes the connection details for each of those interfaces:
 
-
-| Method   | Details                                                                                                                                                                                                                         |
-| :------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| SSH      | address: `ssh guest@on.srlinux.dev -p 44268`<br/>password: `n0k1asrlinux`<br/><br/>for key-based authentication use [this key](https://gist.github.com/hellt/d2b9f99a2fcfeeb7752d9fe187fbff86) to authenticate the `guest` user |
-| gNMI[^1] | <pre><code>gnmic -a guest@on.srlinux.dev:20785 -u guest -p n0k1asrlinux --skip-verify \<br/>      capability</code></pre>                                                                                                       |
-| JSON-RPC | Coming soon.                                                                                                                                                                                                                    |
+| Method       | Details                                                                                                                                                                                                                         |
+| :----------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| SSH          | address: `ssh guest@on.srlinux.dev -p 44268`<br/>password: `n0k1asrlinux`<br/><br/>for key-based authentication use [this key](https://gist.github.com/hellt/d2b9f99a2fcfeeb7752d9fe187fbff86) to authenticate the `guest` user |
+| gNMI[^1]     | <pre><code>gnmic -a on.srlinux.dev:39010 -u guest -p n0k1asrlinux --skip-verify \<br/>      capabilities</code></pre>                                                                                                           |
+| JSON-RPC[^2] | http://http.on.srlinux.dev                                                                                                                                                                                                      |
 
 [^1]: an example of invoking a gNMI Capabilities RPC using [gnmic](https://gnmic.kmrd.dev) CLI client.
 
@@ -59,4 +60,4 @@ In the overlay the following services are configured:
 
 
 [^1]: check [this tutorial](tutorials/l2evpn/intro.md) to understand how this service is configured
-
+[^2]: HTTP service running over port 80
