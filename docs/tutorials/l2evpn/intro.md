@@ -1,14 +1,15 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/hellt/drawio-js@main/embed2.js" async></script>
 
-|                                |                                                                                                                         |
-| ------------------------------ | ----------------------------------------------------------------------------------------------------------------------- |
-| **Tutorial name**              | L2 EVPN-VXLAN with SR Linux                                                                                             |
-| **Lab components**             | 3 SR Linux nodes                                                                                                        |
-| **Resource requirements**      | :fontawesome-solid-microchip: 2vCPU <br/>:fontawesome-solid-memory: 4 GB                                                |
-| **Containerlab topology file** | [evpn01.clab.yml][topofile]                                                                                             |
-| **Lab name**                   | evpn01                                                                                                                  |
-| **Packet captures**            | [EVPN IMET routes exchange][capture-imets], [RT2 routes exchange with ICMP in datapath][capture-rt2-datapath]           |
-| **Version information**[^3]    | [`containerlab:0.15.1`][clab-install], [`srlinux:21.6.1-235`][srlinux-container], [`docker-ce:20.10.2`][docker-install] |
+|                                |                                                                                                                                                                                                        |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Tutorial name**              | L2 EVPN-VXLAN with SR Linux                                                                                                                                                                            |
+| **Lab components**             | 3 SR Linux nodes                                                                                                                                                                                       |
+| **Resource requirements**      | :fontawesome-solid-microchip: 2vCPU <br/>:fontawesome-solid-memory: 4 GB                                                                                                                               |
+| **Containerlab topology file** | [evpn01.clab.yml][topofile]                                                                                                                                                                            |
+| **Lab name**                   | evpn01                                                                                                                                                                                                 |
+| **Packet captures**            | [EVPN IMET routes exchange][capture-imets], [RT2 routes exchange with ICMP in datapath][capture-rt2-datapath]                                                                                          |
+| **Main ref documents**         | [RFC 7432 - BGP MPLS-Based Ethernet VPN](https://www.rfcreader.com/#rfc7432),<br/>[RFC 8365 - A Network Virtualization Overlay Solution Using Ethernet VPN (EVPN)](https://www.rfcreader.com/#rfc8365) |
+| **Version information**[^3]    | [`containerlab:0.15.4`][clab-install], [`srlinux:21.6.1-250`][srlinux-container], [`docker-ce:20.10.2`][docker-install]                                                                                |
 
 Ethernet Virtual Private Network (EVPN) is a standard technology in multi-tenant Data Centers (DCs) and provides a control plane framework for many functions.  
 In this tutorial we will configure a **VXLAN based Layer 2 EVPN service**[^5] in a tiny CLOS fabric and at the same get to know SR Linux better!
