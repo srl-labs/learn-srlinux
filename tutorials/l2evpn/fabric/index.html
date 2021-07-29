@@ -1,0 +1,561 @@
+<!doctype html><html lang=en class=no-js> <head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="Learn SR Linux"><meta name=author content="SR Linux"><link href=https://learn.srlinux.dev/tutorials/l2evpn/fabric/ rel=canonical><link rel=icon href=../../../images/srlinux.svg><meta name=generator content="mkdocs-1.2.1, mkdocs-material-7.1.9"><title>Fabric configuration - Learn SR Linux</title><link rel=stylesheet href=../../../assets/stylesheets/main.ca7ac06f.min.css><link rel=stylesheet href=../../../assets/stylesheets/palette.f1a3b89f.min.css><link rel=preconnect href=https://fonts.gstatic.com crossorigin><link rel=stylesheet href="https://fonts.googleapis.com/css?family=NokiaPureText:300,400,400i,700%7CFira+Mono&display=fallback"><style>:root{--md-text-font-family:"NokiaPureText";--md-code-font-family:"Fira Mono"}</style><link rel=stylesheet href=../../../stylesheets/nokia.css><link rel=stylesheet href=../../../stylesheets/nokia-fonts.css><script>function gtag(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],gtag("js",new Date),gtag("config","G-VNYX781Q48"),document.addEventListener("DOMContentLoaded",function(){"undefined"!=typeof location$&&location$.subscribe(function(t){gtag("config","G-VNYX781Q48",{page_path:t.pathname})})})</script><script async src="https://www.googletagmanager.com/gtag/js?id=G-VNYX781Q48"></script></head> <body dir=ltr data-md-color-scheme=default data-md-color-primary data-md-color-accent> <script>function __prefix(e){return new URL("../../..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script> <script>var palette=__get("__palette");if(null!==palette&&"object"==typeof palette.color)for(var key in palette.color)document.body.setAttribute("data-md-color-"+key,palette.color[key])</script> <input class=md-toggle data-md-toggle=drawer type=checkbox id=__drawer autocomplete=off> <input class=md-toggle data-md-toggle=search type=checkbox id=__search autocomplete=off> <label class=md-overlay for=__drawer></label> <div data-md-component=skip> <a href=#leaf-spine-interfaces class=md-skip> Skip to content </a> </div> <div data-md-component=announce> </div> <header class=md-header data-md-component=header> <nav class="md-header__inner md-grid" aria-label=Header> <a href=../../.. title="Learn SR Linux" class="md-header__button md-logo" aria-label="Learn SR Linux" data-md-component=logo> <?xml version="1.0" encoding="utf-8"?> <svg viewbox="0 0 512 512" width=512 height=512 xmlns=http://www.w3.org/2000/svg> <rect class=st0 width=512 height=512 style="fill: rgb(255, 255, 255);"/> <g style transform="matrix(6.08856, 0, 0, 5.722229, -163.634598, -134.644638)"> <path class=st1 d="M45.2,59.4c0.9,0.6,2.2,1.1,4,1.7c1.8,0.6,3.8,0.9,6.2,0.9c2.5,0,4.3-0.5,5.5-1.5c1.2-1,1.8-2.4,1.8-4.1 c0-0.6-0.1-1.2-0.2-1.8c-0.2-0.6-0.5-1.1-0.9-1.6c-0.4-0.5-1-1-1.8-1.4c-0.8-0.4-1.7-0.8-2.9-1.1l-4.1-1.2 c-2.7-0.7-4.8-1.9-6.5-3.4c-1.6-1.5-2.4-3.6-2.4-6.2c0-1.4,0.2-2.7,0.8-3.9s1.2-2.3,2.2-3.2c1-0.9,2.2-1.7,3.7-2.2 c1.4-0.5,3.1-0.8,5-0.8c2.3,0,4.4,0.3,6.2,0.8c1.9,0.5,3.3,1.2,4.4,1.9l-1.7,3.5c-0.3-0.2-0.8-0.4-1.5-0.7 c-0.6-0.2-1.4-0.5-2.2-0.7c-0.8-0.2-1.7-0.4-2.6-0.5c-0.9-0.2-1.9-0.2-2.8-0.2c-2.2,0-4,0.5-5.2,1.5c-1.2,1-1.8,2.4-1.8,4.1 c0,1.5,0.5,2.7,1.4,3.6c0.9,0.9,2.4,1.6,4.6,2.2l4.1,1.2c2.9,0.8,5.2,2,6.7,3.5c1.5,1.5,2.2,3.7,2.2,6.4c0,1.5-0.3,2.9-0.8,4.1 s-1.3,2.3-2.3,3.2c-1,0.9-2.3,1.6-3.8,2.1c-1.5,0.5-3.2,0.7-5.1,0.7c-1.7,0-3.2-0.1-4.6-0.4c-1.4-0.3-2.6-0.6-3.6-0.9 c-1-0.3-1.9-0.7-2.5-1.1c-0.7-0.4-1.1-0.6-1.4-0.8L45.2,59.4z" style="fill: rgb(0, 0, 0);"/> <path class=st1 d="M 97.5 65.4 L 92.1 65.4 L 83.7 51.2 L 78.5 51.2 L 78.5 65.4 L 74 65.4 L 74 30.3 L 84.2 30.3 C 86.4 30.3 88.2 30.6 89.6 31.3 C 91.1 32 92.2 32.8 93.1 33.9 C 94 35 94.6 36.1 95 37.3 C 95.4 38.5 95.5 39.7 95.5 40.8 C 95.5 43.3 94.9 45.4 93.6 47 C 92.3 48.6 90.5 49.8 88.2 50.6 L 97.5 65.4 Z M 83.81 47.191 C 86.21 47.191 88 46.7 89.2 45.6 C 90.4 44.4 91 42.9 91 40.8 C 91 38.8 90.4 37.2 89.2 36 C 88 34.8 86.3 34.2 84.1 34.2 L 78.6 34.2 L 78.6 47.2 L 83.8 47.2 L 83.81 47.191 Z" style="fill: rgb(0, 0, 0);"/> </g> <g style transform="matrix(5.538847, 0, 0, 5.68973, -136.858704, -157.860214)"> <path class=st1 d=M46.2,109.9h-14V85.3h3.2V107h10.7V109.9z style="fill: rgb(0, 0, 0);"/> <path class=st1 d="M51.5,88.8c-0.6,0-1.1-0.2-1.5-0.6c-0.4-0.4-0.5-0.9-0.5-1.5c0-0.6,0.2-1.1,0.5-1.5c0.4-0.4,0.9-0.6,1.5-0.6 s1.1,0.2,1.5,0.6c0.4,0.4,0.5,0.9,0.5,1.5s-0.2,1.1-0.5,1.5C52.6,88.6,52.1,88.8,51.5,88.8z M53.1,109.9H50V92.4h3.1V109.9z" style="fill: rgb(0, 0, 0);"/> <path class=st1 d="M73,109.9h-3.1V99.1c0-0.9-0.1-1.6-0.3-2.2c-0.2-0.6-0.4-1-0.8-1.4c-0.3-0.3-0.7-0.6-1.2-0.7s-0.9-0.2-1.4-0.2 c-0.9,0-1.7,0.2-2.3,0.5c-0.6,0.4-1.2,0.9-1.6,1.5c-0.4,0.6-0.7,1.3-0.9,2.1c-0.2,0.8-0.3,1.6-0.3,2.5v8.6h-3.1V92.4H61l0.1,2.4 c0.1-0.3,0.4-0.6,0.7-0.9c0.3-0.3,0.7-0.7,1.2-0.9c0.5-0.3,1-0.5,1.7-0.7s1.4-0.3,2.2-0.3c2,0,3.6,0.6,4.6,1.7s1.6,2.8,1.6,4.8 V109.9z" style="fill: rgb(0, 0, 0);"/> <path class=st1 d="M92.7,109.9h-2.9l-0.1-2.3c-0.1,0.3-0.4,0.6-0.7,0.9c-0.3,0.3-0.7,0.6-1.2,0.9c-0.5,0.3-1,0.5-1.7,0.7 c-0.6,0.2-1.4,0.3-2.2,0.3c-2,0-3.6-0.6-4.6-1.7c-1.1-1.2-1.6-2.8-1.6-4.8V92.4H81v11c0,0.8,0.1,1.5,0.3,2.1c0.2,0.5,0.4,1,0.7,1.3 c0.3,0.3,0.7,0.6,1.1,0.7c0.4,0.1,0.9,0.2,1.5,0.2c0.9,0,1.7-0.2,2.3-0.5c0.6-0.4,1.2-0.9,1.6-1.5s0.7-1.3,0.9-2.1 c0.2-0.8,0.3-1.6,0.3-2.5v-8.6h3.1V109.9z" style="fill: rgb(0, 0, 0);"/> <path class=st1 d=M112,109.9h-3.7l-4.6-6.7l-4.6,6.7h-3.3l6.3-9l-5.9-8.5h3.7l4,5.8l4-5.8h3.3l-5.7,8.2L112,109.9z style="fill: rgb(0, 0, 0);"/> </g> </svg> </a> <label class="md-header__button md-icon" for=__drawer> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg> </label> <div class=md-header__title data-md-component=header-title> <div class=md-header__ellipsis> <div class=md-header__topic> <span class=md-ellipsis> Learn SR Linux </span> </div> <div class=md-header__topic data-md-component=header-topic> <span class=md-ellipsis> Fabric configuration </span> </div> </div> </div> <form class=md-header__option data-md-component=palette> <input class=md-option data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme=default data-md-color-primary data-md-color-accent aria-label="Switch to dark mode" type=radio name=__palette id=__palette_1> <label class="md-header__button md-icon" title="Switch to dark mode" for=__palette_2 hidden> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M7 10a2 2 0 0 1 2 2 2 2 0 0 1-2 2 2 2 0 0 1-2-2 2 2 0 0 1 2-2m10-3a5 5 0 0 1 5 5 5 5 0 0 1-5 5H7a5 5 0 0 1-5-5 5 5 0 0 1 5-5h10M7 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3h10a3 3 0 0 0 3-3 3 3 0 0 0-3-3H7z"/></svg> </label> <input class=md-option data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme=slate data-md-color-primary data-md-color-accent aria-label="Switch to light mode" type=radio name=__palette id=__palette_2> <label class="md-header__button md-icon" title="Switch to light mode" for=__palette_1 hidden> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3z"/></svg> </label> </form> <label class="md-header__button md-icon" for=__search> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg> </label> <div class=md-search data-md-component=search role=dialog> <label class=md-search__overlay for=__search></label> <div class=md-search__inner role=search> <form class=md-search__form name=search> <input type=text class=md-search__input name=query aria-label=Search placeholder=Search autocapitalize=off autocorrect=off autocomplete=off spellcheck=false data-md-component=search-query data-md-state=active required> <label class="md-search__icon md-icon" for=__search> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg> </label> <button type=reset class="md-search__icon md-icon" aria-label=Clear tabindex=-1> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg> </button> </form> <div class=md-search__output> <div class=md-search__scrollwrap data-md-scrollfix> <div class=md-search-result data-md-component=search-result> <div class=md-search-result__meta> Initializing search </div> <ol class=md-search-result__list></ol> </div> </div> </div> </div> </div> <div class=md-header__source> <a href=https://github.com/learn-srlinux/site/ title="Go to repository" class=md-source data-md-component=source> <div class="md-source__icon md-icon"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg> </div> <div class=md-source__repository> learn-srlinux/site </div> </a> </div> </nav> </header> <div class=md-container data-md-component=container> <nav class=md-tabs aria-label=Tabs data-md-component=tabs> <div class="md-tabs__inner md-grid"> <ul class=md-tabs__list> <li class=md-tabs__item> <a href=../../.. class=md-tabs__link> Home </a> </li> <li class=md-tabs__item> <a href=../../../get-started/ class=md-tabs__link> Get SR Linux </a> </li> <li class=md-tabs__item> <a href=../../../basics/hwtypes/ class=md-tabs__link> Basic concepts </a> </li> <li class=md-tabs__item> <a href=../../about/ class="md-tabs__link md-tabs__link--active"> Tutorials </a> </li> <li class=md-tabs__item> <a href=../../../alwayson/ class=md-tabs__link> Always-ON SR Linux </a> </li> <li class=md-tabs__item> <a href=../../../community/ class=md-tabs__link> SR Linux Community </a> </li> </ul> </div> </nav> <main class=md-main data-md-component=main> <div class="md-main__inner md-grid"> <div class="md-sidebar md-sidebar--primary" data-md-component=sidebar data-md-type=navigation> <div class=md-sidebar__scrollwrap> <div class=md-sidebar__inner> <nav class="md-nav md-nav--primary md-nav--lifted" aria-label=Navigation data-md-level=0> <label class=md-nav__title for=__drawer> <a href=../../.. title="Learn SR Linux" class="md-nav__button md-logo" aria-label="Learn SR Linux" data-md-component=logo> <?xml version="1.0" encoding="utf-8"?> <svg viewbox="0 0 512 512" width=512 height=512 xmlns=http://www.w3.org/2000/svg> <rect class=st0 width=512 height=512 style="fill: rgb(255, 255, 255);"/> <g style transform="matrix(6.08856, 0, 0, 5.722229, -163.634598, -134.644638)"> <path class=st1 d="M45.2,59.4c0.9,0.6,2.2,1.1,4,1.7c1.8,0.6,3.8,0.9,6.2,0.9c2.5,0,4.3-0.5,5.5-1.5c1.2-1,1.8-2.4,1.8-4.1 c0-0.6-0.1-1.2-0.2-1.8c-0.2-0.6-0.5-1.1-0.9-1.6c-0.4-0.5-1-1-1.8-1.4c-0.8-0.4-1.7-0.8-2.9-1.1l-4.1-1.2 c-2.7-0.7-4.8-1.9-6.5-3.4c-1.6-1.5-2.4-3.6-2.4-6.2c0-1.4,0.2-2.7,0.8-3.9s1.2-2.3,2.2-3.2c1-0.9,2.2-1.7,3.7-2.2 c1.4-0.5,3.1-0.8,5-0.8c2.3,0,4.4,0.3,6.2,0.8c1.9,0.5,3.3,1.2,4.4,1.9l-1.7,3.5c-0.3-0.2-0.8-0.4-1.5-0.7 c-0.6-0.2-1.4-0.5-2.2-0.7c-0.8-0.2-1.7-0.4-2.6-0.5c-0.9-0.2-1.9-0.2-2.8-0.2c-2.2,0-4,0.5-5.2,1.5c-1.2,1-1.8,2.4-1.8,4.1 c0,1.5,0.5,2.7,1.4,3.6c0.9,0.9,2.4,1.6,4.6,2.2l4.1,1.2c2.9,0.8,5.2,2,6.7,3.5c1.5,1.5,2.2,3.7,2.2,6.4c0,1.5-0.3,2.9-0.8,4.1 s-1.3,2.3-2.3,3.2c-1,0.9-2.3,1.6-3.8,2.1c-1.5,0.5-3.2,0.7-5.1,0.7c-1.7,0-3.2-0.1-4.6-0.4c-1.4-0.3-2.6-0.6-3.6-0.9 c-1-0.3-1.9-0.7-2.5-1.1c-0.7-0.4-1.1-0.6-1.4-0.8L45.2,59.4z" style="fill: rgb(0, 0, 0);"/> <path class=st1 d="M 97.5 65.4 L 92.1 65.4 L 83.7 51.2 L 78.5 51.2 L 78.5 65.4 L 74 65.4 L 74 30.3 L 84.2 30.3 C 86.4 30.3 88.2 30.6 89.6 31.3 C 91.1 32 92.2 32.8 93.1 33.9 C 94 35 94.6 36.1 95 37.3 C 95.4 38.5 95.5 39.7 95.5 40.8 C 95.5 43.3 94.9 45.4 93.6 47 C 92.3 48.6 90.5 49.8 88.2 50.6 L 97.5 65.4 Z M 83.81 47.191 C 86.21 47.191 88 46.7 89.2 45.6 C 90.4 44.4 91 42.9 91 40.8 C 91 38.8 90.4 37.2 89.2 36 C 88 34.8 86.3 34.2 84.1 34.2 L 78.6 34.2 L 78.6 47.2 L 83.8 47.2 L 83.81 47.191 Z" style="fill: rgb(0, 0, 0);"/> </g> <g style transform="matrix(5.538847, 0, 0, 5.68973, -136.858704, -157.860214)"> <path class=st1 d=M46.2,109.9h-14V85.3h3.2V107h10.7V109.9z style="fill: rgb(0, 0, 0);"/> <path class=st1 d="M51.5,88.8c-0.6,0-1.1-0.2-1.5-0.6c-0.4-0.4-0.5-0.9-0.5-1.5c0-0.6,0.2-1.1,0.5-1.5c0.4-0.4,0.9-0.6,1.5-0.6 s1.1,0.2,1.5,0.6c0.4,0.4,0.5,0.9,0.5,1.5s-0.2,1.1-0.5,1.5C52.6,88.6,52.1,88.8,51.5,88.8z M53.1,109.9H50V92.4h3.1V109.9z" style="fill: rgb(0, 0, 0);"/> <path class=st1 d="M73,109.9h-3.1V99.1c0-0.9-0.1-1.6-0.3-2.2c-0.2-0.6-0.4-1-0.8-1.4c-0.3-0.3-0.7-0.6-1.2-0.7s-0.9-0.2-1.4-0.2 c-0.9,0-1.7,0.2-2.3,0.5c-0.6,0.4-1.2,0.9-1.6,1.5c-0.4,0.6-0.7,1.3-0.9,2.1c-0.2,0.8-0.3,1.6-0.3,2.5v8.6h-3.1V92.4H61l0.1,2.4 c0.1-0.3,0.4-0.6,0.7-0.9c0.3-0.3,0.7-0.7,1.2-0.9c0.5-0.3,1-0.5,1.7-0.7s1.4-0.3,2.2-0.3c2,0,3.6,0.6,4.6,1.7s1.6,2.8,1.6,4.8 V109.9z" style="fill: rgb(0, 0, 0);"/> <path class=st1 d="M92.7,109.9h-2.9l-0.1-2.3c-0.1,0.3-0.4,0.6-0.7,0.9c-0.3,0.3-0.7,0.6-1.2,0.9c-0.5,0.3-1,0.5-1.7,0.7 c-0.6,0.2-1.4,0.3-2.2,0.3c-2,0-3.6-0.6-4.6-1.7c-1.1-1.2-1.6-2.8-1.6-4.8V92.4H81v11c0,0.8,0.1,1.5,0.3,2.1c0.2,0.5,0.4,1,0.7,1.3 c0.3,0.3,0.7,0.6,1.1,0.7c0.4,0.1,0.9,0.2,1.5,0.2c0.9,0,1.7-0.2,2.3-0.5c0.6-0.4,1.2-0.9,1.6-1.5s0.7-1.3,0.9-2.1 c0.2-0.8,0.3-1.6,0.3-2.5v-8.6h3.1V109.9z" style="fill: rgb(0, 0, 0);"/> <path class=st1 d=M112,109.9h-3.7l-4.6-6.7l-4.6,6.7h-3.3l6.3-9l-5.9-8.5h3.7l4,5.8l4-5.8h3.3l-5.7,8.2L112,109.9z style="fill: rgb(0, 0, 0);"/> </g> </svg> </a> Learn SR Linux </label> <div class=md-nav__source> <a href=https://github.com/learn-srlinux/site/ title="Go to repository" class=md-source data-md-component=source> <div class="md-source__icon md-icon"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg> </div> <div class=md-source__repository> learn-srlinux/site </div> </a> </div> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../.. class=md-nav__link> Home </a> </li> <li class=md-nav__item> <a href=../../../get-started/ class=md-nav__link> Get SR Linux </a> </li> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle" data-md-toggle=__nav_3 type=checkbox id=__nav_3> <label class=md-nav__link for=__nav_3> Basic concepts <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav aria-label="Basic concepts" data-md-level=1> <label class=md-nav__title for=__nav_3> <span class="md-nav__icon md-icon"></span> Basic concepts </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../../basics/hwtypes/ class=md-nav__link> Hardware types </a> </li> <li class=md-nav__item> <a href=../../../basics/mgmt/ class=md-nav__link> Management interfaces </a> </li> <li class=md-nav__item> <a href=../../../basics/cfgmgmt/ class=md-nav__link> Configuration management </a> </li> <li class=md-nav__item> <a href=../../../basics/ifaces/ class=md-nav__link> Interfaces </a> </li> <li class=md-nav__item> <a href=../../../basics/netwinstance/ class=md-nav__link> Network instances </a> </li> </ul> </nav> </li> <li class="md-nav__item md-nav__item--active md-nav__item--nested"> <input class="md-nav__toggle md-toggle" data-md-toggle=__nav_4 type=checkbox id=__nav_4 checked> <label class=md-nav__link for=__nav_4> Tutorials <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav aria-label=Tutorials data-md-level=1> <label class=md-nav__title for=__nav_4> <span class="md-nav__icon md-icon"></span> Tutorials </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../about/ class=md-nav__link> SR Linux tutorials </a> </li> <li class="md-nav__item md-nav__item--active md-nav__item--nested"> <input class="md-nav__toggle md-toggle" data-md-toggle=__nav_4_2 type=checkbox id=__nav_4_2 checked> <label class=md-nav__link for=__nav_4_2> Layer 2 EVPN <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav aria-label="Layer 2 EVPN" data-md-level=2> <label class=md-nav__title for=__nav_4_2> <span class="md-nav__icon md-icon"></span> Layer 2 EVPN </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../intro/ class=md-nav__link> Introduction </a> </li> <li class="md-nav__item md-nav__item--active"> <input class="md-nav__toggle md-toggle" data-md-toggle=toc type=checkbox id=__toc> <label class="md-nav__link md-nav__link--active" for=__toc> Fabric configuration <span class="md-nav__icon md-icon"></span> </label> <a href=./ class="md-nav__link md-nav__link--active"> Fabric configuration </a> <nav class="md-nav md-nav--secondary" aria-label="Table of contents"> <label class=md-nav__title for=__toc> <span class="md-nav__icon md-icon"></span> Table of contents </label> <ul class=md-nav__list data-md-component=toc data-md-scrollfix> <li class=md-nav__item> <a href=#leaf-spine-interfaces class=md-nav__link> Leaf-Spine interfaces </a> </li> <li class=md-nav__item> <a href=#ebgp class=md-nav__link> EBGP </a> </li> <li class=md-nav__item> <a href=#loopbacks class=md-nav__link> Loopbacks </a> </li> <li class=md-nav__item> <a href=#verification class=md-nav__link> Verification </a> <nav class=md-nav aria-label=Verification> <ul class=md-nav__list> <li class=md-nav__item> <a href=#bgp-status class=md-nav__link> BGP status </a> </li> <li class=md-nav__item> <a href=#bgp-neighbor-status class=md-nav__link> BGP neighbor status </a> </li> <li class=md-nav__item> <a href=#receivedadvertised-routes class=md-nav__link> Received/Advertised routes </a> </li> <li class=md-nav__item> <a href=#route-table class=md-nav__link> Route table </a> </li> <li class=md-nav__item> <a href=#dataplane class=md-nav__link> Dataplane </a> </li> </ul> </nav> </li> <li class=md-nav__item> <a href=#resulting-configs class=md-nav__link> Resulting configs </a> </li> </ul> </nav> </li> <li class=md-nav__item> <a href=../evpn/ class=md-nav__link> EVPN configuration </a> </li> <li class=md-nav__item> <a href=../summary/ class=md-nav__link> Summary </a> </li> </ul> </nav> </li> </ul> </nav> </li> <li class=md-nav__item> <a href=../../../alwayson/ class=md-nav__link> Always-ON SR Linux </a> </li> <li class=md-nav__item> <a href=../../../community/ class=md-nav__link> SR Linux Community </a> </li> </ul> </nav> </div> </div> </div> <div class="md-sidebar md-sidebar--secondary" data-md-component=sidebar data-md-type=toc> <div class=md-sidebar__scrollwrap> <div class=md-sidebar__inner> <nav class="md-nav md-nav--secondary" aria-label="Table of contents"> <label class=md-nav__title for=__toc> <span class="md-nav__icon md-icon"></span> Table of contents </label> <ul class=md-nav__list data-md-component=toc data-md-scrollfix> <li class=md-nav__item> <a href=#leaf-spine-interfaces class=md-nav__link> Leaf-Spine interfaces </a> </li> <li class=md-nav__item> <a href=#ebgp class=md-nav__link> EBGP </a> </li> <li class=md-nav__item> <a href=#loopbacks class=md-nav__link> Loopbacks </a> </li> <li class=md-nav__item> <a href=#verification class=md-nav__link> Verification </a> <nav class=md-nav aria-label=Verification> <ul class=md-nav__list> <li class=md-nav__item> <a href=#bgp-status class=md-nav__link> BGP status </a> </li> <li class=md-nav__item> <a href=#bgp-neighbor-status class=md-nav__link> BGP neighbor status </a> </li> <li class=md-nav__item> <a href=#receivedadvertised-routes class=md-nav__link> Received/Advertised routes </a> </li> <li class=md-nav__item> <a href=#route-table class=md-nav__link> Route table </a> </li> <li class=md-nav__item> <a href=#dataplane class=md-nav__link> Dataplane </a> </li> </ul> </nav> </li> <li class=md-nav__item> <a href=#resulting-configs class=md-nav__link> Resulting configs </a> </li> </ul> </nav> </div> </div> </div> <div class=md-content data-md-component=content> <article class="md-content__inner md-typeset"> <a href=https://github.com/learn-srlinux/site/edit/master/docs/tutorials/l2evpn/fabric.md title="Edit this page" class="md-content__button md-icon"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg> </a> <h1>Fabric configuration</h1> <script type=text/javascript src=https://cdn.jsdelivr.net/gh/hellt/drawio-js@main/embed2.js async></script> <p>Prior to configuring EVPN based overlay, a routing protocol needs to be deployed in the fabric to advertise the reachability of all the leaf VXLAN Termination End Point (VTEP) addresses throughout the IP fabric.</p> <p>With SR Linux, the following routing protocols can be used in the underlay:</p> <ul> <li>ISIS</li> <li>OSPF</li> <li>EBGP</li> </ul> <p>We will use a BGP based fabric design as described in <a href=https://tools.ietf.org/html/rfc7938>RFC7938</a> due to its simplicity, scalability, and ease of multi-vendor interoperability.</p> <h2 id=leaf-spine-interfaces>Leaf-Spine interfaces<a class=headerlink href=#leaf-spine-interfaces title="Permanent link">#</a></h2> <p>Let's start with configuring the IP interfaces on the inter-switch links to ensure L3 connectivity is established. According to our lab topology configuration, and using the <code>192.168.xx.0/30</code> network to address the links, we will implement the following underlay addressing design:</p> <div class=mxgraph style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":2,"zoom":2,"highlight":"#0000ff","nav":true,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/learn-srlinux/site/diagrams/quickstart.drawio"}'></div> <p>On each leaf and spine we will bring up the relevant <a href=../../../basics/ifaces/ >interface</a> and address its routed <a href=../../../basics/ifaces/#subinterfaces>subinterface</a> to achieve L3 connectivity.</p> <p>We begin with connecting to the CLI of our nodes via SSH<sup id=fnref:1><a class=footnote-ref href=#fn:1>1</a></sup>:</p> <div class=highlight><pre><span></span><code><span class=c1># connecting to leaf1</span>
+ssh admin@clab-evpn01-leaf1
+</code></pre></div> <p>Then on each node we enter into <a href=../../../basics/cfgmgmt/#configuration-modes>candidate configuration mode</a> and proceed with the relevant interfaces configuration.</p> <p>Let's witness the step by step process of an interface configuration on a <code>leaf1</code> switch with providing the paste-ables snippets for the rest of the nodes</p> <ol> <li>Enter the <code>candidate</code> configuration mode to make edits to the configuration <div class=highlight><pre><span></span><code>Welcome to the srlinux CLI.
+Type &#39;help&#39; (and press &lt;ENTER&gt;) if you need any help using this.
+
+
+--{ running }--[  ]--
+A:leaf1# enter candidate
+</code></pre></div></li> <li>The prompt will indicate the changed active mode <div class=highlight><pre><span></span><code>--{ candidate shared default }--[  ]--
+A:leaf1#                              
+</code></pre></div></li> <li>Enter into the interface configuration context <div class=highlight><pre><span></span><code>--{ candidate shared default }--[  ]--
+A:leaf1# interface ethernet-1/49      
+</code></pre></div></li> <li>Create a subinterface under the parent interface to configure IPv4 address on it <div class=highlight><pre><span></span><code>--{ * candidate shared default }--[ interface ethernet-1/49 ]--
+A:leaf1# subinterface 0                                        
+--{ * candidate shared default }--[ interface ethernet-1/49 subinterface 0 ]--
+A:leaf1# ipv4 address 192.168.11.1/30                                         
+</code></pre></div></li> <li>Apply the configuration changes by issuing a <code>commit now</code> command. The changes will be written to the running configuration. <div class=highlight><pre><span></span><code>--{ * candidate shared default }--[ interface ethernet-1/49 subinterface 0 ipv4 address 192.168.11.1/30 ]--
+A:leaf1# commit now                                                                                        
+All changes have been committed. Leaving candidate mode.
+</code></pre></div></li> </ol> <p>Below you will find the relevant configuration snippets<sup id=fnref:2><a class=footnote-ref href=#fn:2>2</a></sup> for leafs and spine of our fabric which you can paste in the terminal while being in candidate mode.</p> <div class=tabbed-set data-tabs=1:3><input checked=checked id=__tabbed_1_1 name=__tabbed_1 type=radio><label for=__tabbed_1_1>leaf1</label><div class=tabbed-content> <div class=highlight><pre><span></span><code>interface ethernet-1/49 {
+    subinterface 0 {
+        ipv4 {
+            address 192.168.11.1/30 {
+            }
+        }
+    }
+}
+</code></pre></div> </div> <input id=__tabbed_1_2 name=__tabbed_1 type=radio><label for=__tabbed_1_2>leaf2</label><div class=tabbed-content> <div class=highlight><pre><span></span><code>interface ethernet-1/49 {
+    subinterface 0 {
+        ipv4 {
+            address 192.168.12.1/30 {
+            }
+        }
+    }
+}
+</code></pre></div> </div> <input id=__tabbed_1_3 name=__tabbed_1 type=radio><label for=__tabbed_1_3>spine1</label><div class=tabbed-content> <div class=highlight><pre><span></span><code>interface ethernet-1/1 {
+    subinterface 0 {
+        ipv4 {
+            address 192.168.11.2/30 {
+            }
+        }
+    }
+}
+interface ethernet-1/2 {
+    subinterface 0 {
+        ipv4 {
+            address 192.168.12.2/30 {
+            }
+        }
+    }
+}
+</code></pre></div> </div> </div> <p>Once those snippets are committed to the running configuration with <code>commit now</code> command, we can ensure that the changes have been applied by showing the interface status:</p> <div class=highlight><pre><span></span><code>--{ + running }--[  ]--                             
+A:spine1# show interface ethernet-1/1               
+====================================================
+ethernet-1/1 is up, speed 10G, type None
+  ethernet-1/1.0 is up
+    Network-instance: 
+    Encapsulation   : null
+    Type            : routed
+    IPv4 addr    : 192.168.11.2/30 (static, None)
+----------------------------------------------------
+====================================================
+</code></pre></div> <p>At this moment, the configured interfaces can not be used as they are not yet associated with any <a href=../../../basics/netwinstance/ >network instance</a>. Below we are placing the interfaces to the network-instance <code>default</code> that is created automatically by SR Linux.</p> <div class=tabbed-set data-tabs=2:2><input checked=checked id=__tabbed_2_1 name=__tabbed_2 type=radio><label for=__tabbed_2_1>leaf1 &amp; leaf2</label><div class=tabbed-content> <div class=highlight><pre><span></span><code>--{ + candidate shared default }--[  ]--                                                   
+A:leaf1# network-instance default interface ethernet-1/49.0                                
+
+--{ +* candidate shared default }--[ network-instance default interface ethernet-1/49.0 ]--
+A:leaf1# commit now                                                                        
+All changes have been committed. Leaving candidate mode.
+</code></pre></div> </div> <input id=__tabbed_2_2 name=__tabbed_2 type=radio><label for=__tabbed_2_2>spine1</label><div class=tabbed-content> <div class=highlight><pre><span></span><code>--{ + candidate shared default }--[  ]--                                                  
+A:spine1# network-instance default interface ethernet-1/1.0                               
+
+--{ +* candidate shared default }--[ network-instance default interface ethernet-1/1.0 ]--
+A:spine1# /network-instance default interface ethernet-1/2.0                              
+
+--{ +* candidate shared default }--[ network-instance default interface ethernet-1/2.0 ]--
+A:spine2# commit now                                                                      
+All changes have been committed. Leaving candidate mode.
+</code></pre></div> </div> </div> <p>When interfaces are owned by the network-instance <code>default</code>, we can ensure that the basic IP connectivity is working by issuing a ping between the pair of interfaces. For example from <code>spine1</code> to <code>leaf2</code>:</p> <div class=highlight><pre><span></span><code>--{ + running }--[  ]--                                     
+A:spine1# ping 192.168.12.1 network-instance default        
+Using network instance default
+PING 192.168.12.1 (192.168.12.1) 56(84) bytes of data.
+64 bytes from 192.168.12.1: icmp_seq=1 ttl=64 time=31.4 ms
+64 bytes from 192.168.12.1: icmp_seq=2 ttl=64 time=10.0 ms
+64 bytes from 192.168.12.1: icmp_seq=3 ttl=64 time=13.1 ms
+64 bytes from 192.168.12.1: icmp_seq=4 ttl=64 time=16.5 ms
+^C
+--- 192.168.12.1 ping statistics ---
+4 packets transmitted, 4 received, 0% packet loss, time 3003ms
+rtt min/avg/max/mdev = 10.034/17.786/31.409/8.199 ms
+</code></pre></div> <h2 id=ebgp>EBGP<a class=headerlink href=#ebgp title="Permanent link">#</a></h2> <p>Since in this exercise the design decision was to use BGP in the data center, we need to configure BGP peering between the leaf-spine pairs. For that purpose we will use EBGP protocol.</p> <p>The EBGP will make sure of advertising the VTEP IP addresses (loopbacks) across the fabric. The VXLAN VTEPs themselves will be configured later, in this step we will take care of adding the EBGP peering.</p> <p>Let's turn this diagram with the ASN/Router ID allocation into a working configuration:</p> <div class=mxgraph style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":3,"zoom":2,"highlight":"#0000ff","nav":true,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/learn-srlinux/site/diagrams/quickstart.drawio"}'></div> <p>Here is a breakdown of the steps that are needed to configure EBGP on <code>leaf1</code> towards <code>spine1</code>:</p> <ol> <li> <p><strong>Add BGP protocol to network-instance</strong><br> Routing protocols are configured under a network-instance context. By adding BGP protocol to the default network-instance we implicitly enable this protocol.<br> <div class=highlight><pre><span></span><code>--{ + candidate shared default }--[  ]--       
+A:leaf1# network-instance default protocols bgp
+</code></pre></div></p> </li> <li> <p><strong>Assign Autonomous System Number</strong><br> The ASN is reported to peers when BGP speaker opens a session towards another router.<br> According to the diagram above, <code>leaf1</code> has ASN 101.<br> <div class=highlight><pre><span></span><code>--{ +* candidate shared default }--[ network-instance default protocols bgp ]--
+A:leaf1# autonomous-system 101
+</code></pre></div></p> </li> <li> <p><strong>Assign Router ID</strong><br> This is the BGP identifier reported to peers when this network-instance opens a BGP session towards another router.<br> Leaf1 has a router-id of 10.0.0.1. <div class=highlight><pre><span></span><code>--{ +* candidate shared default }--[ network-instance default protocols bgp ]--
+A:leaf1# router-id 10.0.0.1
+</code></pre></div></p> </li> <li> <p><strong>Enable AF</strong><br> Enable all address families that should be enabled globally as a default for all peers of the BGP instance.<br> When you later configure individual neighbors or groups, you can override the enabled families at those levels.<br> For the sake of IPv4 loopbacks advertisement, we only need to enable <code>ipv4-unicast</code> address family: <div class=highlight><pre><span></span><code>--{ +* candidate shared default }--[ network-instance default protocols bgp ]--
+A:leaf1# ipv4-unicast admin-state enable
+</code></pre></div></p> </li> <li> <p><strong>Create export/import policies</strong><br> The export/import policy is required for an EBGP peer to advertise and install routes.<br> The policy named <code>all</code> that we create below will be used both as an import and export policy, effectively allowing all routes to be advertised and received<sup id=fnref:4><a class=footnote-ref href=#fn:4>4</a></sup>. </p> <p>The routing policies are configured at <code>/routing-policy</code> context, so first, we switch to it from the current <code>bgp</code> context: <div class=highlight><pre><span></span><code>--{ * candidate shared default }--[ network-instance default protocols bgp ]--
+A:leaf1# /routing-policy                                                      
+
+--{ * candidate shared default }--[ routing-policy ]--                        
+A:leaf1#
+</code></pre></div> Now that we are in the right context, we can paste the policy definition: <div class=highlight><pre><span></span><code>--{ +* candidate shared default }--[ routing-policy ]--
+A:leaf1# info
+    policy all {
+        default-action {
+            accept {
+            }
+        }
+    }
+</code></pre></div></p> </li> <li> <p><strong>Create peer-group config</strong><br> A peer group should include sessions that have a similar or almost identical configuration.<br> In this example, the peer group is named <code>eBGP-underlay</code> since it will be used to enable underlay routing between the leafs and spines.<br> New groups are administratively enabled by default.</p> <p>First, we come back to the bgp context from the routing-policy context: <div class=highlight><pre><span></span><code>--{ * candidate shared default }--[ routing-policy ]--
+A:leaf1# /network-instance default protocols bgp      
+
+--{ * candidate shared default }--[ network-instance default protocols bgp ]--
+A:leaf1#
+</code></pre></div> Now create the peer group. The common group configuration includes the <code>peer-as</code> and <code>export-policy</code> statements. <div class=highlight><pre><span></span><code>--{ +* candidate shared default }--[ network-instance default protocols bgp ]--
+A:leaf1# group eBGP-underlay
+
+--{ +* candidate shared default }--[ network-instance default protocols bgp group eBGP-underlay ]--
+A:leaf1# peer-as 201                                                                               
+
+--{ +* candidate shared default }--[ network-instance default protocols bgp group eBGP-underlay ]--
+A:leaf1# export-policy all
+
+--{ +* candidate shared default }--[ network-instance default protocols bgp group eBGP-underlay ]--
+A:leaf1# import-policy all
+</code></pre></div></p> </li> <li> <p><strong>Configure neighbor</strong><br> Configure the BGP session with <code>spine1</code>. In this example, <code>spine1</code> is reachable through the <code>ethernet-1/49.0</code> subinterface. On this subnet, <code>spine1</code> has the IPv4 address <code>192.168.11.2</code>.<br> In this minimal configuration example, the only required configuration for the neighbor is its association with the group <code>eBGP-underlay</code> that was previously created.<br> New neighbors are administratively enabled by default. <div class=highlight><pre><span></span><code>--{ +* candidate shared default }--[ network-instance default protocols bgp ]--
+A:leaf1# neighbor 192.168.11.2 peer-group eBGP-underlay
+</code></pre></div></p> </li> <li> <p><strong>Commit configuration</strong><br> It seems like the EBGP config has been sorted out. Let's see what we have in our candidate datastore so far.<br> Regardless of which context you are currently in, you can see the diff against the baseline config by doing <code>diff /</code> <div class=highlight><pre><span></span><code>--{ * candidate shared default }--[ network-instance default protocols bgp group eBGP-underlay ]--
+A:leaf1# diff /                                                                                   
+    network-instance default {
+        protocols {
++             bgp {
++                 autonomous-system 101
++                 router-id 10.0.0.1
++                 group eBGP-underlay {
++                     export-policy all
++                     import-policy all
++                     peer-as 201
++                 }
++                 ipv4-unicast {
++                     admin-state enable
++                 }
++                 neighbor 192.168.11.2 {
++                     peer-group eBGP-underlay
++                 }
++             }
+        }
+    }
++     routing-policy {
++         policy all {
++             default-action {
++                 accept {
++                 }
++             }
++         }
++     }
+</code></pre></div> That is what we've added in all those steps above, everything looks OK, so we are good to commit the configuration. <div class=highlight><pre><span></span><code>--{ +* candidate shared default }--[ network-instance default protocols bgp ]--
+A:leaf1# commit now
+</code></pre></div></p> </li> </ol> <p>EBGP configuration on <code>leaf2</code> and <code>spine1</code> is almost a twin of the one we did for <code>leaf1</code>. Here is a copy-paste-able<sup id=fnref:3><a class=footnote-ref href=#fn:3>3</a></sup> config snippets for all of the nodes:</p> <div class=tabbed-set data-tabs=3:3><input checked=checked id=__tabbed_3_1 name=__tabbed_3 type=radio><label for=__tabbed_3_1>leaf1</label><div class=tabbed-content> <div class=highlight><pre><span></span><code>network-instance default {
+    protocols {
+        bgp {
+            autonomous-system 101
+            router-id 10.0.0.1
+            group eBGP-underlay {
+                export-policy all
+                import-policy all
+                peer-as 201
+            }
+            ipv4-unicast {
+                admin-state enable
+            }
+            neighbor 192.168.11.2 {
+                peer-group eBGP-underlay
+            }
+        }
+    }
+}
+routing-policy {
+    policy pass-all-bgp {
+        default-action {
+            accept {
+            }
+        }
+    }
+}
+</code></pre></div> </div> <input id=__tabbed_3_2 name=__tabbed_3 type=radio><label for=__tabbed_3_2>leaf2</label><div class=tabbed-content> <div class=highlight><pre><span></span><code>network-instance default {
+    protocols {
+        bgp {
+            autonomous-system 102
+            router-id 10.0.0.2
+            group eBGP-underlay {
+                export-policy all
+                import-policy all
+                peer-as 201
+            }
+            ipv4-unicast {
+                admin-state enable
+            }
+            neighbor 192.168.12.2 {
+                peer-group eBGP-underlay
+            }
+        }
+    }
+}
+routing-policy {
+    policy pass-all-bgp {
+        default-action {
+            accept {
+            }
+        }
+    }
+}
+</code></pre></div> </div> <input id=__tabbed_3_3 name=__tabbed_3 type=radio><label for=__tabbed_3_3>spine1</label><div class=tabbed-content> <p>Spine configuration is a bit different, in a way that <code>peer-as</code> is specified under the neighbor context, and not the group one. <div class=highlight><pre><span></span><code>network-instance default {
+    protocols {
+        bgp {
+            autonomous-system 201
+            router-id 10.0.1.1
+            group eBGP-underlay {
+                export-policy all
+                import-policy all
+            }
+            ipv4-unicast {
+                admin-state enable
+            }
+            neighbor 192.168.11.1 {
+                peer-group eBGP-underlay
+                peer-as 101
+            }
+            neighbor 192.168.12.1 {
+                peer-group eBGP-underlay
+                peer-as 102
+            }
+        }
+    }
+}
+routing-policy {
+    policy pass-all-bgp {
+        default-action {
+            accept {
+            }
+        }
+    }
+}
+</code></pre></div></p> </div> </div> <h2 id=loopbacks>Loopbacks<a class=headerlink href=#loopbacks title="Permanent link">#</a></h2> <p>As we will create a IBGP based EVPN control plane at a later stage, we need to configure loopback addresses for our leaf devices so that they can build an IBGP peering over those interfaces.</p> <p>In the context of the VXLAN data plane, a special kind of a loopback needs to be created - <a href=../../../basics/ifaces/#system><code>system0</code></a> interface.</p> <div class="admonition info"> <p class=admonition-title>Info</p> <p>The <code>system0.0</code> interface hosts the loopback address used to originate and typically terminate VXLAN packets. This address is also used by default as the next-hop of all EVPN routes.</p> </div> <p>Configuration of the <code>system0</code> interface is exactly the same as for the regular interfaces. The IPv4 addresses we assign to <code>system0</code> interfaces will match the Router-ID of a given BGP speaker.</p> <div class=tabbed-set data-tabs=4:3><input checked=checked id=__tabbed_4_1 name=__tabbed_4 type=radio><label for=__tabbed_4_1>leaf1</label><div class=tabbed-content> <div class=highlight><pre><span></span><code>/interface system0 {
+    admin-state enable
+    subinterface 0 {
+        ipv4 {
+            address 10.0.0.1/32 {
+            }
+        }
+    }
+}
+/network-instance default {
+    interface system0.0 {
+    }
+}
+</code></pre></div> </div> <input id=__tabbed_4_2 name=__tabbed_4 type=radio><label for=__tabbed_4_2>leaf2</label><div class=tabbed-content> <div class=highlight><pre><span></span><code>/interface system0 {
+    admin-state enable
+    subinterface 0 {
+        ipv4 {
+            address 10.0.0.2/32 {
+            }
+        }
+    }
+}
+/network-instance default {
+    interface system0.0 {
+    }
+}
+</code></pre></div> </div> <input id=__tabbed_4_3 name=__tabbed_4 type=radio><label for=__tabbed_4_3>spine1</label><div class=tabbed-content> <div class=highlight><pre><span></span><code>/interface system0 {
+    admin-state enable
+    subinterface 0 {
+        ipv4 {
+            address 10.0.1.1/32 {
+            }
+        }
+    }
+}
+/network-instance default {
+    interface system0.0 {
+    }
+}
+</code></pre></div> </div> </div> <h2 id=verification>Verification<a class=headerlink href=#verification title="Permanent link">#</a></h2> <p>As stated in the beginning of this section, the VXLAN VTEPs need to be advertised throughout the DC fabric. The <code>system0</code> interfaces we just configured are the VTEPs and they should be advertised via EBGP peering established before. The following verification commands can help ensure that.</p> <h3 id=bgp-status>BGP status<a class=headerlink href=#bgp-status title="Permanent link">#</a></h3> <p>The first thing worth verifying is that BGP protocol is enabled and operational on all devices. Below is an example of a BGP summary command issued on <code>leaf1</code>:</p> <div class=highlight><pre><span></span><code><span class=linenos data-linenos=" 1 "></span>--{ + running }--[  ]--
+<span class=linenos data-linenos=" 2 "></span>A:leaf1# show network-instance default protocols bgp summary
+<span class=linenos data-linenos=" 3 "></span>-------------------------------------------------------------
+<span class=linenos data-linenos=" 4 "></span>BGP is enabled and up in network-instance &quot;default&quot;
+<span class=linenos data-linenos=" 5 "></span>Global AS number  : 101
+<span class=linenos data-linenos=" 6 "></span>BGP identifier    : 10.0.0.1
+<span class=linenos data-linenos=" 7 "></span>-------------------------------------------------------------
+<span class=linenos data-linenos=" 8 "></span>  Total paths               : 3
+<span class=linenos data-linenos=" 9 "></span>  Received routes           : 3
+<span class=linenos data-linenos="10 "></span>  Received and active routes: None
+<span class=linenos data-linenos="11 "></span>  Total UP peers            : 1
+<span class=linenos data-linenos="12 "></span>  Configured peers          : 1, 0 are disabled
+<span class=linenos data-linenos="13 "></span>  Dynamic peers             : None
+<span class=linenos data-linenos="14 "></span>-------------------------------------------------------------
+<span class=linenos data-linenos="15 "></span>Default preferences
+<span class=linenos data-linenos="16 "></span>  BGP Local Preference attribute: 100
+<span class=linenos data-linenos="17 "></span>  EBGP route-table preference   : 170
+<span class=linenos data-linenos="18 "></span>  IBGP route-table preference   : 170
+<span class=linenos data-linenos="19 "></span>-------------------------------------------------------------
+<span class=linenos data-linenos="20 "></span>Wait for FIB install to advertise: True
+<span class=linenos data-linenos="21 "></span>Send rapid withdrawals           : disabled
+<span class=linenos data-linenos="22 "></span>-------------------------------------------------------------
+<span class=linenos data-linenos="23 "></span>Ipv4-unicast AFI/SAFI
+<span class=linenos data-linenos="24 "></span>    Received routes               : 3
+<span class=linenos data-linenos="25 "></span>    Received and active routes    : None
+<span class=linenos data-linenos="26 "></span>    Max number of multipaths      : 1, 1
+<span class=linenos data-linenos="27 "></span>    Multipath can transit multi AS: True
+<span class=linenos data-linenos="28 "></span>-------------------------------------------------------------
+<span class=linenos data-linenos="29 "></span>Ipv6-unicast AFI/SAFI
+<span class=linenos data-linenos="30 "></span>    Received routes               : None
+<span class=linenos data-linenos="31 "></span>    Received and active routes    : None
+<span class=linenos data-linenos="32 "></span>    Max number of multipaths      : 1,1
+<span class=linenos data-linenos="33 "></span>    Multipath can transit multi AS: True
+<span class=linenos data-linenos="34 "></span>-------------------------------------------------------------
+<span class=linenos data-linenos="35 "></span>EVPN-unicast AFI/SAFI
+<span class=linenos data-linenos="36 "></span>    Received routes               : None
+<span class=linenos data-linenos="37 "></span>    Received and active routes    : None
+<span class=linenos data-linenos="38 "></span>    Max number of multipaths      : N/A
+<span class=linenos data-linenos="39 "></span>    Multipath can transit multi AS: N/A
+<span class=linenos data-linenos="40 "></span>-------------------------------------------------------------
+</code></pre></div> <h3 id=bgp-neighbor-status>BGP neighbor status<a class=headerlink href=#bgp-neighbor-status title="Permanent link">#</a></h3> <p>Equally important is the neighbor summary status that we can observe with the following:</p> <div class=highlight><pre><span></span><code>--{ + running }--[  ]--
+A:spine1# show network-instance default protocols bgp neighbor
+----------------------------------------------------------------------------------------------------------------------------------------------
+BGP neighbor summary for network-instance &quot;default&quot;
+Flags: S static, D dynamic, L discovered by LLDP, B BFD enabled, - disabled, * slow
+----------------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------------
++----------------+-----------------------+----------------+------+---------+-------------+-------------+-----------+-----------------------+
+|    Net-Inst    |         Peer          |     Group      | Flag | Peer-AS |    State    |   Uptime    | AFI/SAFI  |    [Rx/Active/Tx]     |
+|                |                       |                |  s   |         |             |             |           |                       |
++================+=======================+================+======+=========+=============+=============+===========+=======================+
+| default        | 192.168.11.1          | eBGP-underlay  | S    | 101     | established | 0d:18h:20m: | ipv4-unic | [2/1/4]               |
+|                |                       |                |      |         |             | 49s         | ast       |                       |
+| default        | 192.168.12.1          | eBGP-underlay  | S    | 102     | established | 0d:18h:20m: | ipv4-unic | [2/1/4]               |
+|                |                       |                |      |         |             | 9s          | ast       |                       |
++----------------+-----------------------+----------------+------+---------+-------------+-------------+-----------+-----------------------+
+----------------------------------------------------------------------------------------------------------------------------------------------
+Summary:
+2 configured neighbors, 2 configured sessions are established,0 disabled peers
+0 dynamic peers
+</code></pre></div> <p>With this command we can ensure that the ipv4-unicast routes are exchanged between the BGP peers and all the sessions are in established state.</p> <h3 id=receivedadvertised-routes>Received/Advertised routes<a class=headerlink href=#receivedadvertised-routes title="Permanent link">#</a></h3> <p>The reason we configured EBGP in the fabric's the underlay is to advertise the VXLAN tunnel endpoints - <code>system0</code> interfaces. In the below output we verify that <code>leaf1</code> advertises the prefix of <code>system0</code> (<code>10.0.0.1/32</code>) interface towards its EBGP <code>spine1</code> peer: <div class=highlight><pre><span></span><code>--{ + running }--[  ]--
+A:leaf1# show network-instance default protocols bgp neighbor 192.168.11.2 advertised-rou
+tes ipv4
+-----------------------------------------------------------------------------------------
+Peer        : 192.168.11.2, remote AS: 201, local AS: 101
+Type        : static
+Description : None
+Group       : eBGP-underlay
+-----------------------------------------------------------------------------------------
+Origin codes: i=IGP, e=EGP, ?=incomplete
++-------------------------------------------------------------------------------------+
+|    Network        Next Hop       MED     LocPref           AsPath           Origin  |
++=====================================================================================+
+| 10.0.0.1/32      192.168.11.      -        100     [101]                       i    |
+|                  1                                                                  |
+| 192.168.11.0/3   192.168.11.      -        100     [101]                       i    |
+| 0                1                                                                  |
++-------------------------------------------------------------------------------------+
+-----------------------------------------------------------------------------------------
+2 advertised BGP routes
+-----------------------------------------------------------------------------------------
+</code></pre></div></p> <p>On the far end of the fabric, <code>leaf2</code> receives both the <code>leaf1</code> and <code>spine1</code> system interface prefixes:</p> <div class=highlight><pre><span></span><code>--{ + running }--[  ]--
+A:leaf2# show network-instance default protocols bgp neighbor 192.168.12.2 received-route
+s ipv4
+-----------------------------------------------------------------------------------------
+Peer        : 192.168.12.2, remote AS: 201, local AS: 102
+Type        : static
+Description : None
+Group       : eBGP-underlay
+-----------------------------------------------------------------------------------------
+Status codes: u=used, *=valid, &gt;=best, x=stale
+Origin codes: i=IGP, e=EGP, ?=incomplete
++-----------------------------------------------------------------------------------+
+|  Status      Network    Next Hop       MED       LocPref     AsPath      Origin   |
++===================================================================================+
+|    u*&gt;      10.0.0.1/   192.168.1       -          100      [201,           i     |
+|             32          2.2                                 101]                  |
+|    u*&gt;      10.0.1.1/   192.168.1       -          100      [201]           i     |
+|             32          2.2                                                       |
+|    u*&gt;      192.168.1   192.168.1       -          100      [201]           i     |
+|             1.0/30      2.2                                                       |
+|     *       192.168.1   192.168.1       -          100      [201]           i     |
+|             2.0/30      2.2                                                       |
++-----------------------------------------------------------------------------------+
+-----------------------------------------------------------------------------------------
+4 received BGP routes : 3 used 4 valid
+-----------------------------------------------------------------------------------------
+</code></pre></div> <h3 id=route-table>Route table<a class=headerlink href=#route-table title="Permanent link">#</a></h3> <p>The last stop in the control plane verification ride would be to check if the remote loopback prefixes were installed in the <code>default</code> network-instance where we expect them to be:</p> <div class=highlight><pre><span></span><code><span class=linenos data-linenos=" 1 "></span>--{ running }--[  ]--
+<span class=linenos data-linenos=" 2 "></span>A:leaf1# show network-instance default route-table ipv4-unicast summary
+<span class=linenos data-linenos=" 3 "></span>-----------------------------------------------------------------------------------------------------------------------------------
+<span class=linenos data-linenos=" 4 "></span>IPv4 Unicast route table of network instance default
+<span class=linenos data-linenos=" 5 "></span>-----------------------------------------------------------------------------------------------------------------------------------
+<span class=linenos data-linenos=" 6 "></span>+-----------------+-------+------------+----------------------+----------------------+----------+---------+-----------+-----------+
+<span class=linenos data-linenos=" 7 "></span>|     Prefix      |  ID   | Route Type |     Route Owner      |      Best/Fib-       |  Metric  |  Pref   | Next-hop  | Next-hop  |
+<span class=linenos data-linenos=" 8 "></span>|                 |       |            |                      |     status(slot)     |          |         |  (Type)   | Interface |
+<span class=linenos data-linenos=" 9 "></span>+=================+=======+============+======================+======================+==========+=========+===========+===========+
+<span class=linenos data-linenos="10 "></span>| 10.0.0.1/32     | 3     | host       | net_inst_mgr         | True/success         | 0        | 0       | None      | None      |
+<span class=linenos data-linenos="11 "></span>|                 |       |            |                      |                      |          |         | (extract) |           |
+<span class=hll><span class=linenos data-linenos="12 "></span>| 10.0.0.2/32     | 0     | bgp        | bgp_mgr              | True/success         | 0        | 170     | 192.168.1 | None      |
+</span><span class=linenos data-linenos="13 "></span>|                 |       |            |                      |                      |          |         | 1.2 (indi |           |
+<span class=linenos data-linenos="14 "></span>|                 |       |            |                      |                      |          |         | rect)     |           |
+<span class=hll><span class=linenos data-linenos="15 "></span>| 10.0.1.1/32     | 0     | bgp        | bgp_mgr              | True/success         | 0        | 170     | 192.168.1 | None      |
+</span><span class=linenos data-linenos="16 "></span>|                 |       |            |                      |                      |          |         | 1.2 (indi |           |
+<span class=linenos data-linenos="17 "></span>|                 |       |            |                      |                      |          |         | rect)     |           |
+<span class=linenos data-linenos="18 "></span>| 192.168.11.0/30 | 1     | local      | net_inst_mgr         | True/success         | 0        | 0       | 192.168.1 | ethernet- |
+<span class=linenos data-linenos="19 "></span>|                 |       |            |                      |                      |          |         | 1.1       | 1/49.0    |
+<span class=linenos data-linenos="20 "></span>|                 |       |            |                      |                      |          |         | (direct)  |           |
+<span class=linenos data-linenos="21 "></span>| 192.168.11.1/32 | 1     | host       | net_inst_mgr         | True/success         | 0        | 0       | None      | None      |
+<span class=linenos data-linenos="22 "></span>|                 |       |            |                      |                      |          |         | (extract) |           |
+<span class=linenos data-linenos="23 "></span>| 192.168.11.3/32 | 1     | host       | net_inst_mgr         | True/success         | 0        | 0       | None (bro | None      |
+<span class=linenos data-linenos="24 "></span>|                 |       |            |                      |                      |          |         | adcast)   |           |
+<span class=linenos data-linenos="25 "></span>| 192.168.12.0/30 | 0     | bgp        | bgp_mgr              | True/success         | 0        | 170     | 192.168.1 | None      |
+<span class=linenos data-linenos="26 "></span>|                 |       |            |                      |                      |          |         | 1.2 (indi |           |
+<span class=linenos data-linenos="27 "></span>|                 |       |            |                      |                      |          |         | rect)     |           |
+<span class=linenos data-linenos="28 "></span>+-----------------+-------+------------+----------------------+----------------------+----------+---------+-----------+-----------+
+<span class=linenos data-linenos="29 "></span>-----------------------------------------------------------------------------------------------------------------------------------
+<span class=linenos data-linenos="30 "></span>7 IPv4 routes total
+<span class=linenos data-linenos="31 "></span>7 IPv4 prefixes with active routes
+<span class=linenos data-linenos="32 "></span>0 IPv4 prefixes with active ECMP routes
+<span class=linenos data-linenos="33 "></span>-----------------------------------------------------------------------------------------------------------------------------------
+</code></pre></div> <p>Both <code>leaf2</code> and <code>spine1</code> prefixes are found in the route table of network-instance <code>default</code> and the <code>bgp_mgr</code> is the owner of those prefixes, which means that they have been added to the route-table by the BGP app.</p> <h3 id=dataplane>Dataplane<a class=headerlink href=#dataplane title="Permanent link">#</a></h3> <p>To finish the verification process let's ensure that the datapath is indeed working, and the VTEPs on both leafs can reach each other via the routed fabric underlay.</p> <p>For that we will use the <code>ping</code> command with src/dst set to loopback addresses:</p> <div class=highlight><pre><span></span><code>--{ running }--[  ]--
+A:leaf1# ping -I 10.0.0.1 network-instance default 10.0.0.2
+Using network instance default
+PING 10.0.0.2 (10.0.0.2) from 10.0.0.1 : 56(84) bytes of data.
+64 bytes from 10.0.0.2: icmp_seq=1 ttl=63 time=17.5 ms
+64 bytes from 10.0.0.2: icmp_seq=2 ttl=63 time=12.2 ms
+</code></pre></div> <p>Perfect, the VTEPs are reachable and the fabric underlay is properly configured. We can proceed with EVPN service configuration!</p> <h2 id=resulting-configs>Resulting configs<a class=headerlink href=#resulting-configs title="Permanent link">#</a></h2> <p>Below you will find aggregated configuration snippets which contain the entire fabric configuration we did in the steps above. Those snippets are in the <em>flat</em> format and were extracted with <code>info flat</code> command.</p> <div class="admonition note"> <p class=admonition-title>Note</p> <p><code>enter candidate</code> and <code>commit now</code> commands are part of the snippets, so it is possible to paste them right after you logged into the devices as well as the changes will get committed to running config.</p> </div> <div class=tabbed-set data-tabs=5:3><input checked=checked id=__tabbed_5_1 name=__tabbed_5 type=radio><label for=__tabbed_5_1>leaf1</label><div class=tabbed-content> <div class=highlight><pre><span></span><code>enter candidate
+
+# configuration of the physical interface and its subinterface
+set / interface ethernet-1/49
+set / interface ethernet-1/49 subinterface 0
+set / interface ethernet-1/49 subinterface 0 ipv4
+set / interface ethernet-1/49 subinterface 0 ipv4 address 192.168.11.1/30
+
+# system interface configuration
+set / interface system0
+set / interface system0 admin-state enable
+set / interface system0 subinterface 0
+set / interface system0 subinterface 0 ipv4
+set / interface system0 subinterface 0 ipv4 address 10.0.0.1/32
+
+# associating interfaces with net-ins default
+set / network-instance default
+set / network-instance default interface ethernet-1/49.0
+set / network-instance default interface system0.0
+
+# routing policy
+set / routing-policy
+set / routing-policy policy all
+set / routing-policy policy all default-action
+set / routing-policy policy all default-action accept
+
+# BGP configuration
+set / network-instance default protocols
+set / network-instance default protocols bgp
+set / network-instance default protocols bgp autonomous-system 101
+set / network-instance default protocols bgp router-id 10.0.0.1
+set / network-instance default protocols bgp group eBGP-underlay
+set / network-instance default protocols bgp group eBGP-underlay export-policy all
+set / network-instance default protocols bgp group eBGP-underlay import-policy all
+set / network-instance default protocols bgp group eBGP-underlay peer-as 201
+set / network-instance default protocols bgp ipv4-unicast
+set / network-instance default protocols bgp ipv4-unicast admin-state enable
+set / network-instance default protocols bgp neighbor 192.168.11.2
+set / network-instance default protocols bgp neighbor 192.168.11.2 peer-group eBGP-underlay
+
+commit now
+</code></pre></div> </div> <input id=__tabbed_5_2 name=__tabbed_5 type=radio><label for=__tabbed_5_2>leaf2</label><div class=tabbed-content> <div class=highlight><pre><span></span><code>enter candidate
+
+# configuration of the physical interface and its subinterface
+set / interface ethernet-1/49
+set / interface ethernet-1/49 subinterface 0
+set / interface ethernet-1/49 subinterface 0 ipv4
+set / interface ethernet-1/49 subinterface 0 ipv4 address 192.168.12.1/30
+
+# system interface configuration
+set / interface system0
+set / interface system0 admin-state enable
+set / interface system0 subinterface 0
+set / interface system0 subinterface 0 ipv4
+set / interface system0 subinterface 0 ipv4 address 10.0.0.2/32
+
+# associating interfaces with net-ins default
+set / network-instance default
+set / network-instance default interface ethernet-1/49.0
+set / network-instance default interface system0.0
+
+# routing policy
+set / routing-policy
+set / routing-policy policy all
+set / routing-policy policy all default-action
+set / routing-policy policy all default-action accept
+
+# BGP configuration
+set / network-instance default protocols
+set / network-instance default protocols bgp
+set / network-instance default protocols bgp autonomous-system 102
+set / network-instance default protocols bgp router-id 10.0.0.2
+set / network-instance default protocols bgp group eBGP-underlay
+set / network-instance default protocols bgp group eBGP-underlay export-policy all
+set / network-instance default protocols bgp group eBGP-underlay import-policy all
+set / network-instance default protocols bgp group eBGP-underlay peer-as 201
+set / network-instance default protocols bgp ipv4-unicast
+set / network-instance default protocols bgp ipv4-unicast admin-state enable
+set / network-instance default protocols bgp neighbor 192.168.12.2
+set / network-instance default protocols bgp neighbor 192.168.12.2 peer-group eBGP-underlay
+
+commit now
+</code></pre></div> </div> <input id=__tabbed_5_3 name=__tabbed_5 type=radio><label for=__tabbed_5_3>spine1</label><div class=tabbed-content> <div class=highlight><pre><span></span><code>enter candidate
+
+# configuration of the physical interface and its subinterface
+set / interface ethernet-1/1
+set / interface ethernet-1/1 subinterface 0
+set / interface ethernet-1/1 subinterface 0 ipv4
+set / interface ethernet-1/1 subinterface 0 ipv4 address 192.168.11.2/30
+set / interface ethernet-1/2
+set / interface ethernet-1/2 subinterface 0
+set / interface ethernet-1/2 subinterface 0 ipv4
+set / interface ethernet-1/2 subinterface 0 ipv4 address 192.168.12.2/30
+
+# system interface configuration
+set / interface system0
+set / interface system0 admin-state enable
+set / interface system0 subinterface 0
+set / interface system0 subinterface 0 ipv4
+set / interface system0 subinterface 0 ipv4 address 10.0.1.1/32
+
+# associating interfaces with net-ins default
+set / network-instance default
+set / network-instance default interface ethernet-1/1.0
+set / network-instance default interface ethernet-1/2.0
+set / network-instance default interface system0.0
+
+# routing policy
+set / routing-policy
+set / routing-policy policy all
+set / routing-policy policy all default-action
+set / routing-policy policy all default-action accept
+
+# BGP configuration
+set / network-instance default protocols
+set / network-instance default protocols bgp
+set / network-instance default protocols bgp autonomous-system 201
+set / network-instance default protocols bgp router-id 10.0.1.1
+set / network-instance default protocols bgp group eBGP-underlay
+set / network-instance default protocols bgp group eBGP-underlay export-policy all
+set / network-instance default protocols bgp group eBGP-underlay import-policy all
+set / network-instance default protocols bgp ipv4-unicast
+set / network-instance default protocols bgp ipv4-unicast admin-state enable
+set / network-instance default protocols bgp neighbor 192.168.11.1
+set / network-instance default protocols bgp neighbor 192.168.11.1 peer-as 101
+set / network-instance default protocols bgp neighbor 192.168.11.1 peer-group eBGP-underlay
+set / network-instance default protocols bgp neighbor 192.168.12.1
+set / network-instance default protocols bgp neighbor 192.168.12.1 peer-as 102
+set / network-instance default protocols bgp neighbor 192.168.12.1 peer-group eBGP-underlay
+
+commit now
+</code></pre></div> </div> </div> <div class=footnote> <hr> <ol> <li id=fn:1> <p>default SR Linux credentials are <code>admin:admin</code>.&#160;<a class=footnote-backref href=#fnref:1 title="Jump back to footnote 1 in the text">&#8617;</a></p> </li> <li id=fn:2> <p>the snippets were extracted with <code>info interface ethernet-1/x</code> command issued in running mode.&#160;<a class=footnote-backref href=#fnref:2 title="Jump back to footnote 2 in the text">&#8617;</a></p> </li> <li id=fn:3> <p>you can paste those snippets right after you do <code>enter candidate</code>&#160;<a class=footnote-backref href=#fnref:3 title="Jump back to footnote 3 in the text">&#8617;</a></p> </li> <li id=fn:4> <p>a more practical import/export policy would only export/import the loopback prefixes from leaf nodes. The spine nodes would export/import only the bgp-owned routes, as services are not typically present on the spines.&#160;<a class=footnote-backref href=#fnref:4 title="Jump back to footnote 4 in the text">&#8617;</a></p> </li> </ol> </div> </article> </div> </div> <a href=# class="md-top md-icon" title="Back to top" data-md-component=top data-md-state=hidden> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"/></svg> </a> </main> <footer class=md-footer> <nav class="md-footer__inner md-grid" aria-label=Footer> <a href=../intro/ class="md-footer__link md-footer__link--prev" aria-label="Previous: Introduction" rel=prev> <div class="md-footer__button md-icon"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg> </div> <div class=md-footer__title> <div class=md-ellipsis> <span class=md-footer__direction> Previous </span> Introduction </div> </div> </a> <a href=../evpn/ class="md-footer__link md-footer__link--next" aria-label="Next: EVPN configuration" rel=next> <div class=md-footer__title> <div class=md-ellipsis> <span class=md-footer__direction> Next </span> EVPN configuration </div> </div> <div class="md-footer__button md-icon"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg> </div> </a> </nav> <div class="md-footer-meta md-typeset"> <div class="md-footer-meta__inner md-grid"> <div class=md-footer-copyright> <div class=md-footer-copyright__highlight> Copyright &copy; 2021 Nokia </div> Made with <a href=https://squidfunk.github.io/mkdocs-material/ target=_blank rel=noopener> Material for MkDocs </a> </div> <div class=md-footer-social> <a href=https://discord.gg/tZvgjQ6PZf target=_blank rel=noopener title=discord.gg class=md-footer-social__link> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 448 512"><path d="M297.216 243.2c0 15.616-11.52 28.416-26.112 28.416-14.336 0-26.112-12.8-26.112-28.416s11.52-28.416 26.112-28.416c14.592 0 26.112 12.8 26.112 28.416zm-119.552-28.416c-14.592 0-26.112 12.8-26.112 28.416s11.776 28.416 26.112 28.416c14.592 0 26.112-12.8 26.112-28.416.256-15.616-11.52-28.416-26.112-28.416zM448 52.736V512c-64.494-56.994-43.868-38.128-118.784-107.776l13.568 47.36H52.48C23.552 451.584 0 428.032 0 398.848V52.736C0 23.552 23.552 0 52.48 0h343.04C424.448 0 448 23.552 448 52.736zm-72.96 242.688c0-82.432-36.864-149.248-36.864-149.248-36.864-27.648-71.936-26.88-71.936-26.88l-3.584 4.096c43.52 13.312 63.744 32.512 63.744 32.512-60.811-33.329-132.244-33.335-191.232-7.424-9.472 4.352-15.104 7.424-15.104 7.424s21.248-20.224 67.328-33.536l-2.56-3.072s-35.072-.768-71.936 26.88c0 0-36.864 66.816-36.864 149.248 0 0 21.504 37.12 78.08 38.912 0 0 9.472-11.52 17.152-21.248-32.512-9.728-44.8-30.208-44.8-30.208 3.766 2.636 9.976 6.053 10.496 6.4 43.21 24.198 104.588 32.126 159.744 8.96 8.96-3.328 18.944-8.192 29.44-15.104 0 0-12.8 20.992-46.336 30.464 7.68 9.728 16.896 20.736 16.896 20.736 56.576-1.792 78.336-38.912 78.336-38.912z"/></svg> </a> <a href=https://github.com/learn-srlinux target=_blank rel=noopener title=github.com class=md-footer-social__link> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 496 512"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg> </a> <a href=https://twitter.com/ntdvps target=_blank rel=noopener title=twitter.com class=md-footer-social__link> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 512 512"><path d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z"/></svg> </a> </div> </div> </div> </footer> </div> <div class=md-dialog data-md-component=dialog> <div class="md-dialog__inner md-typeset"></div> </div> <script id=__config type=application/json>{"base": "../../..", "features": ["navigation.top", "navigation.instant", "navigation.tracking", "navigation.tabs"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../../assets/javascripts/workers/search.477d984a.min.js", "version": null}</script> <script src=../../../assets/javascripts/bundle.82b56eb2.min.js></script> </body> </html>

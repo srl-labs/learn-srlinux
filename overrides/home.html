@@ -1,0 +1,595 @@
+{% extends "main.html" %}
+
+<!-- Render hero under tabs -->
+{% block tabs %}
+{{ super() }}
+
+<!-- Additional styles for landing page -->
+<style>
+    /* rdodin additions */
+    /* Hide main content for now */
+    /* .md-container {
+        background-color: #124191;
+    } */
+
+    /* .md-header {
+        background-color: #124191;
+    } */
+
+    /* Hide palette switcher */
+    /* .md-header__option {
+        display: none;
+    } */
+
+    /* Apply box shadow on smaller screens that don't display tabs */
+    @media only screen and (max-width: 1220px) {
+        .md-header {
+            box-shadow: 0 0 .2rem rgba(0, 0, 0, .1), 0 .2rem .4rem rgba(0, 0, 0, .2);
+            transition: color 250ms, background-color 250ms, box-shadow 250ms;
+        }
+    }
+
+    /* Hide main content for now */
+    .md-content {
+        display: none;
+    }
+
+    /* Hide table of contents */
+    @media screen and (min-width: 60em) {
+        .md-sidebar--secondary {
+            display: none;
+        }
+    }
+
+    /* Hide navigation */
+    @media screen and (min-width: 76.25em) {
+        .md-sidebar--primary {
+            display: none;
+        }
+    }
+
+    /* Get started button */
+    .md-typeset .md-button--primary {
+        color: var(--nokia-get-started-text-color);
+        background-color: var(--nokia-get-started-btn-color);
+        border-color: var(--nokia-get-started-btn-color);
+    }
+
+    .md-typeset .md-button--primary:hover {
+        color: var(--nokia-get-started-hover-text-color);
+        background-color: var(--nokia-get-started-hover-btn-color);
+        border-color: var(--nokia-get-started-hover-btn-color);
+    }
+
+    .tx-hero {
+        max-width: 700px;
+        display: flex;
+        padding: .4rem;
+        margin: 0 auto;
+        text-align: center;
+    }
+
+    /* .tx-hero h1 {
+        font-weight: 700;
+        font-size: 38px;
+        line-height: 46px;
+        color: rgb(38, 38, 38);
+    }
+
+    .tx-hero p {
+        color: rgb(92, 92, 92);
+        font-weight: 400;
+        font-size: 20px;
+        line-height: 32px;
+    } */
+
+    .tx-hero__image {
+        max-width: 1000px;
+        min-width: 600px;
+        width: 100%;
+        height: auto;
+        margin: 0 auto;
+        display: flex;
+        align-items: stretch;
+    }
+
+    .tx-hero__image img {
+        width: 100%;
+        height: 100%;
+        min-width: 0;
+    }
+
+    /* Secondary content styles */
+    .secondary-section {
+        /* background: #edf3f5 none repeat scroll 0% 0%; */
+        border-top: 1px solid rgb(222, 222, 222);
+        border-bottom: 1px solid rgb(222, 222, 222)
+    }
+
+    @media screen and (max-width: 1012px) {
+        .secondary-section {
+            display: block;
+        }
+    }
+
+    .secondary-section .g {
+        position: relative;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 0px 40px;
+        max-width: 1280px;
+    }
+
+    .secondary-section .g .section {
+        font-size: 18px;
+        /* font-weight: 400; */
+        line-height: 30px;
+        letter-spacing: normal;
+        padding: 88px 0px 116px;
+    }
+
+    .secondary-section .g .section.follow {
+        padding-top: 0px;
+    }
+
+
+    .secondary-section .g .section .component-wrapper {
+        display: flex;
+        -moz-box-align: center;
+        align-items: center;
+    }
+
+    @media screen and (max-width: 1012px) {
+        .secondary-section .g .section .component-wrapper {
+            display: block;
+        }
+    }
+
+    .secondary-section .g .section .component-wrapper h3 {
+        /* color: rgb(38, 38, 38); */
+        font-size: 36px;
+        font-weight: 700;
+        line-height: 46px;
+        letter-spacing: normal;
+        margin-bottom: 12px;
+    }
+
+    .secondary-section .g .section .component-wrapper h4 {
+        /* color: rgb(38, 38, 38); */
+    }
+
+    .secondary-section .g .section .component-wrapper p {
+        /* color: rgb(92, 92, 92); */
+        font-size: 18px;
+        /* font-weight: 400; */
+        line-height: 30px;
+        letter-spacing: normal;
+        margin-bottom: 16px;
+    }
+
+    .secondary-section .g .section .component-wrapper .image-wrapper {
+        margin-bottom: 12px;
+        overflow: hidden;
+        border-radius: 8px;
+        margin-top: 48px;
+        border: 1px solid rgb(222, 222, 222);
+        box-shadow: rgba(202, 202, 202, 0.15) 0px 0px 0px 6px;
+        max-width: 600px;
+        width: 100%;
+        height: auto;
+        margin: 0 auto;
+        display: flex;
+        align-items: stretch;
+    }
+
+    .image-wrapper img {
+        width: 100%;
+        height: 100%;
+        min-width: 0;
+    }
+
+    .secondary-section .g .section .component-wrapper .first-column {
+        padding-right: 100px;
+        flex: 0 1 auto;
+        height: auto;
+        width: 50%;
+    }
+
+    @media screen and (max-width: 1012px) {
+        .secondary-section .g .section .component-wrapper .first-column {
+            padding-right: 0px;
+            width: 100%;
+            margin-bottom: 32px;
+        }
+    }
+
+    .secondary-section .g .section .component-wrapper .second-column {
+        flex: 0 1 auto;
+        height: auto;
+        width: 50%;
+    }
+
+    @media screen and (max-width: 1012px) {
+        .secondary-section .g .section .component-wrapper .second-column {
+            width: 100%;
+            margin-bottom: 32px;
+        }
+    }
+
+    .secondary-section .g .section .component-wrapper .responsive-grid {
+        display: grid;
+        width: 100%;
+        grid-template-columns: repeat(1, 1fr);
+        gap: 2rem;
+    }
+
+    @media screen and (min-width: 64rem) {
+        .secondary-section .g .section .component-wrapper .responsive-grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+
+    .secondary-section .g .section .component-wrapper .responsive-grid a.card-wrapper {
+        text-decoration: none;
+        transition: none;
+        background: none;
+        padding: 0;
+    }
+
+    .secondary-section .g .section .component-wrapper .responsive-grid .card {
+        position: relative;
+        /* background-color: #98a2ae; */
+        padding: 1.5rem;
+        display: flex;
+        flex-direction: row;
+        -moz-box-align: center;
+        align-items: center;
+        height: 100%;
+        -moz-box-pack: start;
+        justify-content: flex-start;
+        box-shadow: rgba(0, 0, 0, 0.09) 0.3125rem 0.3125rem 0px -0.0625rem, rgba(0, 0, 0, 0.15) 0px 0.25rem 0.5rem 0px;
+        transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1) 0s;
+    }
+
+    .secondary-section .g .section .component-wrapper .responsive-grid .card:hover {
+        box-shadow: rgba(0, 0, 0, 0.2) 0.3125rem 0.3125rem 0px -0.0625rem, rgba(0, 0, 0, 0.26) 0px 0.25rem 0.5rem 0px;
+    }
+
+    @media screen and (min-width: 75rem) {
+        .secondary-section .g .section .component-wrapper .responsive-grid .card {
+            padding: 2rem 2.5rem;
+        }
+    }
+
+    @media screen and (min-width: 36rem) {
+        .secondary-section .g .section .component-wrapper .responsive-grid .card {
+            padding: 1rem 1.5rem;
+        }
+    }
+
+    .secondary-section .g .section .component-wrapper .responsive-grid .card .logo {
+        margin-right: 0.75rem;
+        width: 1.2rem;
+        min-width: 1.2rem;
+    }
+
+    .secondary-section .g .section .component-wrapper .responsive-grid .card .card-content {
+        display: flex;
+        flex: 1 1 0%;
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .secondary-section .g .section .component-wrapper .responsive-grid .card .card-content h5 {
+        /* color: rgb(61, 61, 61); */
+        margin: 0;
+    }
+
+    .secondary-section .g .section .component-wrapper .responsive-grid .card .card-content p {
+        margin-top: 0.25em;
+        margin-bottom: 0;
+        /* color: rgb(92, 92, 92); */
+        font-size: 0.65rem;
+        font-weight: 300;
+        line-height: normal;
+    }
+
+    .secondary-section .g .section .component-wrapper .responsive-grid .card .card-content code {
+        background: rgba(0, 0, 0, 0.05) none repeat scroll 0% 0%;
+        padding: 2px 6px;
+        border-radius: 4px;
+    }
+
+
+    .component-wrapper span.em {
+        color: rgb(61, 61, 61);
+    }
+
+    .component-wrapper a {
+        transition: color 125ms;
+        /* color: rgb(61, 61, 61); */
+        background: rgba(0, 0, 0, 0.05) none repeat scroll 0% 0%;
+        padding: 2px 6px;
+        margin: 0px 1px;
+        border-radius: 4px;
+        display: inline;
+        cursor: pointer;
+        font-weight: 600;
+    }
+
+    .component-wrapper a:hover {
+        color: var(--md-typeset-a-color);
+        background: var(--md-accent-fg-color--transparent);
+    }
+
+    .twemoji {
+        fill: currentColor;
+    }
+</style>
+
+<!-- Hero for landing page -->
+<div class="md-container tx-hero">
+    <div class="md-grid md-typeset">
+        <div class="md-main__inner">
+            <div>
+                <h1>Learn Nokia SR Linux</h1>
+                <p><a href="https://www.nokia.com/networks/products/service-router-linux-NOS">Nokia Service Router
+                        Linux (SR Linux)</a> is a truly open network operating system (NOS) that makes your
+                    data center switching infrastructure more scalable, more flexible and simpler to operate.
+                </p>
+                <a href="get-started/" title="Get Started" class="md-button md-button--primary">
+                    Get started
+                    <svg width="11" height="10" viewBox="0 0 11 10" fill="none" style="margin-left:2px">
+                        <path d="M1 5.16772H9.5M9.5 5.16772L6.5 1.66772M9.5 5.16772L6.5 8.66772" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="md-container secondary-section">
+    <div class="g">
+        <!-- Architecture as building blocks -->
+        <div class="section">
+            <div class="component-wrapper">
+                <div class="first-column">
+                    <h3>What is Nokia SR Linux?</h3>
+                    <p>
+                        SR Linux is a part of the <a
+                            href="https://www.nokia.com/networks/solutions/data-center-switching-fabric/">Nokia
+                            Data
+                            Center Fabric</a> solution that has been
+                        designed from the ground up to free
+                        your cloud builder networking teams
+                        to rapidly design and deploy, easily
+                        adapt and integrate and confidently
+                        operate and automate data center
+                        network fabrics: at scale.
+                    </p>
+                    <p>
+                        SR Linux is a truly open, extensible and resilient network operating system (NOS) is the
+                        foundation of this
+                        next generation solution,
+                        enabling scalability, flexibility and efficiency across your data center and cloud environments.
+                    </p>
+                </div>
+                <div class="second-column">
+                    <div class="image-wrapper">
+                        <img src="https://gitlab.com/rdodin/pics/-/wikis/uploads/84608e483cbb2e6a3c4dcbfdea6fc198/dc1-3.2-800px.jpg"
+                            alt="" draggable="false">
+                    </div>
+                </div>
+            </div>
+            <div class="component-wrapper" style="display: block;">
+                <h4>Key features</h4>
+
+                <!-- Standard kernel -->
+                <div class="responsive-grid">
+                    <div class="card">
+                        <div class="logo">
+                            <span class="twemoji">
+                                {% include ".icons/fontawesome/brands/linux.svg" %}
+                            </span>
+                        </div>
+                        <div class="card-content">
+                            <h5>Standard linux kernel</h5>
+                            <p>
+                                By using an unmodified Linux-based
+                                kernel as the foundation on which a suite of network applications is built,
+                                SR Linux provides reliability, portability and ease of application development.
+                            </p>
+                        </div>
+                    </div>
+
+
+                    <!-- Modular arch kernel -->
+                    <div class="card">
+                        <div class="logo">
+                            <span class="twemoji">
+                                {% include ".icons/material/view-module.svg" %}
+                            </span>
+                        </div>
+                        <div class="card-content">
+                            <h5>Modular architecture</h5>
+                            <p>
+                                Designed from the ground up architecture that meets
+                                the demands of scalability, visibility and ease of operations.
+                            </p>
+                        </div>
+                    </div>
+
+
+                    <!-- Networking -->
+                    <div class="card">
+                        <div class="logo">
+                            <span class="twemoji">
+                                {% include ".icons/fontawesome/solid/network-wired.svg" %}
+                            </span>
+                        </div>
+                        <div class="card-content">
+                            <h5>Proven protocol stack</h5>
+                            <p>
+                                By using SR Linux,
+                                your data center operators benefit from the resilience, stability, scalability
+                                and proven interoperability of Nokia SR OS.
+                            </p>
+                        </div>
+                    </div>
+
+
+                    <!-- Telemetry -->
+                    <div class="card">
+                        <div class="logo">
+                            <span class="twemoji">
+                                {% include ".icons/material/chart-line.svg" %}
+                            </span>
+                        </div>
+                        <div class="card-content">
+                            <h5>Streaming telemetry</h5>
+                            <p>
+                                SR Linux delivers an open and extensible infrastructure, which allows the
+                                retrieval of fine-grained system state, configuration setting, and a scalable
+                                interface to support more granular data with push-based streaming telemetry.
+                            </p>
+                        </div>
+                    </div>
+
+
+                    <!-- CLI -->
+                    <div class="card">
+                        <div class="logo">
+                            <span class="twemoji">
+                                {% include ".icons/octicons/terminal-16.svg" %}
+                            </span>
+                        </div>
+                        <div class="card-content">
+                            <h5>Customizable CLI</h5>
+                            <p>
+                                An advanced, Python-based CLI provides a flexible framework for accessing the
+                                system’s underlying data models. Operators can leverage CLI plugins
+                                to completely customize the way the CLI operates.
+                            </p>
+                        </div>
+                    </div>
+
+
+
+                    <!-- NDK -->
+                    <div class="card">
+                        <div class="logo">
+                            <span class="twemoji">
+                                {% include ".icons/fontawesome/solid/puzzle-piece.svg" %}
+                            </span>
+                        </div>
+                        <div class="card-content">
+                            <h5>Network Development Kit (NDK)</h5>
+                            <p>
+                                The NDK enables operators to integrate their own and third-party
+                                applications into the system with all the same benefits as Nokia applications.
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Getting started -->
+        <div class="section follow">
+            <div class="component-wrapper">
+                <div class="first-column">
+                    <h3>Getting started with SR Linux</h3>
+                    <p>
+                        SR Linux packs a lot of unique features that datacenter networking teams can leverage.
+                        Some of the features being truly new to the networking domain.
+                        The goal of this portal is to demonstrate these features and make SR Linux familiar to every
+                        visitor.
+                    </p>
+                    <p>
+                        We believe that learning by doing yields the best results. With that in mind we made SR Linux
+                        container image available to everybody without any registration or licensing.
+                    </p>
+                    <p>
+                        The tutorials on this portal will be augmented with lab scenarios that anyone can spin locally
+                        at any time.
+                    </p>
+                </div>
+                <div class="second-column">
+                    <div class="image-wrapper">
+                        <img src="https://gitlab.com/rdodin/pics/-/wikis/uploads/cf81e580e5304c65bbca1ed4958a12ff/dc2-3.2-800px.jpg"
+                            alt="" draggable="false">
+                    </div>
+                </div>
+            </div>
+
+            <div class="component-wrapper" style="display: block;">
+                <!-- cSRL -->
+                <div class="responsive-grid">
+                    <a class="card-wrapper" href="get-started/#sr-linux-container-image">
+                        <div class="card">
+                            <div class="logo">
+                                <span class="twemoji">
+                                    {% include ".icons/fontawesome/brands/docker.svg" %}
+                                </span>
+                            </div>
+                            <div class="card-content">
+                                <h5>Open container image</h5>
+                                <p>
+                                    Run SR Linux anywhere where Docker is installed. Free and easy.
+                                </p>
+                            </div>
+                        </div>
+                    </a>
+
+                    <!-- Labs -->
+                    <a class="card-wrapper" href="tutorials/about/">
+                        <div class="card">
+                            <div class="logo">
+                                <span class="twemoji">
+                                    {% include ".icons/material/flask.svg" %}
+                                </span>
+                            </div>
+                            <div class="card-content">
+                                <h5>Learn by doing</h5>
+                                <p>
+                                    Get to the grips of SR Linux features by doing real labs built with SR Linux
+                                    container image.
+                                </p>
+                            </div>
+                        </div>
+                    </a>
+
+                    <!-- Community -->
+                    <a class="card-wrapper" href="https://discord.gg/tZvgjQ6PZf">
+                        <div class="card">
+                            <div class="logo">
+                                <span class="twemoji">
+                                    {% include ".icons/material/chat.svg" %}
+                                </span>
+                            </div>
+                            <div class="card-content">
+                                <h5>Engage with the community</h5>
+                                <p>
+                                    Like-minded people are always getting together. As to SR Linux we hang out in
+                                    Discord!<br />
+                                    <small>unofficial group</small>
+                                </p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+<!-- Content -->
+{% block content %}{% endblock %}
+
+<!-- Application footer -->
+{% block footer %}
+{{ super() }}
+{% endblock %}
