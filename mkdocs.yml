@@ -10,11 +10,12 @@ nav:
       - Network instances: basics/netwinstance.md
   - Tutorials:
       - SR Linux tutorials: tutorials/about.md
-      - Layer 2 EVPN:
-          - Introduction: tutorials/l2evpn/intro.md
-          - Fabric configuration: tutorials/l2evpn/fabric.md
-          - EVPN configuration: tutorials/l2evpn/evpn.md
-          - Summary: tutorials/l2evpn/summary.md
+      - EVPN:
+          - Layer 2 EVPN:
+              - Introduction: tutorials/l2evpn/intro.md
+              - Fabric configuration: tutorials/l2evpn/fabric.md
+              - EVPN configuration: tutorials/l2evpn/evpn.md
+              - Summary: tutorials/l2evpn/summary.md
   - Always-ON SR Linux: alwayson.md
   - SR Linux Community: community.md
 
