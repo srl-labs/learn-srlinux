@@ -1,6 +1,6 @@
 SR Linux packs a lot of unique features that the data center networking teams can leverage.
 Some of the features being truly new to the networking domain.
-The goal of this portal is to introduce SR Linux to the visitors by demonstrating those features in an interactive and educational way.
+The goal of this portal is to introduce SR Linux to the visitors through the interactive tutorials centered around SR Linux services and capabilities.
 
 We believe that learning by doing yields the best results. With that in mind we made SR Linux container image available to everybody without any registration or licensing requirements :partying_face:
 
@@ -10,13 +10,13 @@ The public SR Linux container image when powered by [containerlab](https://conta
 A single container image that hosts management, control and data plane functions is all you need to get started.
 
 ### Getting the image
-To make our SR Linux image easily available to everyone, we published it to a publicly accessible GitHub container registry. This means that you can pull SR Linux container image exactly the same way as you would pull any other image:
+To make our SR Linux image available to everyone, we pushed it to a [publicly accessible GitHub container registry](https://github.com/orgs/nokia/packages/container/package/srlinux). This means that you can pull SR Linux container image exactly the same way as you would pull any other image:
 
 ```shell
 docker pull ghcr.io/nokia/srlinux
 ```
 
-When image is referenced without a tag, the latest container image will be pulled. To obtain a specific version of a containerized SR Linux, refer to the [list of tags](https://github.com/orgs/nokia/packages/container/srlinux/versions) the `nokia/srlinux` image has.
+When image is referenced without a tag, the latest container image version will be pulled. To obtain a specific version of a containerized SR Linux, refer to the [list of tags](https://github.com/orgs/nokia/packages/container/srlinux/versions) the `nokia/srlinux` image has and change the `docker pull` command accordingly.
 
 ### Running SR Linux
 When the image is pulled to a local image store, you can start exploring SR Linux by either running a full-fledged lab topology, or by starting a single container to explore SR Linux CLI and its management interfaces.
@@ -25,13 +25,13 @@ A system on which you can run SR Linux containers should conform to the followin
 
 1. Linux OS with a kernel v4+[^1].
 1. [Docker](https://docs.docker.com/engine/install/) container runtime.
-1. At least 2 vcpu and 4GB RAM.
+1. At least 2 vCPU and 4GB RAM.
 1. A user with administrative privileges.
 
 Let's explore the different ways you can launch SR Linux container.
 
 #### Docker CLI
-`docker` CLI tool offers a quick way to run standalone SR Linux container:
+`docker` CLI offers a quick way to run standalone SR Linux container:
 
 ```shell
 docker run -t -d --rm --privileged \
@@ -44,7 +44,7 @@ The above command will start the container named `srlinux` on the host system wi
 
 This approach is viable when all you need is to run a standalone container to explore SR Linux CLI or to interrogate its management interfaces. But it is not particularly suitable to run multiple SR Linux containers with links between them, as this requires some extra work.
 
-For multi-node SR Linux deployments containerlab offers a better way.
+For multi-node SR Linux deployments containerlab[^3] offers a better way.
 
 #### Containerlab
 
@@ -54,7 +54,7 @@ For multi-node SR Linux deployments containerlab offers a better way.
 
 [Containerlab](https://containerlab.srlinux.dev) provides a CLI for orchestrating and managing container-based networking labs. It starts the containers, builds a virtual wiring between them and manages labs lifecycle.
 
-A [quickstart](https://containerlab.srlinux.dev/quickstart/) guide is a perfect place to get started with containerlab. For the sake of completeness, let's have a look at the containerlab file that defines a lab with two SR Linux nodes connected back to back together:
+A [quickstart guide](https://containerlab.srlinux.dev/quickstart/) is a perfect place to get started with containerlab. For the sake of completeness, let's have a look at the containerlab file that defines a lab with two SR Linux nodes connected back to back together:
 
 ```yaml
 # file: srlinux.clab.yml
@@ -92,8 +92,6 @@ INFO[0001] Writing /etc/hosts file
 | 2 | clab-srlinux-srl2  | 4d4494aba320 | ghcr.io/nokia/srlinux | srl  |       | running | 172.20.20.4/24 | 2001:172:20:20::4/64 |
 +---+--------------------+--------------+-----------------------+------+-------+---------+----------------+----------------------+
 ```
-
-The labs we will use on this site will be deployed with containerlab.
 
 #### Deployment verification
 Regardless of the way you spin up SR Linux container it will be visible in the output of the `docker ps` command. If the deployment process went well and the container did not exit, a user can see it with `docker ps` command:
@@ -163,5 +161,6 @@ supported models:
 <SNIP>
 ```
 
-[^1]: Centos 7.3+ although having a 3.x kernel is still capable of running SR Linux container.
+[^1]: Centos 7.3+ although having a 3.x kernel is still capable of running SR Linux container
 [^2]: for example [gnmic](https://gnmic.kmrd.dev)
+[^3]: The labs referenced on this site are deployed with containerlab unless stated otherwise
