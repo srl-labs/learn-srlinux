@@ -9,10 +9,10 @@
 | **Lab name**                   | evpn01                                                                                                                                                                                                 |
 | **Packet captures**            | [EVPN IMET routes exchange][capture-imets], [RT2 routes exchange with ICMP in datapath][capture-rt2-datapath]                                                                                          |
 | **Main ref documents**         | [RFC 7432 - BGP MPLS-Based Ethernet VPN](https://www.rfcreader.com/#rfc7432),<br/>[RFC 8365 - A Network Virtualization Overlay Solution Using Ethernet VPN (EVPN)](https://www.rfcreader.com/#rfc8365) |
-| **Version information**[^3]    | [`containerlab:0.15.4`][clab-install], [`srlinux:21.6.1-250`][srlinux-container], [`docker-ce:20.10.2`][docker-install]                                                                                |
+| **Version information**[^1]    | [`containerlab:0.15.4`][clab-install], [`srlinux:21.6.1-250`][srlinux-container], [`docker-ce:20.10.2`][docker-install]                                                                                |
 
 Ethernet Virtual Private Network (EVPN) is a standard technology in multi-tenant Data Centers (DCs) and provides a control plane framework for many functions.  
-In this tutorial we will configure a **VXLAN based Layer 2 EVPN service**[^5] in a tiny CLOS fabric and at the same get to know SR Linux better!
+In this tutorial we will configure a **VXLAN based Layer 2 EVPN service**[^3] in a tiny CLOS fabric and at the same get to know SR Linux better!
 
 The DC fabric that we will build for this tutorial consists of the two leaf switches (acting as Top-Of-Rack) and a single spine:
 
@@ -67,7 +67,7 @@ topology:
     - endpoints: ["srv2:eth1", "leaf2:e1-1"]
 ```
 
-Save[^4] the contents of this file under `evpn01.clab.yml` name and you are ready to deploy:
+Save[^2] the contents of this file under `evpn01.clab.yml` name and you are ready to deploy:
 ```
 $ containerlab deploy -t evpn01.clab.yml
 INFO[0000] Parsing & checking topology file: evpn01.clab.yml 
@@ -105,7 +105,7 @@ ssh admin@clab-evpn01-leaf1
 With the lab deployed we are ready to embark on our learn-by-doing EVPN configuration journey!
 
 !!!note
-    We advise the newcomers not to skip the [SR Linux basic concepts](../../basics/hwtypes.md) chapter as it provides just enough[^2] details to survive in the configuration waters we are about to get.
+    We advise the newcomers not to skip the [SR Linux basic concepts](../../basics/hwtypes.md) chapter as it provides just enough[^4] details to survive in the configuration waters we are about to get.
 
 [topofile]: https://github.com/learn-srlinux/site/blob/master/labs/evpn01.clab.yml
 [clab-install]: https://containerlab.srlinux.dev/install/
@@ -114,8 +114,7 @@ With the lab deployed we are ready to embark on our learn-by-doing EVPN configur
 [capture-imets]: https://github.com/learn-srlinux/site/blob/master/docs/tutorials/l2evpn/evpn01-imet-routes.pcapng
 [capture-rt2-datapath]: https://github.com/learn-srlinux/site/blob/master/docs/tutorials/l2evpn/evpn01-macip-routes.pcapng
 
-[^1]: To ensure reproducibility and consistency of the examples provided in this quickstart, we will pin to a particular SR Linux version in the containerlab file.
-[^2]: For a complete documentation coverage don't hesitate to visit our [documentation portal](https://bit.ly/iondoc).
-[^3]: the following versions have been used to create this tutorial. The newer versions might work, but if they pin the version to the mentioned ones.
-[^4]: Or download it with `curl -LO https://github.com/learn-srlinux/site/blob/master/labs/evpn01.clab.yml`
-[^5]: Per [RFC 8365](https://datatracker.ietf.org/doc/html/rfc8365) & [RFC 7432](https://datatracker.ietf.org/doc/html/rfc7432)
+[^1]: the following versions have been used to create this tutorial. The newer versions might work, but if they don't, please pin the version to the mentioned ones.
+[^2]: Or download it with `curl -LO https://github.com/learn-srlinux/site/blob/master/labs/evpn01.clab.yml`
+[^3]: Per [RFC 8365](https://datatracker.ietf.org/doc/html/rfc8365) & [RFC 7432](https://datatracker.ietf.org/doc/html/rfc7432)
+[^4]: For a complete documentation coverage don't hesitate to visit our [documentation portal](https://bit.ly/iondoc).
