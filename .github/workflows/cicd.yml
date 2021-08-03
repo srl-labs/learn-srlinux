@@ -12,20 +12,20 @@ env:
   MKDOCS_MATERIAL_VER: 7.1.9
 
 jobs:
-  # docs-test:
-  #   runs-on: ubuntu-20.04
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - run: docker run -v $(pwd):/docs --entrypoint mkdocs squidfunk/mkdocs-material:$MKDOCS_MATERIAL_VER build --clean --strict
-  #     - name: htmltest
-  #       run: |
-  #         curl https://htmltest.wjdp.uk | bash
-  #         ./bin/htmltest -c docs/htmltest.yml
+  docs-test:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - run: docker run -v $(pwd):/docs --entrypoint mkdocs squidfunk/mkdocs-material:$MKDOCS_MATERIAL_VER build --clean --strict
+      - name: htmltest
+        run: |
+          curl https://htmltest.wjdp.uk | bash
+          ./bin/htmltest -c docs/htmltest.yml
 
   publish-docs:
     runs-on: ubuntu-20.04
     if: startsWith(github.ref, 'refs/heads/master')
-    # needs: docs-test
+    needs: docs-test
     steps:
       - name: Checkout
         uses: actions/checkout@v2

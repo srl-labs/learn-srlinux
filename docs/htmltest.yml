@@ -3,6 +3,7 @@
 DirectoryPath: ./site
 IgnoreURLs:
   - fonts.gstatic.com
+  - www.nokia.com/networks/solutions/data-center-switching-fabric/
 IgnoreDirectoryMissingTrailingSlash: true
 IgnoreAltMissing: true
 IgnoreSSLVerify: true

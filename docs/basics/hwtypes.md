@@ -17,7 +17,7 @@ The `type` field under the node configuration sets the emulated hardware type in
   nodes:
     leaf1:
       kind: srl
-      type: ixrd2 # <- hardware type this node will emulate
+      type: ixrd3 # <- hardware type this node will emulate
 ```
 
 The `type` field defines the hardware variant that this SR Linux node will emulate. The available `type` values are:
@@ -32,6 +32,6 @@ The `type` field defines the hardware variant that this SR Linux node will emula
 
 
 !!!tip
-    Containerlab-launched nodes are started as `ixr6` hardware type unless set to a different [type](https://containerlab.srlinux.dev/manual/kinds/srl/#types) in the clab file.
+    Containerlab-launched nodes are started as `ixrd2` hardware type unless set to a different [type](https://containerlab.srlinux.dev/manual/kinds/srl/#types) in the clab file.
 
 [^1]: SR Linux can also run on the whitebox/3rd party switches.
