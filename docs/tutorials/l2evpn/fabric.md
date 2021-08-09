@@ -331,7 +331,7 @@ EBGP configuration on `leaf2` and `spine1` is almost a twin of the one we did fo
         }
     }
     routing-policy {
-        policy pass-all-bgp {
+        policy all {
             default-action {
                 accept {
                 }
@@ -361,7 +361,7 @@ EBGP configuration on `leaf2` and `spine1` is almost a twin of the one we did fo
         }
     }
     routing-policy {
-        policy pass-all-bgp {
+        policy all {
             default-action {
                 accept {
                 }
@@ -396,7 +396,7 @@ EBGP configuration on `leaf2` and `spine1` is almost a twin of the one we did fo
         }
     }
     routing-policy {
-        policy pass-all-bgp {
+        policy all {
             default-action {
                 accept {
                 }
