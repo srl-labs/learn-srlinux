@@ -111,7 +111,7 @@ In case your container exits abruptly, check the logs as they typically reveal t
 When SR Linux container is up and running, users can connect to it over different interfaces.
 
 ### CLI
-One of the ways to manage SR Linux is via its advanced and extensible [Command Line Interface](basics/mgmt.md#sr-linux-cli).
+One of the ways to manage SR Linux is via its advanced and extensible [Command Line Interface](kb/mgmt.md#sr-linux-cli).
 
 To invoke the CLI application inside the SR Linux container get container name/ID first, and then execute the `sr_cli` process inside of it:
 

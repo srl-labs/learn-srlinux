@@ -2,12 +2,12 @@ site_name: Learn SR Linux
 nav:
   - Home: index.md
   - Get SR Linux: get-started.md
-  - Basic concepts:
-      - Hardware types: basics/hwtypes.md
-      - Management interfaces: basics/mgmt.md
-      - Configuration management: basics/cfgmgmt.md
-      - Interfaces: basics/ifaces.md
-      - Network instances: basics/netwinstance.md
+  - Knowledge Base:
+      - Hardware types: kb/hwtypes.md
+      - Management interfaces: kb/mgmt.md
+      - Configuration management: kb/cfgmgmt.md
+      - Interfaces: kb/ifaces.md
+      - Network instances: kb/netwinstance.md
   - Tutorials:
       - SR Linux tutorials: tutorials/about.md
       - EVPN:
