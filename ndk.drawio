@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2021-11-02T10:20:09.325Z" agent="5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36" etag="Uq4sJrwB9uze-uCSjeD2" version="15.6.3" type="github" pages="2">
+<mxfile host="app.diagrams.net" modified="2021-11-02T11:05:19.900Z" agent="5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36" etag="d2SnJyGFQkbH7Bbg5WIP" version="15.6.3" type="github" pages="3">
   <diagram name="[0] arch" id="ZMCx_UzSzWk1nDmMVq2M">
     <mxGraphModel dx="925" dy="1328" grid="1" gridSize="1" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="#495766" math="0" shadow="0">
       <root>
@@ -284,6 +284,100 @@
         </mxCell>
         <mxCell id="_maKBNzuVAnapH27AzpF-2" value="&lt;font&gt;Pub/Sub&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;fontSize=14;fontFamily=Nokia Pure Text;fontStyle=0;fontColor=#FFFFFF;" vertex="1" parent="xc5a-p3yFIU_XZoQYOlz-1">
           <mxGeometry x="229" y="510" width="65" height="22" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram name="[2] grpc" id="jszRfg2fhWZYMWAeCCky">
+    <mxGraphModel dx="786" dy="1129" grid="1" gridSize="1" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="#495766" math="0" shadow="0">
+      <root>
+        <mxCell id="kWkWUY6aXbe_XbLZN10U-0" />
+        <mxCell id="kWkWUY6aXbe_XbLZN10U-1" parent="kWkWUY6aXbe_XbLZN10U-0" />
+        <mxCell id="kWkWUY6aXbe_XbLZN10U-21" value="" style="endArrow=blockThin;startArrow=none;html=1;rounded=0;fontFamily=Nokia Pure Text;fontSize=10;fontColor=#FFFFFF;fillColor=#98A2AE;entryX=-0.001;entryY=0.838;entryDx=0;entryDy=0;endFill=1;startFill=0;entryPerimeter=0;strokeColor=#FFFFFF;strokeWidth=2;" edge="1" parent="kWkWUY6aXbe_XbLZN10U-1" target="UYcD5StHnQ1EIm3wCGzf-0">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="223" y="446" as="sourcePoint" />
+            <mxPoint x="423.6" y="13.599999999999909" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="223" y="331" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="UYcD5StHnQ1EIm3wCGzf-0" value="" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=none;fillColor=#98A2AE;fontFamily=Nokia Pure Text;fontColor=#FFFFFF;" vertex="1" parent="kWkWUY6aXbe_XbLZN10U-1">
+          <mxGeometry x="287" y="228" width="171" height="123" as="geometry" />
+        </mxCell>
+        <mxCell id="8gId4k6R_X39nFlz1YmW-0" value="" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=none;fillColor=#EDF3F5;" vertex="1" parent="kWkWUY6aXbe_XbLZN10U-1">
+          <mxGeometry x="311" y="239" width="131" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="f-QZQLtoyRHu9hb87YX_-0" value="&lt;font&gt;gRPC Server&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;fontSize=14;fontFamily=Nokia Pure Text;fontStyle=0;fontColor=#001135;" vertex="1" parent="kWkWUY6aXbe_XbLZN10U-1">
+          <mxGeometry x="333" y="261" width="88" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="f-QZQLtoyRHu9hb87YX_-1" value="&lt;font&gt;C++ Server&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;fontSize=14;fontFamily=Nokia Pure Text;fontStyle=0;fontColor=#001135;" vertex="1" parent="kWkWUY6aXbe_XbLZN10U-1">
+          <mxGeometry x="337" y="318" width="81" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="f-QZQLtoyRHu9hb87YX_-2" value="" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=none;fillColor=#98A2AE;fontFamily=Nokia Pure Text;fontColor=#FFFFFF;" vertex="1" parent="kWkWUY6aXbe_XbLZN10U-1">
+          <mxGeometry x="141" y="447" width="171" height="123" as="geometry" />
+        </mxCell>
+        <mxCell id="f-QZQLtoyRHu9hb87YX_-3" value="" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=none;fillColor=#EDF3F5;" vertex="1" parent="kWkWUY6aXbe_XbLZN10U-1">
+          <mxGeometry x="165" y="458" width="131" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="f-QZQLtoyRHu9hb87YX_-4" value="&lt;font&gt;gRPC Client&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;fontSize=14;fontFamily=Nokia Pure Text;fontStyle=0;fontColor=#001135;" vertex="1" parent="kWkWUY6aXbe_XbLZN10U-1">
+          <mxGeometry x="187" y="480" width="84" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="f-QZQLtoyRHu9hb87YX_-5" value="&lt;font&gt;Python client&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;fontSize=14;fontFamily=Nokia Pure Text;fontStyle=0;fontColor=#001135;" vertex="1" parent="kWkWUY6aXbe_XbLZN10U-1">
+          <mxGeometry x="181" y="538" width="93" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="f-QZQLtoyRHu9hb87YX_-6" value="" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=none;fillColor=#98A2AE;fontFamily=Nokia Pure Text;fontColor=#FFFFFF;" vertex="1" parent="kWkWUY6aXbe_XbLZN10U-1">
+          <mxGeometry x="429" y="441" width="171" height="123" as="geometry" />
+        </mxCell>
+        <mxCell id="f-QZQLtoyRHu9hb87YX_-7" value="" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=none;fillColor=#EDF3F5;" vertex="1" parent="kWkWUY6aXbe_XbLZN10U-1">
+          <mxGeometry x="453" y="452" width="131" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="f-QZQLtoyRHu9hb87YX_-8" value="&lt;font&gt;gRPC Client&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;fontSize=14;fontFamily=Nokia Pure Text;fontStyle=0;fontColor=#001135;" vertex="1" parent="kWkWUY6aXbe_XbLZN10U-1">
+          <mxGeometry x="475" y="474" width="84" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="f-QZQLtoyRHu9hb87YX_-9" value="&lt;font&gt;Go client&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;fontSize=14;fontFamily=Nokia Pure Text;fontStyle=0;fontColor=#001135;" vertex="1" parent="kWkWUY6aXbe_XbLZN10U-1">
+          <mxGeometry x="487" y="534" width="67" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="f-QZQLtoyRHu9hb87YX_-10" value="" style="endArrow=none;startArrow=blockThin;html=1;rounded=0;fontFamily=Nokia Pure Text;fontSize=10;fontColor=#FFFFFF;fillColor=#98A2AE;entryX=0.158;entryY=0.993;entryDx=0;entryDy=0;endFill=0;startFill=1;entryPerimeter=0;exitX=0.813;exitY=-0.002;exitDx=0;exitDy=0;exitPerimeter=0;strokeColor=#FFFFFF;strokeWidth=2;" edge="1" parent="kWkWUY6aXbe_XbLZN10U-1" source="f-QZQLtoyRHu9hb87YX_-2" target="UYcD5StHnQ1EIm3wCGzf-0">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="224" y="447" as="sourcePoint" />
+            <mxPoint x="287.82899999999995" y="332.07400000000007" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="280" y="419" />
+              <mxPoint x="314" y="419" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="f-QZQLtoyRHu9hb87YX_-11" value="&lt;font&gt;Proto req&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;fontSize=14;fontFamily=Nokia Pure Text;fontStyle=0;fontColor=#FFFFFF;rotation=-90;" vertex="1" parent="kWkWUY6aXbe_XbLZN10U-1">
+          <mxGeometry x="174" y="371" width="70" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="f-QZQLtoyRHu9hb87YX_-12" value="&lt;font&gt;Proto resp&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;fontSize=14;fontFamily=Nokia Pure Text;fontStyle=0;fontColor=#FFFFFF;rotation=-90;" vertex="1" parent="kWkWUY6aXbe_XbLZN10U-1">
+          <mxGeometry x="288" y="383" width="76" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="f-QZQLtoyRHu9hb87YX_-13" value="" style="endArrow=blockThin;startArrow=none;html=1;rounded=0;fontFamily=Nokia Pure Text;fontSize=10;fontColor=#FFFFFF;fillColor=#98A2AE;entryX=0.994;entryY=0.849;entryDx=0;entryDy=0;endFill=1;startFill=0;entryPerimeter=0;strokeColor=#FFFFFF;strokeWidth=2;" edge="1" parent="kWkWUY6aXbe_XbLZN10U-1" target="UYcD5StHnQ1EIm3wCGzf-0">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="505" y="440" as="sourcePoint" />
+            <mxPoint x="287.82900000000006" y="332.07400000000007" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="504" y="332" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="f-QZQLtoyRHu9hb87YX_-14" value="" style="endArrow=none;startArrow=blockThin;html=1;rounded=0;fontFamily=Nokia Pure Text;fontSize=10;fontColor=#FFFFFF;fillColor=#98A2AE;entryX=0.75;entryY=1;entryDx=0;entryDy=0;endFill=0;startFill=1;exitX=0.133;exitY=0;exitDx=0;exitDy=0;exitPerimeter=0;strokeColor=#FFFFFF;strokeWidth=2;" edge="1" parent="kWkWUY6aXbe_XbLZN10U-1" source="f-QZQLtoyRHu9hb87YX_-6" target="UYcD5StHnQ1EIm3wCGzf-0">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="281.023" y="447.75400000000013" as="sourcePoint" />
+            <mxPoint x="315.0179999999999" y="351.1389999999999" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="452" y="417" />
+              <mxPoint x="416" y="417" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="f-QZQLtoyRHu9hb87YX_-15" value="&lt;font&gt;Proto req&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;fontSize=14;fontFamily=Nokia Pure Text;fontStyle=0;fontColor=#FFFFFF;rotation=-90;" vertex="1" parent="kWkWUY6aXbe_XbLZN10U-1">
+          <mxGeometry x="456" y="375" width="70" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="f-QZQLtoyRHu9hb87YX_-16" value="&lt;font&gt;Proto resp&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;fontSize=14;fontFamily=Nokia Pure Text;fontStyle=0;fontColor=#FFFFFF;rotation=-90;" vertex="1" parent="kWkWUY6aXbe_XbLZN10U-1">
+          <mxGeometry x="363" y="383" width="76" height="22" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
