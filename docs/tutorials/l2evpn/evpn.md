@@ -53,7 +53,8 @@ Then for each leaf we add a new BGP neighbor addressed by the remote `system0` i
             evpn {
                 admin-state enable
             }
-            local-as 100
+            local-as 100 {
+            }
             timers {
                 minimum-advertisement-interval 1
             }
@@ -82,7 +83,8 @@ Then for each leaf we add a new BGP neighbor addressed by the remote `system0` i
             evpn {
                 admin-state enable
             }
-            local-as 100
+            local-as 100 {
+            }
             timers {
                 minimum-advertisement-interval 1
             }
