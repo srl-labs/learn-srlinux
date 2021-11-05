@@ -6,9 +6,16 @@ IgnoreURLs:
   - www.nokia.com/networks/solutions/data-center-switching-fabric/
   - documentation.nokia.com
   - bit.ly/iondoc
+  # ghcr packages return 404 for non authz gh users
+  - https://github.com/orgs/nokia/packages/container/package/srlinux
+  - https://github.com/orgs/nokia/packages/container/srlinux/versions
 IgnoreDirectoryMissingTrailingSlash: true
 IgnoreAltMissing: true
 IgnoreSSLVerify: true
 IgnoreDirs:
   - overrides
 IgnoreInternalEmptyHash: true
+ExternalTimeout: 60
+HTTPHeaders:
+  "Range": "bytes=0-10"
+  "Accept": "*/*"
