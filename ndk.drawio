@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2021-11-07T20:06:26.729Z" agent="5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36" etag="iz_7__5gQzdSDhL2zit7" version="15.7.0" type="github" pages="4">
+<mxfile host="app.diagrams.net" modified="2021-11-07T20:35:20.833Z" agent="5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36" etag="O1ZykPUYWZCUytQLVDX6" version="15.7.0" type="github" pages="4">
   <diagram name="[0] arch" id="ZMCx_UzSzWk1nDmMVq2M">
     <mxGraphModel dx="1153" dy="1129" grid="1" gridSize="1" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="#495766" math="0" shadow="0">
       <root>
@@ -383,7 +383,7 @@
     </mxGraphModel>
   </diagram>
   <diagram name="[3] ndk operations" id="1u6snehuieDdXCv78SK4">
-    <mxGraphModel dx="384" dy="376" grid="1" gridSize="1" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="#495766" math="0" shadow="0">
+    <mxGraphModel dx="527" dy="941" grid="1" gridSize="1" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="#495766" math="0" shadow="0">
       <root>
         <mxCell id="rpC4eVHN4_A3vbLjmgdy-0" />
         <mxCell id="rpC4eVHN4_A3vbLjmgdy-1" parent="rpC4eVHN4_A3vbLjmgdy-0" />
@@ -521,21 +521,21 @@
         </mxCell>
         <mxCell id="rpC4eVHN4_A3vbLjmgdy-53" value="" style="endArrow=oval;html=1;rounded=0;strokeColor=#98A2AE;startArrow=classic;startFill=1;endSize=3;startSize=3;endFill=1;" edge="1" parent="rpC4eVHN4_A3vbLjmgdy-1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
-            <mxPoint x="447" y="706" as="sourcePoint" />
-            <mxPoint x="480" y="706" as="targetPoint" />
+            <mxPoint x="447" y="715" as="sourcePoint" />
+            <mxPoint x="480" y="715" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="rpC4eVHN4_A3vbLjmgdy-54" value="" style="endArrow=classic;html=1;rounded=0;strokeColor=#FFFFFF;startArrow=oval;startFill=1;endSize=3;startSize=3;" edge="1" parent="rpC4eVHN4_A3vbLjmgdy-1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
-            <mxPoint x="449" y="725" as="sourcePoint" />
-            <mxPoint x="482" y="725" as="targetPoint" />
+            <mxPoint x="449" y="697" as="sourcePoint" />
+            <mxPoint x="482" y="697" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="rpC4eVHN4_A3vbLjmgdy-55" value="&lt;div&gt;&lt;/div&gt;&lt;font&gt;Request&lt;br&gt;&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;fontSize=10;fontFamily=Nokia Pure Text;fontStyle=0;fontColor=#001135;rotation=0;" vertex="1" parent="rpC4eVHN4_A3vbLjmgdy-1">
-          <mxGeometry x="489" y="716" width="48" height="17" as="geometry" />
+          <mxGeometry x="489" y="688" width="48" height="17" as="geometry" />
         </mxCell>
         <mxCell id="rpC4eVHN4_A3vbLjmgdy-56" value="&lt;div&gt;&lt;/div&gt;&lt;font&gt;Response&lt;br&gt;&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;fontSize=10;fontFamily=Nokia Pure Text;fontStyle=0;fontColor=#001135;rotation=0;" vertex="1" parent="rpC4eVHN4_A3vbLjmgdy-1">
-          <mxGeometry x="489" y="697" width="55" height="17" as="geometry" />
+          <mxGeometry x="489" y="706" width="55" height="17" as="geometry" />
         </mxCell>
         <mxCell id="rpC4eVHN4_A3vbLjmgdy-57" value="&lt;div&gt;&lt;/div&gt;&lt;font&gt;L E G E N D&lt;br&gt;&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;fontSize=10;fontFamily=Nokia Pure Text;fontStyle=0;fontColor=#001135;rotation=0;" vertex="1" parent="rpC4eVHN4_A3vbLjmgdy-1">
           <mxGeometry x="377" y="672" width="60" height="17" as="geometry" />
