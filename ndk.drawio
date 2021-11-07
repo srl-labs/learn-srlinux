@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2021-11-07T20:35:20.833Z" agent="5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36" etag="O1ZykPUYWZCUytQLVDX6" version="15.7.0" type="github" pages="4">
+<mxfile host="app.diagrams.net" modified="2021-11-07T20:52:21.595Z" agent="5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36" etag="9vfJ6NInl88jg9YdmixZ" version="15.7.0" type="github" pages="4">
   <diagram name="[0] arch" id="ZMCx_UzSzWk1nDmMVq2M">
     <mxGraphModel dx="1153" dy="1129" grid="1" gridSize="1" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="#495766" math="0" shadow="0">
       <root>
@@ -383,12 +383,12 @@
     </mxGraphModel>
   </diagram>
   <diagram name="[3] ndk operations" id="1u6snehuieDdXCv78SK4">
-    <mxGraphModel dx="527" dy="941" grid="1" gridSize="1" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="#495766" math="0" shadow="0">
+    <mxGraphModel dx="632" dy="1129" grid="1" gridSize="1" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="#495766" math="0" shadow="0">
       <root>
         <mxCell id="rpC4eVHN4_A3vbLjmgdy-0" />
         <mxCell id="rpC4eVHN4_A3vbLjmgdy-1" parent="rpC4eVHN4_A3vbLjmgdy-0" />
         <mxCell id="rpC4eVHN4_A3vbLjmgdy-8" value="" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=none;fillColor=#EDF3F5;" vertex="1" parent="rpC4eVHN4_A3vbLjmgdy-1">
-          <mxGeometry x="173" y="670" width="437" height="78" as="geometry" />
+          <mxGeometry x="259" y="670" width="305" height="78" as="geometry" />
         </mxCell>
         <mxCell id="rpC4eVHN4_A3vbLjmgdy-16" value="Mgr Client&lt;sup&gt;1&lt;/sup&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;fontSize=14;fontFamily=Nokia Pure Text;fontStyle=0;fontColor=#FFFFFF;rotation=0;" vertex="1" parent="rpC4eVHN4_A3vbLjmgdy-1">
           <mxGeometry x="134" y="324" width="82" height="28" as="geometry" />
@@ -426,7 +426,7 @@
         <mxCell id="rpC4eVHN4_A3vbLjmgdy-28" value="&lt;font style=&quot;font-size: 8px;&quot;&gt;NotificationRegister&lt;br style=&quot;font-size: 8px;&quot;&gt;Op: Create&lt;br style=&quot;font-size: 8px;&quot;&gt;&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;fontSize=8;fontFamily=Fira Code;fontStyle=0;fontColor=#FFFFFF;rotation=0;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DFira%2BCode;" vertex="1" parent="rpC4eVHN4_A3vbLjmgdy-1">
           <mxGeometry x="204" y="398" width="107" height="25" as="geometry" />
         </mxCell>
-        <mxCell id="rpC4eVHN4_A3vbLjmgdy-29" value="" style="endArrow=oval;html=1;rounded=0;strokeColor=#98A2AE;startArrow=classic;startFill=1;endSize=3;startSize=3;endFill=1;" edge="1" parent="rpC4eVHN4_A3vbLjmgdy-1">
+        <mxCell id="rpC4eVHN4_A3vbLjmgdy-29" value="" style="endArrow=oval;html=1;rounded=0;strokeColor=#FFFFFF;startArrow=classic;startFill=1;endSize=3;startSize=3;endFill=1;" edge="1" parent="rpC4eVHN4_A3vbLjmgdy-1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
             <mxPoint x="176" y="439" as="sourcePoint" />
             <mxPoint x="341" y="439" as="targetPoint" />
@@ -445,9 +445,9 @@
           <mxGeometry x="191" y="457" width="135" height="49" as="geometry" />
         </mxCell>
         <mxCell id="rpC4eVHN4_A3vbLjmgdy-33" value="&lt;div&gt;1. Mgr client is a client of &lt;a href=&quot;https://raw.githack.com/nokia/srlinux-ndk-protobufs/protos/doc/index.html#ndk.SdkMgrService&quot;&gt;&lt;font&gt;SdkMgrService&lt;/font&gt;&lt;/a&gt;&lt;/div&gt;&lt;font&gt;2. Notif client is a client of &lt;a href=&quot;https://raw.githack.com/nokia/srlinux-ndk-protobufs/protos/doc/index.html#ndk.SdkNotificationService&quot; style=&quot;font-size: 10px&quot;&gt;SdkNotificationService&lt;/a&gt;&lt;br&gt;3. One of subscription request types&lt;br&gt;4. Stream ID from &lt;font face=&quot;Fira Code&quot; data-font-src=&quot;https://fonts.googleapis.com/css?family=Fira+Code&quot; style=&quot;font-size: 9px&quot;&gt;NotificationRegisterResponse&lt;/font&gt;&lt;br&gt;&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;fontSize=10;fontFamily=Nokia Pure Text;fontStyle=0;fontColor=#001135;rotation=0;" vertex="1" parent="rpC4eVHN4_A3vbLjmgdy-1">
-          <mxGeometry x="184" y="690" width="245" height="53" as="geometry" />
+          <mxGeometry x="270" y="690" width="245" height="53" as="geometry" />
         </mxCell>
-        <mxCell id="rpC4eVHN4_A3vbLjmgdy-34" value="" style="endArrow=oval;html=1;rounded=0;strokeColor=#98A2AE;startArrow=classic;startFill=1;endSize=3;startSize=3;endFill=1;" edge="1" parent="rpC4eVHN4_A3vbLjmgdy-1">
+        <mxCell id="rpC4eVHN4_A3vbLjmgdy-34" value="" style="endArrow=oval;html=1;rounded=0;strokeColor=#FFFFFF;startArrow=classic;startFill=1;endSize=3;startSize=3;endFill=1;" edge="1" parent="rpC4eVHN4_A3vbLjmgdy-1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
             <mxPoint x="176" y="521" as="sourcePoint" />
             <mxPoint x="341" y="521" as="targetPoint" />
@@ -483,7 +483,7 @@
         <mxCell id="rpC4eVHN4_A3vbLjmgdy-42" value="&lt;font style=&quot;font-size: 8px&quot;&gt;NotificationStream&lt;br style=&quot;font-size: 8px&quot;&gt;stream_id: &amp;lt;ID&amp;gt;&lt;sup&gt;4&lt;/sup&gt;&lt;br style=&quot;font-size: 8px&quot;&gt;&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;fontSize=8;fontFamily=Fira Code;fontStyle=0;fontColor=#FFFFFF;rotation=0;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DFira%2BCode;" vertex="1" parent="rpC4eVHN4_A3vbLjmgdy-1">
           <mxGeometry x="489" y="516" width="97" height="29" as="geometry" />
         </mxCell>
-        <mxCell id="rpC4eVHN4_A3vbLjmgdy-43" value="" style="endArrow=oval;html=1;rounded=0;strokeColor=#98A2AE;startArrow=classic;startFill=1;endSize=3;startSize=3;endFill=1;" edge="1" parent="rpC4eVHN4_A3vbLjmgdy-1">
+        <mxCell id="rpC4eVHN4_A3vbLjmgdy-43" value="" style="endArrow=oval;html=1;rounded=0;strokeColor=#FFFFFF;startArrow=classic;startFill=1;endSize=3;startSize=3;endFill=1;" edge="1" parent="rpC4eVHN4_A3vbLjmgdy-1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
             <mxPoint x="466" y="570" as="sourcePoint" />
             <mxPoint x="605" y="571" as="targetPoint" />
@@ -501,7 +501,7 @@
         <mxCell id="rpC4eVHN4_A3vbLjmgdy-47" value="" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fontFamily=Fira Code;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DFira%2BCode;fontSize=9;fontColor=#00C9FF;align=left;strokeColor=none;" vertex="1" parent="rpC4eVHN4_A3vbLjmgdy-1">
           <mxGeometry x="530" y="586" width="3" height="3" as="geometry" />
         </mxCell>
-        <mxCell id="rpC4eVHN4_A3vbLjmgdy-49" value="" style="endArrow=oval;html=1;rounded=0;strokeColor=#98A2AE;startArrow=classic;startFill=1;endSize=3;startSize=3;endFill=1;" edge="1" parent="rpC4eVHN4_A3vbLjmgdy-1">
+        <mxCell id="rpC4eVHN4_A3vbLjmgdy-49" value="" style="endArrow=oval;html=1;rounded=0;strokeColor=#FFFFFF;startArrow=classic;startFill=1;endSize=3;startSize=3;endFill=1;" edge="1" parent="rpC4eVHN4_A3vbLjmgdy-1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
             <mxPoint x="467" y="600" as="sourcePoint" />
             <mxPoint x="606" y="601" as="targetPoint" />
@@ -519,26 +519,8 @@
         <mxCell id="rpC4eVHN4_A3vbLjmgdy-52" value="&lt;font style=&quot;font-size: 8px&quot;&gt;AgentUnRegister&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;fontSize=8;fontFamily=Fira Code;fontStyle=0;fontColor=#FFFFFF;rotation=0;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DFira%2BCode;" vertex="1" parent="rpC4eVHN4_A3vbLjmgdy-1">
           <mxGeometry x="216" y="611" width="83" height="15" as="geometry" />
         </mxCell>
-        <mxCell id="rpC4eVHN4_A3vbLjmgdy-53" value="" style="endArrow=oval;html=1;rounded=0;strokeColor=#98A2AE;startArrow=classic;startFill=1;endSize=3;startSize=3;endFill=1;" edge="1" parent="rpC4eVHN4_A3vbLjmgdy-1">
-          <mxGeometry width="50" height="50" relative="1" as="geometry">
-            <mxPoint x="447" y="715" as="sourcePoint" />
-            <mxPoint x="480" y="715" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="rpC4eVHN4_A3vbLjmgdy-54" value="" style="endArrow=classic;html=1;rounded=0;strokeColor=#FFFFFF;startArrow=oval;startFill=1;endSize=3;startSize=3;" edge="1" parent="rpC4eVHN4_A3vbLjmgdy-1">
-          <mxGeometry width="50" height="50" relative="1" as="geometry">
-            <mxPoint x="449" y="697" as="sourcePoint" />
-            <mxPoint x="482" y="697" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="rpC4eVHN4_A3vbLjmgdy-55" value="&lt;div&gt;&lt;/div&gt;&lt;font&gt;Request&lt;br&gt;&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;fontSize=10;fontFamily=Nokia Pure Text;fontStyle=0;fontColor=#001135;rotation=0;" vertex="1" parent="rpC4eVHN4_A3vbLjmgdy-1">
-          <mxGeometry x="489" y="688" width="48" height="17" as="geometry" />
-        </mxCell>
-        <mxCell id="rpC4eVHN4_A3vbLjmgdy-56" value="&lt;div&gt;&lt;/div&gt;&lt;font&gt;Response&lt;br&gt;&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;fontSize=10;fontFamily=Nokia Pure Text;fontStyle=0;fontColor=#001135;rotation=0;" vertex="1" parent="rpC4eVHN4_A3vbLjmgdy-1">
-          <mxGeometry x="489" y="706" width="55" height="17" as="geometry" />
-        </mxCell>
         <mxCell id="rpC4eVHN4_A3vbLjmgdy-57" value="&lt;div&gt;&lt;/div&gt;&lt;font&gt;L E G E N D&lt;br&gt;&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;fontSize=10;fontFamily=Nokia Pure Text;fontStyle=0;fontColor=#001135;rotation=0;" vertex="1" parent="rpC4eVHN4_A3vbLjmgdy-1">
-          <mxGeometry x="377" y="672" width="60" height="17" as="geometry" />
+          <mxGeometry x="380" y="672" width="60" height="17" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
