@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2021-11-07T20:53:48.525Z" agent="5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36" etag="FYZCNFHMqLYgETOWic7x" version="15.7.0" type="github" pages="4">
+<mxfile host="app.diagrams.net" modified="2021-11-07T20:55:16.192Z" agent="5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36" etag="mJVNFlTgU7xkxsyMZc3S" version="15.7.0" type="github" pages="4">
   <diagram name="[0] arch" id="ZMCx_UzSzWk1nDmMVq2M">
     <mxGraphModel dx="1153" dy="1129" grid="1" gridSize="1" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="#495766" math="0" shadow="0">
       <root>
@@ -383,7 +383,7 @@
     </mxGraphModel>
   </diagram>
   <diagram name="[3] ndk operations" id="1u6snehuieDdXCv78SK4">
-    <mxGraphModel dx="211" dy="376" grid="1" gridSize="1" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="#495766" math="0" shadow="0">
+    <mxGraphModel dx="632" dy="1129" grid="1" gridSize="1" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="#495766" math="0" shadow="0">
       <root>
         <mxCell id="rpC4eVHN4_A3vbLjmgdy-0" />
         <mxCell id="rpC4eVHN4_A3vbLjmgdy-1" parent="rpC4eVHN4_A3vbLjmgdy-0" />
@@ -399,8 +399,8 @@
             <mxPoint x="176" y="352" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="rpC4eVHN4_A3vbLjmgdy-23" value="&lt;font&gt;SdkMgrService&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;fontSize=14;fontFamily=Nokia Pure Text;fontStyle=0;fontColor=#FFFFFF;rotation=0;" vertex="1" parent="rpC4eVHN4_A3vbLjmgdy-1">
-          <mxGeometry x="287" y="327" width="104" height="22" as="geometry" />
+        <mxCell id="rpC4eVHN4_A3vbLjmgdy-23" value="&lt;font&gt;Sdk&lt;br&gt;Manager&lt;br&gt;Service&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;fontSize=14;fontFamily=Nokia Pure Text;fontStyle=0;fontColor=#FFFFFF;rotation=0;" vertex="1" parent="rpC4eVHN4_A3vbLjmgdy-1">
+          <mxGeometry x="307" y="300" width="66" height="56" as="geometry" />
         </mxCell>
         <mxCell id="rpC4eVHN4_A3vbLjmgdy-24" value="" style="endArrow=none;dashed=1;html=1;rounded=0;strokeColor=#EDF3F5;" edge="1" parent="rpC4eVHN4_A3vbLjmgdy-1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
@@ -456,8 +456,8 @@
         <mxCell id="rpC4eVHN4_A3vbLjmgdy-35" value="&lt;font style=&quot;font-size: 8px&quot;&gt;NotificationRegisterResponse&lt;br style=&quot;font-size: 8px&quot;&gt;stream_id: &amp;lt;stream1&amp;gt;&lt;br style=&quot;font-size: 8px&quot;&gt;&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;fontSize=8;fontFamily=Fira Code;fontStyle=0;fontColor=#FFFFFF;rotation=0;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DFira%2BCode;" vertex="1" parent="rpC4eVHN4_A3vbLjmgdy-1">
           <mxGeometry x="185" y="507" width="145" height="25" as="geometry" />
         </mxCell>
-        <mxCell id="rpC4eVHN4_A3vbLjmgdy-37" value="&lt;font&gt;SdkMgrService&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;fontSize=14;fontFamily=Nokia Pure Text;fontStyle=0;fontColor=#FFFFFF;rotation=0;" vertex="1" parent="rpC4eVHN4_A3vbLjmgdy-1">
-          <mxGeometry x="550" y="327" width="104" height="22" as="geometry" />
+        <mxCell id="rpC4eVHN4_A3vbLjmgdy-37" value="&lt;font&gt;Sdk&lt;br&gt;Notification&lt;br&gt;Service&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;fontSize=14;fontFamily=Nokia Pure Text;fontStyle=0;fontColor=#FFFFFF;rotation=0;" vertex="1" parent="rpC4eVHN4_A3vbLjmgdy-1">
+          <mxGeometry x="560" y="299" width="85" height="56" as="geometry" />
         </mxCell>
         <mxCell id="rpC4eVHN4_A3vbLjmgdy-38" value="" style="endArrow=none;dashed=1;html=1;rounded=0;strokeColor=#EDF3F5;" edge="1" parent="rpC4eVHN4_A3vbLjmgdy-1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
