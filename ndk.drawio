@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2021-11-07T20:55:16.192Z" agent="5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36" etag="mJVNFlTgU7xkxsyMZc3S" version="15.7.0" type="github" pages="4">
+<mxfile host="app.diagrams.net" modified="2021-11-07T20:56:41.255Z" agent="5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36" etag="O_DCCT1ustZc5VdiRGlI" version="15.7.0" type="github" pages="4">
   <diagram name="[0] arch" id="ZMCx_UzSzWk1nDmMVq2M">
     <mxGraphModel dx="1153" dy="1129" grid="1" gridSize="1" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="#495766" math="0" shadow="0">
       <root>
@@ -383,7 +383,7 @@
     </mxGraphModel>
   </diagram>
   <diagram name="[3] ndk operations" id="1u6snehuieDdXCv78SK4">
-    <mxGraphModel dx="632" dy="1129" grid="1" gridSize="1" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="#495766" math="0" shadow="0">
+    <mxGraphModel dx="436" dy="779" grid="1" gridSize="1" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="#495766" math="0" shadow="0">
       <root>
         <mxCell id="rpC4eVHN4_A3vbLjmgdy-0" />
         <mxCell id="rpC4eVHN4_A3vbLjmgdy-1" parent="rpC4eVHN4_A3vbLjmgdy-0" />
@@ -476,39 +476,39 @@
         </mxCell>
         <mxCell id="rpC4eVHN4_A3vbLjmgdy-41" value="" style="endArrow=classic;html=1;rounded=0;strokeColor=#EDF3F5;startArrow=oval;startFill=1;endSize=3;startSize=3;" edge="1" parent="rpC4eVHN4_A3vbLjmgdy-1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
-            <mxPoint x="467" y="532" as="sourcePoint" />
-            <mxPoint x="605" y="532" as="targetPoint" />
+            <mxPoint x="467" y="538" as="sourcePoint" />
+            <mxPoint x="605" y="538" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="rpC4eVHN4_A3vbLjmgdy-42" value="&lt;font style=&quot;font-size: 8px&quot;&gt;NotificationStream&lt;br style=&quot;font-size: 8px&quot;&gt;stream_id: &amp;lt;stream1&amp;gt;&lt;sup&gt;4&lt;/sup&gt;&lt;br style=&quot;font-size: 8px&quot;&gt;&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;fontSize=8;fontFamily=Fira Code;fontStyle=0;fontColor=#FFFFFF;rotation=0;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DFira%2BCode;" vertex="1" parent="rpC4eVHN4_A3vbLjmgdy-1">
-          <mxGeometry x="482" y="516" width="111" height="29" as="geometry" />
+          <mxGeometry x="482" y="522" width="111" height="29" as="geometry" />
         </mxCell>
         <mxCell id="rpC4eVHN4_A3vbLjmgdy-43" value="" style="endArrow=oval;html=1;rounded=0;strokeColor=#FFFFFF;startArrow=classic;startFill=1;endSize=3;startSize=3;endFill=1;" edge="1" parent="rpC4eVHN4_A3vbLjmgdy-1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
-            <mxPoint x="466" y="570" as="sourcePoint" />
-            <mxPoint x="605" y="571" as="targetPoint" />
+            <mxPoint x="466" y="576" as="sourcePoint" />
+            <mxPoint x="605" y="577" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="rpC4eVHN4_A3vbLjmgdy-44" value="&lt;font style=&quot;font-size: 8px&quot;&gt;NotificationStreamResponse&lt;br style=&quot;font-size: 8px&quot;&gt;&lt;br style=&quot;font-size: 8px&quot;&gt;&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;fontSize=8;fontFamily=Fira Code;fontStyle=0;fontColor=#FFFFFF;rotation=0;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DFira%2BCode;" vertex="1" parent="rpC4eVHN4_A3vbLjmgdy-1">
-          <mxGeometry x="468" y="557" width="136" height="25" as="geometry" />
+          <mxGeometry x="468" y="563" width="136" height="25" as="geometry" />
         </mxCell>
         <mxCell id="rpC4eVHN4_A3vbLjmgdy-45" value="" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fontFamily=Fira Code;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DFira%2BCode;fontSize=9;fontColor=#00C9FF;align=left;strokeColor=none;" vertex="1" parent="rpC4eVHN4_A3vbLjmgdy-1">
-          <mxGeometry x="530" y="576" width="3" height="3" as="geometry" />
+          <mxGeometry x="530" y="582" width="3" height="3" as="geometry" />
         </mxCell>
         <mxCell id="rpC4eVHN4_A3vbLjmgdy-46" value="" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fontFamily=Fira Code;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DFira%2BCode;fontSize=9;fontColor=#00C9FF;align=left;strokeColor=none;" vertex="1" parent="rpC4eVHN4_A3vbLjmgdy-1">
-          <mxGeometry x="530" y="581" width="3" height="3" as="geometry" />
+          <mxGeometry x="530" y="587" width="3" height="3" as="geometry" />
         </mxCell>
         <mxCell id="rpC4eVHN4_A3vbLjmgdy-47" value="" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fontFamily=Fira Code;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DFira%2BCode;fontSize=9;fontColor=#00C9FF;align=left;strokeColor=none;" vertex="1" parent="rpC4eVHN4_A3vbLjmgdy-1">
-          <mxGeometry x="530" y="586" width="3" height="3" as="geometry" />
+          <mxGeometry x="530" y="592" width="3" height="3" as="geometry" />
         </mxCell>
         <mxCell id="rpC4eVHN4_A3vbLjmgdy-49" value="" style="endArrow=oval;html=1;rounded=0;strokeColor=#FFFFFF;startArrow=classic;startFill=1;endSize=3;startSize=3;endFill=1;entryX=0.998;entryY=0.543;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="rpC4eVHN4_A3vbLjmgdy-1" target="rpC4eVHN4_A3vbLjmgdy-50">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
-            <mxPoint x="467" y="600" as="sourcePoint" />
-            <mxPoint x="606" y="601" as="targetPoint" />
+            <mxPoint x="467" y="606" as="sourcePoint" />
+            <mxPoint x="606" y="607" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="rpC4eVHN4_A3vbLjmgdy-50" value="&lt;font style=&quot;font-size: 8px&quot;&gt;NotificationStreamResponse&lt;br style=&quot;font-size: 8px&quot;&gt;&lt;br style=&quot;font-size: 8px&quot;&gt;&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;fontSize=8;fontFamily=Fira Code;fontStyle=0;fontColor=#FFFFFF;rotation=0;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DFira%2BCode;" vertex="1" parent="rpC4eVHN4_A3vbLjmgdy-1">
-          <mxGeometry x="469" y="587" width="136" height="25" as="geometry" />
+          <mxGeometry x="469" y="593" width="136" height="25" as="geometry" />
         </mxCell>
         <mxCell id="rpC4eVHN4_A3vbLjmgdy-51" value="" style="endArrow=classic;html=1;rounded=0;strokeColor=#EDF3F5;startArrow=oval;startFill=1;endSize=3;startSize=3;" edge="1" parent="rpC4eVHN4_A3vbLjmgdy-1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
