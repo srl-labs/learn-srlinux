@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2021-11-08T09:57:11.840Z" agent="5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36" etag="a2VIZDnlbDydi0czFspA" version="15.7.0" type="github" pages="4">
+<mxfile host="app.diagrams.net" modified="2021-11-08T10:31:24.288Z" agent="5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36" etag="A5sGSUEnlSo2p_6gijiy" version="15.7.0" type="github" pages="5">
   <diagram name="[0] arch" id="ZMCx_UzSzWk1nDmMVq2M">
     <mxGraphModel dx="1153" dy="1129" grid="1" gridSize="1" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="#495766" math="0" shadow="0">
       <root>
@@ -521,6 +521,53 @@
         </mxCell>
         <mxCell id="rpC4eVHN4_A3vbLjmgdy-57" value="&lt;div&gt;&lt;/div&gt;&lt;font&gt;L E G E N D&lt;br&gt;&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;fontSize=10;fontFamily=Nokia Pure Text;fontStyle=0;fontColor=#001135;rotation=0;" vertex="1" parent="rpC4eVHN4_A3vbLjmgdy-1">
           <mxGeometry x="364" y="672" width="60" height="17" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram name="[4] ndk telemetry" id="-ZSv98kSd2MsTy0nA9-U">
+    <mxGraphModel dx="744" dy="1328" grid="1" gridSize="5" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="#495766" math="0" shadow="0">
+      <root>
+        <mxCell id="TIKCRUf47VzGktWiAVfS-0" />
+        <mxCell id="TIKCRUf47VzGktWiAVfS-1" parent="TIKCRUf47VzGktWiAVfS-0" />
+        <mxCell id="TIKCRUf47VzGktWiAVfS-3" value="Telemetry Client" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;fontSize=14;fontFamily=Nokia Pure Text;fontStyle=0;fontColor=#FFFFFF;rotation=0;" vertex="1" parent="TIKCRUf47VzGktWiAVfS-1">
+          <mxGeometry x="280" y="326" width="115" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="TIKCRUf47VzGktWiAVfS-4" value="" style="endArrow=none;dashed=1;html=1;rounded=0;strokeColor=#EDF3F5;" edge="1" parent="TIKCRUf47VzGktWiAVfS-1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="338" y="460" as="sourcePoint" />
+            <mxPoint x="338" y="352" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="TIKCRUf47VzGktWiAVfS-5" value="&lt;font&gt;Sdk&lt;br&gt;Manager&lt;br&gt;Telemetry&lt;br&gt;Service&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;fontSize=14;fontFamily=Nokia Pure Text;fontStyle=0;fontColor=#FFFFFF;rotation=0;" vertex="1" parent="TIKCRUf47VzGktWiAVfS-1">
+          <mxGeometry x="465" y="292" width="74" height="73" as="geometry" />
+        </mxCell>
+        <mxCell id="TIKCRUf47VzGktWiAVfS-6" value="" style="endArrow=none;dashed=1;html=1;rounded=0;strokeColor=#EDF3F5;" edge="1" parent="TIKCRUf47VzGktWiAVfS-1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="503" y="460" as="sourcePoint" />
+            <mxPoint x="503.0000000000001" y="352" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="TIKCRUf47VzGktWiAVfS-7" value="" style="endArrow=classic;html=1;rounded=0;strokeColor=#EDF3F5;startArrow=oval;startFill=1;endSize=3;startSize=3;" edge="1" parent="TIKCRUf47VzGktWiAVfS-1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="338" y="384" as="sourcePoint" />
+            <mxPoint x="503" y="384" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="TIKCRUf47VzGktWiAVfS-8" value="&lt;font style=&quot;font-size: 8px&quot;&gt;TelemetryUpdateRequest&lt;br&gt;TelemtryInfo&lt;br&gt;&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;fontSize=8;fontFamily=Fira Code;fontStyle=0;fontColor=#FFFFFF;rotation=0;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DFira%2BCode;" vertex="1" parent="TIKCRUf47VzGktWiAVfS-1">
+          <mxGeometry x="360" y="370" width="117" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="TIKCRUf47VzGktWiAVfS-10" value="&lt;font style=&quot;font-size: 8px&quot;&gt;&lt;br style=&quot;font-size: 8px&quot;&gt;&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;fontSize=8;fontFamily=Fira Code;fontStyle=0;fontColor=#FFFFFF;rotation=0;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DFira%2BCode;" vertex="1" parent="TIKCRUf47VzGktWiAVfS-1">
+          <mxGeometry x="414" y="403" width="11" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="TIKCRUf47VzGktWiAVfS-11" value="" style="endArrow=oval;html=1;rounded=0;strokeColor=#FFFFFF;startArrow=classic;startFill=1;endSize=3;startSize=3;endFill=1;" edge="1" parent="TIKCRUf47VzGktWiAVfS-1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="338" y="439" as="sourcePoint" />
+            <mxPoint x="503" y="439" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="TIKCRUf47VzGktWiAVfS-12" value="&lt;font style=&quot;font-size: 8px&quot;&gt;TelemetryUpdateResponse&lt;br style=&quot;font-size: 8px&quot;&gt;status&lt;br style=&quot;font-size: 8px&quot;&gt;&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;fontSize=8;fontFamily=Fira Code;fontStyle=0;fontColor=#FFFFFF;rotation=0;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DFira%2BCode;" vertex="1" parent="TIKCRUf47VzGktWiAVfS-1">
+          <mxGeometry x="359" y="425" width="121" height="25" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
