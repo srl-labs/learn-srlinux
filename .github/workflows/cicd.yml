@@ -9,7 +9,7 @@ on:
   pull_request:
 
 env:
-  MKDOCS_MATERIAL_VER: 7.1.9
+  MKDOCS_MATERIAL_VER: 7.3.6
 
 jobs:
   docs-test:

@@ -8,8 +8,6 @@ The SR Linux software supports seven Nokia hardware platforms[^1]:
 * 7220 IXR-H2
 * 7220 IXR-H3
 
-Out of those seven hardware variants, the first five are available for emulation within SR Linux container image.
-
 The `type` field under the node configuration sets the emulated hardware type in the containerlab file:
 
 ```yaml
@@ -29,6 +27,8 @@ The `type` field defines the hardware variant that this SR Linux node will emula
 | ixrd1      | 7220 IXR-D1 |
 | ixrd2      | 7220 IXR-D2 |
 | ixrd3      | 7220 IXR-D3 |
+| ixrh2      | 7220 IXR-H2 |
+| ixrh3      | 7220 IXR-H3 |
 
 
 !!!tip
