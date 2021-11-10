@@ -19,9 +19,19 @@ nav:
   - NDK:
       - Introduction: ndk/intro.md
       - Developers Guide:
-          - Architecture: ndk/arch.md
+          - NDK Architecture: ndk/guide/architecture.md
+          - Agent structure: ndk/guide/agent.md
+          - Agent Installation: ndk/guide/agent-install.md
+          - Environment Setup:
+              - Go: ndk/guide/env/go.md
+              - Python: ndk/guide/env/python.md
+          - Developing with NDK:
+              - Go: ndk/guide/dev/go.md
       - App Catalog:
-          - Interface counter: ndk/apps/iface-counter.md
+          - About: ndk/apps/catalog.md
+          - EVPN Proxy: ndk/apps/evpn-proxy.md
+          - kButler: ndk/apps/kbutler.md
+          - Prometheus Telemetry Exporter: ndk/apps/srl-prom-exporter.md
   - Always-ON SR Linux: alwayson.md
   - Community: community.md
 
@@ -97,6 +107,7 @@ extra:
 markdown_extensions:
   - markdown.extensions.admonition
   - markdown.extensions.attr_list
+  - markdown.extensions.md_in_html
   - markdown.extensions.codehilite:
       guess_lang: false
   - markdown.extensions.def_list

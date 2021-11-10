@@ -4,11 +4,14 @@ DirectoryPath: ./site
 IgnoreURLs:
   - fonts.gstatic.com
   - www.nokia.com/networks/solutions/data-center-switching-fabric/
+  - https://www.linkedin.com/in/jeroenvbemmel/
   - documentation.nokia.com
   - bit.ly/iondoc
   # ghcr packages return 404 for non authz gh users
   - https://github.com/orgs/nokia/packages/container/package/srlinux
   - https://github.com/orgs/nokia/packages/container/srlinux/versions
+  - https://www.linkedin.com/in/bruce-wallis-77755a129/
+
 IgnoreDirectoryMissingTrailingSlash: true
 IgnoreAltMissing: true
 IgnoreSSLVerify: true

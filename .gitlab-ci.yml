@@ -3,8 +3,7 @@ pages:
     name: squidfunk/mkdocs-material:7.3.6
     entrypoint: [""]
   stage: deploy
-  only:
-    - master
+  when: manual
   script:
     - mkdocs build --clean --site-dir public
   artifacts:
