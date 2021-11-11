@@ -147,21 +147,21 @@ When agent needs to stop it's operation and be removed from the SR Linux system,
 
 When unregistered, the agent's state data will be removed from SR Linux system and will no longer be accessible to any of the management interfaces.
 
-[sdk_mgr_svc_doc]: https://raw.githack.com/nokia/srlinux-ndk-protobufs/protos/doc/index.html#ndk.SdkMgrService
+[sdk_mgr_svc_doc]: https://rawcdn.githack.com/nokia/srlinux-ndk-protobufs/v21.6.2/doc/index.html#ndk.SdkMgrService
 [sdk_mgr_svc_proto]: https://github.com/nokia/srlinux-ndk-protobufs/blob/protos/ndk/sdk_service.proto
-[sdk_notif_svc_doc]: https://raw.githack.com/nokia/srlinux-ndk-protobufs/protos/doc/index.html#ndk.SdkNotificationService
+[sdk_notif_svc_doc]: https://rawcdn.githack.com/nokia/srlinux-ndk-protobufs/v21.6.2/doc/index.html#ndk.SdkNotificationService
 [sdk_mgr_telemetry_proto]: https://github.com/nokia/srlinux-ndk-protobufs/blob/protos/ndk/telemetry_service.proto
-[notif_reg_req_doc]: https://raw.githack.com/nokia/srlinux-ndk-protobufs/protos/doc/index.html#ndk.NotificationRegisterRequest
-[notif_reg_resp_doc]: https://raw.githack.com/nokia/srlinux-ndk-protobufs/protos/doc/index.html#ndk.NotificationRegisterResponse
-[cfg_svc_doc]: https://raw.githack.com/nokia/srlinux-ndk-protobufs/protos/doc/index.html#ndk%2fconfig_service.proto
-[cfg_notif_doc]: https://raw.githack.com/nokia/srlinux-ndk-protobufs/protos/doc/index.html#ndk.ConfigNotification
-[cfg_sub_req_doc]: https://raw.githack.com/nokia/srlinux-ndk-protobufs/protos/doc/index.html#ndk.ConfigSubscriptionRequest
-[notif_stream_resp_doc]: https://raw.githack.com/nokia/srlinux-ndk-protobufs/protos/doc/index.html#ndk.NotificationStreamRequest
-[notif_stream_resp_doc]: https://raw.githack.com/nokia/srlinux-ndk-protobufs/protos/doc/index.html#ndk.NotificationStreamResponse
-[notif_doc]: https://raw.githack.com/nokia/srlinux-ndk-protobufs/protos/doc/index.html#ndk.Notification
-[sdk_mgr_telem_svc_doc]: https://raw.githack.com/nokia/srlinux-ndk-protobufs/protos/doc/index.html#ndk.SdkMgrTelemetryService
-[telem_upd_req_doc]: https://raw.githack.com/nokia/srlinux-ndk-protobufs/protos/doc/index.html#ndk.TelemetryUpdateRequest
-[telem_info_doc]: https://raw.githack.com/nokia/srlinux-ndk-protobufs/protos/doc/index.html#ndk.TelemetryInfo
+[notif_reg_req_doc]: https://rawcdn.githack.com/nokia/srlinux-ndk-protobufs/v21.6.2/doc/index.html#ndk.NotificationRegisterRequest
+[notif_reg_resp_doc]: https://rawcdn.githack.com/nokia/srlinux-ndk-protobufs/v21.6.2/doc/index.html#ndk.NotificationRegisterResponse
+[cfg_svc_doc]: https://rawcdn.githack.com/nokia/srlinux-ndk-protobufs/v21.6.2/doc/index.html#ndk%2fconfig_service.proto
+[cfg_notif_doc]: https://rawcdn.githack.com/nokia/srlinux-ndk-protobufs/v21.6.2/doc/index.html#ndk.ConfigNotification
+[cfg_sub_req_doc]: https://rawcdn.githack.com/nokia/srlinux-ndk-protobufs/v21.6.2/doc/index.html#ndk.ConfigSubscriptionRequest
+[notif_stream_resp_doc]: https://rawcdn.githack.com/nokia/srlinux-ndk-protobufs/v21.6.2/doc/index.html#ndk.NotificationStreamRequest
+[notif_stream_resp_doc]: https://rawcdn.githack.com/nokia/srlinux-ndk-protobufs/v21.6.2/doc/index.html#ndk.NotificationStreamResponse
+[notif_doc]: https://rawcdn.githack.com/nokia/srlinux-ndk-protobufs/v21.6.2/doc/index.html#ndk.Notification
+[sdk_mgr_telem_svc_doc]: https://rawcdn.githack.com/nokia/srlinux-ndk-protobufs/v21.6.2/doc/index.html#ndk.SdkMgrTelemetryService
+[telem_upd_req_doc]: https://rawcdn.githack.com/nokia/srlinux-ndk-protobufs/v21.6.2/doc/index.html#ndk.TelemetryUpdateRequest
+[telem_info_doc]: https://rawcdn.githack.com/nokia/srlinux-ndk-protobufs/v21.6.2/doc/index.html#ndk.TelemetryInfo
 
 [^1]: For example, [here](https://github.com/nokia/srlinux-ndk-protobufs/tree/v21.6.2) you will find the auto-generated documentation for the latest NDK version at the moment of this writing.
 [^2]: `ndk_mgr` is the name of the applications that implements NDK gRPC server side and runs on SR Linux OS.

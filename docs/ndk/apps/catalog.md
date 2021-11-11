@@ -25,7 +25,7 @@ SR Linux EVPN Proxy agent that allows to bridge EVPN domains with domains that o
 kButler agent ensures that for every worker node which hosts an application with an exposed service, there is a corresponding FIB entry for the service external IP with a next-hop of the worker node.  
 [:octicons-arrow-right-24: Read more](kbutler.md)
 
-### Prometheus Exported
+### Prometheus Exporter
 :material-language-go: · [`karimra/srl-prometheus-exporter`](https://github.com/karimra/srl-prometheus-exporter)
 
 SR Linux Prometheus Exporter agent creates prometheus scrape-able endpoints on individual switches. This telemetry horizontally scaled telemetry collection model comes with additional operational enhancements over traditional setups with a central telemetry collector.  
