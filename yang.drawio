@@ -1,6 +1,6 @@
-<mxfile host="app.diagrams.net" modified="2021-11-12T12:53:59.053Z" agent="5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36" etag="EBxv40aWPfAAJ0kbJ1PH" version="15.7.3" type="github">
+<mxfile host="app.diagrams.net" modified="2021-11-12T15:57:36.613Z" agent="5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36" etag="7dS3cFcfbuKebtAFmWFw" version="15.7.3" type="github">
   <diagram name="[0] yang" id="ZMCx_UzSzWk1nDmMVq2M">
-    <mxGraphModel dx="2431" dy="1328" grid="1" gridSize="5" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="#495766" math="0" shadow="0">
+    <mxGraphModel dx="1722" dy="968" grid="1" gridSize="5" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="#495766" math="0" shadow="0">
       <root>
         <mxCell id="xg3VUZHEJCf5JJvFxYuz-0" />
         <mxCell id="xg3VUZHEJCf5JJvFxYuz-1" parent="xg3VUZHEJCf5JJvFxYuz-0" />
@@ -38,8 +38,7 @@
             <mxPoint x="216" y="533" as="targetPoint" />
             <Array as="points">
               <mxPoint x="378" y="590" />
-              <mxPoint x="320" y="590" />
-              <mxPoint x="320" y="384" />
+              <mxPoint x="378" y="384" />
             </Array>
           </mxGeometry>
         </mxCell>
