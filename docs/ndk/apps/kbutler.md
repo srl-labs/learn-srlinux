@@ -6,7 +6,7 @@
 | **Components**           | [Nokia SR Linux][srl], Kubernetes, [MetalLB][metallb_doc]                                                                                                                                              |
 | **Programming Language** | Go                                                                                                                                                                                                     |
 | **Source Code**          | [`brwallis/srlinux-kbutler`][src]                                                                                                                                                                      |
-| **Additional resources** | This agent was demonstrated at [NDF 25][nfd25_yt]                                                                                                                                                      |
+| **Additional resources** | This agent was demonstrated at [NFD 25][nfd25_yt]                                                                                                                                                      |
 | **Authors**              | Bruce Wallis [:material-linkedin:][auth1_linkedin] [:material-twitter:][auth1_twitter]                                                                                                                 |
 
 

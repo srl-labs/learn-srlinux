@@ -32,7 +32,9 @@ nav:
           - EVPN Proxy: ndk/apps/evpn-proxy.md
           - kButler: ndk/apps/kbutler.md
           - Prometheus Telemetry Exporter: ndk/apps/srl-prom-exporter.md
-  # - Always-ON SR Linux: alwayson.md
+  - YANG:
+      - SR Linux & YANG: yang/yang.md
+      - YANG Browser: yang/browser.md
   - Community: community.md
 
 site_author: SR Linux
