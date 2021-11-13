@@ -41,6 +41,19 @@ body, input {
   font-size: .8em;
 }
 
+@media screen and (max-width: 76.1875em) {
+  .md-header__button.md-icon[for=__drawer] {
+    order: -1
+  }
+  .md-header__button.md-logo {
+    display: block;
+  }
+}
+
+.md-container.secondary-section {
+  border: 0;
+}
+
 /* need to have decide if it is better or not
   making the content width bigger
 .md-grid {
