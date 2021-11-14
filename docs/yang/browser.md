@@ -9,33 +9,37 @@ To answer these demands, we created a web portal - [**yang.srlinux.dev**][yang-p
 * Source `.yang` files neatly stored in [`nokia/srlinux-yang-models`][yang-models-gh] repository for programmatic access and code generation
 
 <figure markdown>
-  ![portal](https://gitlab.com/rdodin/pics/-/wikis/uploads/fc5cedd25562209eb8926fe930adefd0/CleanShot_2021-11-12_at_17.41.30.png)
+  ![portal](https://gitlab.com/rdodin/pics/-/wikis/uploads/d135e8ce3b948fe02fa70d912e64053b/image.png)
 </figure>
 
 The web portal's front page aggregates links to individual releases of YANG models. Select the needed version to open the web view of the YANG tools we offer.
 
 <figure markdown>
-  ![portal](https://gitlab.com/rdodin/pics/-/wikis/uploads/3fa667148b246586c1676ff7facb16f2/CleanShot_2021-11-12_at_17.04.07.png)
+  ![portal](https://gitlab.com/rdodin/pics/-/wikis/uploads/d016e31ae98ee6f4d00d25a49f2a2b3c/image.png)
 </figure>
 
-The main stage of the YANG Browser view is dedicated to the Path Browser, as it is the most efficient way to search through the model. Additional tools are located in the upper right corner. Let's cover them one by one.
+The main stage of the YANG Browser view is dedicated to the Path Browser :material-numeric-1-circle:, as it is the most efficient way to search through the model. Additional tools are located in the upper right corner :material-numeric-2-circle:. Let's cover them one by one.
 
 ## Path Browser
 As was discussed before, SR Linux is a fully modeled system with its configuration and state data entirely covered with YANG models. Consequently, to access any data for configuration or state, one needs to follow the YANG model. Effectively searching for those YANG-based access paths is key to rapid development and operations. For example, how to tell which path to use to get ipv4 statistics of an interface?
 
-With Path Browser, it is possible to search through the entire SR Linux YANG model and extract the paths to the leaves of interest. The Path Browser area is composed of two main elements
+With Path Browser, it is possible to search through the entire SR Linux YANG model and extract the paths to the leaves of interest. The Path Browser area is composed of three main elements:
 
-* search input for entering the query
-* table with results for a given search input
+* search input for entering the query :material-numeric-1-circle:
+* Config/State selector :material-numeric-2-circle:
+* table with results for a given search input :material-numeric-3-circle:
 
 <figure markdown>
-  ![portal](https://gitlab.com/rdodin/pics/-/wikis/uploads/163dc6cfd5aee198be3cbe3d53039c77/CleanShot_2021-11-12_at_19.32.00.png)
+  ![portal](https://gitlab.com/rdodin/pics/-/wikis/uploads/204b53c62c1c6d0dc336f79bc37a9691/image.png)
   <figcaption>Path Browser elements</figcaption>
 </figure>
+
+A user types in a search query and the result is rendered immediately in the table with the matched words highlighted. The Config/State selector allows users to select if they want the table to show config, state or all leaves. The state leaf is a leaf that has `config false` statement[^2].
 
 ### Path structure
 The table contains the flattened XPATH-like paths for every leaf of a model sorted alphabetically.
 
+* Each path is denoted with a State attribute in the first column of a table. Leaves, which represent the state data, will have the `true` value in the first column[^2].
 * List elements are represented in the paths as `list-element[key-name=*]` - a format suitable for gNMI subscriptions.
 * Each leaf is provided with the type information.
 
@@ -53,9 +57,7 @@ First, a user tries a logical search query `interface byte`, which yields some r
 Next, they try to use `interface octets` search query hoping that it will yield the right results, and so it does!
 
 
-<video controls>
-  <source src="https://gitlab.com/rdodin/pics/-/wikis/uploads/05002e53f987009ac838c790814bf51d/CleanShot_2021-11-12_at_20.31.57.mp4" type="video/mp4"></source>
-</video>
+<video src="https://gitlab.com/rdodin/pics/-/wikis/uploads/dca721dfcf4816bb326b6b2ca7c3575a/2021-11-14_22-02-24.mp4" controls="true" width="100%"></video>
 
 !!!tip
     Every table row denotes a leaf, and when a user hovers a mouse over a certain row, the popup appears with a description of the leaf.
@@ -95,3 +97,4 @@ The textual paths can be, for example, fetched with curl and users can `sed` the
 [pyang_gh]: https://github.com/mbj4668/pyang
 
 [^1]: extracted with `pyang -f tree`
+[^2]: refer to https://datatracker.ietf.org/doc/html/rfc6020#section-4.2.3
