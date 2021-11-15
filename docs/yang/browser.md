@@ -1,5 +1,5 @@
 # SR Linux YANG Browser
-YANG data models is the map one should use when looking for their way to configure or retrieve any data on SR Linux system. A central role that is given to [YANG in SR Linux](yang.md) demands a convenient interface to **browse**, **search** through, and **process** these data models.
+YANG data models are the map one should use when looking for their way to configure or retrieve any data on SR Linux system. A central role that is given to [YANG in SR Linux](yang.md) demands a convenient interface to **browse**, **search** through, and **process** these data models.
 
 To answer these demands, we created a web portal - [**yang.srlinux.dev**][yang-portal] - it offers:
 [yang-portal]: https://yang.srlinux.dev
@@ -21,7 +21,7 @@ The web portal's front page aggregates links to individual releases of YANG mode
 The main stage of the YANG Browser view is dedicated to the Path Browser :material-numeric-1-circle:, as it is the most efficient way to search through the model. Additional tools are located in the upper right corner :material-numeric-2-circle:. Let's cover them one by one.
 
 ## Path Browser
-As was discussed before, SR Linux is a fully modeled system with its configuration and state data entirely covered with YANG models. Consequently, to access any data for configuration or state, one needs to follow the YANG model. Effectively searching for those YANG-based access paths is key to rapid development and operations. For example, how to tell which path to use to get ipv4 statistics of an interface?
+As was discussed before, SR Linux is a fully modeled system with its configuration and state data entirely covered with YANG models. Consequently, to access any data for configuration or state, one needs to follow the YANG model. Effectively searching for those YANG-based access paths is key to rapid development and operations. For example, how to tell which one to use to get ipv4 statistics of an interface?
 
 With Path Browser, it is possible to search through the entire SR Linux YANG model and extract the paths to the leaves of interest. The Path Browser area is composed of three main elements:
 
@@ -34,10 +34,10 @@ With Path Browser, it is possible to search through the entire SR Linux YANG mod
   <figcaption>Path Browser elements</figcaption>
 </figure>
 
-A user types in a search query and the result is rendered immediately in the table with the matched words highlighted. The Config/State selector allows users to select if they want the table to show config, state or all leaves. The state leaf is a leaf that has `config false` statement[^2].
+A user types in a search query, and the result is rendered immediately in the table with the matched words highlighted. The Config/State selector allows users to select if they want the table to show config, state, or all leaves. The state leaf is a leaf that has `config false` statement[^2].
 
 ### Path structure
-The table contains the flattened XPATH-like paths for every leaf of a model sorted alphabetically.
+The table contains the flattened XPATH-like paths[^3] for every leaf of a model sorted alphabetically.
 
 * Each path is denoted with a State attribute in the first column of a table. Leaves, which represent the state data, will have the `true` value in the first column[^2].
 * List elements are represented in the paths as `list-element[key-name=*]` - a format suitable for gNMI subscriptions.
@@ -60,7 +60,7 @@ Next, they try to use `interface octets` search query hoping that it will yield 
 <video src="https://gitlab.com/rdodin/pics/-/wikis/uploads/dca721dfcf4816bb326b6b2ca7c3575a/2021-11-14_22-02-24.mp4" controls="true" width="100%"></video>
 
 !!!tip
-    Every table row denotes a leaf, and when a user hovers a mouse over a certain row, the popup appears with a description of the leaf.
+    Every table row denotes a leaf, and when a user hovers a mouse over a row, the popup appears with a description of the leaf.
 
 ## Tree Browser
 The Path Browser is great to search through the entire model, but because it works on flattened paths, it hides the "tree" view of the model. Sometimes the tree representation is the best side to look at the models with a naked eye, as the hierarchy becomes very clear.
@@ -98,3 +98,4 @@ The textual paths can be, for example, fetched with curl and users can `sed` the
 
 [^1]: extracted with `pyang -f tree`
 [^2]: refer to https://datatracker.ietf.org/doc/html/rfc6020#section-4.2.3
+[^3]: paths are generated from the YANG model with [gnmic](https://gnmic.kmrd.dev/cmd/path/)
