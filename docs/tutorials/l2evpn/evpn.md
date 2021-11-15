@@ -16,7 +16,7 @@ VXLAN tunnels bridge the layer-2 frames between leaf routers with EVPN providing
 
 The following figure demonstrates this concept where servers `srv1` and `srv2` are connected to the different switches of the routed fabric, but appear to be on the same broadcast domain.
 
-<div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:4,&quot;zoom&quot;:2,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/learn-srlinux/site/diagrams/quickstart.drawio&quot;}"></div>
+<div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:4,&quot;zoom&quot;:2,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/srl-labs/learn-srlinux/diagrams/quickstart.drawio&quot;}"></div>
 
 Now that the DC fabric has a routed underlay, and the loopbacks of the leaf switches are mutually reachable[^1], we can proceed with the VXLAN based EVPN service configuration.
 
@@ -32,7 +32,7 @@ Prior to configuring the overlay services we must enable the EVPN address family
 
 EVPN is enabled using iBGP and typically a Route Reflector (RR), or eBGP. In our example we have only two leafs, so we won't take extra time configuring the iBGP with a spine acting as a Route Reflector, and instead will configure the iBGP between the two leaf switches.
 
-<div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:5,&quot;zoom&quot;:2,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/learn-srlinux/site/diagrams/quickstart.drawio&quot;}"></div>
+<div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:5,&quot;zoom&quot;:2,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/srl-labs/learn-srlinux/diagrams/quickstart.drawio&quot;}"></div>
 
 For that iBGP configuration we will create a group called `iBGP-overlay` which will have the `peer-as` and `local-as` set to `100` to form an iBGP neighborship. The group will also host the same permissive `all` routing policy, enabled `evpn` and disabled ipv4-unicast address families.
 
@@ -121,7 +121,7 @@ Right now, as we don't have any EVPN service created, there are no EVPN routes t
 ## Access interfaces
 Next we are configuring the interfaces from the leaf switches to the corresponding servers. According to our lab's wiring diagram, interface 1 is connected to the server on both leaf switches:
 
-<div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:6,&quot;zoom&quot;:2,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/learn-srlinux/site/diagrams/quickstart.drawio&quot;}"></div>
+<div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:6,&quot;zoom&quot;:2,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/srl-labs/learn-srlinux/diagrams/quickstart.drawio&quot;}"></div>
 
 Configuration of an access interface is nothing special, we already [configured leaf-spine interfaces](fabric.md#leaf-spine-interfaces) at the fabric configuration stage, so the steps are all familiar. The only detail worth mentioning here is that we have to indicate the type of the subinterface to be [`bridged`](../../kb/ifaces.md#subinterfaces), this makes the interfaces only attachable to a network instance of `mac-vrf` type with MAC learning and layer-2 forwarding enabled.
 
@@ -223,7 +223,7 @@ The servers in our fabric do not have any addresses on their `eth1` interfaces b
 
 By the end of this section, we will have the following addressing scheme complete:
 
-<div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:7,&quot;zoom&quot;:3,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/learn-srlinux/site/diagrams/quickstart.drawio&quot;}"></div>
+<div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:7,&quot;zoom&quot;:3,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/srl-labs/learn-srlinux/diagrams/quickstart.drawio&quot;}"></div>
 
 
 To connect to a shell of a server execute `docker exec -it <container-name> bash`:
@@ -752,7 +752,7 @@ The IMET/RT3 routes can be viewed in summary and detailed modes:
 
     By capturing on the `e1-49` interface of the `clab-evpn01-leaf1` container, we are able to collect all the packets that are flowing between the nodes. Then we simply flap the EVPN instance in the `vrf-1` network instance to trigger the BGP updates to flow and see them in the live capture.
 
-    [Here is the pcap file](https://github.com/learn-srlinux/site/blob/master/docs/tutorials/l2evpn/evpn01-imet-routes.pcapng) with the IMET routes advertisements between `leaf1` and `leaf2`.
+    [Here is the pcap file](https://github.com/srl-labs/learn-srlinux/blob/master/docs/tutorials/l2evpn/evpn01-imet-routes.pcapng) with the IMET routes advertisements between `leaf1` and `leaf2`.
 
 When the IMET routes from `leaf2` are imported for `vrf-1` network-instance, the corresponding multicast VXLAN destinations are added and can be checked with the following command:
 
@@ -795,7 +795,7 @@ Show report for vxlan-tunnels
 
 The VXLAN tunnel is built between the `vxlan` interfaces in the MAC-VRF network instances, which internally use `system` interfaces of the `default` network instance as a VTEP:
 
-<div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:8,&quot;zoom&quot;:4,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/learn-srlinux/site/diagrams/quickstart.drawio&quot;}"></div>
+<div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:8,&quot;zoom&quot;:4,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/srl-labs/learn-srlinux/diagrams/quickstart.drawio&quot;}"></div>
 
 Once a VTEP is created in the vxlan-tunnel table with a non-zero allocated index[^3], an entry in the tunnel-table is also created for the tunnel.
 
@@ -942,7 +942,7 @@ Summary
 ```
 
 !!!tip "packet capture"
-    [The following pcap](https://github.com/learn-srlinux/site/blob/master/docs/tutorials/l2evpn/evpn01-macip-routes.pcapng) was captured a moment before `srv1` started to ping `srv2` on `leaf1` interface `e1-49`.
+    [The following pcap](https://github.com/srl-labs/learn-srlinux/blob/master/docs/tutorials/l2evpn/evpn01-macip-routes.pcapng) was captured a moment before `srv1` started to ping `srv2` on `leaf1` interface `e1-49`.
 
     It shows how:
 
@@ -957,7 +957,7 @@ This concludes the verification steps, as we have a working data plane connectiv
 [^1]: as was verified [before](fabric.md#dataplane)
 [^2]: containerlab assigns mac addresses to the interfaces with OUI `00:C1:AB`. We are changing the generated MAC with a more recognizable address, since we want to easily identify MACs in the bridge tables.
 [^3]: If the next hop is not resolved to a route in the default network-instance route-table, the index in the vxlan-tunnel table shows as “0” for the VTEP and no tunnel-table is created.
-[^4]: IMET routes have extended community that conveys the encapsulation type. And for VXLAN EVPN it states VXLAN encap. Check [pcap](https://github.com/learn-srlinux/site/blob/master/docs/tutorials/l2evpn/evpn01-imet-routes.pcapng) for reference.
+[^4]: IMET routes have extended community that conveys the encapsulation type. And for VXLAN EVPN it states VXLAN encap. Check [pcap](https://github.com/srl-labs/learn-srlinux/blob/master/docs/tutorials/l2evpn/evpn01-imet-routes.pcapng) for reference.
 [^5]: Per [section 5.1.2 of RFC 8365](https://datatracker.ietf.org/doc/html/rfc8365#section-5.1.2)
 [^6]: Easily extracted with doing `info <container>` where `container` is `routing-policy`, `network-instance *`, `interface *`, `tunnel-interface *`
 [^7]: We did try to ping from `srv1` to `srv2` in [server interfaces](#server-interfaces) section which triggered MAC-VRF to insert a locally learned MAC into its MAC table, but since then this mac has aged out, and thus the table is empty again.

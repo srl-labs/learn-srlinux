@@ -41,9 +41,9 @@ site_author: SR Linux
 site_description: >-
   Learn SR Linux
 # Repository
-repo_name: learn-srlinux/site
-repo_url: https://github.com/learn-srlinux/site
-edit_uri: edit/master/docs/
+repo_name: srl-labs/learn-srlinux
+repo_url: https://github.com/srl-labs/learn-srlinux
+edit_uri: edit/main/docs/
 site_url: "https://learn.srlinux.dev/"
 copyright: Copyright &copy; 2021 Nokia
 theme:

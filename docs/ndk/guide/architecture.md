@@ -7,7 +7,7 @@ NDK allows operators to write applications (a.k.a agents) that function similar 
 In Fig. 1 custom NDK applications `app-1` and `app-2` are able to interact with other subsystems of SR Linux operating system via gRPC-based NDK service.
 
 <figure>
-  <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:0,&quot;zoom&quot;:1.5,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/learn-srlinux/site/diagrams/ndk.drawio&quot;}"></div>
+  <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:0,&quot;zoom&quot;:1.5,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/srl-labs/learn-srlinux/diagrams/ndk.drawio&quot;}"></div>
   <figcaption>Fig 1. NDK applications integration</figcaption>
 </figure>
 
@@ -26,7 +26,7 @@ In gRPC, a client application can directly call a method on a server application
 On the server side, the server implements this interface and runs a gRPC server to handle client calls. On the client side, the client provides the same methods as the server.
 
 <figure>
-  <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:2,&quot;zoom&quot;:1,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/learn-srlinux/site/diagrams/ndk.drawio&quot;}"></div>
+  <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:2,&quot;zoom&quot;:1,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/srl-labs/learn-srlinux/diagrams/ndk.drawio&quot;}"></div>
   <figcaption>Fig 2. gRPC client-server interactions</figcaption>
 </figure>
 
@@ -44,7 +44,7 @@ With this architecture, NDK agents act as gRPC clients that execute remote proce
 On SR Linux, `ndk_mgr` is the application that runs NDK gRPC server. Fig 3. shows how custom agents interact via gRPC with NDK, and NDK in its turn executes the called procedure and communicates with other system applications through IDB and pub/sub interface to return the result of the RPC to a client.
 
 <figure>
-  <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:1,&quot;zoom&quot;:1.5,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/learn-srlinux/site/diagrams/ndk.drawio&quot;}"></div>
+  <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:1,&quot;zoom&quot;:1.5,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/srl-labs/learn-srlinux/diagrams/ndk.drawio&quot;}"></div>
   <figcaption>Fig 3. gRPC as an Inter Process Communication (IPC) protocol</figcaption>
 </figure>
 
@@ -64,7 +64,7 @@ The generated documentation provides the developers with a human readable refere
 Regardless of a language in which the agents are written, at a high level the following flow of operations applies to all agents when interacting with the NDK service:
 
 <figure>
-  <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:3,&quot;zoom&quot;:1.5,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/learn-srlinux/site/diagrams/ndk.drawio&quot;}"></div>
+  <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:3,&quot;zoom&quot;:1.5,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/srl-labs/learn-srlinux/diagrams/ndk.drawio&quot;}"></div>
   <figcaption>Fig 4. NDK operations flow</figcaption>
 </figure>
 
@@ -134,7 +134,7 @@ The handling of notifications is done when the last notification is sent by the 
 Each agent may keep state and configuration data which is modeled in YANG. When agent needs to set/update its own state data (for example when it made some calculations based on received notifications), it needs to use [`SdkMgrTelemetryService`][sdk_mgr_telem_svc_doc] and a corresponding client.
 
 <figure>
-  <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:4,&quot;zoom&quot;:1.5,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/learn-srlinux/site/diagrams/ndk.drawio&quot;}"></div>
+  <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:4,&quot;zoom&quot;:1.5,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/srl-labs/learn-srlinux/diagrams/ndk.drawio&quot;}"></div>
   <figcaption>Fig 5. Updating agent's state flow</figcaption>
 </figure>
 
