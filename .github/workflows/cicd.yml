@@ -24,7 +24,7 @@ jobs:
 
   publish-docs:
     runs-on: ubuntu-20.04
-    if: startsWith(github.ref, 'refs/heads/master')
+    if: startsWith(github.ref, 'refs/heads/main')
     needs: docs-test
     steps:
       - name: Checkout
