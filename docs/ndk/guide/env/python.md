@@ -1,10 +1,10 @@
 # Python Development Environment
-Although every developer's environment is different and is subject to a personal preference, on this page we will provide recommendations for a [Python](https://www.python.org/) toolchain setup suitable for development of NDK applications.
+Although every developer's environment is different and is subject to a personal preference, we will provide some recommendations for a [Python](https://www.python.org/) toolchain setup suitable for the development of NDK applications.
 
 ## Environment components
-The toolchain that can be used to develop Python based NDK apps consists of the following components:
+The toolchain that can be used to develop Python-based NDK apps consists of the following components:
 
-1. [Python programming language](https://www.python.org/downloads/) - Python interpreter, toolchain and standard library
+1. [Python programming language](https://www.python.org/downloads/) - Python interpreter, toolchain, and standard library
 2. [Python NDK bindings](https://github.com/nokia/srlinux-ndk-py) - generated data access classes for gRPC based NDK service.
 
 ## Project structure
@@ -20,9 +20,9 @@ Here is an example project structure that you can use for the NDK agent developm
 ```
 
 ## NDK language bindings
-As explained in the [NDK Architecture](../architecture.md) section, NDK is a gRPC based service. To be able to use gRPC services in a Python program the [language bindings](https://grpc.io/docs/languages/python/quickstart/) have to be generated from the source proto files.
+As explained in the [NDK Architecture](../architecture.md) section, NDK is a gRPC based service. The [language bindings](https://grpc.io/docs/languages/python/quickstart/) have to be generated from the source proto files to use gRPC services in a Python program.
 
-Nokia provides not only the [source proto files](https://github.com/nokia/srlinux-ndk-protobufs) for the SR Linux NDK service, but also [NDK Python language bindings](https://github.com/nokia/srlinux-ndk-py).
+Nokia not only provides the [proto files](https://github.com/nokia/srlinux-ndk-protobufs) for the SR Linux NDK service but also [NDK Python language bindings](https://github.com/nokia/srlinux-ndk-py).
 
 With the provided Python bindings, the NDK can be installed with pip
 

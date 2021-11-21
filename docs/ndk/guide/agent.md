@@ -1,6 +1,6 @@
 As was explained in the [NDK Architecture](architecture.md) section, an agent[^1] is a custom software that can extend SR Linux capabilities by running alongside SR Linux native applications and performing some user-defined tasks.
 
-To deeply integrate with the rest of the SR Linux architecture the agents have to be defined like an application that SR Linux's application manager can take control of. The structure of the agents is the main topic of this chapter.
+To deeply integrate with the rest of the SR Linux architecture, the agents have to be defined like an application that SR Linux's application manager can take control of. The structure of the agents is the main topic of this chapter.
 
 The main three components of an agent:
 
@@ -11,33 +11,32 @@ The main three components of an agent:
 ## Executable file
 An executable file is called when the agent starts running on SR Linux system. It contains the application logic and is typically an executable binary or a script.
 
-The application logic takes care of handling the agents configuration that may be provided via any of the management interfaces (CLI, gNMI, etc), and contains the core logic of interfacing with gRPC based NDK services.
+The application logic handles the agents' configuration that may be provided via any management interface (CLI, gNMI, etc.) and contains the core logic of interfacing with gRPC based NDK services.
 
-In the subsequent sections of the Developers Guide we will cover how to write the logic of an agent and interact with various NDK services.
+In the subsequent sections of the Developers Guide, we will cover how to write the logic of an agent and interact with various NDK services.
 
 An executable file can be placed at `/usr/local/bin` directory.
 
 ## YANG module
-SR Linux is a fully modelled Network OS. As a result, any native or custom application that is meant to be configurable or to have state is required to have a proper YANG model.
+SR Linux is a [fully modeled](../../yang/yang.md) Network OS - any native or custom application that can be configured or can have state is required to have a proper YANG model.
 
-The "cost" associated with requiring users to write YAN
-G models for their apps pays off greatly as this
+The "cost" associated with requiring users to write YANG models for their apps pays off immensely as this
 
 * enables seamless integration of an agent with **all** management interfaces: CLI, gNMI, JSON-RPC.  
-    Any agent's configuration knobs that users expressed in YANG will be immediately available in the SR Linux CLI, as if it was part of it from the beginning. Yes, with auto-suggestion of the fields as well.
-* provides out-of-the-box Streaming Telemetry (gNMI) support for any config or state data that agent maintains
+    Any agent's configuration knobs that users expressed in YANG will be immediately available in the SR Linux CLI as if it was part of it from the beginning. Yes, with auto-suggestion of the fields as well.
+* provides out-of-the-box Streaming Telemetry (gNMI) support for any config or state data that the agent maintains
 
-And secondly, the YANG modules for custom apps are not that hard to write as their data model is typically rather small.
+And secondly, the YANG modules for custom apps are not that hard to write as their data model is typically relatively small.
 
 !!!note
-    YANG module is only needed if a developer wants their agent to be configurable via any of the management interfaces or to keep state.
+    The YANG module is only needed if a developer wants their agent to be configurable via any management interfaces or keep state.
 
-YANG files that are related to the particular agent can be placed by the `/opt/$agentName/yang` directory.
+YANG files related to an agent are typically located by the `/opt/$agentName/yang` path.
 
 ## Configuration file
-Due to SR Linux modular architecture, each application, be it internal app like `bgp` or a custom NDK agent, needs to have a configuration file. This file contains application parameters which are read by the Application Manager service to onboard the application onto the system.
+Due to SR Linux modular architecture, each application, be it an internal app like `bgp` or a custom NDK agent, needs to have a configuration file. This file contains application parameters read by the Application Manager service to onboard the application onto the system.
 
-With agent's config file users define important properties of an application, for example:
+With an agent's config file, users define properties of an application, for example:
 
 * application version
 * location of the executable file
@@ -45,11 +44,11 @@ With agent's config file users define important properties of an application, fo
 * lifecycle management policy
 * and others
 
-Custom agents must have their config file present by the `/etc/opt/srlinux/appmgr` directory. It is a good idea to name agent config file after the agent name, so if we, say, named our agent `myCoolAgent`, then its config file can be named as `myCoolAgent.yml` under the `/etc/opt/srlinux/appmgr` directory.
+Custom agents must have their config file present by the `/etc/opt/srlinux/appmgr` directory. It is a good idea to name the agent's config file after the agent's name; if we have the agent called `myCoolAgent`, then its config file can be named `myCoolAgent.yml` and stored by the `/etc/opt/srlinux/appmgr` path.
 
-Through the subsequent chapters of the Developers Guide we will cover the most important options, but here is a full list of config file parameters:
+Through the subsequent chapters of the Developers Guide, we will cover the most important options, but here is a complete list of config file parameters:
 
-???info "Full list of config files parameters"
+???info "Complete list of config files parameters"
     ```yaml
     # Example configuration file for the applications on sr_linux
     # All valid options are shown and explained
@@ -133,7 +132,7 @@ Through the subsequent chapters of the Developers Guide we will cover the most i
     ```
 
 ## Dependency and other files
-Quite often an agent may require additional files for its operation. It can be a specific virtual environment for your Python agent, or some JSON file that your agents reads some data from.
+Quite often, an agent may require additional files for its operation. It can be a virtual environment for your Python agent or some JSON file that your agent consumes.
 
 All those auxiliary files can be saved by the `/opt/$agentName/` directory.
 
