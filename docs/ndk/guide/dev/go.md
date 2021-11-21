@@ -1,14 +1,14 @@
 
 # Developing agents with NDK in Go
 
-This guide explains how NDK service is meant to be consumed when developers writing agents in Go[^1] programming language.
+This guide explains how to consume the NDK service when developers write the agents in a Go[^1] programming language.
 
 !!!note
     This guide provides code snippets for several operations that a typical agent needs to perform according to the [NDK Service Operations Flow](../architecture.md#operations-flow) chapter.
 
     Where applicable, the chapters on this page will refer to the NDK Architecture section to provide more context on the operations.
 
-In addition to the publicly available [protobuf files][ndk_proto_repo] which define the NDK Service, Nokia also provides generated Go bindings for data access classes of NDK in a [`nokia/srlinux-ndk-go`][ndk_go_bindings] repo.
+In addition to the publicly available [protobuf files][ndk_proto_repo], which define the NDK Service, Nokia also provides generated Go bindings for data access classes of NDK in a [`nokia/srlinux-ndk-go`][ndk_go_bindings] repo.
 
 The [`github.com/nokia/srlinux-ndk-go/v21/ndk`](https://pkg.go.dev/github.com/nokia/srlinux-ndk-go/v21@v21.6.2-1/ndk) package provided in that repository enables developers of NDK agents to immediately start writing NDK applications without the need to generate the Go package themselves.
 
@@ -55,12 +55,12 @@ client := NewSdkMgrServiceClient(conn)
 Agent must be first registered with SRLinux by calling the `AgentRegister` method available on the returned [`SdkMgrServiceClient`][sdk_mgr_svc_client_godoc] interface. Initial agent state is created during the registration process.
 
 ### Agent's context
-Go [context](https://pkg.go.dev/context) is a required parameter for each RPC service method. It provides a means of enforcing deadlines and cancellations but also a way to transmit metadata within the request.
+Go [context](https://pkg.go.dev/context) is a required parameter for each RPC service method. Contexts provide the means of enforcing deadlines and cancellations as well as transmitting metadata within the request.
 
-To register the agent, metadata must be passed within the `ctx` context. During registration, SRLinux will be expecting a key-value pair with a key of "agent_name" and a value of the agent's name. The agent name is defined in the agent's yml file.
+During registration, SR Linux will be expecting a key-value pair with the `agent_name` key and a value of the agent's name passed in the context of an RPC. The agent name is defined in the agent's YAML file.
 
 !!!warning
-    Not including this metadata in the agent `ctx` would result in a agent registration failure. SRLinux would not be able to differentiate between two agents both connected to the same NDK manager.
+    Not including this metadata in the agent `ctx` would result in an agent registration failure. SR Linux would not be able to differentiate between two agents both connected to the same NDK manager.
 
 ```go
 ctx, cancel := context.WithCancel(context.Background())
@@ -93,7 +93,7 @@ if err != nil {
 [:octicons-question-24: Additional information](../architecture.md#registering-notifications)
 
 ### Create subscription stream
-A subscription stream needs to be created first before any subscription types can be added.  
+A subscription stream needs to be created first before any of the subscription types can be added.  
 [`SdkMgrServiceClient`][sdk_mgr_svc_client_godoc] first creates the subscription stream by executing [`NotificationRegister`][sdk_mgr_svc_client_godoc] method with a [`NotificationRegisterRequest`][notif_reg_req_godoc] only field `Op` set to a value of `const NotificationRegisterRequest_Create`. This effectively creates a stream which is identified with a `StreamID` returned inside the [`NotificationRegisterResponse`][notif_reg_resp_godoc].
 
 `StreamId` must be associated when subscribing/unsubscribing to certain types of router notifications.
@@ -200,7 +200,7 @@ func HandleNotifications(stream ndk.SdkNotificationService_NotificationStreamCli
 
 [notif_stream_client_godoc]: https://pkg.go.dev/github.com/nokia/srlinux-ndk-go/v21@v21.6.2-1/ndk#SdkNotificationService_NotificationStreamClient
 
-`SdkNotificationService_NotificationStreamClient` contains a `Recv()` to retrieve notifications one by one. When an end of the stream is found, `Rev()` will return `io.EOF`.
+`SdkNotificationService_NotificationStreamClient` contains a `Recv()` to retrieve notifications one by one. At the end of a stream `Rev()` will return `io.EOF`.
 
 `Recv()` returns a [`*NotificationStreamResponse`][notif_stream_resp_godoc] which contains a slice of [`Notification`][notif_godoc].
 [notif_stream_resp_godoc]: https://pkg.go.dev/github.com/nokia/srlinux-ndk-go/v21@v21.6.2-1/ndk#NotificationStreamResponse
@@ -225,11 +225,11 @@ Agent needs to handle SIGTERM signal that is sent when a user invokes `stop` com
 4. Close gRPC channel with the `sdk_mgr`.
 
 ## Logging
-To debug an agent the developers can analyze the log messages that agent produced. If the agent's logging facility used stdout/stderr to write log messages, then these messages will be found at directory `/var/log/srlinux/stdout/`.
+To debug an agent, the developers can analyze the log messages that the agent produced. If the agent's logging facility used stdout/stderr to write log messages, then these messages will be found at `/var/log/srlinux/stdout/` directory.
 
-The default SR Linux debug messages is found in the messages directory `/var/log/srlinux/buffer/messages` and can be useful when something went wrong within the SRLinux system itself (agent registration failed, IDB server warning messages, etc).
+The default SR Linux debug messages are found in the messages directory `/var/log/srlinux/buffer/messages`; check them when something went wrong within the SR Linux system (agent registration failed, IDB server warning messages, etc.).
 
 [logrus](https://github.com/sirupsen/logrus) is a popular structured logger for Go that can log messages of different levels of importance, but developers are free to choose whatever logging package they see fit.
 
 
-[^1]: Make sure that you have set up the dev environment as explain on [this page](../env/go.md). Readers are also encouraged to first go through the [gRPC basic tutorial](https://grpc.io/docs/languages/go/basics/) to get familiar with the common gRPC workflows when using Go.
+[^1]: Make sure that you have set up the dev environment as explained on [this page](../env/go.md). Readers are also encouraged to first go through the [gRPC basic tutorial](https://grpc.io/docs/languages/go/basics/) to get familiar with the common gRPC workflows when using Go.
