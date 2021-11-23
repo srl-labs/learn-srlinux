@@ -6,7 +6,7 @@ The toolchain that can be used to develop and build Go-based NDK apps consists o
 
 1. [Go programming language](https://golang.org/dl/) - Go compiler, toolchain, and standard library
 2. [Go NDK bindings](https://github.com/nokia/srlinux-ndk-go) - generated data access classes for gRPC based NDK service.
-3. [Goreleaser](https://goreleaser.com/) - Go-focused build & release pipeline runner. Packages [nFPM](https://nfpm.goreleaser.com/) to produce rpm packages that can be used to [install NDK agents](../agent-install.md).
+3. [Goreleaser](https://goreleaser.com/) - Go-focused build & release pipeline runner. Packages [nFPM](https://nfpm.goreleaser.com/) to produce rpm packages that can be used to [install NDK agents](../agent-install-and-ops.md).
 
 
 ## Project structure
