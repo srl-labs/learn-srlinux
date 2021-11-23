@@ -80,10 +80,9 @@ theme:
         icon: material/toggle-switch
         name: Switch to light mode
   font:
-    text: NokiaPureText
+    text: Roboto # trying embedded font instead of a NokiaPureText
     code: Fira Mono
-  icon:
-    logo: nokia/srlinux
+  logo: images/srlinux.svg
   favicon: images/srlinux.svg
 
 # Plugins
@@ -91,6 +90,7 @@ plugins:
   - search
   - minify:
       minify_html: true
+  - social
 
 # Customization
 extra:

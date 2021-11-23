@@ -3,3 +3,4 @@ private
 clab-*
 site/
 tmp
+.cache
