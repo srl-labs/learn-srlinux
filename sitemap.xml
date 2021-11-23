@@ -2,137 +2,137 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://learn.srlinux.dev/</loc>
-         <lastmod>2021-11-21</lastmod>
+         <lastmod>2021-11-23</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/alwayson/</loc>
-         <lastmod>2021-11-21</lastmod>
+         <lastmod>2021-11-23</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/community/</loc>
-         <lastmod>2021-11-21</lastmod>
+         <lastmod>2021-11-23</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/get-started/</loc>
-         <lastmod>2021-11-21</lastmod>
+         <lastmod>2021-11-23</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/kb/cfgmgmt/</loc>
-         <lastmod>2021-11-21</lastmod>
+         <lastmod>2021-11-23</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/kb/hwtypes/</loc>
-         <lastmod>2021-11-21</lastmod>
+         <lastmod>2021-11-23</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/kb/ifaces/</loc>
-         <lastmod>2021-11-21</lastmod>
+         <lastmod>2021-11-23</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/kb/mgmt/</loc>
-         <lastmod>2021-11-21</lastmod>
+         <lastmod>2021-11-23</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/kb/netwinstance/</loc>
-         <lastmod>2021-11-21</lastmod>
+         <lastmod>2021-11-23</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/ndk/intro/</loc>
-         <lastmod>2021-11-21</lastmod>
+         <lastmod>2021-11-23</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/ndk/apps/catalog/</loc>
-         <lastmod>2021-11-21</lastmod>
+         <lastmod>2021-11-23</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/ndk/apps/evpn-proxy/</loc>
-         <lastmod>2021-11-21</lastmod>
+         <lastmod>2021-11-23</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/ndk/apps/kbutler/</loc>
-         <lastmod>2021-11-21</lastmod>
+         <lastmod>2021-11-23</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/ndk/apps/srl-prom-exporter/</loc>
-         <lastmod>2021-11-21</lastmod>
+         <lastmod>2021-11-23</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://learn.srlinux.dev/ndk/guide/agent-install/</loc>
-         <lastmod>2021-11-21</lastmod>
+         <loc>https://learn.srlinux.dev/ndk/guide/agent-install-and-ops/</loc>
+         <lastmod>2021-11-23</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/ndk/guide/agent/</loc>
-         <lastmod>2021-11-21</lastmod>
+         <lastmod>2021-11-23</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/ndk/guide/architecture/</loc>
-         <lastmod>2021-11-21</lastmod>
+         <lastmod>2021-11-23</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/ndk/guide/dev/go/</loc>
-         <lastmod>2021-11-21</lastmod>
+         <lastmod>2021-11-23</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/ndk/guide/env/go/</loc>
-         <lastmod>2021-11-21</lastmod>
+         <lastmod>2021-11-23</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/ndk/guide/env/python/</loc>
-         <lastmod>2021-11-21</lastmod>
+         <lastmod>2021-11-23</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/tutorials/about/</loc>
-         <lastmod>2021-11-21</lastmod>
+         <lastmod>2021-11-23</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/tutorials/l2evpn/evpn/</loc>
-         <lastmod>2021-11-21</lastmod>
+         <lastmod>2021-11-23</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/tutorials/l2evpn/fabric/</loc>
-         <lastmod>2021-11-21</lastmod>
+         <lastmod>2021-11-23</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/tutorials/l2evpn/intro/</loc>
-         <lastmod>2021-11-21</lastmod>
+         <lastmod>2021-11-23</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/tutorials/l2evpn/summary/</loc>
-         <lastmod>2021-11-21</lastmod>
+         <lastmod>2021-11-23</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/yang/browser/</loc>
-         <lastmod>2021-11-21</lastmod>
+         <lastmod>2021-11-23</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/yang/yang/</loc>
-         <lastmod>2021-11-21</lastmod>
+         <lastmod>2021-11-23</lastmod>
          <changefreq>daily</changefreq>
     </url>
 </urlset>
