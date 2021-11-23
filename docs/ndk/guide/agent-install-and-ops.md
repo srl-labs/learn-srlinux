@@ -1,3 +1,5 @@
+## Installing the agent
+
 The onboarding of an NDK agent onto the SR Linux system is simply a task of copying [the agent and its files](agent.md) over to the SR Linux filesystem and placing them in the relevant directories.
 
 This table summarizes an agent's components and the recommended locations to use.
@@ -18,15 +20,15 @@ The agent installation procedure can be carried out in different ways:
 The first two options are easy to execute, but they are a bit more involved as the installers need to maintain the remote paths for the copy commands. When using the `rpm` option, though, it becomes less cumbersome to install the package. All the installers deal with is a single `.rpm` file and a copy command.  
 Of course, the build process of the `rpm` package is still required, and we would like to explain this process in detail.
 
-## RPM package
+### RPM package
 One of the easiest ways to create an rpm, deb, or apk package is to use the [nFPM][nFPM] tool - a simple, 0-dependencies packager.
 
 The only thing that nFPM requires of a user is to create a configuration file with the general instructions on how to build a package, and the rest will be taken care of.
 
-### nFPM installation
+#### nFPM installation
 nFPM offers many [installation options](https://nfpm.goreleaser.com/install/) for all kinds of operating systems and environments. In the course of this guide, we will use the universal [nFPM docker image](https://nfpm.goreleaser.com/install/#running-with-docker).
 
-### nFPM configuration file
+#### nFPM configuration file
 nFPM configuration file is the way of letting nFPM know how to build a package for the software artifacts that users created.
 
 The complete list of options the `nfpm.yml` file can have is documented on the [project's site](https://nfpm.goreleaser.com/configuration/). Here we will have a look at the configuration file that is suitable for a typical NDK application written in Go.
@@ -52,7 +54,7 @@ contents:                              # contents to add to the package
     dst: /etc/opt/srlinux/appmgr/      # destination path of agent yml
 ```
 
-### Running nFPM
+#### Running nFPM
 When nFPM configuration and NDK agent files are present, proceed with building an `rpm` package.
 
 Consider the following file layout:
@@ -79,7 +81,7 @@ docker run --rm -v $PWD:/tmp -w /tmp goreleaser/nfpm package \
 
 This command will create `ndkDemo-1.0.0.x86_64.rpm` file in the current directory that can be copied over to the SR Linux system for installation.
 
-### Installing RPM
+#### Installing RPM
 Delivering the available rpm package to a fleet of SR Linux boxes can be done with any configuration management tools. For demo purposes, we will utilize the `scp` utility:
 
 ```bash
@@ -114,7 +116,7 @@ sudo rpm -U /tmp/ndkDemo-1.0.0.x86_64.rpm
     ndkDemo-1.0.0-1.x86_64
     ```
 
-During the package installation, the agent related files are copied over to the relevant paths as stated in the nfpm config file:
+During the package installation, the agent related files are copied over to the relevant paths as stated in the nFPM config file:
 
 ```bash
 # check the executable location
@@ -139,12 +141,51 @@ drwxrwxrwx+ 10 srlinux srlinux 4096 Nov  4 12:53 ..
 All the agent components are available by the paths specified in the nFPM configuration file.
 
 !!!note
-    To update SR Linux NDK app, the package has to be removed first
+    To update the SR Linux NDK app, the package has to be removed first
     ```bash
     sudo yum remove ndkDemo-1.0.0 # using yum
     sudo rpm -e ndkDemo-1.0.0     # using rpm
     ```
 
 Congratulations, the agent has been installed successfully.
+
+### Loading the agent
+SR Linux's Application Manager is in charge of managing the applications lifecycle. App Manager controls both the native apps and customer-written agents.
+
+After a user installs the agent on the SR Linux system by copying the relevant files, they need to reload the `app_mgr` process to detect new applications. App Manager gets to know about the available apps by reading the [app configuration files](agent.md#configuration-file) located at the following paths:
+
+| Directory                  | Description                    |
+| -------------------------- | ------------------------------ |
+| `/opt/srlinux/appmgr/`     | SR Linux embedded applications |
+| `/etc/opt/srlinux/appmgr/` | User-provided applications     |
+
+To reload the App Manager:
+
+```
+/ tools system app-management application app_mgr reload
+```
+
+Once reloaded, App Manager will detect the new applications and load them according to their configuration. The users will be able to see their app in the list of applications:
+
+```
+/show system application <app-name>
+```
+
+## Managing the agent's lifecycle
+An application's lifecycle can be managed via any management interface by using the following knobs from the `tools` schema.
+
+```
+/ tools system app-management application <app-name> <start|stop|reload|restart>
+```
+
+The commands that can be given to an application are translated to system signals as per the following table:
+
+| Command  | Description                                                                                                                                |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `start`  | Executes the application                                                                                                                   |
+| `reload` | Send `SIGHUP` signal to the app. This signal can be handled by the app and reload its config and change initialization values if necessary |
+| `stop`   | Send `SIGTERM` signal to the app. The app should handle this signal and exit gracefully                                                    |
+| `quit`   | Send `SIGQUIT` signal to the app. Default behavior is to terminate the process and dump core info                                          |
+| `kill`   | Send `SIGKILL` signal to the app. Kills the process without any cleanup                                                                    |
 
 [nFPM]: https://nfpm.goreleaser.com/
