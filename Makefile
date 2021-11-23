@@ -8,7 +8,7 @@ docs:
 
 # serve the site locally using mkdocs-material public container
 .PHONY: site
-serve:
+site:
 	docker run -it --rm -p 8001:8000 -v $$(pwd):/docs squidfunk/mkdocs-material:$(MKDOCS_VER)
 
 # serve the site locally using mkdocs-material insiders container

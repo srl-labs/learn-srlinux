@@ -1,40 +1,6 @@
 site_name: Learn SR Linux
 nav:
   - Home: index.md
-  - Get SR Linux: get-started.md
-  - Knowledge Base:
-      - Hardware types: kb/hwtypes.md
-      - Management interfaces: kb/mgmt.md
-      - Configuration management: kb/cfgmgmt.md
-      - Interfaces: kb/ifaces.md
-      - Network instances: kb/netwinstance.md
-  - Tutorials:
-      - SR Linux tutorials: tutorials/about.md
-      - EVPN:
-          - Layer 2 EVPN:
-              - Introduction: tutorials/l2evpn/intro.md
-              - Fabric configuration: tutorials/l2evpn/fabric.md
-              - EVPN configuration: tutorials/l2evpn/evpn.md
-              - Summary: tutorials/l2evpn/summary.md
-  - NDK:
-      - Introduction: ndk/intro.md
-      - Developers Guide:
-          - NDK Architecture: ndk/guide/architecture.md
-          - Agent Structure: ndk/guide/agent.md
-          - Agent Installation & Operations: ndk/guide/agent-install-and-ops.md
-          - Environment Setup:
-              - Go: ndk/guide/env/go.md
-              - Python: ndk/guide/env/python.md
-          - Developing with NDK:
-              - Go: ndk/guide/dev/go.md
-      - App Catalog:
-          - About: ndk/apps/catalog.md
-          - EVPN Proxy: ndk/apps/evpn-proxy.md
-          - kButler: ndk/apps/kbutler.md
-          - Prometheus Telemetry Exporter: ndk/apps/srl-prom-exporter.md
-  - YANG:
-      - SR Linux & YANG: yang/yang.md
-      - YANG Browser: yang/browser.md
   - Community: community.md
 
 site_author: SR Linux
