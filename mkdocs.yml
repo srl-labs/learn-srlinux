@@ -39,7 +39,7 @@ nav:
 
 site_author: SR Linux
 site_description: >-
-  Learn SR Linux
+  Open documentation for open Network OS
 # Repository
 repo_name: srl-labs/learn-srlinux
 repo_url: https://github.com/srl-labs/learn-srlinux
@@ -132,8 +132,8 @@ markdown_extensions:
   - pymdownx.keys
   - pymdownx.magiclink:
       repo_url_shorthand: true
-      user: squidfunk
-      repo: mkdocs-material
+      user: srl-labs
+      repo: learn-srlinux
   - pymdownx.mark
   - pymdownx.smartsymbols
   - pymdownx.snippets:
