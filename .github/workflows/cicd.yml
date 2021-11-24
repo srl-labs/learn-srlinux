@@ -17,6 +17,14 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: docker run -v $(pwd):/docs --entrypoint mkdocs squidfunk/mkdocs-material:$MKDOCS_MATERIAL_VER build --clean --strict
+
+      - name: Cache htmltest external links
+        id: cache-htmltest
+        uses: actions/cache@v2
+        with:
+          path: tmp/.htmltest
+          key: htmltest
+
       - name: htmltest
         uses: wjdp/htmltest-action@master
         with:
