@@ -59,3 +59,12 @@ body, input {
 .md-grid {
   max-width: 1440px;
 } */
+
+/* Table styling */
+.md-typeset table:not([class]) th {
+  background-color: #124191;
+}
+
+th {
+  color: #FFFFFF !important;
+}
