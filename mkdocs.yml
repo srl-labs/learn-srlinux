@@ -63,7 +63,7 @@ theme:
     - navigation.instant
     - navigation.tracking
     - navigation.tabs
-    # - toc.integrate
+    - content.code.annotate
 
   language: en
   palette:

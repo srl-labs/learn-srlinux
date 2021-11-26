@@ -4,7 +4,7 @@ Although every developer's environment is different and is subject to a personal
 ## Environment components
 The toolchain that can be used to develop Python-based NDK apps consists of the following components:
 
-1. [Python programming language](https://www.python.org/downloads/) - Python interpreter, toolchain, and standard library
+1. [Python programming language](https://www.python.org/downloads/) - Python interpreter, toolchain, and standard library. Python2 is not supported.
 2. [Python NDK bindings](https://github.com/nokia/srlinux-ndk-py) - generated data access classes for gRPC based NDK service.
 
 ## Project structure
@@ -22,17 +22,28 @@ Here is an example project structure that you can use for the NDK agent developm
 ## NDK language bindings
 As explained in the [NDK Architecture](../architecture.md) section, NDK is a gRPC based service. The [language bindings](https://grpc.io/docs/languages/python/quickstart/) have to be generated from the source proto files to use gRPC services in a Python program.
 
-Nokia not only provides the [proto files](https://github.com/nokia/srlinux-ndk-protobufs) for the SR Linux NDK service but also [NDK Python language bindings](https://github.com/nokia/srlinux-ndk-py).
+Nokia provides both the [proto files](https://github.com/nokia/srlinux-ndk-protobufs) for the SR Linux NDK service and also [NDK Python language bindings](https://github.com/nokia/srlinux-ndk-py).
 
-With the provided Python bindings, the NDK can be installed with pip
+With the provided Python bindings, the NDK can be installed with `pip`
 
 ```bash
-# install the specific version (example given for v21.6.2)
-pip install https://github.com/nokia/srlinux-ndk-py/archive/v21.6.2.zip
+# it is a good practice to use virtual env
+sudo python3 -m venv /opt/myApp/venv
+
+# activate the newly created venv
+source /opt/myApp/venv/bin/activate
+
+# update pip/setuptools in the venv
+pip3 install -U pip setuptools
+
+# install the NDK using a specific version (example given for v21.6.2)
+pip3 install https://github.com/nokia/srlinux-ndk-py/archive/v21.6.2.zip
 ```
 
-and imported in a Python project like that:
+Once installed, NDK services are imported in a Python project like that:
 
 ```python
-from ndk import appid_service_pb2
+from ndk import appid_service_pb2 # (1)
 ```
+
+1. Example given for `appid_service_pb2` service but every service is imported the same way.
