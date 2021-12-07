@@ -46,13 +46,13 @@ Once the gRPC channel is setup, we need to instantiate a client (often called _s
 ```go
 import "github.com/nokia/srlinux-ndk-go/v21/ndk"
 
-client := NewSdkMgrServiceClient(conn)
+client := ndk.NewSdkMgrServiceClient(conn)
 ```
 
 ## Register the agent with the NDK manager:
 [:octicons-question-24: Additional information](../architecture.md#agent-registration)
 
-Agent must be first registered with SRLinux by calling the `AgentRegister` method available on the returned [`SdkMgrServiceClient`][sdk_mgr_svc_client_godoc] interface. Initial agent state is created during the registration process.
+Agent must be first registered with SR Linux by calling the `AgentRegister` method available on the returned [`SdkMgrServiceClient`][sdk_mgr_svc_client_godoc] interface. The initial agent state is created during the registration process.
 
 ### Agent's context
 Go [context](https://pkg.go.dev/context) is a required parameter for each RPC service method. Contexts provide the means of enforcing deadlines and cancellations as well as transmitting metadata within the request.

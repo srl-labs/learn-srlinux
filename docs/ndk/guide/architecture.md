@@ -156,7 +156,7 @@ When unregistered, the agent's state data will be removed from SR Linux system a
 [cfg_svc_doc]: https://rawcdn.githack.com/nokia/srlinux-ndk-protobufs/v21.6.2/doc/index.html#ndk%2fconfig_service.proto
 [cfg_notif_doc]: https://rawcdn.githack.com/nokia/srlinux-ndk-protobufs/v21.6.2/doc/index.html#ndk.ConfigNotification
 [cfg_sub_req_doc]: https://rawcdn.githack.com/nokia/srlinux-ndk-protobufs/v21.6.2/doc/index.html#ndk.ConfigSubscriptionRequest
-[notif_stream_resp_doc]: https://rawcdn.githack.com/nokia/srlinux-ndk-protobufs/v21.6.2/doc/index.html#ndk.NotificationStreamRequest
+[notif_stream_req_doc]: https://rawcdn.githack.com/nokia/srlinux-ndk-protobufs/v21.6.2/doc/index.html#ndk.NotificationStreamRequest
 [notif_stream_resp_doc]: https://rawcdn.githack.com/nokia/srlinux-ndk-protobufs/v21.6.2/doc/index.html#ndk.NotificationStreamResponse
 [notif_doc]: https://rawcdn.githack.com/nokia/srlinux-ndk-protobufs/v21.6.2/doc/index.html#ndk.Notification
 [sdk_mgr_telem_svc_doc]: https://rawcdn.githack.com/nokia/srlinux-ndk-protobufs/v21.6.2/doc/index.html#ndk.SdkMgrTelemetryService
