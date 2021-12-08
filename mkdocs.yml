@@ -147,3 +147,4 @@ markdown_extensions:
 extra_css:
   - stylesheets/nokia.css
   - stylesheets/nokia-fonts.css
+  - stylesheets/diagrams.css
