@@ -103,7 +103,7 @@ req := &ndk.NotificationRegisterRequest{
     Op: ndk.NotificationRegisterRequest_Create,
 }
  
-resp, err := client.NotificationRegister(r.ctx, req)
+resp, err := client.NotificationRegister(ctx, req)
 if err != nil {
     log.Fatalf("Notification Register failed with error: %v", err)
 } else if resp.GetStatus() == ndk.SdkMgrStatus_kSdkMgrFailed {
