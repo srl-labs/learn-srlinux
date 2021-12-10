@@ -14,10 +14,10 @@ The [`github.com/nokia/srlinux-ndk-go/v21/ndk`](https://pkg.go.dev/github.com/no
 
 [ndk_proto_repo]: https://github.com/nokia/srlinux-ndk-protobufs
 [ndk_go_bindings]: https://github.com/nokia/srlinux-ndk-go
-[sdk_mgr_svc_doc]: https://rawcdn.githack.com/nokia/srlinux-ndk-protobufs/v21.6.2/doc/index.html#ndk.SdkMgrService
+[sdk_mgr_svc_doc]: https://rawcdn.githack.com/nokia/srlinux-ndk-protobufs/v0.1.0/doc/index.html#ndk.SdkMgrService
 [sdk_mgr_svc_proto]: https://github.com/nokia/srlinux-ndk-protobufs/blob/protos/ndk/sdk_service.proto
-[sdk_notif_svc_doc]: https://rawcdn.githack.com/nokia/srlinux-ndk-protobufs/v21.6.2/doc/index.html#ndk.SdkNotificationService
-[sdk_mgr_telemetry_doc]: https://rawcdn.githack.com/nokia/srlinux-ndk-protobufs/v21.6.2/doc/index.html#ndk.SdkMgrTelemetryService
+[sdk_notif_svc_doc]: https://rawcdn.githack.com/nokia/srlinux-ndk-protobufs/v0.1.0/doc/index.html#ndk.SdkNotificationService
+[sdk_mgr_telemetry_doc]: https://rawcdn.githack.com/nokia/srlinux-ndk-protobufs/v0.1.0/doc/index.html#ndk.SdkMgrTelemetryService
 [sdk_mgr_telemetry_proto]: https://github.com/nokia/srlinux-ndk-protobufs/blob/protos/ndk/telemetry_service.proto
 
 ## Establish gRPC channel with NDK manager and instantiate an NDK client
@@ -126,7 +126,7 @@ Different types of notifications types can be subscribed to by calling the same 
 
 
 In the example below we would like to receive notifications from the [`Config`][cfg_svc_doc] service, hence we specify `NotificationRegisterRequest_Config` subscription type.
-[cfg_svc_doc]: https://rawcdn.githack.com/nokia/srlinux-ndk-protobufs/v21.6.2/doc/index.html#ndk%2fconfig_service.proto
+[cfg_svc_doc]: https://rawcdn.githack.com/nokia/srlinux-ndk-protobufs/v0.1.0/doc/index.html#ndk%2fconfig_service.proto
 
 ```go
 subType := &ndk.NotificationRegisterRequest_Config{ // This is unique to each notification type (Config, Intf, etc.).
