@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2022-03-13T14:07:59.317Z" agent="5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.109 Safari/537.36" etag="v0abRtU9-7H42Nb3WHQX" version="16.6.3" type="github" pages="14">
+<mxfile host="app.diagrams.net" modified="2022-03-13T14:14:23.933Z" agent="5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.109 Safari/537.36" etag="tajApzNEoDAJ2cNDYRsk" version="16.6.3" type="github" pages="14">
   <diagram name="[0] phy connectivity" id="gBIfAOgxg2GiulPjZ9mJ">
     <mxGraphModel dx="599" dy="337" grid="1" gridSize="2" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="#4D5766" math="0" shadow="0">
       <root>
@@ -796,8 +796,8 @@
         <mxCell id="XkHGZZ7HX9jMSrylBVGS-42" value="&lt;font style=&quot;font-size: 5px&quot;&gt;system0&lt;br style=&quot;font-size: 5px&quot;&gt;10.0.0.3&lt;br style=&quot;font-size: 5px&quot;&gt;&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;fontSize=5;fontFamily=Fira Code;fontStyle=0;fontColor=#FFFFFF;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DFira%2BCode;" vertex="1" parent="XkHGZZ7HX9jMSrylBVGS-1">
           <mxGeometry x="506" y="366" width="36" height="18" as="geometry" />
         </mxCell>
-        <mxCell id="XkHGZZ7HX9jMSrylBVGS-44" value="&lt;font style=&quot;font-size: 8px&quot;&gt;IS-IS&amp;nbsp;&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;fontSize=8;fontFamily=Manrope;fontStyle=0;fontColor=#FFFFFF;" vertex="1" parent="XkHGZZ7HX9jMSrylBVGS-1">
-          <mxGeometry x="381" y="342" width="30" height="16" as="geometry" />
+        <mxCell id="XkHGZZ7HX9jMSrylBVGS-44" value="&lt;font style=&quot;font-size: 8px&quot;&gt;IS-IS&amp;nbsp; area&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;fontSize=8;fontFamily=Manrope;fontStyle=0;fontColor=#FFFFFF;" vertex="1" parent="XkHGZZ7HX9jMSrylBVGS-1">
+          <mxGeometry x="374" y="342" width="48" height="16" as="geometry" />
         </mxCell>
         <mxCell id="XkHGZZ7HX9jMSrylBVGS-47" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startSize=2;endArrow=classicThin;endFill=1;endSize=2;fontFamily=Manrope;fontSize=8;strokeColor=#4bdd33;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DManrope;startArrow=classicThin;startFill=1;" edge="1" parent="XkHGZZ7HX9jMSrylBVGS-1">
           <mxGeometry relative="1" as="geometry">
@@ -807,9 +807,6 @@
         </mxCell>
         <mxCell id="XkHGZZ7HX9jMSrylBVGS-48" value="IS-IS adjacency" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;fontSize=6;fontFamily=Manrope;fontStyle=0;fontColor=#FFFFFF;" vertex="1" parent="XkHGZZ7HX9jMSrylBVGS-1">
           <mxGeometry x="292" y="507" width="54" height="12" as="geometry" />
-        </mxCell>
-        <mxCell id="XkHGZZ7HX9jMSrylBVGS-49" value="&lt;font style=&quot;font-size: 5px&quot;&gt;area: 49.0001&lt;br style=&quot;font-size: 5px&quot;&gt;&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;fontSize=5;fontFamily=Fira Code;fontStyle=0;fontColor=#FFFFFF;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DFira%2BCode;" vertex="1" parent="XkHGZZ7HX9jMSrylBVGS-1">
-          <mxGeometry x="374" y="352" width="50" height="12" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
