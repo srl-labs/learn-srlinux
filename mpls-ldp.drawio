@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2022-03-13T09:21:49.913Z" agent="5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.109 Safari/537.36" etag="rK7kqHr-HV1u9OthfiRz" version="16.6.3" type="github" pages="12">
+<mxfile host="app.diagrams.net" modified="2022-03-13T09:28:13.579Z" agent="5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.109 Safari/537.36" etag="hJTjpCekiEt_12oEOF6_" version="16.6.3" type="github" pages="12">
   <diagram name="[0] phy connectivity" id="gBIfAOgxg2GiulPjZ9mJ">
     <mxGraphModel dx="599" dy="337" grid="1" gridSize="2" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="#4D5766" math="0" shadow="0">
       <root>
@@ -333,8 +333,8 @@
             <mxPoint x="456" y="416" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="-mmEoWxZLe6IEmgHoEkE-30" value="MPLS tunnel" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;fontSize=6;fontFamily=Manrope;fontStyle=0;fontColor=#001135;" vertex="1" parent="-mmEoWxZLe6IEmgHoEkE-1">
-          <mxGeometry x="379" y="404" width="46" height="12" as="geometry" />
+        <mxCell id="-mmEoWxZLe6IEmgHoEkE-30" value="MPLS tunnel" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;fontSize=5;fontFamily=Manrope;fontStyle=0;fontColor=#001135;" vertex="1" parent="-mmEoWxZLe6IEmgHoEkE-1">
+          <mxGeometry x="379" y="404" width="40" height="12" as="geometry" />
         </mxCell>
         <mxCell id="Ig5nIAyFCnKegwhqrUOj-1" value="&lt;p style=&quot;line-height: 1&quot;&gt;LER&lt;/p&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontSize=5;align=center;fontFamily=Manrope;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DManrope;fontColor=#FFFFFF;rotation=90;strokeColor=none;horizontal=0;verticalAlign=middle;spacing=0;fillColor=#4BDD33;" vertex="1" parent="-mmEoWxZLe6IEmgHoEkE-1">
           <mxGeometry x="484" y="398" width="9.35" height="10.04" as="geometry" />
