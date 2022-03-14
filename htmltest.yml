@@ -10,6 +10,7 @@ IgnoreURLs:
   # ghcr packages return 404 for non authz gh users
   - https://github.com/orgs/nokia/packages/container/package/srlinux
   - https://github.com/orgs/nokia/packages/container/srlinux/versions
+  - on.srlinux.dev
 
 IgnoreDirectoryMissingTrailingSlash: true
 IgnoreAltMissing: true
@@ -17,7 +18,7 @@ IgnoreSSLVerify: true
 IgnoreDirs:
   - overrides
 IgnoreInternalEmptyHash: true
-ExternalTimeout: 60
+ExternalTimeout: 120
 HTTPHeaders:
   "Range": "bytes=0-10"
   "Accept": "*/*"
