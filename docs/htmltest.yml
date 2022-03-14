@@ -10,6 +10,7 @@ IgnoreURLs:
   # ghcr packages return 404 for non authz gh users
   - https://github.com/orgs/nokia/packages/container/package/srlinux
   - https://github.com/orgs/nokia/packages/container/srlinux/versions
+  - on.srlinux.dev
 
 IgnoreDirectoryMissingTrailingSlash: true
 IgnoreAltMissing: true
