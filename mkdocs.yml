@@ -16,6 +16,11 @@ nav:
               - Fabric configuration: tutorials/l2evpn/fabric.md
               - EVPN configuration: tutorials/l2evpn/evpn.md
               - Summary: tutorials/l2evpn/summary.md
+      - MPLS:
+          - LDP-based MPLS:
+              - Introduction: tutorials/mpls/mpls-ldp/intro.md
+              - Routing: tutorials/mpls/mpls-ldp/routing.md
+              - LDP: tutorials/mpls/mpls-ldp/ldp.md
   - NDK:
       - Introduction: ndk/intro.md
       - Developers Guide:
