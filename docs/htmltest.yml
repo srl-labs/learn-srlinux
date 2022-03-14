@@ -18,7 +18,7 @@ IgnoreSSLVerify: true
 IgnoreDirs:
   - overrides
 IgnoreInternalEmptyHash: true
-ExternalTimeout: 60
+ExternalTimeout: 120
 HTTPHeaders:
   "Range": "bytes=0-10"
   "Accept": "*/*"
