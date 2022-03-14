@@ -1,0 +1,24 @@
+# topology documentation: http://learn.srlinux.dev/tutorials/mpls/mpls-ldp/intro/
+name: mpls-ldp
+prefix: ""
+
+topology:
+  defaults:
+    kind: srl
+  kinds:
+    srl:
+      image: ghcr.io/nokia/srlinux # tested with srlinux:21.11.2 image
+      type: ixr6 # MPLS dataplane is supported on 7250 IXR 6/10 platforms only as of 21.11.2 release
+  nodes:
+    # uncomment startup-config option to have lab nodes to boot with a fully provisioned use case
+    srl1:
+      startup-config: srl1.cfg
+    srl2:
+      startup-config: srl2.cfg
+    srl3:
+      startup-config: srl3.cfg
+
+  links:
+    # link wiring diagram: srl1:e1-1 <--> e1-1:srl2:e1-2 <--> e1-1:srl3
+    - endpoints: ["srl1:e1-1", "srl2:e1-1"]
+    - endpoints: ["srl2:e1-2", "srl3:e1-1"]
