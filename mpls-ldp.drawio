@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2022-03-14T08:46:20.008Z" agent="5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.51 Safari/537.36" etag="s3BV0jdG88AHbeSqfae7" version="17.1.2" type="github" pages="15">
+<mxfile host="app.diagrams.net" modified="2022-03-14T08:46:59.388Z" agent="5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.51 Safari/537.36" etag="WdiTuQsv7R6841-eYZme" version="17.1.2" type="github" pages="15">
   <diagram name="[0] phy connectivity" id="gBIfAOgxg2GiulPjZ9mJ">
     <mxGraphModel dx="2066" dy="1161" grid="1" gridSize="2" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="#4D5766" math="0" shadow="0">
       <root>
@@ -812,7 +812,7 @@
     </mxGraphModel>
   </diagram>
   <diagram name="[4] BGP" id="JtIBKFLyTS8ZR7MF2Yv0">
-    <mxGraphModel dx="249" dy="140" grid="1" gridSize="2" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="#4D5766" math="0" shadow="0">
+    <mxGraphModel dx="323" dy="181" grid="1" gridSize="2" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="#4D5766" math="0" shadow="0">
       <root>
         <mxCell id="UtqmqY95nDTcw8Y0f7pj-0" />
         <mxCell id="UtqmqY95nDTcw8Y0f7pj-1" parent="UtqmqY95nDTcw8Y0f7pj-0" />
@@ -951,15 +951,6 @@
         <mxCell id="UtqmqY95nDTcw8Y0f7pj-45" value="&lt;font style=&quot;font-size: 4px&quot;&gt;NH: 10.0.0.3&lt;br style=&quot;font-size: 4px&quot;&gt;&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;fontSize=4;fontFamily=Fira Code;fontStyle=0;fontColor=#001135;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DFira%2BCode;" parent="UtqmqY95nDTcw8Y0f7pj-47" vertex="1">
           <mxGeometry y="6" width="40" height="10" as="geometry" />
         </mxCell>
-        <mxCell id="UtqmqY95nDTcw8Y0f7pj-48" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;dashed=1;fontFamily=Fira Code;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DFira%2BCode;fontSize=4;fontColor=#001135;startSize=2;endSize=2.325641025641026;strokeColor=none;fillColor=#FFFFFF;opacity=80;width=3.58974358974359;endWidth=3.951347797501644;exitX=-0.007;exitY=0.103;exitDx=0;exitDy=0;exitPerimeter=0;" parent="UtqmqY95nDTcw8Y0f7pj-1" edge="1">
-          <mxGeometry width="50" height="50" relative="1" as="geometry">
-            <mxPoint x="333.706" y="393.96999999999997" as="sourcePoint" />
-            <mxPoint x="319" y="393.94" as="targetPoint" />
-            <Array as="points">
-              <mxPoint x="334" y="393.94" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
         <mxCell id="UtqmqY95nDTcw8Y0f7pj-50" value="" style="group" parent="UtqmqY95nDTcw8Y0f7pj-1" vertex="1" connectable="0">
           <mxGeometry x="294" y="428" width="54" height="16" as="geometry" />
         </mxCell>
@@ -974,8 +965,8 @@
         </mxCell>
         <mxCell id="UtqmqY95nDTcw8Y0f7pj-54" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;dashed=1;fontFamily=Fira Code;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DFira%2BCode;fontSize=4;fontColor=#001135;startSize=2;endSize=2.325641025641026;strokeColor=none;fillColor=#FFFFFF;opacity=80;width=3.58974358974359;endWidth=3.951347797501644;" parent="UtqmqY95nDTcw8Y0f7pj-1" edge="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
-            <mxPoint x="339" y="436" as="sourcePoint" />
-            <mxPoint x="356" y="436" as="targetPoint" />
+            <mxPoint x="340" y="435.94" as="sourcePoint" />
+            <mxPoint x="357" y="435.94" as="targetPoint" />
             <Array as="points" />
           </mxGeometry>
         </mxCell>
@@ -1008,6 +999,13 @@
         </mxCell>
         <mxCell id="I2YeU4i38EjHofzDLsbW-6" value="&lt;font style=&quot;font-size: 6px;&quot;&gt;I will resolve BGP nexthops&lt;br style=&quot;font-size: 6px;&quot;&gt;via LDP&amp;nbsp; tunnel&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;fontSize=6;fontFamily=Manrope;fontStyle=0;fontColor=#001135;" vertex="1" parent="UtqmqY95nDTcw8Y0f7pj-1">
           <mxGeometry x="428" y="406" width="84" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="I2YeU4i38EjHofzDLsbW-7" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;dashed=1;fontFamily=Fira Code;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DFira%2BCode;fontSize=4;fontColor=#001135;startSize=2;endSize=2.325641025641026;strokeColor=none;fillColor=#FFFFFF;opacity=80;width=3.58974358974359;endWidth=3.951347797501644;" edge="1" parent="UtqmqY95nDTcw8Y0f7pj-1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="334" y="393.96999999999997" as="sourcePoint" />
+            <mxPoint x="316" y="393.94" as="targetPoint" />
+            <Array as="points" />
+          </mxGeometry>
         </mxCell>
       </root>
     </mxGraphModel>
