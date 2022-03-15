@@ -8,11 +8,13 @@
 | **Containerlab topology file** | [mpls-ldp.clab.yml][topofile]                                                                                                                                                                                    |
 | **Packet captures**            | [· LDP neighborship][pcap1]<br/>[· MPLS encapsulation][pcap2]                                                                                                                                                    |
 | **Main ref documents**         | [· RFC 5036 - LDP Specification](https://www.rfcreader.com/#rfc5036)<br/>[· Nokia SR Linux MPLS Guide](https://documentation.nokia.com/srlinux/SR_Linux_HTML_R21-11/MPLS_Guide/mpls-overview.html#mpls-overview) |
-| **Version information**[^1]    | [`containerlab:0.24.1`][clab-install], [`srlinux:22.11.2`][srlinux-container], [`docker-ce:20.10.2`][docker-install]                                                                                             |
+| **Version information**[^1]    | [`containerlab:0.24.1`][clab-install], [`srlinux:21.11.2`][srlinux-container], [`docker-ce:20.10.2`][docker-install]                                                                                             |
 
 Multiprotocol Label Switching (MPLS) is a label switching technology that provides the ability to set up connection-oriented paths over a connection-less IP network. MPLS facilitates network traffic flow and provides a mechanism to engineer network traffic patterns independently from routing tables. MPLS sets up a specific path for a sequence of packets. The packets are identified by a label stack inserted into each packet.
 
-This short tutorial will guide you through the steps required to build an [LDP-based](https://www.rfcreader.com/#rfc5036) MPLS core consisting of three SR Linux routers. The topology we will use for this interactive tutorial is dead simple - three routers connected in a point-to-point fashion:
+This short tutorial will guide you through the steps required to build an [LDP-based](https://www.rfcreader.com/#rfc5036) MPLS core consisting of three SR Linux routers. LDP-based MPLS tunnels are commonly used to enable [BGP-free core network](http://bgphelp.com/2017/02/12/bgp-free-core/).
+
+The topology we will use for this interactive tutorial is dead simple - three routers connected in a point-to-point fashion:
 
 <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:0,&quot;zoom&quot;:3,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/srl-labs/learn-srlinux/diagrams/mpls-ldp.drawio&quot;}"></div>
 
