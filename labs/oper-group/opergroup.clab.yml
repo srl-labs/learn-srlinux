@@ -1,0 +1,62 @@
+# topology documentation: http://learn.srlinux.dev/tutorials/programmability/event-handler/oper-group/
+name: opergroup
+prefix: ""
+
+topology:
+  defaults:
+    kind: srl
+  kinds:
+    srl:
+      image: srlinux:36067 # TODO: change to ghcr.io/nokia/srlinux:22.3.2
+  nodes:
+    # uncomment startup-config option to have lab nodes to boot with a fully provisioned use case
+    leaf1:
+      startup-config: configs/leaf1.cfg
+    leaf2:
+      startup-config: configs/leaf2.cfg
+    leaf3:
+      startup-config: configs/leaf3.cfg
+    leaf4:
+      startup-config: configs/leaf4.cfg
+    spine1:
+      startup-config: configs/spine1.cfg
+    spine2:
+      startup-config: configs/spine2.cfg
+    client1:
+      kind: linux
+      image: ghcr.io/hellt/network-multitool
+      binds:
+        - configs/bond.sh:/tmp/bond.sh
+      exec:
+        - bash /tmp/bond.sh
+        - ip link set bond0 address 00:c1:ab:00:00:01
+        - ip addr add 192.168.100.1/24 dev bond0
+    client2:
+      kind: linux
+      image: ghcr.io/hellt/network-multitool
+      binds:
+        - configs/bond.sh:/tmp/bond.sh
+      exec:
+        - bash /tmp/bond.sh
+        - ip link set bond0 address 00:c1:ab:00:00:02
+        - ip addr add 192.168.100.2/24 dev bond0
+
+  links:
+    # client1/2 links towards leaves
+    - endpoints: ["client1:eth1", "leaf1:e1-1"]
+    - endpoints: ["client1:eth2", "leaf2:e1-1"]
+    - endpoints: ["client2:eth1", "leaf3:e1-1"]
+    - endpoints: ["client2:eth2", "leaf4:e1-1"]
+    # leaf-spine links
+    ## leaf1
+    - endpoints: ["leaf1:e1-49", "spine1:e1-1"]
+    - endpoints: ["leaf1:e1-50", "spine2:e1-1"]
+    ## leaf2
+    - endpoints: ["leaf2:e1-49", "spine1:e1-2"]
+    - endpoints: ["leaf2:e1-50", "spine2:e1-2"]
+    ## leaf3
+    - endpoints: ["leaf3:e1-49", "spine1:e1-3"]
+    - endpoints: ["leaf3:e1-50", "spine2:e1-3"]
+    ## leaf4
+    - endpoints: ["leaf4:e1-49", "spine1:e1-4"]
+    - endpoints: ["leaf4:e1-50", "spine2:e1-4"]
