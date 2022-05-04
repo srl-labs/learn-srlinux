@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2022-05-04T20:28:03.297Z" agent="5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36" etag="W5EblQUpq_R-VcFG00md" version="17.4.3" type="github" pages="6">
+<mxfile host="app.diagrams.net" modified="2022-05-04T20:31:01.982Z" agent="5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36" etag="R7g3YxXR1xkflnGJev7h" version="17.4.3" type="github" pages="6">
   <diagram id="0zv-W3ntuYn0bhFaIOgg" name="[0] topo">
     <mxGraphModel dx="713" dy="400" grid="1" gridSize="1" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="#4D5766" math="0" shadow="0">
       <root>
@@ -767,6 +767,15 @@
             <mxPoint x="457" y="412" as="sourcePoint" />
             <mxPoint x="468" y="396" as="targetPoint" />
           </mxGeometry>
+        </mxCell>
+        <mxCell id="yqnERn7F-2SDmABZUKyu-1" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startSize=2;endArrow=none;endFill=0;endSize=2;fontFamily=Manrope;fontSize=8;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DManrope;startArrow=blockThin;startFill=1;strokeColor=#FFFB00;" edge="1" parent="YLD-GeWzOjfly-9H2H-X-1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="305" y="478" as="sourcePoint" />
+            <mxPoint x="283" y="478" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Xl6m3sQLqh8VsUv2dskv-0" value="traffic flow from client1 to client2" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;fontSize=7;fontFamily=Manrope;fontStyle=0;fontColor=#FFFFFF;" vertex="1" parent="YLD-GeWzOjfly-9H2H-X-1">
+          <mxGeometry x="307" y="471" width="116" height="13" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
