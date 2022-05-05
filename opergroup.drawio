@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2022-05-05T10:30:53.892Z" agent="5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36" etag="ShhOzITk2IsIuEJyN6Tb" version="17.4.3" type="github" pages="8">
+<mxfile host="app.diagrams.net" modified="2022-05-05T10:31:47.249Z" agent="5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36" etag="NGraYrLTQ3FZlizXXo8T" version="17.4.3" type="github" pages="8">
   <diagram id="0zv-W3ntuYn0bhFaIOgg" name="[0] topo">
     <mxGraphModel dx="1117" dy="628" grid="1" gridSize="1" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="#4D5766" math="0" shadow="0">
       <root>
@@ -1889,12 +1889,6 @@
         </mxCell>
         <mxCell id="ojvty8a6DEiGKIoaWLJN-3" value="&lt;div style=&quot;font-size: 6px&quot;&gt;&lt;span style=&quot;color: rgb(255 , 255 , 255) ; font-size: 6px&quot;&gt;192.168.42.0/30&lt;/span&gt;&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;fontSize=6;fontFamily=Fira Code;fontColor=#001135;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DFira%2BCode;connectable=0;rotation=53;fillColor=#4D5766;opacity=60;" vertex="1" parent="xijNGImhPQJAxCGllO0L-1">
           <mxGeometry x="421" y="334" width="65" height="12" as="geometry" />
-        </mxCell>
-        <mxCell id="0AhyqNSHRRxooFJSfbaR-0" value="bond0" style="whiteSpace=wrap;html=1;fontFamily=Manrope;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DManrope;fontSize=6;align=center;fillColor=#BEC8D2;fontColor=#FFFFFF;strokeColor=#98A2AE;perimeterSpacing=0;rounded=1;" vertex="1" parent="xijNGImhPQJAxCGllO0L-1">
-          <mxGeometry x="302" y="424.29" width="30" height="6" as="geometry" />
-        </mxCell>
-        <mxCell id="0AhyqNSHRRxooFJSfbaR-1" value="bond0" style="whiteSpace=wrap;html=1;fontFamily=Manrope;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DManrope;fontSize=6;align=center;fillColor=#BEC8D2;fontColor=#FFFFFF;strokeColor=#98A2AE;perimeterSpacing=0;rounded=1;" vertex="1" parent="xijNGImhPQJAxCGllO0L-1">
-          <mxGeometry x="433" y="424.29" width="30" height="6" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
