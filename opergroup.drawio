@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2022-05-05T10:52:50.255Z" agent="5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36" etag="0SSBBkR8b1-yZw00RlWz" version="17.4.3" type="github" pages="9">
+<mxfile host="app.diagrams.net" modified="2022-05-05T10:55:24.626Z" agent="5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36" etag="i-kQGoWahpNgAZ4Do8Xy" version="17.4.3" type="github" pages="9">
   <diagram id="0zv-W3ntuYn0bhFaIOgg" name="[0] topo">
     <mxGraphModel dx="1117" dy="628" grid="1" gridSize="1" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="#4D5766" math="0" shadow="0">
       <root>
@@ -2031,8 +2031,8 @@
         <mxCell id="1CENxH53SnXdxaawaAiE-3" value="" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Manrope;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DManrope;fontSize=8;fontColor=#FFFFFF;strokeColor=#EDF3F5;fillColor=none;dashed=1;" vertex="1" parent="7Xv1_l9gVdbM4i5Te0l2-1">
           <mxGeometry x="298.5" y="429" width="38" height="6" as="geometry" />
         </mxCell>
-        <mxCell id="1CENxH53SnXdxaawaAiE-4" value="&lt;font style=&quot;font-size: 5px;&quot;&gt;Ethernet&lt;br style=&quot;font-size: 5px;&quot;&gt;segment&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;fontSize=5;fontFamily=Fira Code;fontStyle=0;fontColor=#FFFFFF;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DFira%2BCode;" vertex="1" parent="7Xv1_l9gVdbM4i5Te0l2-1">
-          <mxGeometry x="335" y="424" width="34" height="16" as="geometry" />
+        <mxCell id="1CENxH53SnXdxaawaAiE-4" value="&lt;font&gt;&lt;font face=&quot;Manrope&quot; data-font-src=&quot;https://fonts.googleapis.com/css?family=Manrope&quot;&gt;Ethernet&lt;br style=&quot;font-size: 5px&quot;&gt;segment&lt;/font&gt;&lt;br&gt;ESI: 01:01:01:01:01:01:01:01:01:01&lt;br&gt;&lt;/font&gt;" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;fontSize=5;fontFamily=Fira Code;fontStyle=0;fontColor=#FFFFFF;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DFira%2BCode;" vertex="1" parent="7Xv1_l9gVdbM4i5Te0l2-1">
+          <mxGeometry x="338" y="421" width="112" height="23" as="geometry" />
         </mxCell>
         <mxCell id="1CENxH53SnXdxaawaAiE-5" value="" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Manrope;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DManrope;fontSize=8;fontColor=#FFFFFF;strokeColor=#FFFb00;fillColor=none;dashed=1;" vertex="1" parent="7Xv1_l9gVdbM4i5Te0l2-1">
           <mxGeometry x="286" y="403" width="63" height="11" as="geometry" />
