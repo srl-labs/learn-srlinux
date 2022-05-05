@@ -334,7 +334,7 @@ Net Instance   : vrf-1
     Prior to release 21.11, SR Linux used only **VLAN-based Service** type of mapping between the VNI and EVI. In this option, a single Ethernet broadcast domain (e.g., subnet)
     represented by a VNI is mapped to a unique EVI.[^5]
     
-    Starting from release 21.11 SR Linux supports an [interoperability mode](https://documentation.nokia.com/srlinux/SR_Linux_HTML_R21-11/EVPN-VXLAN_Guide/evpn_interoperability_with_vlan_aware_bundle_services.html) so that SR Linux leaf nodes can be attached to VLAN-aware bundle broadcast domains along with other third-party routers.
+    Starting from release 21.11 SR Linux supports an [interoperability mode](https://documentation.nokia.com/srlinux/SR_Linux_HTML_R21-11/EVPN-VXLAN_Guide/evpn_interoperability_with_vlan_aware_bundle_services.html) in which SR Linux leaf nodes can be attached to VLAN-aware bundle broadcast domains along with other third-party routers.
 
 ## Final configurations
 For your convenience, in case you want to jump over the config routines and start with control/data plane verification we provide the resulting configuration[^6] for all the lab nodes. You can copy paste those snippets to the relevant nodes and proceed with verification tasks.
