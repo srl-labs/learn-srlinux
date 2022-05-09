@@ -1,6 +1,6 @@
-MKDOCS_VER = 8.2.9
+MKDOCS_VER = 8.2.14
 # insiders version/tag https://github.com/srl-labs/mkdocs-material-insiders/pkgs/container/mkdocs-material-insiders
-MKDOCS_INS_VER = 8.2.9-insiders-4.12.0
+MKDOCS_INS_VER = 8.2.14-insiders-4.15.0
 
 .PHONY: docs
 docs:
