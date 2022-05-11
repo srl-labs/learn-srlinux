@@ -12,7 +12,7 @@ IgnoreURLs:
   - https://github.com/orgs/nokia/packages/container/srlinux/versions
   - on.srlinux.dev
   - localhost
-  - github.com/*/edit/
+  - https://github.com/srl-labs/learn-srlinux/edit/
 
 IgnoreDirectoryMissingTrailingSlash: true
 IgnoreAltMissing: true
