@@ -71,7 +71,7 @@ By just monitoring the operational state of certain uplinks we don't gain much. 
 
 To answer these questions we need to provide additional parameters to the Event Handler and this is done via [`options`](../../../../kb/event-handler.md#options).
 
-Options are a user-defined set of parameters that will be [passed to a script](../../../../kb/event-handler.md#script-input) along with the state of the monitored paths. For the oper-group feature we are going to define two options, that help us parametrize 
+Options are a user-defined set of parameters that will be [passed to a script](../../../../kb/event-handler.md#input) along with the state of the monitored paths. For the oper-group feature we are going to define two options, that help us parametrize 
 
 ```sh
 --{ * candidate shared default }--[ system event-handler instance opergroup ]--

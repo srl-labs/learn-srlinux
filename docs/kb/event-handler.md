@@ -16,9 +16,9 @@ Keeping ourselves in the network boundaries, we can define the following main co
 3. **Event processor**  
     A system that consumes the events and produces an output
 
-The event processor can be deployed centrally in the network, distributed over several nodes, or even run on each network element. Starting with Nokia SR Linux 22.6.1[^2] software release, a new application called "Event Handler" has been introduced to give users a way to make SR Linux react to local events.
+The event processor can be deployed centrally in the network, distributed over several nodes, or even run on each network element. Starting with Nokia SR Linux 22.6.1[^1] software release, a new application called "Event Handler" has been introduced to give users a way to make SR Linux react to local events.
 
-The event handling concept is being able to react to certain system events, with programmable logic on what actions to take as a result. Event Handler allows users to write custom Python[^2] scripts and has these scripts be called in the event state paths change the value, thus introducing programmable logic to handle events.
+The event handling concept is being able to react to certain system events, with programmable logic on what actions to take as a result. Event Handler allows users to write custom Python[^1] scripts and has these scripts be called in the event state paths change the value, thus introducing programmable logic to handle events.
 
 The most common use case that leverages Event Handler capability is known as [Oper Group](../tutorials/programmability/event-handler/oper-group/oper-group-intro.md), where specific ports are put operationally up/down based on the oper status of another group of ports. Of course, many other use cases can benefit from local events that can be programmatically handled whenever users wish to.
 
@@ -79,7 +79,7 @@ A:leaf1# info
 The config above is created for [Oper Group](../tutorials/programmability/event-handler/oper-group/oper-group-intro.md) use case that monitors the operation state of uplinks `ethernet-1/55`/`ethernet-1/56`, and if any of those uplinks change their state to `down`, then downstream links from the options list `down-link` will be set to down operationally. The logic to counting the amount of oper-up uplinks and putting down down-links is kept within the `opergroup.py` script referenced in the config.
 
 ### Paths
-Event Handler monitors objects referenced by their path. Paths must be given in a CLI notation and refer to a leaf or leaf-list[^3]. A few examples:
+Event Handler monitors objects referenced by their path. Paths must be given in a CLI notation and refer to a leaf or leaf-list[^2]. A few examples:
 
 * `/interface ethernet-1/1 oper-state`
 * `/interface ethernet-1/{1..12} oper-state`
@@ -108,7 +108,7 @@ A path to a MicroPython script is provided with `upython-script` config paramete
 An Event Handler script is the core component of the framework. It contains the logic that operates on the input JSON string passed by the `event_mgr` process to it each time there is a state change detected for the paths used in the event handler instance configuration.
 
 ### MicroPython
-Scripts are executed by MicroPython[^2] interpreter and thus have a limited set of modules available in the standard library. For the most part, users may use a regular Python interpreter to write the scripts for the Event Handler, granted they use [standard libraries available for MicroPython](http://docs.micropython.org/en/latest/library/index.html).
+Scripts are executed by MicroPython[^1] interpreter and thus have a limited set of modules available in the standard library. For the most part, users may use a regular Python interpreter to write the scripts for the Event Handler, granted they use [standard libraries available for MicroPython](http://docs.micropython.org/en/latest/library/index.html).
 
 Check the [Dev environment](#dev-environment) section for various ways of developing for MicroPython.
 
@@ -235,6 +235,5 @@ For testing purposes, users may leverage `ghcr.io/srl-labs/upy:1.18` container i
 
 VS Code users can create a dev container with the above image to develop inside the container with MicroPython interpreter as demonstrated in [opergroup-lab repo](https://github.com/srl-labs/opergroup-lab/tree/main/.devcontainer).
 
-[^1]: introduced as a beta in 22.3.1
-[^2]: a trimmed-down python engine - [MicroPython](https://micropython.org/) - is used to run Event Handler scripts.
-[^3]: valid for 21.6.1 release and will be enhanced in the future. Consult with the official documentation for a given release.
+[^1]: a trimmed-down python engine - [MicroPython](https://micropython.org/) - is used to run Event Handler scripts.
+[^1]: valid for 21.6.1 release and will be enhanced in the future. Consult with the official documentation for a given release.

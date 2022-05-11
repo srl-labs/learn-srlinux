@@ -11,6 +11,7 @@ IgnoreURLs:
   - https://github.com/orgs/nokia/packages/container/package/srlinux
   - https://github.com/orgs/nokia/packages/container/srlinux/versions
   - on.srlinux.dev
+  - localhost
 
 IgnoreDirectoryMissingTrailingSlash: true
 IgnoreAltMissing: true
