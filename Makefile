@@ -21,3 +21,6 @@ htmltest:
 	docker run --rm -v $$(pwd):/docs --entrypoint mkdocs ghcr.io/srl-labs/mkdocs-material-insiders:$(MKDOCS_INS_VER) build --clean --strict
 	docker run --rm -v $$(pwd):/test wjdp/htmltest --conf ./site/htmltest.yml
 	rm -rf ./site
+
+build-insiders:
+	docker run -v $$(pwd):/docs --entrypoint mkdocs ghcr.io/srl-labs/mkdocs-material-insiders:$(MKDOCS_INS_VER) build --clean --strict
