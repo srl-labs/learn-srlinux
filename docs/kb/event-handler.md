@@ -53,8 +53,8 @@ A:leaf1# info
     admin-state enable # (1)!
     upython-script opergroup.py # (2)!
     paths [
-        "/interface ethernet-1/55 oper-state" # (3)!
-        "/interface ethernet-1/56 oper-state"
+        "interface ethernet-1/55 oper-state" # (3)!
+        "interface ethernet-1/56 oper-state"
     ]
     options { # (4)!
         object down-links {
@@ -81,10 +81,10 @@ The config above is created for [Oper Group](../tutorials/programmability/event-
 ### Paths
 Event Handler monitors objects referenced by their path. Paths must be given in a CLI notation and refer to a leaf or leaf-list[^2]. A few examples:
 
-* `/interface ethernet-1/1 oper-state`
-* `/interface ethernet-1/{1..12} oper-state`
-* `/interface ethernet-1/* oper-state`
-* `/interface * oper-state`
+* `interface ethernet-1/1 oper-state`
+* `interface ethernet-1/{1..12} oper-state`
+* `interface ethernet-1/* oper-state`
+* `interface * oper-state`
 
 In our example, we configure Event Handler to subscribe to state changes of the `oper-state` leaf of the two uplink interfaces.
 
@@ -151,7 +151,7 @@ Using the configuration example given at the beginning of this page, in the even
 2. user-provided options are passed in the `options` JSON object.
 
 ### Output
-A MicroPython script must return a single paremeter, which is a JSON string with a structure expected by the Event Handler.
+A MicroPython script must return a single parameter, which is a JSON string with a structure expected by the Event Handler.
 
 The structure of the output JSON string adheres to the following schema:
 
@@ -226,7 +226,7 @@ Allows a user to ephemerally change a state leaf. Each `set-ephemeral-path` is a
 
 The most common use case for this action is setting an interface oper-state based on some other criteria like in the [oper-group use case](../tutorials/programmability/event-handler/oper-group/oper-group-intro.md).
 
-In release 21.6.1 a single path is supported by this action - `/inteface * oper-state` - with the values of `up`/`down`.
+In release 21.6.1 a single path is supported by this action - `interface * oper-state` - with the values of `up`/`down`.
 
 ## Dev environment
 Writing MicroPython scripts for the Event Handler is very much like writing regular Python scripts; a developer just needs to keep in mind a limited set of standard library modules available to them.
@@ -236,4 +236,3 @@ For testing purposes, users may leverage `ghcr.io/srl-labs/upy:1.18` container i
 VS Code users can create a dev container with the above image to develop inside the container with MicroPython interpreter as demonstrated in [opergroup-lab repo](https://github.com/srl-labs/opergroup-lab/tree/main/.devcontainer).
 
 [^1]: a trimmed-down python engine - [MicroPython](https://micropython.org/) - is used to run Event Handler scripts.
-[^1]: valid for 21.6.1 release and will be enhanced in the future. Consult with the official documentation for a given release.
