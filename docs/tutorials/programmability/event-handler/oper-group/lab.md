@@ -13,7 +13,7 @@ As always, this tutorial will be backed up by a lab that readers can effortlessl
 On a physical layer topology interconnections are layed down as follows:
 <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:5,&quot;zoom&quot;:3,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/srl-labs/learn-srlinux/diagrams/opergroup.drawio&quot;}"></div>
 
-Each client is dual homed to corresponding leaves; To achieve that, interfaces `eth1` and `eth2` are formed into a `bond0` interface.  
+Each client is dual-homed to corresponding leaves; To achieve that, interfaces `eth1` and `eth2` are formed into a `bond0` interface.  
 On the leaves side, access interface `Ethernet-1/1` is part of a LAG interface which is "stretched" between a pair of leaves, forming a logical construct similar to MC-LAG.
 
 <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:6,&quot;zoom&quot;:3,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/srl-labs/learn-srlinux/diagrams/opergroup.drawio&quot;}"></div>
