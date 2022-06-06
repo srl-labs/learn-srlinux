@@ -6,7 +6,7 @@
 <span class=w>    </span><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">srl</span><span class=w></span>
 <span class=w>  </span><span class=nt>kinds</span><span class=p>:</span><span class=w></span>
 <span class=w>    </span><span class=nt>srl</span><span class=p>:</span><span class=w></span>
-<span class=w>      </span><span class=nt>image</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">ghcr.io/nokia/srlinux</span><span class=w></span>
+<span class=w>      </span><span class=nt>image</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">ghcr.io/nokia/srlinux:21.11.3</span><span class=w></span>
 <span class=w>      </span><span class=nt>type</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">ixr6</span><span class=w> </span><span class=c1># (1)!</span><span class=w></span>
 <span class=w>  </span><span class=nt>nodes</span><span class=p>:</span><span class=w></span>
 <span class=w>    </span><span class=nt>srl1</span><span class=p>:</span><span class=w></span>
@@ -16,7 +16,7 @@
 <span class=w>  </span><span class=nt>links</span><span class=p>:</span><span class=w></span>
 <span class=w>    </span><span class="p p-Indicator">-</span><span class=w> </span><span class=nt>endpoints</span><span class=p>:</span><span class=w> </span><span class="p p-Indicator">[</span><span class=s>&quot;srl1:e1-1&quot;</span><span class="p p-Indicator">,</span><span class=w> </span><span class=s>&quot;srl2:e1-1&quot;</span><span class="p p-Indicator">]</span><span class=w></span>
 <span class=w>    </span><span class="p p-Indicator">-</span><span class=w> </span><span class=nt>endpoints</span><span class=p>:</span><span class=w> </span><span class="p p-Indicator">[</span><span class=s>&quot;srl2:e1-2&quot;</span><span class="p p-Indicator">,</span><span class=w> </span><span class=s>&quot;srl3:e1-1&quot;</span><span class="p p-Indicator">]</span><span class=w></span>
-</code></pre></div> <ol> <li>Pay attention to the <a href=../../../../kb/hwtypes/ >HW type</a> we specify in the clab file. MPLS is only available on ixr6 and ixr10 platforms at the time of this writing.</li> </ol> <p>Save<sup id=fnref:2><a class=footnote-ref href=#fn:2>2</a></sup> the contents of this file under <code>mpls-ldp.clab.yml</code> name, and you are ready to deploy: <div class=highlight><pre><span></span><code>$ containerlab deploy -t clab-ldp.clab.yml
+</code></pre></div> <ol> <li>Pay attention to the <a href=../../../../kb/hwtypes/ >HW type</a> we specify in the clab file. MPLS is only available on ixr6 and ixr10 platforms at the time of this writing. IXR-6/10 chassis will require a license since 22.3 release of SR Linux.</li> </ol> <p>Save<sup id=fnref:2><a class=footnote-ref href=#fn:2>2</a></sup> the contents of this file under <code>mpls-ldp.clab.yml</code> name, and you are ready to deploy: <div class=highlight><pre><span></span><code>$ containerlab deploy -t clab-ldp.clab.yml
 
 <span class=c1># output omitted for brevity</span>
 
