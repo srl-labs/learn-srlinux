@@ -165,7 +165,7 @@ return json.dumps(response)
 ```
 
 This code snippet shows the way to create an output JSON, using the calculated `downlinks_new_state` and the list of downlinks provided via `down-links` option.  
-We range over the down-links option to append a structure that Event Handler expects to see in output JSON and using [`set-ephemeral-path`](../../../../kb/event-handler.md#set-ephermeral-cfg) action that will set oper state of the downlinks to the desired value (up or down).
+We range over the down-links option to append a structure that Event Handler expects to see in output JSON and using [`set-ephemeral-path`](../../../../kb/event-handler.md#set-ephemeral-cfg) action that will set oper state of the downlinks to the desired value (up or down).
 
 The output is provided via `response` dictionary, that we marshal to JSON encoding at the end before returning from the function. This routine will provide a JSON back to the Event Handler and since it is formed in a well-known way, Event Handler will process and execute the actions passed to it.
 

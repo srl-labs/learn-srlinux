@@ -221,7 +221,7 @@ As seen from the output example above, script' output mostly contains a list of 
 #### Actions
 An incomplete list of actions is provided below for reference.
 
-##### set-ephermeral-cfg
+##### set-ephemeral-cfg
 Allows a user to ephemerally change a state leaf. Each `set-ephemeral-path` is a `path:value`. Paths are provided in a CLI notation with a possibility to use ranges.
 
 The most common use case for this action is setting an interface oper-state based on some other criteria like in the [oper-group use case](../tutorials/programmability/event-handler/oper-group/oper-group-intro.md).
