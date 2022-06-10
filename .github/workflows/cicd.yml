@@ -9,7 +9,7 @@ on:
   pull_request:
 
 env:
-  MKDOCS_MATERIAL_VER: 4.8.3 # insiders version
+  MKDOCS_MATERIAL_VER: 8.2.14-insiders-4.15.0 # insiders version
 
 jobs:
   docs-test:
