@@ -17,7 +17,7 @@ The following sequence[^1] captures the core logic of the Event-Handler framewor
 2. In addition to the paths, a user may configure arbitrary static [options](#options) that will parametrize a script.
 [script](#script)
 4. Whenever there is a state change for any of the monitored paths, Event Handler executes a script with a single argument - a JSON string that consists of:
-    - current value of the monitored paths
+    - the current value of the monitored paths
     - options provided by a user
     - persistent data if it was set by a script
 
@@ -43,7 +43,7 @@ In this tutorial we will touch upon the most crucial configuration options:
 ## Monitored paths
 The oper-group feature requires users to define a set of uplinks that are crucial for a working service. By monitoring the state of these selected uplinks oper-group decides if the downlinks' operational state should be changed.
 
-In the context of this tutorial, on `leaf1` two uplink interfaces `ethernet-1/49` and `ethernet-1/50` should be put under monitoring to avoid blackholing of traffic in case theie opr-state will change to down state.
+In the context of this tutorial, on `leaf1` two uplink interfaces `ethernet-1/49` and `ethernet-1/50` should be put under monitoring to avoid blackholing of traffic in case their oper-state will change to a down state.
 
 <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:13,&quot;zoom&quot;:3,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/srl-labs/learn-srlinux/diagrams/opergroup.drawio&quot;}"></div>
 
@@ -91,12 +91,12 @@ A:leaf1# info options
 To define which links should follow the state of the uplinks we provide the `down-links` option. This option is defined as a list of values to accommodate for potential support of many access links, but since our lab only has single access lint, the list.
 
 !!!note
-    Values defined in options are free-formed strings and may or may not follow any particular syntax. For `down-links` option we choose to use a CLI-compatible value of an interface since this will make it easier to create an action in the script body. But we could use any other form of the interface name.
+    Values defined in options are free-formed strings and may or may not follow any particular syntax. For `down-links` option, we choose to use a CLI-compatible value of an interface since this will make it easier to create an action in the script body. But we could use any other form of the interface name.
 
 The second option - `required-up-uplinks` - conveys the number of uplinks we want to have in operation before we put access links down. When a leaf has more than 1 uplink, we may want to tolerate it losing a single uplink. In this tutorial, we pass a value of `1` which means that at a minimum we want to have at least one uplink to be up.  
 In the script body, we will implement the logic of calculating the number of uplinks in an operational state, and the option is needed to provide the required boundary.
 
-We will also add a third option that will indicate to our script that it should print value of certain script variables as explained later in the [debug](script.md#debugging) section. This option will help us explain script operations when we reach [Oper group in action chapter](opergroup-operation.md).
+We will also add a third option that will indicate to our script that it should print the value of certain script variables as explained later in the [debug](script.md#debugging) section. This option will help us explain script operations when we reach [Oper group in action chapter](opergroup-operation.md).
 
 ## Script
 Event-Handler is a programmable framework that doesn't enforce any particular logic when it comes to handling events occurring in a system. Instead, users are free to create their [scripts](../../../../kb/event-handler.md#script) and thus program the handling of events.
@@ -145,7 +145,7 @@ A:leaf1# info
 
 1. Monitor the operational state of these uplinks.
 2. The following links we consider "access" links, their operational state will depend on the state of the uplinks when processed by a script.
-3. Required number of uplinks to be in oper up state before putting down downlinks. 
+3. Required number of uplinks to be in the oper-up state before putting down downlinks. 
 4. Path to the script file which defines the logic of the event-handling routine using the state changes of the monitored paths and provided options.
 5. [Debug](script.md#debugging) option to indicate to a scrip that it should print additional debugging information.
 

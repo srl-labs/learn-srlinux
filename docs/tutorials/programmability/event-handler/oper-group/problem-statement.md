@@ -1,8 +1,8 @@
-Before we meet Event Handler framework of SR Linux and leverage it to configure oper-group feature, it is crucial to understand the problem at hand.  
+Before we meet the Event Handler framework of SR Linux and leverage it to configure oper-group feature, it is crucial to understand the problem at hand.  
 As was mentioned in the [introduction](oper-group-intro.md), without oper-group feature traffic loss can occur should any leaf lose all its uplinks. Let's lab a couple of scenarios that highlight a problem that oper-group is set to remedy.
 
 ## Healthy fabric scenario
-Startup configuration that our lab is equipped with gets our fabric to a state where traffic can be exchanged between clients. Users can verify that by running a simple iperf-based traffic test.
+The startup configuration that our lab is equipped with gets our fabric to a state where traffic can be exchanged between clients. Users can verify that by running a simple iperf-based traffic test.
 
 In our lab, `client2` runs iperf3 server, while `client1` acts as a client. With the following command we can run a single stream of TCP data with a bitrate of 200 Kbps:
 
@@ -31,15 +31,15 @@ Connecting to host 192.168.100.2, port 5201
 [  5]   0.00-10.00  sec   363 KBytes   298 Kbits/sec    0             sender
 [  5]   0.00-10.00  sec   363 KBytes   298 Kbits/sec                  receiver
 ```
-In addition to iperf results users can monitor throughput of `leaf1/2` links using grafana dashboard:
+In addition to iperf results, users can monitor the throughput of `leaf1/2`` links using grafana dashboard:
 [![grafana](https://gitlab.com/rdodin/pics/-/wikis/uploads/99b290ba11971cc683f221655336ff23/image.png)](https://gitlab.com/rdodin/pics/-/wikis/uploads/99b290ba11971cc683f221655336ff23/image.png)
 
 This visualization tells us that `client1` hashed its single stream[^1] over `client1:eth2` interface that connects to `leaf2:e1-1`. On the "Leaf2 e1-1 throughput" panel in the bottom right we see incoming traffic that indicates data is flowing in via this interface.
 
-Next we see that `leaf2` used its `e1-50` interface to send data over to a spine layer, through which it reaches `client2` side[^2].
+Next, we see that `leaf2` used its `e1-50` interface to send data over to a spine layer, through which it reaches `client2` side[^2].
 
 ### Load balancing on the client side
-Next, it is interesting to verify that client can utilize both links in its `bond0` interface, since our L2 EVPN service uses all-active multihoming mode for the ethernet segment. To test that we need to tell iperf to use at least two parallel streams; that is what `-P` flag is for.
+Next, it is interesting to verify that client can utilize both links in its `bond0` interface since our L2 EVPN service uses an all-active multihoming mode for the ethernet segment. To test that we need to tell iperf to use at least two parallel streams; that is what `-P` flag is for.
 
 With the following command we start two parallel streams, 200 Kbps bitrate each, and this time for 20 seconds.
 
@@ -56,7 +56,7 @@ Our telemetry visualization makes it clear that client-side load balancing is in
 ??? "Load balancing in the fabric?"
     You may have noticed that when we sent two parallel streams client hashed two streams over two links in its bond interface. But then leaves used a single uplink interface towards the fabric. This is due to the fact that each leaf got a single "stream" and thus a single uplink interface was utilized.
 
-    We can see ECMP in the fabric happening if we send more streams, for example eight of them:
+    We can see ECMP in the fabric happening if we send more streams, for example, eight of them:
     ```bash
     docker exec -it client1 iperf3 -c 192.168.100.2 -b 200K -P 8 -t 20
     ```
@@ -88,7 +88,7 @@ Let's see what exactly is happening there.
 * [00:00 - 00:15] We started four streams 200Kbps bitrate each, summing up to 800Kbps. Those for streams were evenly distributed over the two links of a bond interface of our `client1`.  
     Both leaves report 400 Kbps of traffic detected on their `e1-1` interface, so each leaf handles two streams each.  
     Leaves then load balance these two streams over their two uplinks. We see that both `e1-49` and `e1-50` report outgoing bitrate to be ~200Kbps, which is a bitrate of a single stream we configured. That way every uplink on our leaves is utilized and handling a stream of data.
-* [00:34 - 01:00] At this very moment, we execute `bash set-uplinks.sh leaf1 disable` putting uplinks on `leaf1` administratively down. Bottom left panel immediately indicates that operational status of both uplinks went down.  
+* [00:34 - 01:00] At this very moment, we execute `bash set-uplinks.sh leaf1 disable` putting uplinks on `leaf1` administratively down. The bottom left panel immediately indicates that the operational status of both uplinks went down.  
     But pay close attention to what is happening with traffic throughput. Traffic rate on `leaf1` access interface drops immediately, as TCP sessions of the streams it was handling stopped to receive ACKs.  
     At the same time, `leaf2` didn't attract any new streams, it has been handling its two streams summing up to 400Kbps all way long. This means, that traffic that was passing through `leaf1` was "blackholed" as `client1` was not notified in any way that one of the links in its bond interface must not be used.
 

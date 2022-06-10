@@ -1,6 +1,6 @@
-|                          |                |
-| ------------------------ | -------------- |
-| **Official doc section** | TODO: add link |
+|                          |                                     |
+| ------------------------ | ----------------------------------- |
+| **Official doc section** | Will be updated with 22.6.1 release |
 
 !!!warning
     Always consult with the official documentation, as knowledge base articles provide only the gist of a certain feature/functionality.
@@ -16,7 +16,7 @@ Keeping ourselves in the network boundaries, we can define the following main co
 3. **Event processor**  
     A system that consumes the events and produces an output
 
-The event processor can be deployed centrally in the network, distributed over several nodes, or even run on each network element. Starting with Nokia SR Linux 22.6.1[^1] software release, a new application called "Event Handler" has been introduced to give users a way to make SR Linux react to local events.
+The event processor can be deployed centrally in the network, distributed over several nodes, or even run on each network element. Starting with the Nokia SR Linux 22.6.1[^1] software release, a new application called "Event Handler" has been introduced to give users a way to make SR Linux react to local events.
 
 The event handling concept is being able to react to certain system events, with programmable logic on what actions to take as a result. Event Handler allows users to write custom Python[^1] scripts and has these scripts be called in the event state paths change the value, thus introducing programmable logic to handle events.
 
@@ -43,7 +43,7 @@ sequenceDiagram
 ## Configuration
 Event Handler is supported in SR Linux by the `event_mgr` process which exposes configuration and state via a container at `.system.event-handler`. Within this container, a list of event handling instances can be configured at `.system.event-handler.instance{}` with a user-defined name.
 
-Here is the annotated config of `event-handler` container that highlights most important knobs of this feature.
+Here is the annotated config of `event-handler` container that highlights the most important knobs of this feature.
 
 An event handler instance config consists of:
 
@@ -72,9 +72,9 @@ A:leaf1# info
 1. A toggle to enable or disable the instance
 2. A reference to a MicroPython script to run. This script must live in `/etc/opt/srlinux/eventmgr/`, or `/opt/srlinux/eventmgr/` for Nokia-provided scripts
 3. A list of paths in a CLI notation that Event Handler will receive state change events for.
-4. A set of options in the form of objects and their value or values. This is useful for passing configuration to the function, and is described in [options](#options) chapter.
-5. An example of an option's object with multiple values. Values are passed as json strings and need not to follow any particular schema.
-6. An example of an option's object with a single value passed as string.
+4. A set of options in the form of objects and their value or values. This is useful for passing configuration to the function and is described in the [options](#options) chapter.
+5. An example of an option's object with multiple values. Values are passed as json strings and need not follow any particular schema.
+6. An example of an option's object with a single value passed as a string.
 
 The config above is created for [Oper Group](../tutorials/programmability/event-handler/oper-group/oper-group-intro.md) use case that monitors the operation state of uplinks `ethernet-1/55`/`ethernet-1/56`, and if any of those uplinks change their state to `down`, then downstream links from the options list `down-link` will be set to down operationally. The logic to counting the amount of oper-up uplinks and putting down down-links is kept within the `opergroup.py` script referenced in the config.
 
@@ -93,9 +93,9 @@ The options field lets a user define a set of arbitrarily named objects, and ass
 
 In the example above, two options are configured:
 
-1. `down-links` - an option with multiple values, in that case two values `ethernet-1/1` and `ethernet-1/2`.  
+1. `down-links` - an option with multiple values, in that case, two values `ethernet-1/1` and `ethernet-1/2`.  
     The `down-links` option thus keeps a list of downstream links we want to pass to the script. Script's logic then may use those values when it is being run.
-2. `required-num-up-link` - an option with a single value that conveys the number of uplinks we want to always have in oper up state before bringing down links down.
+2. `required-num-up-link` - an option with a single value that conveys the number of uplinks we want to always have in oper-up state before bringing down links.
 
 !!!note
     1. Option' values passed via CLI are encoded as strings
@@ -123,7 +123,7 @@ No other directory hierarchy can be used.
 ### Input
 Whenever a state change is detected for any of the monitored paths, the Event Handler calls a referenced MicroPython script. Event Handler calls a specific function `event_handler_main()` in the provided script, passing it a JSON string indicating the current values of the monitored paths, and any other options configured
 
-Using the configuration example given at the beginning of this page, in the event of a state change for any of the two links operational status, the following JSON string would have been generated by the Event Handler and passed over to a script as input.
+Using the configuration example given at the beginning of this page, in the event of a state change for any of the two links' operational status, the following JSON string would have been generated by the Event Handler and passed over to a script as input.
 
 ```json
 {
@@ -216,13 +216,13 @@ The structure of the output JSON string adheres to the following schema:
     }
     ```
 
-As seen from the output example above, script' output mostly contains a list of various actions. These actions are passed to the Event Handler for processing.
+As seen from the output example above, the script output mostly contains a list of various actions. These actions are passed to the Event Handler for processing.
 
 #### Actions
 An incomplete list of actions is provided below for reference.
 
 ##### set-ephemeral-cfg
-Allows a user to ephemerally change a state leaf. Each `set-ephemeral-path` is a `path:value`. Paths are provided in a CLI notation with a possibility to use ranges.
+Allows a user to ephemerally change a state leaf. Each `set-ephemeral-path` is a `path:value`. Paths are provided in a CLI notation with the possibility to use ranges.
 
 The most common use case for this action is setting an interface oper-state based on some other criteria like in the [oper-group use case](../tutorials/programmability/event-handler/oper-group/oper-group-intro.md).
 
@@ -231,7 +231,7 @@ In release 21.6.1 a single path is supported by this action - `interface * oper-
 ## Dev environment
 Writing MicroPython scripts for the Event Handler is very much like writing regular Python scripts; a developer just needs to keep in mind a limited set of standard library modules available to them.
 
-For testing purposes, users may leverage `ghcr.io/srl-labs/upy:1.18` container image to execute their scripts against a MicroPython interpreter used in SR Linux. Granted, they add a `main()` function to their script in addition to the `event_hander_main()` func required by the framework.
+For testing purposes, users may leverage `ghcr.io/srl-labs/upy:1.18` container image to execute their scripts against a MicroPython interpreter used in SR Linux. Granted, they add a `main()` function to their script in addition to the `event_hander_main()` function required by the framework.
 
 VS Code users can create a dev container with the above image to develop inside the container with MicroPython interpreter as demonstrated in [opergroup-lab repo](https://github.com/srl-labs/opergroup-lab/tree/main/.devcontainer).
 

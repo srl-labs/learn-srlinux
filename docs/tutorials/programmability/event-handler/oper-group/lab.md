@@ -1,11 +1,11 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/hellt/drawio-js@main/embed2.js" async></script>
 
-As always, this tutorial will be backed up by a lab that readers can effortlessly deploy on their own machine and follow along. Oper-group lab is contained within [srl-labs/oper-group-lab](https://github.com/srl-labs/opergroup-lab) repository and features:
+As always, this tutorial will be backed up by a lab that readers can effortlessly deploy on their machine and follow along. Oper-group lab is contained within [srl-labs/oper-group-lab](https://github.com/srl-labs/opergroup-lab) repository and features:
 
 1. A Clos based fabric with 4 leaves and 2 spines, forming the fabric
 2. Two dual-homed clients emulated with linux containers and running `iperf` software to generate traffic
 3. L2 EVPN service[^1] configured across the leaves of the fabric
-4. A telemetry stack to demonstrate oper-group operations in-action.
+4. A telemetry stack to demonstrate oper-group operations in action.
 
 <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:0,&quot;zoom&quot;:3,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/srl-labs/learn-srlinux/diagrams/opergroup.drawio&quot;}"></div>
 
@@ -14,7 +14,7 @@ On a physical layer topology interconnections are layed down as follows:
 <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:5,&quot;zoom&quot;:3,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/srl-labs/learn-srlinux/diagrams/opergroup.drawio&quot;}"></div>
 
 Each client is dual-homed to corresponding leaves; To achieve that, interfaces `eth1` and `eth2` are formed into a `bond0` interface.  
-On the leaves side, access interface `Ethernet-1/1` is part of a LAG interface which is "stretched" between a pair of leaves, forming a logical construct similar to MC-LAG.
+On the leaves side, the access interface `Ethernet-1/1`` is part of a LAG interface that is "stretched" between a pair of leaves, forming a logical construct similar to MC-LAG.
 
 <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:6,&quot;zoom&quot;:3,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/srl-labs/learn-srlinux/diagrams/opergroup.drawio&quot;}"></div>
 

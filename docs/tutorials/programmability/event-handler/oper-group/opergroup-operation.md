@@ -1,5 +1,5 @@
 ## Start up
-When Event Handler instance is configured and administratively enabled an initial sync of the monitored paths state is done. As a result of that initial sync, Event Handler immediately attempts to execute a script as it receives the state for the monitored paths.
+When the Event Handler instance is configured and administratively enabled an initial sync of the monitored paths state is done. As a result of that initial sync, Event Handler immediately attempts to execute a script as it receives the state for the monitored paths.
 
 Users can check the status of a particular event handler instance by querying the state datastore:
 
@@ -45,8 +45,8 @@ A:leaf1# info from state /system event-handler instance opergroup
 
 Notable leaves in the state definition of the instance:
 
-* `oper-state` - the operational state of the instance. In case of any errors in the script and/or configuration the state will be `down`.
-* `oper-reason` and `oper-reason-detail` - these leaves will contain info on the reasoning behind event handler instance to be rendered operationally down.
+* `oper-state` - the operational state of the instance. In case of any errors in the script and/or configuration, the state will be `down`.
+* `oper-reason` and `oper-reason-detail` - these leaves will contain info on the reasoning behind the event handler instance to be rendered operationally down.
 * `last-input` - input json string that was used during the last execution.
 * `last-stdout-stderr` - here you will find outputs from your script such as print statements and log messages.
 * `last-output` - output json string that was produced by a script during the last execution.
@@ -55,7 +55,7 @@ Notable leaves in the state definition of the instance:
 The state dump above captures the state of the `opergroup` event handler instance after the second successful run.
 
 ## Running mode
-Let's get back to our running fabric and once again verify that we have opergroup instance configured and running, before we start manipulating uplink's state.
+Let's get back to our running fabric and once again verify that we have opergroup instance configured and running before we start manipulating the uplink's state.
 
 === "checking opergroup config"
     ```js
@@ -98,7 +98,7 @@ Let's get back to our running fabric and once again verify that we have opergrou
     ```
 
 ### Disabling one uplink
-Let's start first putting down a single uplink with leaving other one operational. Our oper-group is configured in such a way that unless we lose both uplinks nothing should happen to the downstream ethernet-1/1 interface. Time to put this to test.
+Let's start first putting down a single uplink with leaving the other one operational. Our oper-group is configured in such a way that unless we lose both uplinks nothing should happen to the downstream ethernet-1/1 interface. Time to put this to test.
 
 1. Starting with the four streams 200 kbps each running for 60 seconds
     ```
@@ -199,7 +199,7 @@ downlinks new state = down
 
 First, in the `last-input` we see that Event Handler rightfully passes the current state of both uplinks, which is `down`.  
 Next, in the `last-stdout-stderr` field we see that the script correctly calculated that no uplinks are operational and the desired state for the downlinks is `down`.  
-Finally, the `last-output` now lists `set-ephemeral-path` with `down` value for the access interface. This will effectively gets processed by Event Handler and put down the `ethernet-1/1` interface.
+Finally, the `last-output` now lists `set-ephemeral-path` with `down` value for the access interface. This will effectively get processed by the Event Handler and put down the `ethernet-1/1` interface.
 
 ### Enabling interfaces
 In the reverse order, let's bring both uplinks up and see what happens.
@@ -220,8 +220,8 @@ We started with all streams taking `leaf2` route, granted that `leaf1` access in
 
 Then when we brought uplinks up, Event Handler enabled access interface `ethernet-1/1` on `leaf1` and strange things happened. Instead of seeing traffic moving over to `leaf1`, we see how it moves away from `leaf2`, but doesn't pass through `leaf1`.
 
-The reason is that `leaf1` although got its uplinks back in operational state, wasn't able to establish iBGP sessions and get its EVPN routes yet. Thus, traffic was getting stuck. Then iBGP sessions came up, but at this point TCP sessions were in backoff retry mode, so they were not immediately passing through `leaf1`.
+The reason is that `leaf1` although got its uplinks back in an operational state, wasn't able to establish iBGP sessions and get its EVPN routes yet. Thus, traffic was getting stuck. Then iBGP sessions came up, but at this point, TCP sessions were in backoff retry mode, so they were not immediately passing through `leaf1`.
 
 Eventually, closer to the end of the test we see how TCP streams managed to get back in shape and spiked in bitrate to meet the bitrate goal.
 
-This is quite an interesting observation, because it is evident that it might not be optimal to bring access interface up when uplinks get operational, instead, we may want to improve our oper-group script to enable access interface only when iBGP sessions are ready, or even EVPN routes are received and installed.
+This is quite an interesting observation, because it is evident that it might not be optimal to bring the access interface up when uplinks get operational, instead, we may want to improve our oper-group script to enable the access interface only when iBGP sessions are ready, or even EVPN routes are received and installed.
