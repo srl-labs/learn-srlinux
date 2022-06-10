@@ -40,7 +40,7 @@ topology:
     kind: srl
   kinds:
     srl:
-      image: ghcr.io/nokia/srlinux
+      image: ghcr.io/nokia/srlinux:21.11.3
       type: ixr6 # (1)!
   nodes:
     srl1:
@@ -52,7 +52,7 @@ topology:
     - endpoints: ["srl2:e1-2", "srl3:e1-1"]
 ```
 
-1. Pay attention to the [HW type](../../../kb/hwtypes.md) we specify in the clab file. MPLS is only available on ixr6 and ixr10 platforms at the time of this writing.
+1. Pay attention to the [HW type](../../../kb/hwtypes.md) we specify in the clab file. MPLS is only available on ixr6 and ixr10 platforms at the time of this writing. IXR-6/10 chassis will require a license since 22.3 release of SR Linux.
 
 Save[^2] the contents of this file under `mpls-ldp.clab.yml` name, and you are ready to deploy:
 ```bash

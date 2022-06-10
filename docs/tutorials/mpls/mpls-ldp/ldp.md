@@ -438,7 +438,7 @@ topology:
     kind: srl
   kinds:
     srl:
-      image: ghcr.io/nokia/srlinux
+      image: ghcr.io/nokia/srlinux:21.11.3
       type: ixr6
   nodes:
 
