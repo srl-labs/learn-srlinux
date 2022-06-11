@@ -49,6 +49,12 @@ jobs:
     if: startsWith(github.ref, 'refs/heads/main')
     needs: docs-test
     steps:
+      # this is to mitigate unsafe dir errors from git
+      # https://github.com/actions/checkout/issues/760
+      - name: Add workspace as safe directory
+        run: |
+          git config --global --add safe.directory /__w/learn-srlinux/learn-srlinux
+
       - name: Checkout
         uses: actions/checkout@v2
         with:
