@@ -67,4 +67,4 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - run: docker run -v $(pwd):/docs --entrypoint mkdocs ghcr.io/srl-labs/mkdocs-material-insiders:$MKDOCS_MATERIAL_VER gh-deploy --force
+      - run: docker run -v $(pwd):/docs --env GIT_CEILING_DIRECTORIES=/docs --entrypoint mkdocs ghcr.io/srl-labs/mkdocs-material-insiders:$MKDOCS_MATERIAL_VER gh-deploy --force
