@@ -31,16 +31,40 @@ A system on which you can run SR Linux containers should conform to the followin
 Let's explore the different ways you can launch SR Linux container.
 
 #### Docker CLI
-`docker` CLI offers a quick way to run standalone SR Linux container:
+`docker` CLI offers a quick way to run a standalone SR Linux container:
 
-```shell
-docker run -t -d --rm --privileged \
-  -u $(id -u):$(id -g) \
-  --name srlinux ghcr.io/nokia/srlinux \
-  sudo bash /opt/srlinux/bin/sr_linux
-```
+=== "Docker run"
+    Note the presence of topology file mount in the `docker run` command, it is used to drive a selection of the emulated chassis type.
+    ```shell
+    docker run -t -d --rm --privileged \
+      -v $(pwd)/topology.yml:/tmp/topology.yml \
+      -u $(id -u):$(id -g) \
+      --name srlinux ghcr.io/nokia/srlinux \
+      sudo bash /opt/srlinux/bin/sr_linux
+    ```
+=== "Topology file"
+    The following topology file is for IXR-D3L chassis.
+
+    ```yaml
+    chassis_configuration:
+      "chassis_type": 72
+      "base_mac": "1a:b0:00:00:00:00"
+      "cpm_card_type": 187
+
+    slot_configuration:
+      1:
+        "card_type": 187
+        "mda_type": 200
+    ```
 
 The above command will start the container named `srlinux` on the host system with a single management interface attached to the default docker network.
+
+!!!warning T
+    To get SSH access for a deployed container, make sure to disable TX Offload on a default docker bridge, otherwise, CRC checksums will be fake and SR Linux will discard those packets.
+
+    ```bash
+    sudo ethtool --offload docker0 tx off
+    ```
 
 This approach is viable when all you need is to run a standalone container to explore SR Linux CLI or to interrogate its management interfaces. But it is not particularly suitable to run multiple SR Linux containers with links between them, as this requires some extra work.
 
