@@ -10,4 +10,4 @@ Once the problem statement is set, we proceed with [configuration steps](oper-gr
 
 A key piece of the Event Handler framework is the script that is getting executed every time an event to which users subscribed happens. In the [Script chapter](script.md) we explain how oper-group script is composed.
 
-Finally, it is time to see how the Event Handler instance powered by the oper-group script works. We follow through with the [various scenarios](opergroup-operation.md)](opergroup-operation.md) and capture the behavior of the fabric.
+Finally, it is time to see how the Event Handler instance powered by the oper-group script works. We follow through with the [various scenarios](opergroup-operation.md) and capture the behavior of the fabric.

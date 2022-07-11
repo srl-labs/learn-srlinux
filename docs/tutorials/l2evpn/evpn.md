@@ -332,12 +332,12 @@ Net Instance   : vrf-1
 
 !!!note "VNI to EVI mapping"
     Prior to release 21.11, SR Linux used only **VLAN-based Service** type of mapping between the VNI and EVI. In this option, a single Ethernet broadcast domain (e.g., subnet)
-    represented by a VNI is mapped to a unique EVI.[^5]
+    represented by a VNI is mapped to a unique EVI.[^3]
     
     Starting from release 21.11 SR Linux supports an [interoperability mode](https://documentation.nokia.com/srlinux/SR_Linux_HTML_R21-11/EVPN-VXLAN_Guide/evpn_interoperability_with_vlan_aware_bundle_services.html) in which SR Linux leaf nodes can be attached to VLAN-aware bundle broadcast domains along with other third-party routers.
 
 ## Final configurations
-For your convenience, in case you want to jump over the config routines and start with control/data plane verification we provide the resulting configuration[^6] for all the lab nodes. You can copy paste those snippets to the relevant nodes and proceed with verification tasks.
+For your convenience, in case you want to jump over the config routines and start with control/data plane verification we provide the resulting configuration[^4] for all the lab nodes. You can copy paste those snippets to the relevant nodes and proceed with verification tasks.
 
 ???example "pastable snippets"
     === "leaf1"
@@ -779,7 +779,7 @@ This multicast destination means that BUM frames received on a bridged sub-inter
 As to the unicast destinations there are none so far, and this is because we haven't yet received any MAC/IP RT2 EVPN routes. But before looking into the RT2 EVPN routes, let's zoom into VXLAN tunnels that got built right after we receive the first IMET RT3 routes.
 
 ### VXLAN tunnels
-After receiving EVPN routes from the remote leafs with VXLAN encapsulation[^4], SR Linux creates VXLAN tunnels towards remote VTEP, whose address is received in EVPN IMET routes. The state of a single remote VTEP we have in our lab is shown below from the `leaf1` switch.
+After receiving EVPN routes from the remote leafs with VXLAN encapsulation[^5], SR Linux creates VXLAN tunnels towards remote VTEP, whose address is received in EVPN IMET routes. The state of a single remote VTEP we have in our lab is shown below from the `leaf1` switch.
 
 ```
 A:leaf1# /show tunnel vxlan-tunnel all
@@ -799,7 +799,7 @@ The VXLAN tunnel is built between the `vxlan` interfaces in the MAC-VRF network 
 
 <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:8,&quot;zoom&quot;:4,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/srl-labs/learn-srlinux/diagrams/quickstart.drawio&quot;}"></div>
 
-Once a VTEP is created in the vxlan-tunnel table with a non-zero allocated index[^3], an entry in the tunnel-table is also created for the tunnel.
+Once a VTEP is created in the vxlan-tunnel table with a non-zero allocated index[^6], an entry in the tunnel-table is also created for the tunnel.
 
 ```
 A:leaf1# /show network-instance default tunnel-table all
@@ -958,8 +958,8 @@ This concludes the verification steps, as we have a working data plane connectiv
 
 [^1]: as was verified [before](fabric.md#dataplane)
 [^2]: containerlab assigns mac addresses to the interfaces with OUI `00:C1:AB`. We are changing the generated MAC with a more recognizable address, since we want to easily identify MACs in the bridge tables.
-[^3]: If the next hop is not resolved to a route in the default network-instance route-table, the index in the vxlan-tunnel table shows as “0” for the VTEP and no tunnel-table is created.
-[^4]: IMET routes have extended community that conveys the encapsulation type. And for VXLAN EVPN it states VXLAN encap. Check [pcap](https://github.com/srl-labs/learn-srlinux/blob/master/docs/tutorials/l2evpn/evpn01-imet-routes.pcapng) for reference.
-[^5]: Per [section 5.1.2 of RFC 8365](https://datatracker.ietf.org/doc/html/rfc8365#section-5.1.2)
-[^6]: Easily extracted with doing `info <container>` where `container` is `routing-policy`, `network-instance *`, `interface *`, `tunnel-interface *`
+[^3]: Per [section 5.1.2 of RFC 8365](https://datatracker.ietf.org/doc/html/rfc8365#section-5.1.2)
+[^4]: Easily extracted with doing `info <container>` where `container` is `routing-policy`, `network-instance *`, `interface *`, `tunnel-interface *`
+[^5]: IMET routes have extended community that conveys the encapsulation type. And for VXLAN EVPN it states VXLAN encap. Check [pcap](https://github.com/srl-labs/learn-srlinux/blob/master/docs/tutorials/l2evpn/evpn01-imet-routes.pcapng) for reference.
+[^6]: If the next hop is not resolved to a route in the default network-instance route-table, the index in the vxlan-tunnel table shows as “0” for the VTEP and no tunnel-table is created.
 [^7]: We did try to ping from `srv1` to `srv2` in [server interfaces](#server-interfaces) section which triggered MAC-VRF to insert a locally learned MAC into its MAC table, but since then this mac has aged out, and thus the table is empty again.
