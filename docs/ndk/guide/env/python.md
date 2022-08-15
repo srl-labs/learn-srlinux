@@ -33,6 +33,9 @@ sudo python3 -m venv /opt/myApp/venv
 # activate the newly created venv
 source /opt/myApp/venv/bin/activate
 
+# update pip/setuptools in the venv
+pip3 install -U pip setuptools
+
 # install the latest pip package of the NDK
 pip install srlinux-ndk # (1)
 ```
