@@ -37,9 +37,11 @@ sudo python3 -m venv /opt/myApp/venv
 # activate the newly created venv
 source /opt/myApp/venv/bin/activate
 
-# install the NDK
-pip install srlinux-ndk
+# install the latest pip package of the NDK
+pip install srlinux-ndk # (1)
 ```
+
+1. To install a specific version of the NDK check the [NDK install instructions](https://github.com/nokia/srlinux-ndk-py#installation) on the [NDK github repo](https://github.com/nokia/srlinux-ndk-py).
 
 Once installed, NDK services are imported in a Python project like that:
 
