@@ -1,13 +1,16 @@
 # Python Development Environment
+
 Although every developer's environment is different and is subject to a personal preference, we will provide some recommendations for a [Python](https://www.python.org/) toolchain setup suitable for the development of NDK applications.
 
 ## Environment components
+
 The toolchain that can be used to develop Python-based NDK apps consists of the following components:
 
 1. [Python programming language](https://www.python.org/downloads/) - Python interpreter, toolchain, and standard library. Python2 is not supported.
 2. [Python NDK bindings](https://github.com/nokia/srlinux-ndk-py) - generated data access classes for gRPC based NDK service.
 
 ## Project structure
+
 Here is an example project structure that you can use for the NDK agent development:
 
 ```
@@ -20,6 +23,7 @@ Here is an example project structure that you can use for the NDK agent developm
 ```
 
 ## NDK language bindings
+
 As explained in the [NDK Architecture](../architecture.md) section, NDK is a gRPC based service. The [language bindings](https://grpc.io/docs/languages/python/quickstart/) have to be generated from the source proto files to use gRPC services in a Python program.
 
 Nokia provides both the [proto files](https://github.com/nokia/srlinux-ndk-protobufs) for the SR Linux NDK service and also [NDK Python language bindings](https://github.com/nokia/srlinux-ndk-py).
@@ -36,9 +40,11 @@ source /opt/myApp/venv/bin/activate
 # update pip/setuptools in the venv
 pip3 install -U pip setuptools
 
-# install the NDK using a specific version (example given for v21.6.2)
-pip3 install https://github.com/nokia/srlinux-ndk-py/archive/v21.6.2.zip
+# install the latest pip package of the NDK
+pip install srlinux-ndk # (1)
 ```
+
+1. To install a specific version of the NDK check the [NDK install instructions](https://github.com/nokia/srlinux-ndk-py#installation) on the [NDK github repo](https://github.com/nokia/srlinux-ndk-py).
 
 Once installed, NDK services are imported in a Python project like that:
 
@@ -46,4 +52,4 @@ Once installed, NDK services are imported in a Python project like that:
 from ndk import appid_service_pb2 # (1)
 ```
 
-1. Example given for `appid_service_pb2` service but every service is imported the same way.
+1. The example is provided for `appid_service_pb2` service but every service is imported the same way.
