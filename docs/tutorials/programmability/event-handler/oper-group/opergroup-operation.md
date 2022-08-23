@@ -13,7 +13,7 @@ A:leaf1# info from state /system event-handler instance opergroup
                 admin-state enable
                 upython-script opergroup.py
                 oper-state up
-                last-input "{\"paths\":[{\"path\":\"interface ethernet-1/49 oper-state\",\"value\":\"up\"},{\"path\":\"interface ethernet-1/50 oper-state\",\"value\":\"up\"}],\"options\":{\"down-links\":[\"ethernet-1/1\"],\"required-up-links\":\"1\",\"required-up-uplins\":\"1\"}}"
+                last-input "{\"paths\":[{\"path\":\"interface ethernet-1/49 oper-state\",\"value\":\"up\"},{\"path\":\"interface ethernet-1/50 oper-state\",\"value\":\"up\"}],\"options\":{\"down-links\":[\"ethernet-1/1\"],\"required-up-uplinks\":\"1\",\"required-up-uplins\":\"1\"}}"
                 last-output "{\"actions\": [{\"set-ephemeral-path\": {\"path\": \"interface ethernet-1/1 oper-state\", \"value\": \"up\"}}]}"
                 last-stdout-stderr ""
                 path [
@@ -128,7 +128,7 @@ A:leaf1# info from state /system event-handler instance opergroup
                 admin-state enable
                 upython-script opergroup.py
                 oper-state up
-                last-input "{\"paths\":[{\"path\":\"interface ethernet-1/49 oper-state\",\"value\":\"down\"},{\"path\":\"interface ethernet-1/50 oper-state\",\"value\":\"up\"}],\"options\":{\"debug\":\"true\",\"down-links\":[\"ethernet-1/1\"],\"required-up-links\":\"1\",\"required-up-uplins\":\"1\"}}"
+                last-input "{\"paths\":[{\"path\":\"interface ethernet-1/49 oper-state\",\"value\":\"down\"},{\"path\":\"interface ethernet-1/50 oper-state\",\"value\":\"up\"}],\"options\":{\"debug\":\"true\",\"down-links\":[\"ethernet-1/1\"],\"required-up-uplinks\":\"1\",\"required-up-uplins\":\"1\"}}"
                 last-output "{\"actions\": [{\"set-ephemeral-path\": {\"path\": \"interface ethernet-1/1 oper-state\", \"value\": \"up\"}}]}"
                 last-stdout-stderr "num of required up uplinks = 1
 detected num of up uplinks = 1

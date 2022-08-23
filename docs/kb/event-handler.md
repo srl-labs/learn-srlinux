@@ -64,7 +64,7 @@ A:leaf1# info
                 ethernet-1/2
             ]
         }
-        object required-up-links {
+        object required-up-uplinks {
             value 1 # (6)!
         }
     }
@@ -98,7 +98,7 @@ In the example above, two options are configured:
 
 1. `down-links` - an option with multiple values, in that case, two values `ethernet-1/1` and `ethernet-1/2`.  
     The `down-links` option thus keeps a list of downstream links we want to pass to the script. Script's logic then may use those values when it is being run.
-2. `required-up-links` - an option with a single value that conveys the number of uplinks we want to always have in oper-up state before bringing down links.
+2. `required-up-uplinks` - an option with a single value that conveys the number of uplinks we want to always have in oper-up state before bringing down links.
 
 !!!note
     1. Option' values passed via CLI are encoded as strings
