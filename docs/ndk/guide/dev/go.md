@@ -231,6 +231,6 @@ To debug an agent, the developers can analyze the log messages that the agent pr
 
 The default SR Linux debug messages are found in the messages directory `/var/log/srlinux/buffer/messages`; check them when something went wrong within the SR Linux system (agent registration failed, IDB server warning messages, etc.).
 
-[logrus](https://github.com/sirupsen/logrus) is a popular structured logger for Go that can log messages of different levels of importance, but developers are free to choose whatever logging package they see fit.
+[Logrus](https://github.com/sirupsen/logrus) is a popular structured logger for Go that can log messages of different levels of importance, but developers are free to choose whatever logging package they see fit.
 
 [^1]: Make sure that you have set up the dev environment as explained on [this page](../env/go.md). Readers are also encouraged to first go through the [gRPC basic tutorial](https://grpc.io/docs/languages/go/basics/) to get familiar with the common gRPC workflows when using Go.
