@@ -1,4 +1,3 @@
-
 # Developing agents with NDK in Go
 
 This guide explains how to consume the NDK service when developers write the agents in a Go[^1] programming language.
@@ -36,7 +35,7 @@ if err != nil {
 defer conn.Close()
 ```
 
-Once the gRPC channel is setup, we need to instantiate a client (often called _stub_) to perform RPCs. The client is obtained using the [`NewSdkMgrServiceClient`][sdk_mgr_svc_client_godoc] method provided.
+Once the gRPC channel is setup, we need to instantiate a client (often called _stub_) to perform RPCs. The client is obtained using the [`NewSdkMgrServiceClient`][NewSdkMgrServiceClient_godoc] method provided.
 
 ```go
 import "github.com/nokia/srlinux-ndk-go/v21/ndk"
@@ -44,13 +43,13 @@ import "github.com/nokia/srlinux-ndk-go/v21/ndk"
 client := ndk.NewSdkMgrServiceClient(conn)
 ```
 
-[sdk_mgr_svc_client_godoc]: https://pkg.go.dev/github.com/nokia/srlinux-ndk-go@v0.1.0/ndk#NewSdkMgrServiceClient
+[NewSdkMgrServiceClient_godoc]: https://pkg.go.dev/github.com/nokia/srlinux-ndk-go@v0.1.0/ndk#NewSdkMgrServiceClient
 
 ## Register the agent with the NDK manager:
 
 [:octicons-question-24: Additional information](../architecture.md#agent-registration)
 
-Agent must be first registered with SR Linux by calling the `AgentRegister` method available on the returned [`SdkMgrServiceClient`][sdk_mgr_svc_client_godoc] interface. The initial agent state is created during the registration process.
+Agent must be first registered with SR Linux by calling the `AgentRegister` method available on the returned [`SdkMgrServiceClient`][NewSdkMgrServiceClient_godoc] interface. The initial agent state is created during the registration process.
 
 ### Agent's context
 
@@ -69,9 +68,9 @@ ctx = metadata.AppendToOutgoingContext(ctx, "agent_name", "ndkDemo")
 ```
 ### Agent registration
 
-[`AgentRegister`][sdk_mgr_svc_client_godoc] method takes in the context `ctx` that is by now has agent name as its metadata and an [`AgentRegistrationRequest`][agent_reg_req_godoc].
+[`AgentRegister`][NewSdkMgrServiceClient_godoc] method takes in the context `ctx` that is by now has agent name as its metadata and an [`AgentRegistrationRequest`][AgentRegistrationRequest_godoc].
 
-[`AgentRegistrationRequest`][agent_reg_req_godoc] structure can be passed in with its default values for a basic registration request.
+[`AgentRegistrationRequest`][AgentRegistrationRequest_godoc] structure can be passed in with its default values for a basic registration request.
 
 ```go
 import "github.com/nokia/srlinux-ndk-go/v21/ndk"
@@ -82,11 +81,11 @@ if err != nil {
 }
 ```
 
-[`AgentRegister`][agent-reg-go] method returns [`AgentRegistrationResponse`][agent_reg_req_resp_godoc] and an error. Response can be additionally checked for status and error description.
+[`AgentRegister`][AgentRegister_godoc] method returns [`AgentRegistrationResponse`][AgentRegistrationResponse_godoc] and an error. Response can be additionally checked for status and error description.
 
-[agent_reg_req_godoc]: https://pkg.go.dev/github.com/nokia/srlinux-ndk-go@v0.1.0/ndk#AgentRegistrationRequest
-[agent_reg_go]: https://github.com/nokia/srlinux-ndk-go/blob/0b020753e0eee6c89419aaa647f1c84ced92e2d0/ndk/sdk_service_grpc.pb.go#L43
-[agent_reg_req_resp_godoc]: https://pkg.go.dev/github.com/nokia/srlinux-ndk-go@v0.1.0/ndk#AgentRegistrationResponse
+[AgentRegistrationRequest_godoc]: https://pkg.go.dev/github.com/nokia/srlinux-ndk-go@v0.1.0/ndk#AgentRegistrationRequest
+[AgentRegister_godoc]: https://pkg.go.dev/github.com/nokia/srlinux-ndk-go@v0.1.0/ndk#UnimplementedSdkMgrServiceServer.AgentRegister
+[AgentRegistrationResponse_godoc]: https://pkg.go.dev/github.com/nokia/srlinux-ndk-go@v0.1.0/ndk#AgentRegistrationResponse
 
 ## Register notification streams
 [:octicons-question-24: Additional information](../architecture.md#registering-notifications)
@@ -94,7 +93,7 @@ if err != nil {
 ### Create subscription stream
 
 A subscription stream needs to be created first before any of the subscription types can be added.  
-[`SdkMgrServiceClient`][sdk_mgr_svc_client_godoc] first creates the subscription stream by executing [`NotificationRegister`][sdk_mgr_svc_client_godoc] method with a [`NotificationRegisterRequest`][notif_reg_req_godoc] only field `Op` set to a value of `const NotificationRegisterRequest_Create`. This effectively creates a stream which is identified with a `StreamID` returned inside the [`NotificationRegisterResponse`][notif_reg_resp_godoc].
+[`SdkMgrServiceClient`][NewSdkMgrServiceClient_godoc] first creates the subscription stream by executing [`NotificationRegister`][NewSdkMgrServiceClient_godoc] method with a [`NotificationRegisterRequest`][notif_reg_req_godoc] only field `Op` set to a value of `const NotificationRegisterRequest_Create`. This effectively creates a stream which is identified with a `StreamID` returned inside the [`NotificationRegisterResponse`][NotificationRegisterResponse_godoc].
 
 `StreamId` must be associated when subscribing/unsubscribing to certain types of router notifications.
 
@@ -114,16 +113,16 @@ log.Debugf("Notification Register was successful: StreamID: %d SubscriptionID: %
 }
 ```
     
-[notif_reg_req_godoc]: https://pkg.go.dev/github.com/nokia/srlinux-ndk-go@v0.1.0/ndk#NotificationRegisterRequest
-[notif_reg_resp_godoc]: https://pkg.go.dev/github.com/nokia/srlinux-ndk-go@v0.1.0/ndk#NotificationRegisterResponse
+[NotificationRegisterRequest_godoc]: https://pkg.go.dev/github.com/nokia/srlinux-ndk-go@v0.1.0/ndk#NotificationRegisterRequest
+[NotificationRegisterResponse_godoc]: https://pkg.go.dev/github.com/nokia/srlinux-ndk-go@v0.1.0/ndk#NotificationRegisterResponse
 
 ### Add notification subscriptions
 
 Once the `StreamId` is acquired, a client can register notifications of a particular type to be delivered over that stream.
 
-Different types of notifications types can be subscribed to by calling the same [`NotificationRegister`][sdk_mgr_svc_client_godoc] method with a [`NotificationRegisterRequest`][notif_reg_req_godoc] having `Op` field set to `NotificationRegisterRequest_AddSubscription` and certain `SubscriptionType` selected.
+Different types of notifications types can be subscribed to by calling the same [`NotificationRegister`][NewSdkMgrServiceClient_godoc] method with a [`NotificationRegisterRequest`][NotificationRegisterRequest_godoc] having `Op` field set to `NotificationRegisterRequest_AddSubscription` and certain `SubscriptionType` selected.
 
-In the example below we would like to receive notifications from the [`Config`][cfg_svc_doc] service, hence we specify `NotificationRegisterRequest_Config` subscription type.
+In the example below we would like to receive notifications from the [`Config`][config_servi`ce_docs] service, hence we specify `NotificationRegisterRequest_Config` subscription type.
 
 ```go
 subType := &ndk.NotificationRegisterRequest_Config{ // This is unique to each notification type (Config, Intf, etc.).
@@ -143,19 +142,19 @@ if err != nil {
 log.Infof("Agent was able to subscribe for config notification with status %d", resp.GetStatus())
 ```
 
-[cfg_svc_doc]: https://rawcdn.githack.com/nokia/srlinux-ndk-protobufs/v0.1.0/doc/index.html#ndk%2fconfig_service.proto
+[config_service_docs]: https://rawcdn.githack.com/nokia/srlinux-ndk-protobufs/v0.1.0/doc/index.html#ndk%2fconfig_service.proto
 
 ## Streaming notifications
 
 [:octicons-question-24: Additional information](../architecture.md#streaming-notifications)
 
-Actual streaming of notifications is a task for another service - [`SdkNotificationService`][sdk_notif_svc_doc]. This service requires developers to create its own client, which is done with [`NewSdkNotificationServiceClient`][NewSdkNotificationServiceClient] function.
+Actual streaming of notifications is a task for another service - [`SdkNotificationService`][SdkNotificationService_doc]. This service requires developers to create its own client, which is done with [`NewSdkNotificationServiceClient`][NewSdkNotificationServiceClient] function.
 
-The returned [`SdkNotificationServiceClient`][sdk_notif_svc_client_godoc] interface has a single method `NotificationStream` that is used to start streaming notifications.
+The returned [`SdkNotificationServiceClient`][SdkNotificationServiceClient_godoc] interface has a single method `NotificationStream` that is used to start streaming notifications.
 
 `NotificationsStream` is a **server-side streaming RPC** which means that SR Linux (server) will send back multiple event notification responses after getting the agent's (client) request.
 
-To tell the server to start streaming notifications that were subscribed to before the [`NewSdkNotificationServiceClient`][NewSdkNotificationServiceClient] executes `NotificationsStream` method where [`NotificationStreamRequest`][NotificationStreamRequest] struct has its `StreamId` field set to the value that was obtained at subscription stage.
+To tell the server to start streaming notifications that were subscribed to before the [`NewSdkNotificationServiceClient`][NewSdkNotificationServiceClient] executes `NotificationsStream` method where [`NotificationStreamRequest`][NotificationStreamRequest_godoc] struct has its `StreamId` field set to the value that was obtained at subscription stage.
 
 ```go
 req := &ndk.NotificationStreamRequest{
@@ -166,12 +165,13 @@ if err != nil {
     log.Fatal("Agent failed to create stream client with error: ", err)
 }
 ```
-[sdk_notif_svc_doc]: https://rawcdn.githack.com/nokia/srlinux-ndk-protobufs/v0.1.0/doc/index.html#ndk.SdkNotificationService
+[SdkNotificationService_doc]: https://rawcdn.githack.com/nokia/srlinux-ndk-protobufs/v0.1.0/doc/index.html#srlinux.sdk.SdkNotificationService
 [NewSdkNotificationServiceClient](https://pkg.go.dev/github.com/nokia/srlinux-ndk-go@v0.1.0/ndk#NewSdkNotificationServiceClient)
-[sdk_notif_svc_client_godoc]: https://pkg.go.dev/github.com/nokia/srlinux-ndk-go@v0.1.0/ndk#SdkNotificationServiceClient
-[NotificationStreamRequest]: https://pkg.go.dev/github.com/nokia/srlinux-ndk-go@v0.1.0/ndk#NotificationStreamRequest
+[SdkNotificationServiceClient_godoc]: https://pkg.go.dev/github.com/nokia/srlinux-ndk-go@v0.1.0/ndk#SdkNotificationServiceClient
+[NotificationStreamRequest_godoc]: https://pkg.go.dev/github.com/nokia/srlinux-ndk-go@v0.1.0/ndk#NotificationStreamRequest
 
 ## Handle the streamed notifications
+
 [:octicons-question-24: Additional information](../architecture.md#handling-notifications)
 
 Handling notifications starts with reading the incoming notification messages and detecting which type this notification is exactly. When the type is known the client reads the fields of a certain notification. Here is the pseudocode that illustrates the flow:
@@ -193,15 +193,15 @@ func HandleNotifications(stream ndk.SdkNotificationService_NotificationStreamCli
 }
 ```
 
-`NotificationStream` method of the [`SdkNotificationServiceClient`][sdk_notif_svc_client_godoc] interface will return a stream client [`SdkNotificationService_NotificationStreamClient`][notif_stream_client_godoc].
+`NotificationStream` method of the [`SdkNotificationServiceClient`][SdkNotificationServiceClient_godoc] interface will return a stream client [`SdkNotificationService_NotificationStreamClient`][NotificationStreamClient_godoc].
 
-[notif_stream_client_godoc]: https://pkg.go.dev/github.com/nokia/srlinux-ndk-go@v0.1.0/ndk#SdkNotificationService_NotificationStreamClient
+[NotificationStreamClient_godoc]: https://pkg.go.dev/github.com/nokia/srlinux-ndk-go@v0.1.0/ndk#SdkNotificationService_NotificationStreamClient
 
 `SdkNotificationService_NotificationStreamClient` contains a `Recv()` to retrieve notifications one by one. At the end of a stream `Rev()` will return `io.EOF`.
 
-`Recv()` returns a [`*NotificationStreamResponse`][notif_stream_resp_godoc] which contains a slice of [`Notification`][notif_godoc].
+`Recv()` returns a [`*NotificationStreamResponse`][NotificationStreamResponse_godoc] which contains a slice of [`Notification`][NotificationStreamResponse_godoc].
 
-[`Notification`][notif_godoc] struct has `GetXXX()` methods defined which retrieve the notification of a specific type. For example: [`GetConfig`][GetConfig] returns [`ConfigNotification`][conf_notif_godoc].
+[`Notification`][NotificationStreamResponse_godoc] struct has `GetXXX()` methods defined which retrieve the notification of a specific type. For example: [`GetConfig`][GetConfig_godoc] returns [`ConfigNotification`][ConfigNotification_godoc].
 
 !!!note
     `ConfigNotification` is returned **only if** `Notification` struct has a certain subscription type set for its `SubscriptionType` field. Otherwise, `GetConfig` returns `nil`.
@@ -209,21 +209,21 @@ func HandleNotifications(stream ndk.SdkNotificationService_NotificationStreamCli
 
 Once the specific `XXXNotification` has been extracted using the `GetXXX()` method, users can access the fields of the notification and process the data contained within the notification using `GetKey()` and `GetData()` methods.
 
-[notif_stream_resp_godoc]: https://pkg.go.dev/github.com/nokia/srlinux-ndk-go@v0.1.0/ndk#NotificationStreamResponse
-[notif_godoc]: https://pkg.go.dev/github.com/nokia/srlinux-ndk-go@v0.1.0/ndk#NotificationStreamResponse
-[GetConfig](https://pkg.go.dev/github.com/nokia/srlinux-ndk-go@v0.1.0/ndk#Notification.GetConfig)
-[conf_notif_godoc]: https://pkg.go.dev/github.com/nokia/srlinux-ndk-go@v0.1.0/ndk#ConfigNotification
+[NotificationStreamResponse_godoc]: https://pkg.go.dev/github.com/nokia/srlinux-ndk-go@v0.1.0/ndk#NotificationStreamResponse
+[NotificationStreamResponse_godoc]: https://pkg.go.dev/github.com/nokia/srlinux-ndk-go@v0.1.0/ndk#NotificationStreamResponse
+[GetConfig_godoc]: https://pkg.go.dev/github.com/nokia/srlinux-ndk-go@v0.1.0/ndk#Notification.GetConfig
+[ConfigNotification_godoc]: https://pkg.go.dev/github.com/nokia/srlinux-ndk-go@v0.1.0/ndk#ConfigNotification
 
 ## Exiting gracefully
 
 Agent needs to handle SIGTERM signal that is sent when a user invokes `stop` command via SR Linux CLI. The following is the required steps to cleanly stop the agent:
 
-1. Remove any agent's state if it was set using [`TelemetryDelete`][TelemetryDelete] method of a Telemetry client.
-2. Delete notification subscriptions stream [`NotificationRegister`][sdk_mgr_svc_client_godoc] method with `Op` set to `NotificationRegisterRequest_Delete`.
-3. Invoke use `AgentUnRegister()` method of a [`SdkMgrServiceClient`][sdk_mgr_svc_client_godoc] interface.
+1. Remove any agent's state if it was set using [`TelemetryDelete`][SdkMgrTelemetryServiceClient_godoc] method of a Telemetry client.
+2. Delete notification subscriptions stream [`NotificationRegister`][NewSdkMgrServiceClient_godoc] method with `Op` set to `NotificationRegisterRequest_Delete`.
+3. Invoke use `AgentUnRegister()` method of a [`SdkMgrServiceClient`][NewSdkMgrServiceClient_godoc] interface.
 4. Close gRPC channel with the `sdk_mgr`.
 
-[TelemetryDelete]: https://pkg.go.dev/github.com/nokia/srlinux-ndk-go@v0.1.0/ndk#SdkMgrTelemetryServiceClient
+[SdkMgrTelemetryServiceClient_godoc]: https://pkg.go.dev/github.com/nokia/srlinux-ndk-go@v0.1.0/ndk#SdkMgrTelemetryServiceClient
 
 ## Logging
 
