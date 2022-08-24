@@ -165,6 +165,7 @@ if err != nil {
     log.Fatal("Agent failed to create stream client with error: ", err)
 }
 ```
+
 [SdkNotificationService_doc]: https://rawcdn.githack.com/nokia/srlinux-ndk-protobufs/v0.1.0/doc/index.html#srlinux.sdk.SdkNotificationService
 [NewSdkNotificationServiceClient](https://pkg.go.dev/github.com/nokia/srlinux-ndk-go@v0.1.0/ndk#NewSdkNotificationServiceClient)
 [SdkNotificationServiceClient_godoc]: https://pkg.go.dev/github.com/nokia/srlinux-ndk-go@v0.1.0/ndk#SdkNotificationServiceClient
@@ -195,8 +196,6 @@ func HandleNotifications(stream ndk.SdkNotificationService_NotificationStreamCli
 
 `NotificationStream` method of the [`SdkNotificationServiceClient`][SdkNotificationServiceClient_godoc] interface will return a stream client [`SdkNotificationService_NotificationStreamClient`][NotificationStreamClient_godoc].
 
-[NotificationStreamClient_godoc]: https://pkg.go.dev/github.com/nokia/srlinux-ndk-go@v0.1.0/ndk#SdkNotificationService_NotificationStreamClient
-
 `SdkNotificationService_NotificationStreamClient` contains a `Recv()` to retrieve notifications one by one. At the end of a stream `Rev()` will return `io.EOF`.
 
 `Recv()` returns a [`*NotificationStreamResponse`][NotificationStreamResponse_godoc] which contains a slice of [`Notification`][NotificationStreamResponse_godoc].
@@ -209,7 +208,7 @@ func HandleNotifications(stream ndk.SdkNotificationService_NotificationStreamCli
 
 Once the specific `XXXNotification` has been extracted using the `GetXXX()` method, users can access the fields of the notification and process the data contained within the notification using `GetKey()` and `GetData()` methods.
 
-[NotificationStreamResponse_godoc]: https://pkg.go.dev/github.com/nokia/srlinux-ndk-go@v0.1.0/ndk#NotificationStreamResponse
+[NotificationStreamClient_godoc]: https://pkg.go.dev/github.com/nokia/srlinux-ndk-go@v0.1.0/ndk#SdkNotificationService_NotificationStreamClient
 [NotificationStreamResponse_godoc]: https://pkg.go.dev/github.com/nokia/srlinux-ndk-go@v0.1.0/ndk#NotificationStreamResponse
 [GetConfig_godoc]: https://pkg.go.dev/github.com/nokia/srlinux-ndk-go@v0.1.0/ndk#Notification.GetConfig
 [ConfigNotification_godoc]: https://pkg.go.dev/github.com/nokia/srlinux-ndk-go@v0.1.0/ndk#ConfigNotification
