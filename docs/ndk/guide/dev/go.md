@@ -17,6 +17,7 @@ The [`github.com/nokia/srlinux-ndk-go`][go_package_repo] package provided in tha
 [go_package_repo]: https://pkg.go.dev/github.com/nokia/srlinux-ndk-go@v0.1.0/ndk
 
 ## Establish gRPC channel with NDK manager and instantiate an NDK client
+
 [:octicons-question-24: Additional information](../architecture.md#grpc-channel-and-ndk-manager-client)
 
 To call service methods, a developer first needs to create a gRPC channel to communicate with the NDK manager application running on SR Linux.
@@ -46,11 +47,13 @@ client := ndk.NewSdkMgrServiceClient(conn)
 [sdk_mgr_svc_client_godoc]: https://pkg.go.dev/github.com/nokia/srlinux-ndk-go@v0.1.0/ndk#NewSdkMgrServiceClient
 
 ## Register the agent with the NDK manager:
+
 [:octicons-question-24: Additional information](../architecture.md#agent-registration)
 
 Agent must be first registered with SR Linux by calling the `AgentRegister` method available on the returned [`SdkMgrServiceClient`][sdk_mgr_svc_client_godoc] interface. The initial agent state is created during the registration process.
 
 ### Agent's context
+
 Go [context](https://pkg.go.dev/context) is a required parameter for each RPC service method. Contexts provide the means of enforcing deadlines and cancellations as well as transmitting metadata within the request.
 
 During registration, SR Linux will be expecting a key-value pair with the `agent_name` key and a value of the agent's name passed in the context of an RPC. The agent name is defined in the agent's YAML file.
@@ -65,6 +68,7 @@ defer cancel()
 ctx = metadata.AppendToOutgoingContext(ctx, "agent_name", "ndkDemo")
 ```
 ### Agent registration
+
 [`AgentRegister`][sdk_mgr_svc_client_godoc] method takes in the context `ctx` that is by now has agent name as its metadata and an [`AgentRegistrationRequest`][agent_reg_req_godoc].
 
 [`AgentRegistrationRequest`][agent_reg_req_godoc] structure can be passed in with its default values for a basic registration request.
@@ -88,6 +92,7 @@ if err != nil {
 [:octicons-question-24: Additional information](../architecture.md#registering-notifications)
 
 ### Create subscription stream
+
 A subscription stream needs to be created first before any of the subscription types can be added.  
 [`SdkMgrServiceClient`][sdk_mgr_svc_client_godoc] first creates the subscription stream by executing [`NotificationRegister`][sdk_mgr_svc_client_godoc] method with a [`NotificationRegisterRequest`][notif_reg_req_godoc] only field `Op` set to a value of `const NotificationRegisterRequest_Create`. This effectively creates a stream which is identified with a `StreamID` returned inside the [`NotificationRegisterResponse`][notif_reg_resp_godoc].
 
@@ -107,21 +112,18 @@ if err != nil {
 
 log.Debugf("Notification Register was successful: StreamID: %d SubscriptionID: %d", resp.GetStreamId(), resp.GetSubId())
 }
-
 ```
     
 [notif_reg_req_godoc]: https://pkg.go.dev/github.com/nokia/srlinux-ndk-go@v0.1.0/ndk#NotificationRegisterRequest
 [notif_reg_resp_godoc]: https://pkg.go.dev/github.com/nokia/srlinux-ndk-go@v0.1.0/ndk#NotificationRegisterResponse
 
 ### Add notification subscriptions
+
 Once the `StreamId` is acquired, a client can register notifications of a particular type to be delivered over that stream.
 
 Different types of notifications types can be subscribed to by calling the same [`NotificationRegister`][sdk_mgr_svc_client_godoc] method with a [`NotificationRegisterRequest`][notif_reg_req_godoc] having `Op` field set to `NotificationRegisterRequest_AddSubscription` and certain `SubscriptionType` selected.
 
-
 In the example below we would like to receive notifications from the [`Config`][cfg_svc_doc] service, hence we specify `NotificationRegisterRequest_Config` subscription type.
-
-[cfg_svc_doc]: https://rawcdn.githack.com/nokia/srlinux-ndk-protobufs/v0.1.0/doc/index.html#ndk%2fconfig_service.proto
 
 ```go
 subType := &ndk.NotificationRegisterRequest_Config{ // This is unique to each notification type (Config, Intf, etc.).
@@ -141,8 +143,10 @@ if err != nil {
 log.Infof("Agent was able to subscribe for config notification with status %d", resp.GetStatus())
 ```
 
+[cfg_svc_doc]: https://rawcdn.githack.com/nokia/srlinux-ndk-protobufs/v0.1.0/doc/index.html#ndk%2fconfig_service.proto
 
 ## Streaming notifications
+
 [:octicons-question-24: Additional information](../architecture.md#streaming-notifications)
 
 Actual streaming of notifications is a task for another service - [`SdkNotificationService`][sdk_notif_svc_doc]. This service requires developers to create its own client, which is done with [`NewSdkNotificationServiceClient`][NewSdkNotificationServiceClient] function.
@@ -152,9 +156,6 @@ The returned [`SdkNotificationServiceClient`][sdk_notif_svc_client_godoc] interf
 `NotificationsStream` is a **server-side streaming RPC** which means that SR Linux (server) will send back multiple event notification responses after getting the agent's (client) request.
 
 To tell the server to start streaming notifications that were subscribed to before the [`NewSdkNotificationServiceClient`][NewSdkNotificationServiceClient] executes `NotificationsStream` method where [`NotificationStreamRequest`][NotificationStreamRequest] struct has its `StreamId` field set to the value that was obtained at subscription stage.
-
-
-
 
 ```go
 req := &ndk.NotificationStreamRequest{
@@ -214,6 +215,7 @@ Once the specific `XXXNotification` has been extracted using the `GetXXX()` meth
 [conf_notif_godoc]: https://pkg.go.dev/github.com/nokia/srlinux-ndk-go@v0.1.0/ndk#ConfigNotification
 
 ## Exiting gracefully
+
 Agent needs to handle SIGTERM signal that is sent when a user invokes `stop` command via SR Linux CLI. The following is the required steps to cleanly stop the agent:
 
 1. Remove any agent's state if it was set using [`TelemetryDelete`][TelemetryDelete] method of a Telemetry client.
@@ -224,11 +226,11 @@ Agent needs to handle SIGTERM signal that is sent when a user invokes `stop` com
 [TelemetryDelete]: https://pkg.go.dev/github.com/nokia/srlinux-ndk-go@v0.1.0/ndk#SdkMgrTelemetryServiceClient
 
 ## Logging
+
 To debug an agent, the developers can analyze the log messages that the agent produced. If the agent's logging facility used stdout/stderr to write log messages, then these messages will be found at `/var/log/srlinux/stdout/` directory.
 
 The default SR Linux debug messages are found in the messages directory `/var/log/srlinux/buffer/messages`; check them when something went wrong within the SR Linux system (agent registration failed, IDB server warning messages, etc.).
 
 [logrus](https://github.com/sirupsen/logrus) is a popular structured logger for Go that can log messages of different levels of importance, but developers are free to choose whatever logging package they see fit.
-
 
 [^1]: Make sure that you have set up the dev environment as explained on [this page](../env/go.md). Readers are also encouraged to first go through the [gRPC basic tutorial](https://grpc.io/docs/languages/go/basics/) to get familiar with the common gRPC workflows when using Go.
