@@ -1,3 +1,5 @@
+# Event Handler
+
 |                          |                                     |
 | ------------------------ | ----------------------------------- |
 | **Official doc section** | Will be updated with 22.6.1 release |
@@ -223,8 +225,7 @@ The structure of the output JSON string adheres to the following schema:
             "last-state-up": false
         }
     }
-
-```
+    ```
 
 As seen from the output example above, the script output mostly contains a list of various actions. These actions are passed to the Event Handler for processing.
 
