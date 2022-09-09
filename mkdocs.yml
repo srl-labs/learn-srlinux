@@ -83,6 +83,7 @@ theme:
     - toc.follow
     - content.tooltips
     - navigation.indexes
+    - announce.dismiss
 
   language: en
   palette:
