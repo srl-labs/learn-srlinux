@@ -1,15 +1,17 @@
 SR Linux packs a lot of unique features that the data center networking teams can leverage.
-Some of the features being truly new to the networking domain.
-The goal of this portal is to introduce SR Linux to the visitors through the interactive tutorials centered around SR Linux services and capabilities.
+Some of the features are truly new to the networking domain.
+The goal of this portal is to introduce SR Linux to visitors through interactive tutorials centered around SR Linux services and capabilities.
 
 We believe that learning by doing yields the best results. With that in mind we made SR Linux container image available to everybody without any registration or licensing requirements :partying_face:
 
 The public SR Linux container image when powered by [containerlab](https://containerlab.srlinux.dev) allows us to create easily deployable labs that everyone can launch at their convenience. All that to let you not only read about the features we offer, but to try them live!
 
 ## SR Linux container image
+
 A single container image that hosts management, control and data plane functions is all you need to get started.
 
 ### Getting the image
+
 To make our SR Linux image available to everyone, we pushed it to a [publicly accessible GitHub container registry](https://github.com/orgs/nokia/packages/container/package/srlinux). This means that you can pull SR Linux container image exactly the same way as you would pull any other image:
 
 ```shell
@@ -19,6 +21,7 @@ docker pull ghcr.io/nokia/srlinux
 When image is referenced without a tag, the latest container image version will be pulled. To obtain a specific version of a containerized SR Linux, refer to the [list of tags](https://github.com/orgs/nokia/packages/container/srlinux/versions) the `nokia/srlinux` image has and change the `docker pull` command accordingly.
 
 ### Running SR Linux
+
 When the image is pulled to a local image store, you can start exploring SR Linux by either running a full-fledged lab topology, or by starting a single container to explore SR Linux CLI and its management interfaces.
 
 A system on which you can run SR Linux containers should conform to the following requirements:
@@ -31,6 +34,7 @@ A system on which you can run SR Linux containers should conform to the followin
 Let's explore the different ways you can launch SR Linux container.
 
 #### Docker CLI
+
 `docker` CLI offers a quick way to run a standalone SR Linux container:
 
 === "Docker run"
@@ -102,6 +106,7 @@ By copying this file over to your system you can immediately deploy it with cont
 ```shell
 containerlab deploy -t srlinux.clab.yml
 ```
+
 ```
 INFO[0000] Parsing & checking topology file: srlinux.clab.yml 
 INFO[0000] Creating lab directory: /root/demo/clab-srlinux 
@@ -118,6 +123,7 @@ INFO[0001] Writing /etc/hosts file
 ```
 
 #### Deployment verification
+
 Regardless of the way you spin up SR Linux container it will be visible in the output of the `docker ps` command. If the deployment process went well and the container did not exit, a user can see it with `docker ps` command:
 
 ```shell
@@ -132,9 +138,11 @@ In case of the misconfiguration or runtime errors, container may exit abruptly. 
 In case your container exits abruptly, check the logs as they typically reveal the cause of termination.
 
 ## Connecting to SR Linux
+
 When SR Linux container is up and running, users can connect to it over different interfaces.
 
 ### CLI
+
 One of the ways to manage SR Linux is via its advanced and extensible [Command Line Interface](kb/mgmt.md#sr-linux-cli).
 
 To invoke the CLI application inside the SR Linux container get container name/ID first, and then execute the `sr_cli` process inside of it:
@@ -145,6 +153,7 @@ $ docker ps
 CONTAINER ID   IMAGE                             COMMAND                  CREATED          STATUS         PORTS                    NAMES
 17a47c58ad59   ghcr.io/nokia/srlinux             "/tini -- fixuid -q …"   10 seconds ago   Up 6 seconds                            clab-learn-01-srl1
 ```
+
 ```shell
 # start the sr_cli process inside this container to get access to CLI
 docker exec -it clab-learn-01-srl1 sr_cli
@@ -171,6 +180,7 @@ A:srl1#
 ```
 
 ### gNMI
+
 SR Linux containers deployed with containerlab come up with gNMI interface up and running over port 57400.
 
 Using the gNMI client[^2] users can explore SR Linux' gNMI interface:

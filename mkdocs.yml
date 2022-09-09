@@ -61,7 +61,7 @@ repo_name: srl-labs/learn-srlinux
 repo_url: https://github.com/srl-labs/learn-srlinux
 edit_uri: edit/main/docs/
 site_url: "https://learn.srlinux.dev/"
-copyright: Copyright &copy; 2021 Nokia
+copyright: Copyright &copy; 2021-2022 Nokia
 theme:
   name: material
   custom_dir: docs/overrides
@@ -77,9 +77,12 @@ theme:
   features:
     - navigation.top
     - navigation.instant
-    - navigation.tracking
     - navigation.tabs
+    - search.suggest
     - content.code.annotate
+    - toc.follow
+    - content.tooltips
+    - navigation.indexes
 
   language: en
   palette:
@@ -100,6 +103,8 @@ theme:
     code: Fira Code
   icon:
     logo: nokia/srlinux
+    repo: fontawesome/brands/github
+    edit: material/file-edit-outline
   favicon: images/srlinux.svg
 
 # Plugins
@@ -170,3 +175,4 @@ extra_css:
   - stylesheets/nokia.css
   - stylesheets/nokia-fonts.css
   - stylesheets/diagrams.css
+  - stylesheets/animations.css
