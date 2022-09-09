@@ -73,3 +73,10 @@ h4 {
 th {
   color: #FFFFFF !important;
 }
+
+/* Pumping heart */
+.md-typeset .mdx-heart {
+  -webkit-animation: heart 1s infinite;
+  animation: heart 1s infinite;
+  color: #e91e63
+}
