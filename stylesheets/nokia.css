@@ -80,3 +80,8 @@ th {
   animation: heart 1s infinite;
   color: #e91e63
 }
+
+/* make announce link color always white */
+.md-banner__inner a {
+  color: #ffffff
+}
