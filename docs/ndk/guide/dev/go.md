@@ -112,7 +112,6 @@ if err != nil {
 }
 
 log.Debugf("Notification Register was successful: StreamID: %d SubscriptionID: %d", resp.GetStreamId(), resp.GetSubId())
-}
 ```
 
 [NotificationRegisterRequest_godoc]: https://pkg.go.dev/github.com/nokia/srlinux-ndk-go@v0.1.0/ndk#NotificationRegisterRequest
@@ -124,7 +123,7 @@ Once the `StreamId` is acquired, a client can register notifications of a partic
 
 Different types of notifications types can be subscribed to by calling the same [`NotificationRegister`][NewSdkMgrServiceClient_godoc] method with a [`NotificationRegisterRequest`][NotificationRegisterRequest_godoc] having `Op` field set to `NotificationRegisterRequest_AddSubscription` and certain `SubscriptionType` selected.
 
-In the example below we would like to receive notifications from the [`Config`][config_servi`ce_docs] service, hence we specify `NotificationRegisterRequest_Config` subscription type.
+In the example below we would like to receive notifications from the [`Config`][config_service_docs] service, hence we specify `NotificationRegisterRequest_Config` subscription type.
 
 ```go
 subType := &ndk.NotificationRegisterRequest_Config{ // This is unique to each notification type (Config, Intf, etc.).
