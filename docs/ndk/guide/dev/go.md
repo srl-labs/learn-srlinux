@@ -95,7 +95,7 @@ if err != nil {
 ### Create subscription stream
 
 A subscription stream needs to be created first before any of the subscription types can be added.  
-[`SdkMgrServiceClient`][NewSdkMgrServiceClient_godoc] first creates the subscription stream by executing [`NotificationRegister`][NewSdkMgrServiceClient_godoc] method with a [`NotificationRegisterRequest`][notif_reg_req_godoc] only field `Op` set to a value of `const NotificationRegisterRequest_Create`. This effectively creates a stream which is identified with a `StreamID` returned inside the [`NotificationRegisterResponse`][NotificationRegisterResponse_godoc].
+[`SdkMgrServiceClient`][NewSdkMgrServiceClient_godoc] first creates the subscription stream by executing [`NotificationRegister`][NewSdkMgrServiceClient_godoc] method with a [`NotificationRegisterRequest`][NotificationRegisterRequest_godoc] only field `Op` set to a value of `const NotificationRegisterRequest_Create`. This effectively creates a stream which is identified with a `StreamID` returned inside the [`NotificationRegisterResponse`][NotificationRegisterResponse_godoc].
 
 `StreamId` must be associated when subscribing/unsubscribing to certain types of router notifications.
 
@@ -169,8 +169,8 @@ if err != nil {
 
 [SdkNotificationService_doc]: https://rawcdn.githack.com/nokia/srlinux-ndk-protobufs/v0.1.0/doc/index.html#srlinux.sdk.SdkNotificationService
 [NewSdkNotificationServiceClient_godoc]: https://pkg.go.dev/github.com/nokia/srlinux-ndk-go@v0.1.0/ndk#NewSdkNotificationServiceClient
-[SdkNotificationServiceClient_godoc]: <https://pkg.go.dev/github.com/nokia/srlinux-ndk-go@v0.1.0/ndk#SdkNotificationServiceClient>
-[NotificationStreamRequest_godoc]: <https://pkg.go.dev/github.com/nokia/srlinux-ndk-go@v0.1.0/ndk#NotificationStreamRequest>
+[SdkNotificationServiceClient_godoc]: https://pkg.go.dev/github.com/nokia/srlinux-ndk-go@v0.1.0/ndk#SdkNotificationServiceClient
+[NotificationStreamRequest_godoc]: https://pkg.go.dev/github.com/nokia/srlinux-ndk-go@v0.1.0/ndk#NotificationStreamRequest
 
 ## Handle the streamed notifications
 
