@@ -43,6 +43,7 @@ nav:
               - Python: ndk/guide/env/python.md
           - Developing with NDK:
               - Go: ndk/guide/dev/go.md
+              - Python: ndk/guide/dev/python.md
       - App Catalog:
           - About: ndk/apps/catalog.md
           - EVPN Proxy: ndk/apps/evpn-proxy.md

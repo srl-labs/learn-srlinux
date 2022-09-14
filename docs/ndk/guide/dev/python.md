@@ -9,10 +9,8 @@ This guide explains how to consume the NDK service when developers write the age
 
 In addition to the publicly available [protobuf files][ndk_proto_repo], which define the NDK Service, Nokia also provides generated Python bindings for data access classes of NDK the [`nokia/srlinux-ndk-py`][ndk_py_bindings] repo. The generated module enables developers of NDK agents to immediately start writing NDK applications without the need to generate the Python package themselves.
 
-
 [ndk_proto_repo]: https://github.com/nokia/srlinux-ndk-protobufs
 [ndk_py_bindings]: https://github.com/nokia/srlinux-ndk-py
-
 
 ## Establish gRPC channel with NDK manager and instantiate an NDK client
 
@@ -70,12 +68,12 @@ else:
     # Agent registration failed error string available as response.error_str
     pass
 ```
+
 The [`AgentRegister`][SdkMgrService_docs] method returns a [`AgentRegistrationResponse`][AgentRegistrationResponse_docs] object containing the status of the request as a [`SdkMgrStatus`][SdkMgrStatus_docs] object, error message (if request failed) as a string and the app id as a integer.
 
 [AgentRegistrationResponse_docs]: https://rawcdn.githack.com/nokia/srlinux-ndk-protobufs/v0.1.0/doc/index.html#srlinux.sdk.AgentRegistrationResponse
 [AgentRegistrationRequest_docs]: https://rawcdn.githack.com/nokia/srlinux-ndk-protobufs/v0.1.0/doc/index.html#srlinux.sdk.AgentRegistrationRequest
 [SdkMgrStatus_docs]: https://rawcdn.githack.com/nokia/srlinux-ndk-protobufs/v0.1.0/doc/index.html#srlinux.sdk.SdkMgrStatus
-
 
 ## Register notification streams
 
@@ -106,7 +104,6 @@ else:
 
 [NotificationRegisterRequest_docs]: https://rawcdn.githack.com/nokia/srlinux-ndk-protobufs/v0.1.0/doc/index.html#srlinux.sdk.NotificationRegisterRequest
 [NotificationRegisterResponse_docs]: https://rawcdn.githack.com/nokia/srlinux-ndk-protobufs/v0.1.0/doc/index.html#srlinux.sdk.NotificationRegisterResponse
-
 
 ### Add notification subscriptions
 
@@ -150,7 +147,6 @@ The returned [`SdkNotificationService`][SdkNotificationService_docs] has a singl
 
 `NotificationsStream` is a **server-side streaming RPC** which means that SR Linux (server) will send back multiple event notification responses after getting the agent's (client) request.
 
-
 The `stream_id` that was returned in the [Create subscription stream](#create-subscription-stream) is used to tell the server to included the notifications that were created between when the [`SdkNotificationService`][SdkNotificationService_docs] was created and when its `NotificationsStream` method is invoked.
 
 ```python
@@ -166,7 +162,6 @@ for response in stream_response:
 ```
 
 [SdkNotificationService_docs]: https://rawcdn.githack.com/nokia/srlinux-ndk-protobufs/v0.1.0/doc/index.html#srlinux.sdk.SdkNotificationService
-
 
 ## Handle the streamed notifications
 
@@ -199,14 +194,11 @@ def handle_notification(notification: Notification) -> None:
 
 A [`Notification`][Notification_docs] object has a `HasField()` method that allows to check if the field contains a notification. Once it is confirmed that `XXXXX` field is present we can access it as attribute of the notification (`notification.XXXXX`) this will return a notification of the associated type (for example accessing `notification.config` returns a [`ConfigNotification`][ConfigNotification_docs]).
 
-
 !!!note
     It is essential to verify if the notification has a given field with the `HasField()` method as accessing an invalid field will give an empty notification. The value will not be `None` and the accessing the invalid field will not throw an Exception.
 
-
 [Notification_docs]: https://rawcdn.githack.com/nokia/srlinux-ndk-protobufs/v0.1.0/doc/index.html#srlinux.sdk.Notification
 [ConfigNotification_docs]: https://rawcdn.githack.com/nokia/srlinux-ndk-protobufs/v0.1.0/doc/index.html#srlinux.sdk.ConfigNotification
-
 
 ## Exiting gracefully
 
@@ -225,6 +217,5 @@ Agent needs to handle SIGTERM signal that is sent when a user invokes `stop` com
 To debug an agent, the developers can analyze the log messages that the agent produced. If the agent's logging facility used stdout/stderr to write log messages, then these messages will be found at `/var/log/srlinux/stdout/` directory.
 
 The default SR Linux debug messages are found in the messages directory `/var/log/srlinux/buffer/messages`; check them when something went wrong within the SR Linux system (agent registration failed, IDB server warning messages, etc.).
-
 
 [^1]: Make sure that you have set up the dev environment as explained on [this page](../env/python.md).
