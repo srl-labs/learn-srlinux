@@ -33,5 +33,5 @@ Nokia not only provides the [proto files](https://github.com/nokia/srlinux-ndk-p
 With the provided Go bindings, the NDK can be imported in a Go project like that:
 
 ```go
-import "github.com/nokia/srlinux-ndk-go/v21/ndk"
+import "github.com/nokia/srlinux-ndk-go/ndk"
 ```
