@@ -10,7 +10,8 @@ nav:
       - Network instances: kb/netwinstance.md
       - Event Handler: kb/event-handler.md
   - Tutorials:
-      - SR Linux tutorials: tutorials/about.md
+      # - SR Linux tutorials: tutorials/about.md
+      - tutorials/index.md
       - EVPN:
           - Layer 2 EVPN:
               - Introduction: tutorials/l2evpn/intro.md
