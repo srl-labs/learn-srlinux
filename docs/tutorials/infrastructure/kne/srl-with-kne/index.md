@@ -8,12 +8,15 @@
 | **Lab**                     | [openconfig/kne/examples/srlinux/2node-srl-ixr6-with-oc-services.pbtxt][lab]                       |
 | **Main ref documents**      | [kne documentation][knedoc]                                                                        |
 | **Version information**[^1] | [`kne:631d966`][kne-install], [`srlinux:22.6.4`][srlinux-container], [`kind:0.14.0`][kind-install] |
+| **Authors** | Roman Dodin [:material-twitter:][rd-twitter] [:material-linkedin:][rd-linkedin] |
 
 [kne-install]: https://github.com/openconfig/kne/blob/main/docs/setup.md
 [kind-install]: https://kind.sigs.k8s.io/docs/user/quick-start#installation
 [lab]: https://github.com/openconfig/kne/blob/main/examples/srlinux/2node-srl-ixr6-with-oc-services.pbtxt
 [srlinux-container]: https://github.com/nokia/srlinux-container-image
 [knedoc]: https://github.com/openconfig/kne/#readme
+[rd-twitter]: https://twitter.com/ntdvps
+[rd-linkedin]: https://linkedin.com/in/rdodin
 
 For easy-to-spin personal network labs, we have open-sourced [containerlab](https://containerlab.dev) project, which many companies and individuals use with and without SR Linux. The simplicity and user-friendliness of containerlab, while being the key ingredients of its success, also bear some limitations. For example, multi-node topologies are not yet possible with containerlab, which means that your lab size is limited by the resources your containerlab host has.
 
