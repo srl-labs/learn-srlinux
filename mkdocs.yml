@@ -18,6 +18,13 @@ nav:
               - Fabric configuration: tutorials/l2evpn/fabric.md
               - EVPN configuration: tutorials/l2evpn/evpn.md
               - Summary: tutorials/l2evpn/summary.md
+      - Infrastructure:
+          - KNE:
+              - SR Linux with KNE:
+                  - tutorials/infrastructure/kne/srl-with-kne/index.md
+                  - Installation: tutorials/infrastructure/kne/srl-with-kne/installation.md
+                  - KNE Topology: tutorials/infrastructure/kne/srl-with-kne/topology.md
+                  - SR Linux with Openconfig services: tutorials/infrastructure/kne/srl-with-kne/srl-with-oc-services.md
       - MPLS:
           - LDP-based MPLS:
               - Introduction: tutorials/mpls/mpls-ldp/intro.md
