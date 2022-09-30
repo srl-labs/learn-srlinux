@@ -162,7 +162,7 @@ For completeness, the below section shows how to enable Openconfig via different
 
 [gnmi-doc]: https://documentation.nokia.com/srlinux/22-6/SR_Linux_Book_Files/SysMgmt_Guide/gnmi-interface.html
 
-gNMI service is enabled over port `57400` in the configuration files used with this lab.
+gNMI service is enabled over port `57400` in the configuration files used with this lab and exposed over `9339` port for external connectivity.
 
 <!-- For completeness, the below section shows how to enable gNMI via different management interfaces.
 
@@ -194,7 +194,7 @@ gNMI service is enabled over port `57400` in the configuration files used with t
     gNMI service can be tested using [gnmic](https://gnmic.kmrd.dev) cli client.
 
     ```bash
-    ❯ gnmic -a 172.18.0.50:57400 -u admin -p admin --skip-verify capabilities
+    ❯ gnmic -a 172.18.0.50:9339 -u admin -p admin --skip-verify capabilities
     gNMI version: 0.7.0
     supported models:
       - urn:srl_nokia/aaa:srl_nokia-aaa, Nokia, 2022-06-30
@@ -210,13 +210,13 @@ gNMI service is enabled over port `57400` in the configuration files used with t
 
 [gnoi-doc]: https://documentation.nokia.com/srlinux/22-6/SR_Linux_Book_Files/SysMgmt_Guide/gnoi_interface.html
 
-gNOI service is enabled automatically once gNMI service is operational. gNMI and gNOI share the same port `57400`.
+gNOI service is enabled automatically once gNMI service is operational. gNMI and gNOI share the same port `57400` on SR Linux, and both exposed over `9339` port for external connectivity.
 
 ??? "Example"
     gNOI service can be tested using [gnoic](https://gnoic.kmrd.dev) cli client.
 
     ```bash
-    ❯ gnoic -a 172.18.0.50:57400 --skip-verify -u admin -p admin file stat --path /etc/os-release
+    ❯ gnoic -a 172.18.0.50:9339 --skip-verify -u admin -p admin file stat --path /etc/os-release
     +-------------------+-----------------+---------------------------+------------+------------+------+
     |    Target Name    |      Path       |       LastModified        |    Perm    |   Umask    | Size |
     +-------------------+-----------------+---------------------------+------------+------------+------+
@@ -230,13 +230,13 @@ gNOI service is enabled automatically once gNMI service is operational. gNMI and
 
 [gribi-doc]: https://documentation.nokia.com/srlinux/22-6/SR_Linux_Book_Files/gRIBI_Guide/gribi-config.html
 
-gRIBI server is enabled on a system level and in the `mgmt` network instance of SR Linux running on port `57401`.
+gRIBI server is enabled on a system level and in the `mgmt` network instance of SR Linux running on port `57401`. It is exposed over `9340` port for external connectivity as specified by the services configuration in the topology file.
 
 ??? "Example"
     gRIBI service can be tested using [gribic](https://gribic.kmrd.dev) cli client.
 
     ```bash
-    ❯ gribic -a 172.20.20.2:57401 -u admin -p admin --skip-verify get --ns mgmt
+    ❯ gribic -a 172.20.20.2:9340 -u admin -p admin --skip-verify get --ns mgmt
     INFO[0000] target 172.20.20.2:57401: final get response:  
     INFO[0000] got 1 results                                
     INFO[0000] "172.20.20.2:57401":
@@ -248,8 +248,8 @@ gRIBI server is enabled on a system level and in the `mgmt` network instance of 
 
 [p4rt-doc]: https://documentation.nokia.com/srlinux/22-6/SR_Linux_Book_Files/P4RT_Guide/p4rt-overview.html
 
-P4 Runtime server is configured on a system level and in the `mgmt` network instance of SR Linux running on port `9559`.
+P4 Runtime server is configured on a system level and in the `mgmt` network instance of SR Linux running on port `9559`. The same port is used externally in this lab.
 
 Lab users still need to [configure interface or device identifiers](https://documentation.nokia.com/srlinux/22-6/SR_Linux_Book_Files/P4RT_Guide/sr_linux_p4rt_configuration.html#identifying_an_interface_to_the_p4rt_controller) as per the documentation.
 
-[^1]: License is required to run chassis-based SR Linux systems (models: `ixr6e/ixr10e`). License-free IXR-D/H systems do not yet have support for Openconfig service, hence they are not suited for goals of this the lab.
+[^1]: License is required to run chassis-based SR Linux systems (models: `ixr6e/ixr10e`). License-free IXR-D/H systems do not yet have support for Openconfig service; hence they are not suitable for the goals of this lab.
