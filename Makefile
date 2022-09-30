@@ -27,3 +27,9 @@ build-insiders:
 
 push-docs: # push docs to gh-pages branch manually. Use when pipeline misbehaves
 	docker run -v ${SSH_AUTH_SOCK}:/ssh-agent --env SSH_AUTH_SOCK=/ssh-agent --env GIT_SSH_COMMAND="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no" -v $$(pwd):/docs --entrypoint mkdocs ghcr.io/srl-labs/mkdocs-material-insiders:$(MKDOCS_INS_VER) gh-deploy --force --strict
+
+# build html docs and push to staging1 server - https://hellt.github.io/learn-srlinux-stage1
+push-to-staging1: build-insiders
+	rm -rf ~/hellt/learn-srlinux-stage1/*
+	cp -a site/* ~/hellt/learn-srlinux-stage1
+	cd ~/hellt/learn-srlinux-stage1 && git add . && git commit -m "update" && git push
