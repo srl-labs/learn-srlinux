@@ -210,13 +210,13 @@ gNMI service is enabled over port `57400` in the configuration files used with t
 
 [gnoi-doc]: https://documentation.nokia.com/srlinux/22-6/SR_Linux_Book_Files/SysMgmt_Guide/gnoi_interface.html
 
-gNOI service is enabled automatically once gNMI service is operational. gNMI and gNOI share the same port `57400` on SR Linux, and both exposed over `9339` port for external connectivity.
+On SR Linux, gNOI service is enabled automatically once gNMI service is operational and share the same port `57400`. Although the same external post could have been used, to integrate with Ondatra test framework the separate service definition named `gnoi` with a separate `outside` port has been created.
 
 ??? "Example"
     gNOI service can be tested using [gnoic](https://gnoic.kmrd.dev) cli client.
 
     ```bash
-    ❯ gnoic -a 172.18.0.50:9339 --skip-verify -u admin -p admin file stat --path /etc/os-release
+    ❯ gnoic -a 172.18.0.50:9337 --skip-verify -u admin -p admin file stat --path /etc/os-release
     +-------------------+-----------------+---------------------------+------------+------------+------+
     |    Target Name    |      Path       |       LastModified        |    Perm    |   Umask    | Size |
     +-------------------+-----------------+---------------------------+------------+------------+------+
@@ -230,7 +230,7 @@ gNOI service is enabled automatically once gNMI service is operational. gNMI and
 
 [gribi-doc]: https://documentation.nokia.com/srlinux/22-6/SR_Linux_Book_Files/gRIBI_Guide/gribi-config.html
 
-gRIBI server is enabled on a system level and in the `mgmt` network instance of SR Linux running on port `57401`. It is exposed over `9340` port for external connectivity as specified by the services configuration in the topology file.
+gRIBI server is enabled on a system level and in the `mgmt` network instance of SR Linux running on port `57401`. It is exposed to `9340` port for external connectivity as specified by the services configuration in the topology file.
 
 ??? "Example"
     gRIBI service can be tested using [gribic](https://gribic.kmrd.dev) cli client.

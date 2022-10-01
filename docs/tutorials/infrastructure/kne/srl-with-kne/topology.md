@@ -117,7 +117,7 @@ For SR Linux nodes, the startup file must contain the full configuration of a no
 ### Services
 
 Applications deployed on Kubernetes are not accessible outside the cluster until an Ingress or Load Balancer service is configured to enable that connectivity. Consequently, network elements deployed by KNE have their management services available internally within the cluster, but not from the outside.  
-For the users of the virtual network labs, it is imperative to have external connectivity to the management services running on the nodes to manage the virtual network. In KNE external network connectivity is enabled by the [MetalLB](https://metallb.universe.tf) Load Balancer service and a special configuration block in the Node specification.
+For the users of the virtual network labs, it is imperative to have external connectivity to the management services running on the nodes to manage the virtual network. In KNE external network connectivity is enabled by the [MetalLB](https://metallb.universe.tf) Load Balancer service and a particular configuration block in the Node specification.
 
 ```proto
 nodes: {
@@ -127,26 +127,33 @@ nodes: {
         value: {
             name: "ssh"
             inside: 22
+            outside: 22
         }
     }
     services:{
-        key: 57400
+        key: 9339
         value: {
             name: "gnmi"
-            inside: 57400
+            inside: 57400 // (1)!
+            outside: 9339
         }
     }
 }
 ```
 
-The above snippet enables SSH (port 22) and gNMI (port 57400) services to be available outside of the k8s cluster.
+1. gNMI service running on port `57400` will be accessible externally by port `9339` as specified in the `outside` field.
 
-The `key` field sets the port number you want a certain service to be known by outside of a cluster.  
-Within the `value` block a user specifies the service running on a network element that is going to be reachable by the port number referenced by the `key` field. In the first service block we expose an SSH service by defining the `inside` port it is running on (which is `22`) and mapping it to the external port `22` as defined with the `key` field.  
+The above snippet enables SSH and gNMI services to be available outside the k8s cluster.
 
-The service `name` is a free-formed string and is usually set to the service name.
+The `key` field is a unique integer identifier in the map of services; it is typically set to the outside port of the exposed service.
 
-Courtesy of MetalLB Load Balancer service, the defined services will be explosed using the IP addresses from your cluster network using the port mappings as defined in the `services` portion of the node specification.
+Within the `value` block, a user specifies the service parameters:
+
+- `name`: a free-formed string describing the service.
+- `inside`: a port number that the service is running on a network node.
+- `outside`: a port number, which will be configured on a Load Balancer and mapped to the `internal` port. This mapping effectively enables external access to the service.
+
+Courtesy of the MetalLB Load Balancer service, the defined services will be exposed using the IP addresses from your cluster network using the port mappings as defined in the `services` portion of the node specification.
 
 ```bash title="Management services exposed by Load Balancer"
 ❯ kubectl get svc -n 2-srl-ixr6
@@ -156,11 +163,11 @@ service-srl2   LoadBalancer   10.96.135.142   172.18.0.51   57400:31443/TCP,22:3
 ```
 
 1. SSH service of `srl1` node is accessible externally via `172.18.0.50:22`  
-    gNMI service of `srl1` node is accesible externally via `172.18.0.50:57400`
+    gNMI service of `srl1` node is accessible externally via `172.18.0.50:57400`
 
 ### Links
 
-With `links` object of a topology users wire up the nodes together. The link is defined as a pair `a_node/a_int <--> z_int/z_node`.
+With `links` object of a topology, users wire up the nodes together. The link is defined as a pair `a_node/a_int <--> z_int/z_node`.
 
 ```proto
 links: {
