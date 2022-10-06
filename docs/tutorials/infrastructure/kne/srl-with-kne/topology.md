@@ -72,7 +72,7 @@ When working with Nokia SR Linux nodes, the vendor field must be set to `NOKIA`.
 With the `model` field a user indicates which particular model of a given Vendor should be used by the node. In the context of Nokia SR Linux, the `model` field drives the [hardware variant](../../../../kb/hwtypes.md) that an SR Linux container will emulate.
 
 ```proto
-nodes: 
+nodes: {
     model: "ixrd3l"
     // other node parameters snipped for brevity
 }
@@ -87,7 +87,7 @@ Parameters that configure the way a k8s pod representing a network node is deplo
 The essential field under the Config block is `image`. It sets the container image name that k8s will use in the pod specification.
 
 ```proto
-nodes:
+nodes: {
     config:{
         image: "ghcr.io/nokia/srlinux:22.6.1"
     }
@@ -103,16 +103,40 @@ nodes:
 Often it is desired to deploy a node with a specific startup configuration applied. KNE enables this use case by using the `file` parameter of a `Config` message. A path to the startup configuration file is provided using the path relative to the topology file.
 
 ```proto
-nodes:
+nodes: {
     config:{
         file: "my-startup-config.json"
     }
     // other node parameters snipped for brevity
+}
 ```
 
 In the snippet above, the `my-stratup-config.json` is expected to be found next to the topology file.
 
 For SR Linux nodes, the startup file must contain the full configuration of a node in a JSON format as found in `/etc/opt/srlinux/config.json` on SR Linux filesystem.
+
+#### TLS Certificates
+
+KNE lets users indicate if they want the network nodes to generate self-signed certificates upon boot. The following configuration blob instructs a node to generate a self-signed certificate with a name `kne-profile` and a key size of `4096`.
+
+```proto
+nodes: {
+    config: {
+        cert: {
+            self_signed: {
+                cert_name: "kne-profile",
+                key_name: "N/A",
+                key_size: 4096,
+            }
+        }
+    }
+}
+```
+
+Under the hood, SR Linux node will execute the `tools system tls generate-self-signed` command with the appropriate key size and save the TLS artifacts under the TLS server-profile context.
+
+!!!note
+    Since on SR Linux it is possible to embed TLS artifacts in the config file itself, you may often see labs where the startup-config files are already populated with the TLS configuration.
 
 ### Services
 
