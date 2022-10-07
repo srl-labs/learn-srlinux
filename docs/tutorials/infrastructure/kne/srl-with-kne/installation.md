@@ -103,7 +103,20 @@ srlinux-controller-controller-manager   1/1     1            1           12m
 
 ### License
 
-If a user intends to run a topology with chassis-based SR Linux nodes[^2] they need to [install a valid license](https://github.com/srl-labs/srl-controller/blob/main/docs/using-licenses.md).
+If a user intends to run a topology with chassis-based SR Linux nodes[^2], they must [install a valid license](https://github.com/srl-labs/srl-controller/blob/main/docs/using-licenses.md).
+
+The same lab can be used with unlicensed IXR-D/H variants; to adapt the lab to unlicensed SR Linux variants users need to:
+
+1. delete `model: "ixr6e"` string from the KNE topology file
+2. remove the openconfig configuration blob from the startup-config file
+
+    ```json title="remove this blob"
+    "management": {
+      "srl_nokia-openconfig:openconfig": {
+        "admin-state": "enable"
+      }
+    }
+    ```
 
 ## Image load
 
