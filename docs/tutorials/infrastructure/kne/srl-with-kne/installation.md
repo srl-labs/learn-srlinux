@@ -125,7 +125,7 @@ In the case of a `kind` cluster, it is advised to load container images to the k
 To load [srlinux container image](https://github.com/nokia/srlinux-container-image) to the kind cluster:
 
 ```bash
-kind load docker-image ghcr.io/nokia/srlinux:22.6.3 --name kne
+kind load docker-image ghcr.io/nokia/srlinux:22.6.4 --name kne
 ```
 
 [^1]: Users are free to install cluster components manually. `kne deploy` aims to automate the prerequisites installation using the tested configurations.
