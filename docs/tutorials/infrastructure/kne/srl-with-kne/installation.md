@@ -103,7 +103,7 @@ srlinux-controller-controller-manager   1/1     1            1           12m
 
 ### License
 
-If a user intends to run a topology with chassis-based SR Linux nodes[^1] they need to [install a valid license](https://github.com/srl-labs/srl-controller/blob/main/docs/using-licenses.md).
+If a user intends to run a topology with chassis-based SR Linux nodes[^2] they need to [install a valid license](https://github.com/srl-labs/srl-controller/blob/main/docs/using-licenses.md).
 
 ## Image load
 
