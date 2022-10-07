@@ -45,10 +45,11 @@ nav:
               - Go: ndk/guide/dev/go.md
               - Python: ndk/guide/dev/python.md
       - App Catalog:
-          - About: ndk/apps/catalog.md
+          - ndk/apps/index.md
           - EVPN Proxy: ndk/apps/evpn-proxy.md
           - kButler: ndk/apps/kbutler.md
           - Prometheus Telemetry Exporter: ndk/apps/srl-prom-exporter.md
+          - Satellite Tracker: ndk/apps/satellite.md
   - YANG:
       - SR Linux & YANG: yang/yang.md
       - YANG Browser: yang/browser.md

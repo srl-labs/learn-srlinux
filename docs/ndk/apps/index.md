@@ -34,3 +34,10 @@ kButler agent ensures that for every worker node which hosts an application with
 
 SR Linux Prometheus Exporter agent creates Prometheus scrape-able endpoints on individual switches. This horizontally-scaled telemetry collection model has additional operational enhancements over traditional setups with a central telemetry collector.  
 [:octicons-arrow-right-24: Read more](srl-prom-exporter.md)
+
+### Satellite Tracker
+
+:material-language-python: · [`KTodts/srl-satellite-tracker`](https://github.com/KTodts/srl-satellite-tracker)
+
+A fun educational NDK app that displays current coordinates of the Internation Space Station by querying public Internet service providing raw location data.  
+[:octicons-arrow-right-24: Read more](satellite.md)

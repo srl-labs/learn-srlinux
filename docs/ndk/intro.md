@@ -7,7 +7,6 @@ Nokia SR Linux enables its users to create high-performance applications which r
   <figcaption>Custom applications run natively on SR Linux NOS</figcaption>
 </figure>
 
-
 The on-box applications (which we also refer to as "agents") leverage the SR Linux SDK called **NetOps Development Kit** or NDK for short.
 
 Applications developed with SR Linux NDK have a set of unique characteristics which set them aside from the traditional off-box automation solutions:
@@ -18,12 +17,12 @@ Applications developed with SR Linux NDK have a set of unique characteristics wh
       2. CLI integration: every NDK agent automatically becomes a part of the global CLI tree, making it possible to configure the agent and query its state the same way as for any other configuration region.
       3. Telemetry integration: an NDK agent configuration and state data will automatically become available for Streaming Telemetry consumption.
 2. **Programming language-neutral**  
-    With SR Linux NDK, the developers are not forced to use any particular language when writing their apps. As NDK is a gRPC service defined with Protocol Buffers, it is possible to use any[^1] programming language for which protobuf compiler is available. 
+    With SR Linux NDK, the developers are not forced to use any particular language when writing their apps. As NDK is a gRPC service defined with Protocol Buffers, it is possible to use any[^1] programming language for which protobuf compiler is available.
 3. **Deep integration with system components**  
     NDK apps are not constrained to only configuration and state management, as often happens with traditional north-bound interfaces. On the contrary, the NDK service exposes additional services that enable deep integration with the SR Linux system, such as listening to RIB/FIB updates or having direct access to the datapath.
 
 With the information outlined in the [NDK Developers Guide](guide/architecture.md), you will learn about NDK architecture and how to develop apps with this kit.
 
-Please navigate to the [Apps Catalog](apps/catalog.md) to browse our growing list of NDK apps that Nokia or 3rd parties wrote.
+Please navigate to the [Apps Catalog](apps/index.md) to browse our growing list of NDK apps that Nokia or 3rd parties wrote.
 
 [^1]: This in practice covers all popular programming languages: Python, Go, C#, C, C++, Java, JS, etc.
