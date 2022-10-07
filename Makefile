@@ -32,4 +32,4 @@ push-docs: # push docs to gh-pages branch manually. Use when pipeline misbehaves
 push-to-staging1: build-insiders
 	rm -rf ~/hellt/learn-srlinux-stage1/*
 	cp -a site/* ~/hellt/learn-srlinux-stage1
-	cd ~/hellt/learn-srlinux-stage1 && git add . && git commit -m "update" && git push
+	cd ~/hellt/learn-srlinux-stage1 && echo 'stage1.learn.srlinux.dev' > CNAME && git add . && git commit -m "update" && git push --force
