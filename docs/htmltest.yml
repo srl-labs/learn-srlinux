@@ -14,6 +14,7 @@ IgnoreURLs:
   - localhost
   - https://github.com/srl-labs/learn-srlinux/edit/
   - twitter.com
+  - https://linkedin.com/in
 
 
 IgnoreDirectoryMissingTrailingSlash: true
