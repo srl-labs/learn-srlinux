@@ -1,5 +1,15 @@
 # SR Linux with Openconfig services
 
+|                             |                                                                                                    |
+| --------------------------- | -------------------------------------------------------------------------------------------------- |
+| **Tutorial name**           | SR Linux with KNE                                                                                  |
+| **Lab components**          | 2 Nokia SR Linux nodes                                                                             |
+| **Resource requirements**   | :fontawesome-solid-microchip: 2 vCPU <br/>:fontawesome-solid-memory: 4 GB                          |
+| **Lab**                     | [openconfig/kne/examples/srlinux/2node-srl-ixr6-with-oc-services.pbtxt][lab]                       |
+| **Main ref documents**      | [kne documentation][knedoc]                                                                        |
+| **Version information**[^1] | [`kne:631d966`][kne-install], [`srlinux:22.6.4`][srlinux-container], [`kind:0.14.0`][kind-install] |
+| **Authors**                 | Roman Dodin [:material-twitter:][rd-twitter] [:material-linkedin:][rd-linkedin]                    |
+
 KNE repository contains a set of [example topologies](https://github.com/openconfig/kne/tree/main/examples) that aim to help new users get started with using KNE to orchestrate virtual network labs. SR Linux team maintains several examples, which include SR Linux nodes.
 
 This chapter explains the details behind the [`2node-srl-ixr6-with-oc-services.pbtxt`](https://github.com/openconfig/kne/blob/main/examples/srlinux/2node-srl-ixr6-with-oc-services.pbtxt) example topology.
@@ -23,9 +33,9 @@ Both nodes are configured to emulate IXR-6e chassis-based hardware and run SR Li
 
 To deploy this topology, users should complete the following pre-requisite steps:
 
-1. [Install KNE](installation.md)
-2. [Install SR Linux controller](installation.md#sr-linux-controller)
-3. [Install SR Linux license](installation.md#license)[^1]
+1. [Install KNE](../installation.md)
+2. [Install SR Linux controller](../installation.md#sr-linux-controller)
+3. [Install SR Linux license](../installation.md#license)[^2]
 
 Once prerequisites are satisfied, topology deployment is just a single command:
 
@@ -35,7 +45,7 @@ kne create examples/srlinux/2node-srl-ixr6-with-oc-services.pbtxt
 
 When the topology creation succeeds, the final log message `Topology "2-srl-ixr6" created` is displayed.
 
-A Kubernetes namespace is created matching the [lab name](topology.md#topology-name) `2-srl-ixr6`, and lab components are placed in that namespace. To verify lab deployment status, a user can invoke the following command and ensure that the pods are in running state.
+A Kubernetes namespace is created matching the [lab name](../topology.md#topology-name) `2-srl-ixr6`, and lab components are placed in that namespace. To verify lab deployment status, a user can invoke the following command and ensure that the pods are in running state.
 
 ```shell
 ❯ kubectl get pods -n 2-srl-ixr6 
@@ -48,7 +58,7 @@ The above command confirms that the two nodes specified in the topology files ar
 
 ## Configuration
 
-Topology file utilizes [startup configuration](topology.md#file) provided in a separate file. This startup configuration contains configuration for essential management and Openconfig services.
+Topology file utilizes [startup configuration](../topology.md#file) provided in a separate file. This startup configuration contains configuration for essential management and Openconfig services.
 
 As a result of this startup config, the nodes come up online with these services in an already operational state.
 
@@ -60,7 +70,7 @@ A generated TLS profile is present in the configuration and can be found by `/sy
 
 Essential management and Openconfig services are provided in the startup configuration file utilized by this lab. In the following sections, we explain how to verify the operational status of those services.
 
-Services enabled on SR Linux nodes running in this lab are made available externally by the MetalLB Load Balancer and the corresponding [services configuration blob](topology.md#services) in the topology file.  
+Services enabled on SR Linux nodes running in this lab are made available externally by the MetalLB Load Balancer and the corresponding [services configuration blob](../topology.md#services) in the topology file.  
 
 !!!tip
     To list ports that available externally use:
@@ -126,8 +136,6 @@ kubectl -n 2-srl-ixr6 exec -it srl1 -- sr_cli # (1)!
 
 <small>[:octicons-book-16: Openconfig docs][oc-doc]</small>
 
-[oc-doc]: https://documentation.nokia.com/srlinux/22-6/SR_Linux_Book_Files/SysMgmt_Guide/data-models.html#openconfig-ov
-
 By default, Nokia SR Linux uses native [YANG models](../../../../yang/yang.md). Openconfig YANG models are already enabled in the configuration file used in this lab.
 
 For completeness, the below section shows how to enable Openconfig via different management interfaces.
@@ -159,8 +167,6 @@ For completeness, the below section shows how to enable Openconfig via different
 ### gNMI
 
 <small>[:octicons-book-16: gNMI docs][gnmi-doc]</small>
-
-[gnmi-doc]: https://documentation.nokia.com/srlinux/22-6/SR_Linux_Book_Files/SysMgmt_Guide/gnmi-interface.html
 
 gNMI service is enabled over port `57400` in the configuration files used with this lab and exposed over `9339` port for external connectivity.
 
@@ -208,8 +214,6 @@ gNMI service is enabled over port `57400` in the configuration files used with t
 
 <small>[:octicons-book-16: gNOI docs][gnmi-doc]</small>
 
-[gnoi-doc]: https://documentation.nokia.com/srlinux/22-6/SR_Linux_Book_Files/SysMgmt_Guide/gnoi_interface.html
-
 On SR Linux, gNOI service is enabled automatically once gNMI service is operational and share the same port `57400`. Although the same external post could have been used, to integrate with Ondatra test framework the separate service definition named `gnoi` with a separate `outside` port has been created.
 
 ??? "Example"
@@ -228,8 +232,6 @@ On SR Linux, gNOI service is enabled automatically once gNMI service is operatio
 
 <small>[:octicons-book-16: gRIBI docs][gribi-doc]</small>
 
-[gribi-doc]: https://documentation.nokia.com/srlinux/22-6/SR_Linux_Book_Files/gRIBI_Guide/gribi-config.html
-
 gRIBI server is enabled on a system level and in the `mgmt` network instance of SR Linux running on port `57401`. It is exposed to `9340` port for external connectivity as specified by the services configuration in the topology file.
 
 ??? "Example"
@@ -246,10 +248,18 @@ gRIBI server is enabled on a system level and in the `mgmt` network instance of 
 
 <small>[:octicons-book-16: P4RT docs][p4rt-doc]</small>
 
-[p4rt-doc]: https://documentation.nokia.com/srlinux/22-6/SR_Linux_Book_Files/P4RT_Guide/p4rt-overview.html
-
 P4 Runtime server is configured on a system level and in the `mgmt` network instance of SR Linux running on port `9559`. The same port is used externally in this lab.
 
 Lab users still need to [configure interface or device identifiers](https://documentation.nokia.com/srlinux/22-6/SR_Linux_Book_Files/P4RT_Guide/sr_linux_p4rt_configuration.html#identifying_an_interface_to_the_p4rt_controller) as per the documentation.
 
-[^1]: License is required to run chassis-based SR Linux systems (models: `ixr6e/ixr10e`). License-free IXR-D/H systems do not yet have support for Openconfig service; hence they are not suitable for the goals of this lab.
+[^1]: the following versions have been used to create this tutorial. The newer versions might work; please pin the version to the mentioned ones if they don't.
+[^2]: License is required to run chassis-based SR Linux systems (models: `ixr6e/ixr10e`). License-free IXR-D/H systems do not yet have support for Openconfig service; hence they are not suitable for the goals of this lab.
+
+[gnmi-doc]: https://documentation.nokia.com/srlinux/22-6/SR_Linux_Book_Files/SysMgmt_Guide/gnmi-interface.html
+[gribi-doc]: https://documentation.nokia.com/srlinux/22-6/SR_Linux_Book_Files/gRIBI_Guide/gribi-config.html
+[knedoc]: https://github.com/openconfig/kne/#readme
+[lab]: https://github.com/openconfig/kne/blob/main/examples/srlinux/2node-srl-ixr6-with-oc-services.pbtxt
+[oc-doc]: https://documentation.nokia.com/srlinux/22-6/SR_Linux_Book_Files/SysMgmt_Guide/data-models.html#openconfig-ov
+[p4rt-doc]: https://documentation.nokia.com/srlinux/22-6/SR_Linux_Book_Files/P4RT_Guide/p4rt-overview.html
+[rd-linkedin]: https://linkedin.com/in/rdodin
+[rd-twitter]: https://twitter.com/ntdvps
