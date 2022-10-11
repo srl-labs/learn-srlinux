@@ -85,3 +85,38 @@ th {
 .md-banner__inner a {
   color: #ffffff
 }
+
+/* shadow effect for images and divs for video */
+.img-shadow {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+/* styles for inter H1 code <hr> */
+.ext-code-divider {
+  margin-top: 3em;
+  text-align: center;
+}
+
+.ext-code-divider a {
+  display: inline-block;
+  transition: transform 250ms cubic-bezier(0.1, 0.7, 0.1, 1), color 125ms;
+}
+
+.ext-code-divider a:focus,
+.ext-code-divider a:hover {
+  transform: scale(1.2);
+}
+
+.ext-code-divider hr {
+  display: inline-block;
+  width: 40px;
+  margin: 16px;
+  vertical-align: middle;
+  background-color: currentColor;
+  border: none;
+}
+
+/* vertical alignment for svg in h1 divider element */
+.ext-code-divider>.vertical-middle {
+  vertical-align: middle;
+}

@@ -8,9 +8,9 @@
 | **Source Code**          | [`jbemmel/srl-evpn-proxy`][src]                                                                         |
 | **Authors**              | [Jeroen van Bemmel][auth1]                                                                              |
 
-
 ## Introduction
-Most data center designs start small before they evolve. At small scale, it may make sense to manually configure static VXLAN tunnels between leaf switches, as implemented on the 2 virtual lab nodes on the left side. 
+
+Most data center designs start small before they evolve. At small scale, it may make sense to manually configure static VXLAN tunnels between leaf switches, as implemented on the 2 virtual lab nodes on the left side.
 
 ![pic1](https://github.com/jbemmel/srl-evpn-proxy/raw/main/images/EVPN_Agent2.png)
 
@@ -21,14 +21,14 @@ The internet and most modern large scale data center designs use dynamic control
 So how can we move to the new dynamic world of EVPN based data center fabrics, while transitioning gradually and smoothly from these static configurations?
 
 ## EVPN Proxy Agent
+
 The `evpn-proxy` agent developed with [NDK][ndk] can answer the need of gradually transitioning from the static VXLAN dataplane to the EVPN based service. It has a lot of embedded functionality, we will cover the core feature here which is the Static VXLAN <-> EVPN Proxy functionality for point to point tunnels.
 
 The agent gets installed on SR Linux NOS and enables the control plane stitching between static VXLAN VTEP and EVPN-enabled service by generating EVPN routes on behalf of a legacy VTEP device.
 
 ![pic2](https://gitlab.com/rdodin/pics/-/wikis/uploads/bc2e0593ce7720656e39cf5cc449626d/CleanShot_2021-11-02_at_21.54.37_2x.png)
 
-
 [srl]: https://www.nokia.com/networks/products/service-router-linux-NOS/
 [src]: https://github.com/jbemmel/srl-evpn-proxy
-[ndk]: ../../intro
+[ndk]: ../intro.md
 [auth1]: https://www.linkedin.com/in/jeroenvbemmel/

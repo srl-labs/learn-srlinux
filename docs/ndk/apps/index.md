@@ -13,20 +13,31 @@ With the App Catalog, we intend to collect references to the noteworthy NDK appl
     The applications kept under `srl-labs` or `nokia` GitHub organizations are not official Nokia products unless explicitly mentioned.
 
 ## NDK agents
+
 ### EVPN Proxy
+
 :material-language-python: · [`jbemmel/srl-evpn-proxy`](https://github.com/jbemmel/srl-evpn-proxy)
 
 SR Linux EVPN Proxy agent that allows bridging EVPN domains with domains that only employ static VXLAN.  
 [:octicons-arrow-right-24: Read more](evpn-proxy.md)
 
 ### kButler
+
 :material-language-go: · [`brwallis/srlinux-kbutler`](https://github.com/brwallis/srlinux-kbutler)
 
 kButler agent ensures that for every worker node which hosts an application with an exposed service, there is a corresponding FIB entry for the service's external IP with a next-hop of the worker node.  
 [:octicons-arrow-right-24: Read more](kbutler.md)
 
 ### Prometheus Exporter
+
 :material-language-go: · [`karimra/srl-prometheus-exporter`](https://github.com/karimra/srl-prometheus-exporter)
 
 SR Linux Prometheus Exporter agent creates Prometheus scrape-able endpoints on individual switches. This horizontally-scaled telemetry collection model has additional operational enhancements over traditional setups with a central telemetry collector.  
 [:octicons-arrow-right-24: Read more](srl-prom-exporter.md)
+
+### Satellite Tracker
+
+:material-language-python: · [`KTodts/srl-satellite-tracker`](https://github.com/KTodts/srl-satellite-tracker)
+
+A fun educational NDK app that displays current coordinates of the Internation Space Station by querying public Internet service providing raw location data.  
+[:octicons-arrow-right-24: Read more](satellite.md)
