@@ -28,8 +28,13 @@ build-insiders:
 push-docs: # push docs to gh-pages branch manually. Use when pipeline misbehaves
 	docker run -v ${SSH_AUTH_SOCK}:/ssh-agent --env SSH_AUTH_SOCK=/ssh-agent --env GIT_SSH_COMMAND="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no" -v $$(pwd):/docs --entrypoint mkdocs ghcr.io/srl-labs/mkdocs-material-insiders:$(MKDOCS_INS_VER) gh-deploy --force --strict
 
+add-no-index: # replace noindex commen in main template to include robots noindex instruction. This is needed prior pushing to staging, so that staging is not indexed by robots
+	sed -i 's/<!-- NOINDEX -->/<meta name="robots" content="noindex">/g' docs/overrides/main.html
+
 # build html docs and push to staging1 server - https://hellt.github.io/learn-srlinux-stage1
-push-to-staging1: build-insiders
+push-to-staging1: add-no-index build-insiders
+	# revert changes to main so that main.html remains unchanged
+	git checkout docs/overrides/main.html
 	rm -rf ~/hellt/learn-srlinux-stage1/*
 	cp -a site/* ~/hellt/learn-srlinux-stage1
 	cd ~/hellt/learn-srlinux-stage1 && echo 'stage1.learn.srlinux.dev' > CNAME && git add . && git commit -m "update" && git push --force
