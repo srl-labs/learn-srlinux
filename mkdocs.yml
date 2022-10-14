@@ -23,7 +23,8 @@ nav:
             - tutorials/infrastructure/kne/index.md
             - Installation: tutorials/infrastructure/kne/installation.md
             - Topology: tutorials/infrastructure/kne/topology.md
-            - SR Linux with Openconfig services: tutorials/infrastructure/kne/srl-with-kne/srl-with-oc-services.md
+            - SR Linux with Openconfig services:
+              - tutorials/infrastructure/kne/srl-with-oc-services/index.md
       - MPLS:
           - LDP-based MPLS:
               - Introduction: tutorials/mpls/mpls-ldp/intro.md
