@@ -220,5 +220,25 @@ The above `links` object creates a Layer2 virtual wire between the nodes `srl1` 
 
     Example: `e1-1` interface is mapped to `ethernet-1/1` interface of SR Linux which is a first port on a first linecard.
 
+### Interfaces
+
+The link name provided in the [links](#links) section of the topology defines a name of a Linux interface created in the network namespace of a particular pod. However, this name rarely matches the interface name used by the Network OS.
+
+For example, for Nokia SR Linux, the Linux interface notation must follow `eX-Y` schema, but when configuring these interfaces over any management protocol, users should use `ethernet-X/Y` form. Since such mapping is different between vendors, KNE users can provide the mapping in the topology file to let external systems know which Linux interface name maps to which internal name.
+
+```proto
+nodes: {
+    // other node parameters snipped for brevity
+    interfaces: {
+        key: "e1-1"
+        value: {
+            name: "ethernet-1/1"
+        }
+    }
+```
+
+!!!note
+    It is not mandatory to provide interface mapping information if no external system that needs to know this mapping will be used.
+
 [^1]: https://developers.google.com/protocol-buffers/docs/text-format-spec
 [^2]: full specification of a Node element is contained in the [topology proto file](https://github.com/openconfig/kne/blob/9d835bbaa1e4b26ab03b0d456461a044f2ec9ea0/proto/topo.proto#L44-L80).
