@@ -1,14 +1,14 @@
 # SR Linux with Openconfig services
 
-| Summary                     |                                                                                            |
-| --------------------------- | ------------------------------------------------------------------------------------------ |
-| **Tutorial name**           | SR Linux with KNE                                                                          |
-| **Lab components**          | 2 Nokia SR Linux nodes                                                                     |
-| **Resource requirements**   | :fontawesome-solid-microchip: 2 vCPU <br/>:fontawesome-solid-memory: 4 GB                  |
-| **Lab**                     | [kne/examples/srlinux/2node-srl-ixr6-with-oc-services.pbtxt][lab]                          |
-| **Main ref documents**      | [kne documentation][knedoc]                                                                |
-| **Version information**[^1] | [`kne`][kne-install], [`srlinux:22.6.4`][srlinux-container], [`kind:0.14.0`][kind-install] |
-| **Authors**                 | Roman Dodin [:material-twitter:][rd-twitter] [:material-linkedin:][rd-linkedin]            |
+| Summary                     |                                                                                                                                        |
+| --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| **Tutorial name**           | SR Linux with KNE                                                                                                                      |
+| **Lab components**          | 2 Nokia SR Linux nodes                                                                                                                 |
+| **Resource requirements**   | :fontawesome-solid-microchip: 2 vCPU <br/>:fontawesome-solid-memory: 4 GB                                                              |
+| **Lab**                     | [kne/examples/srlinux/2node-srl-ixr6-with-oc-services.pbtxt][lab]                                                                      |
+| **Main ref documents**      | [kne documentation][knedoc]                                                                                                            |
+| **Version information**[^1] | [`kne`][kne-install], [`srlinux:22.6.4`][srlinux-container], [`srl-controller:0.4.4`][srl-controller], [`kind:0.14.0`][kind-install] |
+| **Authors**                 | Roman Dodin [:material-twitter:][rd-twitter] [:material-linkedin:][rd-linkedin]                                                        |
 
 KNE repository contains a set of [example topologies](https://github.com/openconfig/kne/tree/main/examples) that aim to help new users get started with using KNE to orchestrate virtual network labs. SR Linux team maintains several examples, which include SR Linux nodes.
 
@@ -287,3 +287,4 @@ Lab users still need to [configure interface or device identifiers](https://docu
 [rd-linkedin]: https://linkedin.com/in/rdodin
 [rd-twitter]: https://twitter.com/ntdvps
 [srlinux-container]: https://github.com/nokia/srlinux-container-image
+[srl-controller]: https://github.com/srl-labs/srl-controller
