@@ -66,6 +66,8 @@ As a result of this startup config, the nodes come up online with these services
 
 A generated TLS profile is present in the configuration and can be found by `/system tls server-profile kne-profile` path. This server profile named `kne-profile` contains a TLS certificate and a key. This server profile is used by a number of SR Linux management services that require TLS-enabled security.
 
+Note, that the certificate present in a lab is shared between both nodes and contains invalid CN and SAN values. Therefore, it won't be possible to verify the certificate offered by the lab nodes, and tools should skip certificate verification.
+
 ## Services
 
 Essential management and Openconfig services are provided in the startup configuration file utilized by this lab. In the following sections, we explain how to verify the operational status of those services.
@@ -112,7 +114,7 @@ An SSH service enabled on both SR Linux nodes is exposed via port `22`. Users ca
 
 ### Console
 
-To get a console-like access to SR Linux NOS users should leverage `kubectl exec` command and start the `sr_cli` process:
+To get console-like access to SR Linux NOS users should leverage `kubectl exec` command and start the `sr_cli` process:
 
 ```shell
 kubectl -n 2-srl-ixr6 exec -it srl1 -- sr_cli # (1)!
@@ -234,7 +236,7 @@ Users can change the `yang-models` leaf value to `openconfig` should they want t
 
 <small>[:octicons-book-16: gNOI docs][gnoi-doc]</small>
 
-On SR Linux, gNOI service is enabled automatically once gNMI service is operational and share the same port `57400`. Although the same external post could have been used, to integrate with Ondatra test framework the separate service definition named `gnoi` with a separate `outside` port has been created.
+On SR Linux, gNOI service is enabled automatically once gNMI service is operational and share the same port `57400`. Although the same external post could have been used, to integrate with Ondatra test framework, a different service definition named `gnoi` with a separate `outside` port has been created.
 
 ??? "Example"
     gNOI service can be tested using [gnoic](https://gnoic.kmrd.dev) cli client.
@@ -268,7 +270,7 @@ gRIBI server is enabled on a system level and in the `mgmt` network instance of 
 
 <small>[:octicons-book-16: P4RT docs][p4rt-doc]</small>
 
-P4 Runtime server is configured on a system level and in the `mgmt` network instance of SR Linux running on port `9559`. The same port is used externally in this lab.
+The P4 Runtime server is configured on a system level and in the `mgmt` network instance of SR Linux running on port `9559`. The same port is used externally in this lab.
 
 Lab users still need to [configure interface or device identifiers](https://documentation.nokia.com/srlinux/22-6/SR_Linux_Book_Files/P4RT_Guide/sr_linux_p4rt_configuration.html#identifying_an_interface_to_the_p4rt_controller) as per the documentation.
 
