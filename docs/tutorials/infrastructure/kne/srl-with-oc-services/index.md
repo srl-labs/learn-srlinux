@@ -284,10 +284,10 @@ gRIBI server is enabled on a system level and in the `mgmt` network instance of 
     gRIBI service can be tested using [gribic](https://gribic.kmrd.dev) cli client.
 
     ```bash
-    ❯ gribic -a 172.20.20.2:9340 -u admin -p admin --skip-verify get --ns mgmt
-    INFO[0000] target 172.20.20.2:57401: final get response:  
-    INFO[0000] got 1 results                                
-    INFO[0000] "172.20.20.2:57401":
+    ❯ gribic -a 172.18.0.50:9340 -u admin -p admin --skip-verify get --ns mgmt
+    INFO[0000] target 172.18.0.50:9340: final get response:  
+    INFO[0000] got 1 results
+    INFO[0000] "172.18.0.50:9340":
     ```
 
 ### P4 Runtime (P4RT)
