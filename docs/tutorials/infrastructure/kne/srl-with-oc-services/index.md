@@ -170,32 +170,6 @@ For completeness, the below section shows how to enable Openconfig via different
 
 gNMI service is enabled over port `57400` in the configuration files used with this lab and exposed over `9339` port for external connectivity.
 
-<!-- For completeness, the below section shows how to enable gNMI via different management interfaces.
-
-=== "CLI"
-    ```
-    --{ running }--[  ]--
-    A:srl# enter candidate
-
-    --{ candidate shared default }--[  ]--
-    A:srl# system management openconfig admin-state enable
-    
-    --{ * candidate shared default }--[  ]--
-    A:srl# commit stay 
-    All changes have been committed. Starting new transaction.
-    ```
-=== "Config file"
-    ```json
-    "srl_nokia-system:system": {
-      "management": {
-        "srl_nokia-openconfig:openconfig": {
-          "admin-state": "enable"
-        }
-      },
-    // other system containers
-    }
-    ``` -->
-
 gNMI instance configured in the `mgmt` network instance uses native [YANG models](../../../../yang/yang.md). This is driven by the default configuration value of the `/system/gnmi-server/network-instance[name=mgmt]/yang-models` leaf and selects which models are going to be used when gNMI paths are provided without the [`origin`](https://github.com/openconfig/reference/blob/c243b35b36e366852f9476c87fb2efe6e9050dfe/rpc/gnmi/gnmi-specification.md#222-paths) information in the path.
 
 Users can change the `yang-models` leaf value to `openconfig` should they want to use openconfig paths with gNMI without providing the `origin` value.
