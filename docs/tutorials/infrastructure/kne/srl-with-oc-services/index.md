@@ -258,7 +258,7 @@ Users can change the `yang-models` leaf value to `openconfig` should they want t
 
 ### gNOI
 
-<small>[:octicons-book-16: gNOI docs][gnmi-doc]</small>
+<small>[:octicons-book-16: gNOI docs][gnoi-doc]</small>
 
 On SR Linux, gNOI service is enabled automatically once gNMI service is operational and share the same port `57400`. Although the same external post could have been used, to integrate with Ondatra test framework the separate service definition named `gnoi` with a separate `outside` port has been created.
 
@@ -302,6 +302,7 @@ Lab users still need to [configure interface or device identifiers](https://docu
 [^2]: License is required to run chassis-based SR Linux systems (models: `ixr6e/ixr10e`). License-free IXR-D/H systems do not yet have support for Openconfig service; hence they are not suitable for the goals of this lab.
 
 [gnmi-doc]: https://documentation.nokia.com/srlinux/22-6/SR_Linux_Book_Files/SysMgmt_Guide/gnmi-interface.html
+[gnoi-doc]: https://documentation.nokia.com/srlinux/22-6/SR_Linux_Book_Files/SysMgmt_Guide/gnoi_interface.html
 [gribi-doc]: https://documentation.nokia.com/srlinux/22-6/SR_Linux_Book_Files/gRIBI_Guide/gribi-config.html
 [kind-install]: https://kind.sigs.k8s.io/docs/user/quick-start#installation
 [knedoc]: https://github.com/openconfig/kne/#readme
