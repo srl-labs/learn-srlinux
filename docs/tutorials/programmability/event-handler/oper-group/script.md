@@ -1,3 +1,7 @@
+---
+comments: true
+---
+
 A [MicroPython](../../../../kb/event-handler.md#micropython) script is a central piece of the framework. It allows users to create[^1] programmable logic to handle events and thus presents a flexible interface for adding custom functionality to the Nokia SR Linux platform.
 
 ## Input

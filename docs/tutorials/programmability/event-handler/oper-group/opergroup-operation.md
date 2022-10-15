@@ -1,3 +1,7 @@
+---
+comments: true
+---
+
 ## Start up
 
 When the Event Handler instance is configured and administratively enabled an initial sync of the monitored paths state is done. As a result of that initial sync, Event Handler immediately attempts to execute a script as it receives the state for the monitored paths.

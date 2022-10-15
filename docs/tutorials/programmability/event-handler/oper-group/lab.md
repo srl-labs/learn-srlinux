@@ -1,3 +1,7 @@
+---
+comments: true
+---
+
 <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/hellt/drawio-js@main/embed2.js" async></script>
 
 As always, this tutorial will be backed up by a lab that readers can effortlessly deploy on their machine and follow along. Oper-group lab is contained within [srl-labs/oper-group-lab](https://github.com/srl-labs/opergroup-lab) repository and features:

@@ -1,3 +1,7 @@
+---
+comments: true
+---
+
 <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/hellt/drawio-js@main/embed2.js" async></script>
 
 |                                |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
@@ -68,6 +72,7 @@ topology:
 ```
 
 Save[^2] the contents of this file under `evpn01.clab.yml` name and you are ready to deploy:
+
 ```
 $ containerlab deploy -t evpn01.clab.yml
 INFO[0000] Parsing & checking topology file: evpn01.clab.yml 

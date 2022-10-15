@@ -1,3 +1,7 @@
+---
+comments: true
+---
+
 Before we meet the Event Handler framework of SR Linux and leverage it to configure oper-group feature, it is crucial to understand the problem at hand.  
 As was mentioned in the [introduction](oper-group-intro.md), without oper-group feature traffic loss can occur should any leaf lose all its uplinks. Let's lab a couple of scenarios that highlight a problem that oper-group is set to remedy.
 

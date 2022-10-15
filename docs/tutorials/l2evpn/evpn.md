@@ -1,3 +1,7 @@
+---
+comments: true
+---
+
 <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/hellt/drawio-js@main/embed2.js" async></script>
 Ethernet Virtual Private Network (EVPN), along with Virtual eXtensible LAN (VXLAN), is a technology that allows Layer 2 and Layer 3 traffic to be tunneled across an IP
 network.
@@ -10,6 +14,7 @@ The SR Linux EVPN-VXLAN solution enables Layer 2 Broadcast Domains (BDs) in mult
 This tutorial is focused on EVPN for VXLAN tunnels Layer 2.
 
 ## Overview
+
 EVPN-VXLAN provides Layer-2 connectivity in multi-tenant DCs. EVPN-VXLAN Broadcast Domains (BD) can span several leaf routers connected to the same IP fabric, allowing hosts attached to the same BD to communicate as though they were connected to the same layer-2 switch.
 
 VXLAN tunnels bridge the layer-2 frames between leaf routers with EVPN providing the control plane to automatically setup tunnels and use them efficiently.
@@ -28,7 +33,8 @@ While doing that we will cover the following topics:
 * and BGP EVPN control plane configuration
 
 ## IBGP for EVPN
-Prior to configuring the overlay services we must enable the EVPN address family for the distribution of EVPN routes among leaf routers of the same tenant. 
+
+Prior to configuring the overlay services we must enable the EVPN address family for the distribution of EVPN routes among leaf routers of the same tenant.
 
 EVPN is enabled using iBGP and typically a Route Reflector (RR), or eBGP. In our example we have only two leafs, so we won't take extra time configuring the iBGP with a spine acting as a Route Reflector, and instead will configure the iBGP between the two leaf switches.
 
@@ -116,9 +122,11 @@ Flags: S static, D dynamic, L discovered by LLDP, B BFD enabled, - disabled, * s
 |           |           | overlay   |           |           | ed        | 9s        |           |           |
 +-----------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+-----------+
 ```
+
 Right now, as we don't have any EVPN service created, there are no EVPN routes that are being sent/received, which is indicated in the last column of the table above.
 
 ## Access interfaces
+
 Next we are configuring the interfaces from the leaf switches to the corresponding servers. According to our lab's wiring diagram, interface 1 is connected to the server on both leaf switches:
 
 <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:6,&quot;zoom&quot;:2,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/srl-labs/learn-srlinux/diagrams/quickstart.drawio&quot;}"></div>
@@ -148,15 +156,16 @@ commit now
 As the config snippet shows, we are not using any VLAN classification on the subinterface, our intention is to send untagged frames from the servers.
 
 ## Tunnel/VXLAN interface
+
 After creating the access sub-interfaces we are proceeding with creation of the VXLAN/Tunnel interfaces. The [VXLAN encapsulation](https://datatracker.ietf.org/doc/html/rfc8365#section-5) in the dataplane allows MAC-VRFs of the same BD to be connected throughout the IP fabric.
 
 The SR Linux models VXLAN as a tunnel-interface which has a vxlan-interface within. The tunnel-interface for VXLAN is configured with a name `vxlan<N>` where `N = 0..255`.
 
 A vxlan-interface is configured under a tunnel-interface. At a minimum, a vxlan-interface must have an index, type, and ingress VXLAN Network Identifier (VNI).
 
-- The index can be a number in the range 0-4294967295.
-- The type can be bridged or routed and indicates whether the vxlan-interface can be linked to a mac-vrf (bridged) or ip-vrf (routed).
-- The ingress VNI is the VXLAN Network Identifier that the system looks for in incoming VXLAN packets to classify them to this vxlan-interface and its
+* The index can be a number in the range 0-4294967295.
+* The type can be bridged or routed and indicates whether the vxlan-interface can be linked to a mac-vrf (bridged) or ip-vrf (routed).
+* The ingress VNI is the VXLAN Network Identifier that the system looks for in incoming VXLAN packets to classify them to this vxlan-interface and its
 network-instance. VNI can be in the range of `1..16777215`.  
   The VNI is used to find the MAC-VRF where the inner MAC lookup is performed. The egress VNI is not configured and is determined by the imported EVPN routes.  
   SR Linux requires that the egress VNI (discovered) matches the configured ingress VNI so that two leaf routers attached to the same BD can exchange packets.
@@ -180,6 +189,7 @@ commit now
 ```
 
 To verify the tunnel interface configuration:
+
 ```
 A:leaf2# show tunnel-interface vxlan-interface brief
 ---------------------------------------------------------------------------------
@@ -198,6 +208,7 @@ Summary
 ```
 
 ## MAC-VRF
+
 Now it is a turn of MAC-VRF to get configured.
 
 The network-instance type `mac-vrf` functions as a broadcast domain. Each mac-vrf network-instance builds a bridge table composed of MAC addresses that can be learned via the data path on network-instance interfaces, learned via BGP EVPN or provided with static configuration.
@@ -224,7 +235,6 @@ The servers in our fabric do not have any addresses on their `eth1` interfaces b
 By the end of this section, we will have the following addressing scheme complete:
 
 <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:7,&quot;zoom&quot;:3,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/srl-labs/learn-srlinux/diagrams/quickstart.drawio&quot;}"></div>
-
 
 To connect to a shell of a server execute `docker exec -it <container-name> bash`:
 
@@ -284,6 +294,7 @@ Total Macs                :    1 Total    1 Active
 ```
 
 ## EVPN in MAC-VRF
+
 To advertise the locally learned MACs to the remote leafs we have to configure EVPN in our `vrf-1` network-instance.
 
 EVPN configuration under the mac-vrf network instance will require two configuration containers:
@@ -333,10 +344,11 @@ Net Instance   : vrf-1
 !!!note "VNI to EVI mapping"
     Prior to release 21.11, SR Linux used only **VLAN-based Service** type of mapping between the VNI and EVI. In this option, a single Ethernet broadcast domain (e.g., subnet)
     represented by a VNI is mapped to a unique EVI.[^3]
-    
+
     Starting from release 21.11 SR Linux supports an [interoperability mode](https://documentation.nokia.com/srlinux/SR_Linux_HTML_R21-11/EVPN-VXLAN_Guide/evpn_interoperability_with_vlan_aware_bundle_services.html) in which SR Linux leaf nodes can be attached to VLAN-aware bundle broadcast domains along with other third-party routers.
 
 ## Final configurations
+
 For your convenience, in case you want to jump over the config routines and start with control/data plane verification we provide the resulting configuration[^4] for all the lab nodes. You can copy paste those snippets to the relevant nodes and proceed with verification tasks.
 
 ???example "pastable snippets"
@@ -672,8 +684,11 @@ For your convenience, in case you want to jump over the config routines and star
         ip link set address 00:c1:ab:00:00:02 dev eth1
         ip addr add 192.168.0.2/24 dev eth1
         ```
+
 ## Verification
+
 ### EVPN IMET routes
+
 When the BGP-EVPN is configured in the mac-vrf instance, the leafs start to exchange EVPN routes, which we can verify with the following commands:
 
 ```
@@ -779,6 +794,7 @@ This multicast destination means that BUM frames received on a bridged sub-inter
 As to the unicast destinations there are none so far, and this is because we haven't yet received any MAC/IP RT2 EVPN routes. But before looking into the RT2 EVPN routes, let's zoom into VXLAN tunnels that got built right after we receive the first IMET RT3 routes.
 
 ### VXLAN tunnels
+
 After receiving EVPN routes from the remote leafs with VXLAN encapsulation[^5], SR Linux creates VXLAN tunnels towards remote VTEP, whose address is received in EVPN IMET routes. The state of a single remote VTEP we have in our lab is shown below from the `leaf1` switch.
 
 ```
@@ -836,6 +852,7 @@ Summary
 ```
 
 This is due to the fact that no [MAC/IP EVPN routes](https://datatracker.ietf.org/doc/html/rfc7432#section-7.2) are being advertised yet. If we take a look at the MAC table of the `vrf-1`, we will see that no local MAC addresses are there, and this is because the servers haven't yet sent any frames towards the leafs[^7].
+
 ```
 A:leaf1# show network-instance vrf-1 bridge-table mac-table all
 -------------------------------------------------------------------------------
@@ -954,7 +971,6 @@ Summary
     4. after that event, the ICMP Requests and replies were using the unicast destinations, which were created after receiving the MAC/IP EVPN routes.
 
 This concludes the verification steps, as we have a working data plane connectivity between the servers.
-
 
 [^1]: as was verified [before](fabric.md#dataplane)
 [^2]: containerlab assigns mac addresses to the interfaces with OUI `00:C1:AB`. We are changing the generated MAC with a more recognizable address, since we want to easily identify MACs in the bridge tables.

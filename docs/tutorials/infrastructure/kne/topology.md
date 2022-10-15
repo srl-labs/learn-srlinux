@@ -1,3 +1,7 @@
+---
+comments: true
+---
+
 # KNE Topology
 
 Everything is ready for KNE users to create network topologies when [installation](installation.md) steps are out of the way. KNE offers a declarative way of defining network topologies using a topology file that captures the state of a topology. Topology message in the [`topo.proto`](https://github.com/openconfig/kne/blob/9d835bbaa1e4b26ab03b0d456461a044f2ec9ea0/proto/topo.proto) file defines the schema that the KNE topology follows. Consult with the schema to see which fields a topology can have.

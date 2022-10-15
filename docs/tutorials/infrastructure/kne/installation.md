@@ -1,3 +1,7 @@
+---
+comments: true
+---
+
 # Installation
 
 To start deploying labs orchestrated by KNE a user needs to install `kne` command line utility and have a k8s cluster available. Follow [KNE setup instructions](https://github.com/openconfig/kne/blob/main/docs/setup.md) to install `kne` and its dependencies.

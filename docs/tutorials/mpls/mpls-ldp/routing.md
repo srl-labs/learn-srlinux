@@ -1,8 +1,13 @@
+---
+comments: true
+---
+
 <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/hellt/drawio-js@main/embed2.js" async></script>
 
 Prior to any MPLS configuration, we need to set up routing in the network core. Configuration of interfaces and IGP is the core task explained in this section.
 
 ## Interfaces
+
 Let's start with basic interfaces configuration following this diagram:
 
 <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:2,&quot;zoom&quot;:3,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/srl-labs/learn-srlinux/diagrams/mpls-ldp.drawio&quot;}"></div>
@@ -113,6 +118,7 @@ When the interface config is committed[^1], routers should be able to ping each 
     ```
 
 ## IGP
+
 With interfaces config done, proceed with configuring an IGP protocol to redistribute the loopback address information among all routers. In this tutorial, we will use IS-IS routing protocol to achieve this goal.
 
 <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:3,&quot;zoom&quot;:3,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/srl-labs/learn-srlinux/diagrams/mpls-ldp.drawio&quot;}"></div>
@@ -203,8 +209,8 @@ All routers now should have enabled IS-IS adjacency with their respective neighb
 
 === "Adjacency"
     ```bash
-    --{ running }--[  ]--                                                                                                  
-    A:srl2# show  /network-instance default protocols isis adjacency                                                       
+    --{ running }--[  ]--
+    A:srl2# show  /network-instance default protocols isis adjacency
     -----------------------------------------------------------------------------------------------------------------------
     Network Instance: default
     Instance        : ISIS
@@ -223,8 +229,8 @@ All routers now should have enabled IS-IS adjacency with their respective neighb
 === "Routing table"
     The below output verifies that `srl2` has successfully received loopbacks prefixes from `srl1/3` nodes.
     ```
-    --{ running }--[  ]--                                                                                                  
-    A:srl2# /show network-instance default route-table all | grep isis                                                     
+    --{ running }--[  ]--
+    A:srl2# /show network-instance default route-table all | grep isis
     | 10.0.0.1/32 | 0    | isis      | isis_mgr            | True/success        | 10      | 18     | 10.1.2 | ethern |
     | 10.0.0.3/32 | 0    | isis      | isis_mgr            | True/success        | 10      | 18     | 10.2.3 | ethern |
     ```

@@ -1,3 +1,7 @@
+---
+comments: true
+---
+
 <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/hellt/drawio-js@main/embed2.js" async></script>
 Layer 2 EVPN services with VXLAN dataplane are very common in multi-tenant data centers. In this tutorial we walked through every step that is needed to configure a basic Layer 2 EVPN with VXLAN dataplane service deployed on SR Linux switches:
 

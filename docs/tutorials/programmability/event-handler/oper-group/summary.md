@@ -1,3 +1,7 @@
+---
+comments: true
+---
+
 Event-driven automation is a popular paradigm in the networks field. One practical implementation of that paradigm is [Nokia SR Linux Event Handler framework](../../../../kb/event-handler.md) that allows users to programmatically react to events happening in a network OS.
 
 This tutorial covers Event Handler concepts by explaining how they can be used to implement [Operational Group feature](oper-group-intro.md).

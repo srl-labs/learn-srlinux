@@ -1,3 +1,7 @@
+---
+comments: true
+---
+
 <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/hellt/drawio-js@main/embed2.js" async></script>
 Model-driven (MD) interfaces are becoming essential for robust and modern Network OSes. The changes required to create fully model-driven interfaces can not happen overnight - it is a long and tedious process that requires substantial R&D effort.  
 Traditional Network OSes often had to take an evolutionary route with adding MD interfaces on top of the existing internal infrastructure.
@@ -24,6 +28,7 @@ With this design, there is no way around YANG; the data model is defined first f
 [rfc7950]: https://www.rfcreader.com/#rfc7950
 
 ## SR Linux YANG Models
+
 As YANG models play a central role in SR Linux NOS, it is critical to have unobstructed access. With that in mind, we offer SR Linux users many ways to get ahold of SR Linux YANG models:
 
 1. Download modules from SR Linux NOS itself.

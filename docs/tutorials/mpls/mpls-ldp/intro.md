@@ -1,3 +1,7 @@
+---
+comments: true
+---
+
 <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/hellt/drawio-js@main/embed2.js" async></script>
 
 |                                |                                                                                                                                                                                                                  |
@@ -28,6 +32,7 @@ The tutorial will consist of the following configuration parts:
 * [LDP-based MPLS](ldp.md) - configuring LDP and running control plane and data plane verification steps.
 
 ## Lab deployment
+
 The tutorial is augmented with the [containerlab-based](https://containerlab.dev) lab so that you can perform all the steps we do here.  
 The [clab file][topofile] describing the topology looks like follows:
 
@@ -55,6 +60,7 @@ topology:
 1. Pay attention to the [HW type](../../../kb/hwtypes.md) we specify in the clab file. MPLS is only available on ixr6 and ixr10 platforms at the time of this writing. IXR-6/10 chassis will require a license since 22.3 release of SR Linux.
 
 Save[^2] the contents of this file under `mpls-ldp.clab.yml` name, and you are ready to deploy:
+
 ```bash
 $ containerlab deploy -t clab-ldp.clab.yml
 
