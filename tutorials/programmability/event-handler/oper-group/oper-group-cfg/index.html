@@ -44,7 +44,35 @@
 <a id=__codelineno-4-18 name=__codelineno-4-18 href=#__codelineno-4-18></a>            value <span class=m>1</span>
 <a id=__codelineno-4-19 name=__codelineno-4-19 href=#__codelineno-4-19></a>        <span class=o>}</span>
 <a id=__codelineno-4-20 name=__codelineno-4-20 href=#__codelineno-4-20></a>    <span class=o>}</span>
-</code></pre></div> <ol> <li>Monitor the operational state of these uplinks.</li> <li>The following links we consider "access" links, their operational state will depend on the state of the uplinks when processed by a script.</li> <li>Required number of uplinks to be in the oper-up state before putting down downlinks. </li> <li>Path to the script file which defines the logic of the event-handling routine using the state changes of the monitored paths and provided options.</li> <li><a href=../script/#debugging>Debug</a> option to indicate to a scrip that it should print additional debugging information.</li> </ol> <p>Now when the configuration is done, it is time to dive into the MicroPython code itself; at the end of the day, it is the core component of the framework.</p> <div class=footnote> <hr> <ol> <li id=fn:1> <p>see <a href=../../../../../kb/event-handler/ >the sequence diagram</a> for additional details.&#160;<a class=footnote-backref href=#fnref:1 title="Jump back to footnote 1 in the text">&#8617;</a></p> </li> </ol> </div> </article> </div> <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script> </div> <a href=# class="md-top md-icon" data-md-component=top hidden> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg> Back to top </a> </main> <footer class=md-footer> <nav class="md-footer__inner md-grid" aria-label=Footer> <a href=../problem-statement/ class="md-footer__link md-footer__link--prev" aria-label="Previous: Problem statement" rel=prev> <div class="md-footer__button md-icon"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg> </div> <div class=md-footer__title> <div class=md-ellipsis> <span class=md-footer__direction> Previous </span> Problem statement </div> </div> </a> <a href=../script/ class="md-footer__link md-footer__link--next" aria-label="Next: Script" rel=next> <div class=md-footer__title> <div class=md-ellipsis> <span class=md-footer__direction> Next </span> Script </div> </div> <div class="md-footer__button md-icon"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg> </div> </a> </nav> <div class="md-footer-meta md-typeset"> <div class="md-footer-meta__inner md-grid"> <!--
+</code></pre></div> <ol> <li>Monitor the operational state of these uplinks.</li> <li>The following links we consider "access" links, their operational state will depend on the state of the uplinks when processed by a script.</li> <li>Required number of uplinks to be in the oper-up state before putting down downlinks. </li> <li>Path to the script file which defines the logic of the event-handling routine using the state changes of the monitored paths and provided options.</li> <li><a href=../script/#debugging>Debug</a> option to indicate to a scrip that it should print additional debugging information.</li> </ol> <p>Now when the configuration is done, it is time to dive into the MicroPython code itself; at the end of the day, it is the core component of the framework.</p> <div class=footnote> <hr> <ol> <li id=fn:1> <p>see <a href=../../../../../kb/event-handler/ >the sequence diagram</a> for additional details.&#160;<a class=footnote-backref href=#fnref:1 title="Jump back to footnote 1 in the text">&#8617;</a></p> </li> </ol> </div> <h2 id=__comments>Comments</h2> <script src=https://giscus.app/client.js data-repo=srl-labs/learn-srlinux data-repo-id="MDEwOlJlcG9zaXRvcnkzODMxMTg5NTQ=" data-category=comments data-category-id=DIC_kwDOFtXuas4CR_vG data-mapping=pathname data-strict=0 data-reactions-enabled=1 data-emit-metadata=0 data-input-position=top data-theme=preferred_color_scheme data-lang=en data-loading=lazy crossorigin=anonymous async>
+    </script> <!-- Synchronize Giscus theme with palette --> <script>
+    var giscus = document.querySelector("script[src*=giscus]")
+
+    /* Set palette on initial load */
+    var palette = __md_get("__palette")
+    if (palette && typeof palette.color === "object") {
+        var theme = palette.color.scheme === "slate" ? "dark" : "light"
+        giscus.setAttribute("data-theme", theme)
+    }
+
+    /* Register event handlers after documented loaded */
+    document.addEventListener("DOMContentLoaded", function () {
+        var ref = document.querySelector("[data-md-component=palette]")
+        ref.addEventListener("change", function () {
+            var palette = __md_get("__palette")
+            if (palette && typeof palette.color === "object") {
+                var theme = palette.color.scheme === "slate" ? "dark" : "light"
+
+                /* Instruct Giscus to change theme */
+                var frame = document.querySelector(".giscus-frame")
+                frame.contentWindow.postMessage(
+                    { giscus: { setConfig: { theme } } },
+                    "https://giscus.app"
+                )
+            }
+        })
+    })
+</script> </article> </div> <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script> </div> <a href=# class="md-top md-icon" data-md-component=top hidden> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg> Back to top </a> </main> <footer class=md-footer> <nav class="md-footer__inner md-grid" aria-label=Footer> <a href=../problem-statement/ class="md-footer__link md-footer__link--prev" aria-label="Previous: Problem statement" rel=prev> <div class="md-footer__button md-icon"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg> </div> <div class=md-footer__title> <div class=md-ellipsis> <span class=md-footer__direction> Previous </span> Problem statement </div> </div> </a> <a href=../script/ class="md-footer__link md-footer__link--next" aria-label="Next: Script" rel=next> <div class=md-footer__title> <div class=md-ellipsis> <span class=md-footer__direction> Next </span> Script </div> </div> <div class="md-footer__button md-icon"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg> </div> </a> </nav> <div class="md-footer-meta md-typeset"> <div class="md-footer-meta__inner md-grid"> <!--
   Copyright (c) 2016-2022 Martin Donath <martin.donath@squidfunk.com>
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to
