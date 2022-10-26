@@ -2,6 +2,10 @@
 date: 2022-10-27
 authors:
   - jbemmel
+tags:
+  - event handler
+  - config management
+  - backup
 ---
 # Root cause analysis
 
@@ -52,7 +56,13 @@ def event_handler_main(in_json_str):
     print( "Error: no 'target' defined" )
     return { "actions": [] }
 ```
-The script should be fairly self-explanatory: It gets the ```target``` from the configuration and the timestamp of the change, and then invokes a standard Linux ```scp``` command (making sure it runs in the correct [network namespace](https://linuxhint.com/use-linux-network-namespace/)). Although it does not currently do anything with the username, those skilled in the art will appreciate that this could easily be added.
+
+The script should be fairly self-explanatory: It gets the `target` from the configuration and the timestamp of the change, and then invokes a standard Linux `scp` command (making sure it runs in the correct [network namespace](https://linuxhint.com/use-linux-network-namespace/)). Although it does not currently do anything with the username, those skilled in the art will appreciate that this could easily be added.
+
+!!!question
+    Anyone stopped here for a moment thinking "Why not use Git?". Valid question, and a reasonable enhancement to the backup function presented here.
+
+    The reason plain `scp` has been used in this example is because `scp` is shipped with the linux subsystem of SR Linux, and `git` doesn't. When `git` becomes available on SR Linux, we may update this example with `git`-friendly backup option.
 
 The above is just a quick starting point of course - you may want to make it more elaborate and (for example) have the system send you a text for approval, with automatic rollback in case you don't approve within a certain amount of time (configurable). Or maybe you're thinking to add some Blockchain logic there, creating indisputable proof that things happened the way you say they did. Go for it!
 
