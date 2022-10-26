@@ -20,11 +20,11 @@ nav:
               - Summary: tutorials/l2evpn/summary.md
       - Infrastructure:
           - KNE:
-            - tutorials/infrastructure/kne/index.md
-            - Installation: tutorials/infrastructure/kne/installation.md
-            - Topology: tutorials/infrastructure/kne/topology.md
-            - SR Linux with Openconfig services:
-              - tutorials/infrastructure/kne/srl-with-oc-services/index.md
+              - tutorials/infrastructure/kne/index.md
+              - Installation: tutorials/infrastructure/kne/installation.md
+              - Topology: tutorials/infrastructure/kne/topology.md
+              - SR Linux with Openconfig services:
+                  - tutorials/infrastructure/kne/srl-with-oc-services/index.md
       - MPLS:
           - LDP-based MPLS:
               - Introduction: tutorials/mpls/mpls-ldp/intro.md
@@ -62,6 +62,8 @@ nav:
       - SR Linux & YANG: yang/yang.md
       - YANG Browser: yang/browser.md
   - Community: community.md
+  - Blog:
+      - blog/index.md
 
 site_author: SR Linux
 site_description: >-
@@ -120,6 +122,21 @@ theme:
 
 # Plugins
 plugins:
+  - meta
+  - macros:
+      j2_block_start_string: "[[[%"
+      j2_block_end_string: "%]]]"
+      j2_variable_start_string: "[[["
+      j2_variable_end_string: "]]]"
+      # include_yaml:
+      #   - macros/data.yml
+  - blog:
+      blog_dir: blog
+      post_url_date_format: yyyy
+      archive: false
+      categories: false
+  - tags:
+      tags_file: blog/tags.md
   - search
   - minify:
       minify_html: true
