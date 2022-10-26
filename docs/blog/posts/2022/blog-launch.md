@@ -32,7 +32,8 @@ Did you decide to contribute a blog post? That's great. Here is what you need to
 1. Create a file under `./docs/blog/posts/<year>/<your-filename>.md`. A `<year>` is in the `YYYY` format and stands for the year the post was authored.
     The filename you choose for your post is completely up to you and doesn't affect a URL or title of the blog post.
 2. Write :smile: Use the classic markdown syntax and optionally apply our [advanced styling](#styling) for visual dominance.
-3. Add yourself as a new [author](#authors) if this is your first contribution.
+3. Add a [date][date] to the post metadata.
+4. Add yourself as a new [author](#authors) if this is your first contribution.
 4. Create a new git branch and commit your post.
 5. Check how your article looks using the live web server started with the `make serve-insiders` target[^1].
 6. If all looks great, raise a PR with your work so we can review and merge it.
@@ -347,3 +348,4 @@ Paragraphs can be written on the next line and must be indented by four spaces:
 [^2]: Example footnote
 
 [authors-file]: https://github.com/srl-labs/learn-srlinux/blob/main/docs/blog/.authors.yml
+[date]: https://github.com/srl-labs/learn-srlinux/blob/main/docs/blog/posts/2022/blog-launch.md?plain=1#L2
