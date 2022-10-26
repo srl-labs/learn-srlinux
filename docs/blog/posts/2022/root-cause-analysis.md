@@ -1,12 +1,14 @@
 ---
+date: 2022-10-27
 authors:
   - jbemmel
 ---
-# Root √cause analysis
+# Root cause analysis
 
 The year is 2023. You wake up to a subtle 'ping' from your phone 📱, signifying there is a message from someone important. Still half asleep you reach out and grab it, glancing at the screen. It says: "The network went out - you're fired!"
 
 Rollback to the present day, where I can confidentially share that this is exactly the kind of scenario that our engineers had in mind when they designed the new [Event Handler](https://learn.srlinux.dev/kb/event-handler/) feature for SR Linux. Because you can never have enough flexibility to add just the right amount of automation, configuring things properly and - critically - keeping track of changes to the configuration (and whichever #!$!! person made them)
+<!-- more -->
 
 ![image](https://user-images.githubusercontent.com/2031627/198035448-1a2c3987-d2fb-48ff-81b8-2322498d40b9.png)
 
