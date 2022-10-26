@@ -13,7 +13,48 @@ Rollback to the present day, where I can confidentially share that this is exact
 <center>![image](https://user-images.githubusercontent.com/2031627/198035448-1a2c3987-d2fb-48ff-81b8-2322498d40b9.png){: class="img-shadow"}</center>
 <center><small>"Backup config" event handler instance config</small></center>
 
-To make things more practical, take a look at [this Python script](https://github.com/jbemmel/opergroup-lab/blob/main/backup_config.py) which uses [the Event Handler](https://documentation.nokia.com/srlinux/22-6/SR_Linux_Book_Files/Event_Handler_Guide/eh-overview.html) mechanism to scp a backup of the config to any destination of your choice, whenever something or someone commits a change. This is just a quick starting point of course - you may want to make it more elaborate and (for example) have the system send you a text for approval, with automatic rollback in case you don't approve within a certain amount of time (configurable). Or maybe you're thinking to add some Blockchain logic there, creating indisputable proof that things happened the way you say they did. Go for it!
+To make things more practical, take a look at [this Python script](https://github.com/jbemmel/opergroup-lab/blob/main/backup_config.py) which uses [the Event Handler](https://documentation.nokia.com/srlinux/22-6/SR_Linux_Book_Files/Event_Handler_Guide/eh-overview.html) mechanism to scp a backup of the config to any destination of your choice, whenever something or someone commits a change.
+
+``` py title="backup_config.py" linenums="1"
+import json, time
+
+# main entry function for event handler
+def event_handler_main(in_json_str):
+    # parse input json string passed by event handler
+    in_json = json.loads(in_json_str)
+    paths = in_json["paths"]
+    options = in_json["options"]
+    debug = options.get("debug") == "true"
+
+    if debug:
+       print( in_json_str )
+
+    target = options.get("target", None)
+    if target:
+      timestamp = None
+      for p in paths:
+        if p['path']=="system configuration last-change":
+          timestamp = p['value']
+          break
+        # elif p['path'] starts with "system aaa authentication session" ...
+
+      if not timestamp:
+        t = time.gmtime() # in UTC
+        timestamp = '{:04d}-{:02d}-{:02d}_{:02d}:{:02d}:{:02d}_UTC'.format(t[0], t[1], t[2], t[3], t[4], t[5])
+      response = { "actions": [
+        { "run-script": {
+           "cmdline": f"ip netns exec srbase-mgmt /usr/bin/scp /etc/opt/srlinux/config.json {target}/config-{timestamp}.json"
+          }
+        }
+      ] }
+      return json.dumps(response)
+
+    print( "Error: no 'target' defined" )
+    return { "actions": [] }
+```
+The script should be fairly self-explanatory: It gets the ```target``` from the configuration and the timestamp of the change, and then invokes a standard Linux ```scp``` command (making sure it runs in the correct [network namespace](https://linuxhint.com/use-linux-network-namespace/)). Although it does not currently do anything with the username, those skilled in the art will appreciate that this could easily be added.
+
+The above is just a quick starting point of course - you may want to make it more elaborate and (for example) have the system send you a text for approval, with automatic rollback in case you don't approve within a certain amount of time (configurable). Or maybe you're thinking to add some Blockchain logic there, creating indisputable proof that things happened the way you say they did. Go for it!
 
 My point is simple: You need a truly open system. A platform that allows you to configure and automate things the way you like to do them, unrestricted by vendor imposed limitations or poor product design choices. Because if not, one day you may find yourself waking up to that 'ping'. Root cause? You didn't pick that truly open network platform when you had the chance...
 
