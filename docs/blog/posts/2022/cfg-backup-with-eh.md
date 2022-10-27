@@ -7,7 +7,7 @@ tags:
   - config management
   - backup
 ---
-# Root cause analysis
+# Configuration backup with Event Handle
 
 The year is 2023. You wake up to a subtle 'ping' from your phone 📱, signifying there is a message from someone important. Still half asleep you reach out and grab it, glancing at the screen. It says: "The network went out - you're fired!"
 
@@ -64,10 +64,12 @@ The script should be fairly self-explanatory: It gets the `target` from the conf
 
     The reason plain `scp` has been used in this example is because `scp` is shipped with the linux subsystem of SR Linux, and `git` doesn't. When `git` becomes available on SR Linux, we may update this example with `git`-friendly backup option.
 
-The above is just a quick starting point of course - you may want to make it more elaborate and (for example) have the system send you a text for approval, with automatic rollback in case you don't approve within a certain amount of time (configurable). Or maybe you're thinking to add some Blockchain logic there, creating indisputable proof that things happened the way you say they did. Go for it!
+The above is just a quick starting point of course - you may want to make it more elaborate and (for example) have the system send you a text for approval, with automatic rollback in case you don't approve within a certain amount of time (configurable). Or maybe you're thinking to add some Blockchain logic there, creating indisputable proof that things happened the way you say they did. Go for it![^1]
 
 My point is simple: You need a truly open system. A platform that allows you to configure and automate things the way you like to do them, unrestricted by vendor imposed limitations or poor product design choices. Because if not, one day you may find yourself waking up to that 'ping'. Root cause? You didn't pick that truly open network platform when you had the chance...
 
 !!! note "Disclaimer"
     Events and people referenced in this story are fictional. Any resemblance to existing persons or events is completely accidental.
     And we both know this would never happen to you, right? Because you always make the right choices :man_raising_hand:
+
+[^1]: Micro Python backend that powers the Event Handler framework doesn't allow you to install extra packages. But you can use external APIs via standard lib HTTP client and integrate with them to build advanced pipelines. Another option is to leverage `run-script` action and call an external binary/script that can leverage external dependencies.
