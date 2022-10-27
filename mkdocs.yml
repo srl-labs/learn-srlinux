@@ -8,7 +8,6 @@ nav:
       - Configuration management: kb/cfgmgmt.md
       - Interfaces: kb/ifaces.md
       - Network instances: kb/netwinstance.md
-      - Event Handler: kb/event-handler.md
   - Tutorials:
       # - SR Linux tutorials: tutorials/about.md
       - tutorials/index.md
@@ -20,11 +19,11 @@ nav:
               - Summary: tutorials/l2evpn/summary.md
       - Infrastructure:
           - KNE:
-            - tutorials/infrastructure/kne/index.md
-            - Installation: tutorials/infrastructure/kne/installation.md
-            - Topology: tutorials/infrastructure/kne/topology.md
-            - SR Linux with Openconfig services:
-              - tutorials/infrastructure/kne/srl-with-oc-services/index.md
+              - tutorials/infrastructure/kne/index.md
+              - Installation: tutorials/infrastructure/kne/installation.md
+              - Topology: tutorials/infrastructure/kne/topology.md
+              - SR Linux with Openconfig services:
+                  - tutorials/infrastructure/kne/srl-with-oc-services/index.md
       - MPLS:
           - LDP-based MPLS:
               - Introduction: tutorials/mpls/mpls-ldp/intro.md
