@@ -14,7 +14,7 @@ KNE topology file can be provided in the following formats:
 Both prototext and YAML files offer the same functionality; given the dominance of the prototext format in the kne repository, we will use this format in the tutorial.
 
 !!!tip
-    The parts of the topology used in this section are taken from the [`2node-srl-ixr6-with-oc-services.pbtxt`](https://github.com/openconfig/kne/blob/main/examples/srlinux/2node-srl-ixr6-with-oc-services.pbtxt) topology file hosted at the kne repository.
+    The parts of the topology used in this section are taken from the [`2node-srl-ixr6-with-oc-services.pbtxt`](https://github.com/openconfig/kne/blob/main/examples/nokia/srlinux-services/2node-srl-ixr6-with-oc-services.pbtxt) topology file hosted at the kne repository.
 
 ## Topology Name
 
