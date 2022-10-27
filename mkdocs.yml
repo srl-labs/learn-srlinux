@@ -8,7 +8,6 @@ nav:
       - Configuration management: kb/cfgmgmt.md
       - Interfaces: kb/ifaces.md
       - Network instances: kb/netwinstance.md
-      - Event Handler: kb/event-handler.md
   - Tutorials:
       # - SR Linux tutorials: tutorials/about.md
       - tutorials/index.md

@@ -2,10 +2,25 @@
 comments: true
 ---
 
-A [MicroPython](../../../../kb/event-handler.md#micropython) script is a central piece of the framework. It allows users to create[^1] programmable logic to handle events and thus presents a flexible interface for adding custom functionality to the Nokia SR Linux platform.
+A MicroPython script is a central piece of the framework. It allows users to create programmable logic to handle events and thus presents a flexible interface for adding custom functionality to the Nokia SR Linux platform.
+
+Writing MicroPython scripts for the Event Handler is very much like writing regular Python scripts; a developer just needs to keep in mind a limited set of standard library modules available to them.
+
+For testing purposes, users may leverage `ghcr.io/srl-labs/upy:1.18` container image to execute their scripts against a MicroPython interpreter used in SR Linux. Granted, they add a `main()` function to their script in addition to the `event_hander_main()` function required by the framework.
+
+VS Code users can create a dev container with the above image to develop inside the container with MicroPython interpreter as demonstrated in [opergroup-lab repo](https://github.com/srl-labs/opergroup-lab/tree/main/.devcontainer).
+
+!!!note
+    Event Handler scripts may exist in two locations:
+
+    1. `/etc/opt/srlinux/eventmgr/` for user-provided scripts
+    2. `/opt/srlinux/eventmgr` for Nokia-provided scripts.
+
+    No other directory hierarchy can be used.
 
 ## Input
-As explained in the [KB article](../../../../kb/event-handler.md#input) Event Handler expects to find and execute a specific function - `event_handler_main(in_json_str)` - which takes in a json string as its single argument.  
+
+As explained in the [official docs][eh-script] Event Handler expects to find and execute a specific function - `event_handler_main(in_json_str)` - which takes in a json string as its single argument.  
 For the oper-group use case, the input JSON string will consist of the current state of the two uplinks and the provided options. For example, the following JSON is expected to be passed to a function when `ethernet-1/49` operational state goes to `down`:
 
 ```json
@@ -30,6 +45,7 @@ For the oper-group use case, the input JSON string will consist of the current s
 ```
 
 ## Script walkthrough
+
 Given the input JSON, let's have a look the script that implements the oper-group feature in its entirety.
 
 ```py linenums="1"
@@ -87,6 +103,7 @@ downlinks new state = {downlinks_new_state}"
 ```
 
 ### Parsing input JSON
+
 Starting with the `event_handler_main` func we parse the incoming JSON string and extracting the relevant portions:
 
 ```py
@@ -94,9 +111,11 @@ in_json = json.loads(in_json_str)
 paths = in_json["paths"]
 options = in_json["options"]
 ```
+
 Paths and Options are the only objects in the incoming JSON, which we respectfully save in the like-named variables.
 
 ### Evaluating the desired state of downlinks
+
 With the input parsed, we enter the central piece of the script where we make a decision on what state should the access links be in, given the inputs we received.
 
 ```py
@@ -105,6 +124,7 @@ downlinks_new_state = (
     "down" if num_up_uplinks < required_up_uplinks(options) else "up"
 )
 ```
+
 First, we count the number of uplinks in oper-state up, this is done with `count_up_uplinks()` function which simply walks through the current state of the uplinks passed into the script by the Event Handler.
 
 ```py
@@ -130,6 +150,7 @@ If the required number of operational uplinks is less than the required number o
 The desired state of the downlinks is saved in `downlinks_new_state` variable.
 
 ### Debugging
+
 It is useful to take a pause here and embed some debugging log outputs for the key variables of a script. In our case, we've added a print statement that dumps important variables of our script.
 
 ```py
@@ -149,7 +170,8 @@ info from state /system event-handler instance opergroup last-stdout-stderr
 ```
 
 ### Composing output
-At this point, our script is able to define the desired state of the downlinks, based on the state of the user-defined uplinks and the required number of healthy uplinks. For the Event Handler to take any action, the script needs to output a JSON string following the [expected format](../../../../kb/event-handler.md#output).
+
+At this point, our script is able to define the desired state of the downlinks, based on the state of the user-defined uplinks and the required number of healthy uplinks. For the Event Handler to take any action, the script needs to output a JSON string following the [expected format][eh-script-output].
 
 ```py
 response_actions = []
@@ -169,13 +191,14 @@ return json.dumps(response)
 ```
 
 This code snippet shows the way to create an output JSON, using the calculated `downlinks_new_state` and the list of downlinks provided via `down-links` option.  
-We range over the down-links option to append a structure that Event Handler expects to see in output JSON and using [`set-ephemeral-path`](../../../../kb/event-handler.md#set-ephemeral-cfg) action that will set oper state of the downlinks to the desired value (up or down).
+We range over the down-links option to append a structure that Event Handler expects to see in output JSON and using [`set-ephemeral-path`][eh-set-eph-path] action that will set oper state of the downlinks to the desired value (up or down).
 
 The output is provided via `response` dictionary, that we marshal to JSON encoding at the end before returning from the function. This routine will provide a JSON back to the Event Handler and since it is formed in a well-known way, Event Handler will process and execute the actions passed to it.
 
 Consequently, by receiving back a list of actions from the script, Event Handler will implement the oper-group feature when a state of a group of downlinks is derived from the state of a group of uplinks.
 
 ### Summary
+
 Let's take a few input examples and see which outputs will be generated by the script to better understand the logic of the automation.
 
 We start in a healthy state with both uplinks in operation and oper-group event handler configured as per the [previous steps](oper-group-cfg.md).
@@ -204,7 +227,7 @@ In the event of a single uplink interface going operationally down:
     }
     ```
 === "Calculated parameters"
-    * Number of required uplinks doesn't change as it is an option provided as user input. It is always `1` in our case.
+    *Number of required uplinks doesn't change as it is an option provided as user input. It is always `1` in our case.
     * Detected number of uplinks in operational state equals `1`, as we range through the `paths` in the incoming JSON and count paths which have `up` value for the `interface ethernet-* oper-state` leaf.
     * Downlinks' new state should be `"up"`, since we still have a minimum number of operational uplinks = `1`.
 
@@ -246,7 +269,7 @@ Then let's see what happens if the second uplink goes down.
     }
     ```
 === "Calculated parameters"
-    * Number of required uplinks doesn't change as it is an option provided as user input. It is always `1` in our case.
+    *Number of required uplinks doesn't change as it is an option provided as user input. It is always `1` in our case.
     * Detected number of uplinks in operational state equals `0`, as we range through the `paths` in the incoming JSON and count paths which have `up` value for the `interface ethernet-* oper-state` leaf.
     * Downlinks' new state should be `"down"`, since the number of operational uplinks (`0`) is less than the required number of operational uplinks.
 
@@ -265,6 +288,7 @@ Then let's see what happens if the second uplink goes down.
     ```
 
 ## Off-box testing
+
 Although it is absolutely possible to test Event Handler scripts using [containerized SR Linux image](../../../../get-started.md), it makes a lot of sense to test the script off-box.
 
 Since scripts are provided with a known input JSON structure, we can pass it to a script's `main()` function as if it was provided by the Event Manager itself. Consider the following code snippet that is part of the opergroup.py script we just walked through:
@@ -301,7 +325,7 @@ if __name__ == "__main__":
     sys.exit(main())
 ```
 
-Since Event Handler's entrypoint is `event_handler_main()` func, we can create a `main()` function that will a variable with a JSON-encoded string that follows the schema of the [input](../../../../kb/event-handler.md#input) argument. In essence, we are mocking the Event Handler and provide a hand-crafted input JSON to the `event_handler_main()` function.
+Since Event Handler's entrypoint is `event_handler_main()` func, we can create a `main()` function that contains a variable with a JSON-encoded string that follows the schema of the [input][eh-script-input] argument; this variable is then passed to the `event_handler_main()` simulating Event Handler invokation. In essence, we are mocking the Event Handler and provide a hand-crafted input JSON to the `event_handler_main()` function.
 
 Now, we can test our script on any system that has Python/MicroPython installed, for example:
 
@@ -350,7 +374,8 @@ Now, we can test our script on any system that has Python/MicroPython installed,
     ```
 
 ## Script delivery
-Scripts created by users must be delivered to the SR Linux nodes and available by the [well-known location](../../../../kb/event-handler.md#location). Any file transfer technique can be used to deliver the source files/packages.
+
+Scripts created by users must be delivered to the SR Linux nodes and available by the well-known location. Any file transfer technique can be used to deliver the source files/packages.
 
 When using [containerlab](https://containerlab.dev), users may take advantage of the `binds` option of a node and bind mount the script to its location. This is exactly how we do it in the [opergroup-lab](https://github.com/srl-labs/opergroup-lab/blob/6a1ea9be5003b136f27b26db34a2130885f6cfb5/opergroup.clab.yml#L16):
 
@@ -364,5 +389,7 @@ topology:
         - opergroup.py:/etc/opt/srlinux/eventmgr/opergroup.py
 ```
 
-
-[^1]: Check [this article](../../../../kb/event-handler.md#dev-environment) for ways of writing code for MicroPython
+[eh-script]: https://documentation.nokia.com/srlinux/22-6/SR_Linux_Book_Files/Event_Handler_Guide/scripts.html
+[eh-script-input]: https://documentation.nokia.com/srlinux/22-6/SR_Linux_Book_Files/Event_Handler_Guide/scripts.html#scripts__section_hk1_z1m_stb
+[eh-script-output]: https://documentation.nokia.com/srlinux/22-6/SR_Linux_Book_Files/Event_Handler_Guide/scripts.html#scripts__section_hjd_sbm_stb
+[eh-set-eph-path]: https://documentation.nokia.com/srlinux/22-6/SR_Linux_Book_Files/Event_Handler_Guide/scripts.html#actions__section_ewp_4md_rtb

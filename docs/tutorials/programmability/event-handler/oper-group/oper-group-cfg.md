@@ -13,7 +13,8 @@ What would have helped to prevent traffic to get blackholed is to not let it be 
 In this section, we will look into how a particular flavor of the oper-group feature is realized using the Event Handler framework.
 
 ## Event Handler-based Oper Group
-Starting with the 22.6.1 release SR Linux comes equipped with the [**Event Handler**](../../../../kb/event-handler.md) framework that allows users to write custom Python scripts and has these scripts be called in the event state paths change the value. Event Handler enables SR Linux operators to add programmable logic to handle events that happen in a system.
+
+Starting with the 22.6.1 release SR Linux comes equipped with the [**Event Handler**][eh-overview] framework that allows users to write custom Python scripts and has these scripts be called in the event state paths change the value. Event Handler enables SR Linux operators to add programmable logic to handle events that happen in a system.
 
 The following sequence[^1] captures the core logic of the Event-Handler framework:
 
@@ -40,18 +41,19 @@ A:leaf1# info
 
 In this tutorial we will touch upon the most crucial configuration options:
 
-* `paths` - to select paths for monitoring state changes
-* `options` - to provide optional parameters to a script
-* `upython-script` - a path to a MicroPython script that contains the automation logic
+- `paths` - to select paths for monitoring state changes
+- `options` - to provide optional parameters to a script
+- `upython-script` - a path to a MicroPython script that contains the automation logic
 
 ## Monitored paths
+
 The oper-group feature requires users to define a set of uplinks that are crucial for a working service. By monitoring the state of these selected uplinks oper-group decides if the downlinks' operational state should be changed.
 
 In the context of this tutorial, on `leaf1` two uplink interfaces `ethernet-1/49` and `ethernet-1/50` should be put under monitoring to avoid blackholing of traffic in case their oper-state will change to a down state.
 
 <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:13,&quot;zoom&quot;:3,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/srl-labs/learn-srlinux/diagrams/opergroup.drawio&quot;}"></div>
 
-Event Handler configuration contains [`paths`](../../../../kb/event-handler.md#paths) leaf-list for users to select objects for monitoring. Paths should be provided in a CLI format.
+Event Handler configuration contains [`paths`][eh-paths] leaf-list for users to select objects for monitoring. Paths should be provided in a CLI format.
 
 To monitor the operational state of a given interface the `interface <interface-name> oper-state` leaf shall be used; in our case, this requirement will translate to the following configuration:
 
@@ -68,14 +70,15 @@ A:leaf1# info
 With this configuration Event Handler will subscribe to state changes for `oper-state` leaf of the two interfaces.
 
 ## Options
+
 By just monitoring the operational state of certain uplinks we don't gain much. There needs to be a coupling between the monitored uplinks and the downlinks.
 
-* Which access links should react to state changes of the uplinks?
-* How many uplinks must be "healthy" before we bring down access links?
+- Which access links should react to state changes of the uplinks?
+- How many uplinks must be "healthy" before we bring down access links?
 
-To answer these questions we need to provide additional parameters to the Event Handler and this is done via [`options`](../../../../kb/event-handler.md#options).
+To answer these questions we need to provide additional parameters to the Event Handler and this is done via [`options`][eh-options].
 
-Options are a user-defined set of parameters that will be [passed to a script](../../../../kb/event-handler.md#input) along with the state of the monitored paths. For the oper-group feature we are going to define two options, that help us parametrize 
+Options are a user-defined set of parameters that will be [passed to a script][eh-script] along with the state of the monitored paths. For the oper-group feature we are going to define two options, that help us parametrize
 
 ```sh
 --{ * candidate shared default }--[ system event-handler instance opergroup ]--
@@ -103,7 +106,8 @@ In the script body, we will implement the logic of calculating the number of upl
 We will also add a third option that will indicate to our script that it should print the value of certain script variables as explained later in the [debug](script.md#debugging) section. This option will help us explain script operations when we reach [Oper group in action chapter](opergroup-operation.md).
 
 ## Script
-Event-Handler is a programmable framework that doesn't enforce any particular logic when it comes to handling events occurring in a system. Instead, users are free to create their [scripts](../../../../kb/event-handler.md#script) and thus program the handling of events.
+
+Event-Handler is a programmable framework that doesn't enforce any particular logic when it comes to handling events occurring in a system. Instead, users are free to create their [scripts][eh-script] and thus program the handling of events.
 
 As part of the event handler instance configuration, users have to provide a path to a MicroPython script:
 
@@ -122,6 +126,7 @@ A:leaf1# info
 This script will be called each time a state of any monitored paths changes.
 
 ## Resulting configuration
+
 When paths, options and script location are put together the Event Handler instance config takes the following shape:
 
 ```sh
@@ -149,10 +154,15 @@ A:leaf1# info
 
 1. Monitor the operational state of these uplinks.
 2. The following links we consider "access" links, their operational state will depend on the state of the uplinks when processed by a script.
-3. Required number of uplinks to be in the oper-up state before putting down downlinks. 
+3. Required number of uplinks to be in the oper-up state before putting down downlinks.
 4. Path to the script file which defines the logic of the event-handling routine using the state changes of the monitored paths and provided options.
 5. [Debug](script.md#debugging) option to indicate to a scrip that it should print additional debugging information.
 
 Now when the configuration is done, it is time to dive into the MicroPython code itself; at the end of the day, it is the core component of the framework.
 
-[^1]: see [the sequence diagram](../../../../kb/event-handler.md) for additional details.
+[^1]: see [the sequence diagram][eh-overview] for additional details.
+
+[eh-overview]: https://documentation.nokia.com/srlinux/22-6/SR_Linux_Book_Files/Event_Handler_Guide/eh-overview.html
+[eh-paths]: https://documentation.nokia.com/srlinux/22-6/SR_Linux_Book_Files/Event_Handler_Guide/event_handler.html#event-handler-config__section_ojq_kxt_stb
+[eh-options]: https://documentation.nokia.com/srlinux/22-6/SR_Linux_Book_Files/Event_Handler_Guide/event_handler.html#event-handler-config__section_umk_zb5_stb
+[eh-script]: https://documentation.nokia.com/srlinux/22-6/SR_Linux_Book_Files/Event_Handler_Guide/scripts.html
