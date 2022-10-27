@@ -16,7 +16,7 @@ comments: true
 
 KNE repository contains a set of [example topologies](https://github.com/openconfig/kne/tree/main/examples) that aim to help new users get started with using KNE to orchestrate virtual network labs. SR Linux team maintains several examples, which include SR Linux nodes.
 
-This chapter explains the details behind the [`2node-srl-ixr6-with-oc-services.pbtxt`](https://github.com/openconfig/kne/blob/main/examples/srlinux/2node-srl-ixr6-with-oc-services.pbtxt) example topology.
+This chapter explains the details behind the [`2node-srl-ixr6-with-oc-services.pbtxt`](https://github.com/openconfig/kne/blob/main/examples/nokia/srlinux-services/2node-srl-ixr6-with-oc-services.pbtxt) example topology.
 
 ## Topology diagram
 
@@ -287,7 +287,7 @@ Lab users still need to [configure interface or device identifiers](https://docu
 [kind-install]: https://kind.sigs.k8s.io/docs/user/quick-start#installation
 [knedoc]: https://github.com/openconfig/kne/#readme
 [kne-install]: https://github.com/openconfig/kne/blob/main/docs/setup.md
-[lab]: https://github.com/openconfig/kne/blob/main/examples/srlinux/2node-srl-ixr6-with-oc-services.pbtxt
+[lab]: https://github.com/openconfig/kne/blob/main/examples/nokia/srlinux-services/2node-srl-ixr6-with-oc-services.pbtxt
 [oc-doc]: https://documentation.nokia.com/srlinux/22-6/SR_Linux_Book_Files/SysMgmt_Guide/data-models.html#openconfig-ov
 [p4rt-doc]: https://documentation.nokia.com/srlinux/22-6/SR_Linux_Book_Files/P4RT_Guide/p4rt-overview.html
 [rd-linkedin]: https://linkedin.com/in/rdodin
