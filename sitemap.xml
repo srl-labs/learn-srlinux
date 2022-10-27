@@ -46,11 +46,6 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://learn.srlinux.dev/kb/event-handler/</loc>
-         <lastmod>2022-10-27</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
          <loc>https://learn.srlinux.dev/kb/hwtypes/</loc>
          <lastmod>2022-10-27</lastmod>
          <changefreq>daily</changefreq>
