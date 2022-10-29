@@ -196,5 +196,5 @@ supported models:
 ```
 
 [^1]: Centos 7.3+ although having a 3.x kernel is still capable of running SR Linux container
-[^2]: for example [gnmic](https://gnmic.kmrd.dev)
+[^2]: for example [gnmic](https://gnmic.openconfig.net)
 [^3]: The labs referenced on this site are deployed with containerlab unless stated otherwise

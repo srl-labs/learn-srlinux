@@ -8,8 +8,8 @@
 | **Source Code**          | [`karimra/srl-prometheus-exporter`][src]                                                                                                                                                                                                                                     |
 | **Authors**              | Karim Radhouani [:material-linkedin:][auth1_linkedin] [:material-twitter:][auth1_twitter]                                                                                                                                                                                    |
 
-
 ## Introduction
+
 Most Streaming Telemetry stacks are built with a telemetry collector[^1] playing a key part in getting data out of the network elements via gNMI subscriptions. While this deployment model is valid and common it is not the only model that can be used.
 
 With SR Linux Prometheus Exporter agent we offer SR Linux users another way to consume Streaming Telemetry in a scaled out fashion.
@@ -35,6 +35,7 @@ Adopting this model has some interesting benefits beyond load sharing the collec
     Agents can register the prometheus endpoints they expose in [Consul](https://www.consul.io/), which will enable Prometheus server to auto-discover the new nodes as they come This is your self-organizing telemetry fleet.
 
 ## Agent's operations
+
 <figure markdown>
   [![pic1](https://gitlab.com/rdodin/pics/-/wikis/uploads/5a67fd6f691cab6e94ddbeebc2dd95ed/CleanShot_2021-11-10_at_14.36.03_2x.png)](https://gitlab.com/rdodin/pics/-/wikis/uploads/5a67fd6f691cab6e94ddbeebc2dd95ed/CleanShot_2021-11-10_at_14.36.03_2x.png)
   <figcaption>Agent's core components and interactions map</figcaption>
@@ -51,8 +52,7 @@ The following diagram outlines the core components of the agent.
 
 Consult with the repository's readme on how to install and configure this agent.
 
-
-[^1]: collectors such as [gnmic](https://gnmic.kmrd.dev) and others.
+[^1]: collectors such as [gnmic](https://gnmic.openconfig.net) and others.
 [srl]: https://www.nokia.com/networks/products/service-router-linux-NOS/
 [src]: https://github.com/karimra/srl-prometheus-exporter
 [auth1_linkedin]: https://www.linkedin.com/in/karim-radhouani/

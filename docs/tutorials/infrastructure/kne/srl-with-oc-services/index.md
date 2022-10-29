@@ -181,7 +181,7 @@ gNMI instance configured in the `mgmt` network instance uses native [YANG models
 Users can change the `yang-models` leaf value to `openconfig` should they want to use openconfig paths with gNMI without providing the `origin` value.
 
 ??? "Example"
-    gNMI service can be tested using [gnmic](https://gnmic.kmrd.dev) cli client.
+    gNMI service can be tested using [gnmic](https://gnmic.openconfig.net) cli client.
     === "Capabilities"
         ```bash
         ❯ gnmic -a 172.18.0.50:9339 -u admin -p admin --skip-verify capabilities

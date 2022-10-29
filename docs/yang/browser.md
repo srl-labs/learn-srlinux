@@ -107,4 +107,4 @@ The textual paths can be, for example, fetched with curl and users can `sed` the
 
 [^1]: extracted with `pyang -f tree`
 [^2]: refer to https://datatracker.ietf.org/doc/html/rfc6020#section-4.2.3
-[^3]: paths are generated from the YANG model with [gnmic](https://gnmic.kmrd.dev/cmd/path/)
+[^3]: paths are generated from the YANG model with [gnmic](https://gnmic.openconfig.net/cmd/path/)

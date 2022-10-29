@@ -14,6 +14,7 @@ As always, this tutorial will be backed up by a lab that readers can effortlessl
 <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:0,&quot;zoom&quot;:3,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/srl-labs/learn-srlinux/diagrams/opergroup.drawio&quot;}"></div>
 
 ## Physical topology
+
 On a physical layer topology interconnections are layed down as follows:
 <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:5,&quot;zoom&quot;:3,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/srl-labs/learn-srlinux/diagrams/opergroup.drawio&quot;}"></div>
 
@@ -23,6 +24,7 @@ On the leaves side, the access interface `Ethernet-1/1`` is part of a LAG interf
 <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:6,&quot;zoom&quot;:3,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/srl-labs/learn-srlinux/diagrams/opergroup.drawio&quot;}"></div>
 
 ## Fabric underlay
+
 In the underlay of a fabric leaves and spines run eBGP protocol to enable leaves to exchange reachability information for their `system0` interfaces.
 
 <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:7,&quot;zoom&quot;:3,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/srl-labs/learn-srlinux/diagrams/opergroup.drawio&quot;}"></div>
@@ -30,6 +32,7 @@ In the underlay of a fabric leaves and spines run eBGP protocol to enable leaves
 eBGP peerings are formed between each leaf and spine pair.
 
 ## Fabric overlay
+
 To support BGP EVPN service, in the overlay iBGP peerings with EVPN address family are established from each leaf to each spine, with spines acting as route reflectors.
 
 <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:8,&quot;zoom&quot;:3,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/srl-labs/learn-srlinux/diagrams/opergroup.drawio&quot;}"></div>
@@ -41,15 +44,16 @@ From the EVPN service standpoint, the mac-vrf instance named `vrf-1` is created 
 Ethernet segments are configured to be in an all-active mode to make sure that every access link is utilized in the fabric.
 
 ## Telemetry stack
-We have enhanced the lab with a telemetry stack featuring [gnmic](https://gnmic.kmrd.dev), prometheus, and grafana - our famous GPG stack. Nothing beats real-time visualization, especially when we want to correlate events happening in the network.
+
+We have enhanced the lab with a telemetry stack featuring [gnmic](https://gnmic.openconfig.net), prometheus, and grafana - our famous GPG stack. Nothing beats real-time visualization, especially when we want to correlate events happening in the network.
 
 | Element    | Address                |
 | ---------- | ---------------------- |
 | Grafana    | https://localhost:3000 |
 | Prometheus | https://localhost:9090 |
 
-
 ## Lab deployment
+
 Start with cloning lab's repository
 
 ```

@@ -1,4 +1,5 @@
 # Always-ON SR Linux Instance
+
 <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/hellt/drawio-js@main/embed2.js" async></script>
 It is extremely easy and hassle free to run SR Linux, thanks to the [public container image](get-started.md#getting-the-image) and topology builder tool - [containerlab](https://containerlab.srlinux.dev).
 
@@ -7,6 +8,7 @@ But wouldn't it be nice to have an SR Linux instance running in the cloud open f
 <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:1,&quot;zoom&quot;:2,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/srl-labs/learn-srlinux/diagrams/alwayson&quot;}"></div>
 
 ## What is Always-ON SR Linux for?
+
 The Always-ON SR Linux instance is an Internet reachable SR Linux container running in the cloud. Although running in the read-only mode, the Always-ON instance can unlock some interesting use cases, which won't require anything but Internet connection from a curious user.
 
 * **getting to know SR Linux CLI**  
@@ -30,12 +32,14 @@ Always-ON SR Linux instance comes up with the SSH and gNMI management interfaces
 | gNMI[^1]     | <pre><code>gnmic -a on.srlinux.dev:39010 -u guest -p n0k1asrlinux --skip-verify \<br/>      capabilities</code></pre>                                                                                                           |
 | JSON-RPC[^2] | http://http.on.srlinux.dev                                                                                                                                                                                                      |
 
-[^1]: an example of invoking a gNMI Capabilities RPC using [gnmic](https://gnmic.kmrd.dev) CLI client.
+[^1]: an example of invoking a gNMI Capabilities RPC using [gnmic](https://gnmic.openconfig.net) CLI client.
 
 ### gNMI
+
 SR Linux runs a TLS-enabled gNMI server with a certificate already present on the system. The users of the gNMI interface can either skip verification of the node certificate, or they can use this [CA.pem](https://gist.github.com/hellt/f5c1d97a37c86c20e3370a392c073cc0) file to authenticate the node's TLS certificate.
 
 ## Guest user
+
 The `guest` user has the following settings applied to it:
 
 1. Read-only mode
@@ -44,6 +48,7 @@ The `guest` user has the following settings applied to it:
 Although the read-only mode is enforced, the guest user can still enter in the configuration mode and perform configuration actions, it is just that `guest` can't commit them.
 
 ## Always-ON sandbox setup
+
 The Always-ON sandbox consists of SR Linux node connected with a LAG interface towards an Nokia SR OS node.
 
 <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:0,&quot;zoom&quot;:2,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/srl-labs/learn-srlinux/diagrams/alwayson&quot;}"></div>
@@ -58,7 +63,6 @@ In the overlay the following services are configured:
 
 1. Layer 2 EVPN with VXLAN dataplane[^1] with `mac-vrf-100` network instance created on SR Linux
 2. Layer 3 EVPN with VXLAN dataplane with `ip-vrf-200` network instance created on SR Linux
-
 
 [^1]: check [this tutorial](tutorials/l2evpn/intro.md) to understand how this service is configured
 [^2]: HTTP service running over port 80
