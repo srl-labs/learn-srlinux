@@ -12,7 +12,7 @@ comments: true
 | **Lab components**          | 6 Nokia SR Linux nodes, 2 Linux nodes                                                                               |
 | **Resource requirements**   | :fontawesome-solid-microchip: 4 vCPU <br/>:fontawesome-solid-memory: 6 GB                                           |
 | **Lab**                     | [srl-labs/opergroup-lab][lab]                                                                                       |
-| **Main ref documents**      |                                                                                                                     |
+| **Main ref documents**      | [Event Handler Guide][eh-guide]                                                                                     |
 | **Version information**[^1] | [`containerlab:0.26.1`][clab-install], [`srlinux:22.3.2`][srlinux-container], [`docker-ce:20.10.2`][docker-install] |
 
 [lab]: https://github.com/srl-labs/opergroup-lab
@@ -43,8 +43,6 @@ When a leaf loses its uplinks, the oper-group gets notified about that fact and 
 
 In this tutorial, we will see how SR Linux's Event Handler framework enables oper-group capability.
 
-
-
-
-
 [^1]: the following versions have been used to create this tutorial. The newer versions might work; please pin the version to the mentioned ones if they don't.
+
+[eh-guide]: https://documentation.nokia.com/srlinux/22-6/SR_Linux_Book_Files/Event_Handler_Guide/eh-overview.html
