@@ -163,7 +163,7 @@ markdown_extensions:
   - markdown.extensions.def_list
   - markdown.extensions.footnotes
   - markdown.extensions.meta
-  - markdown.extensions.toc:
+  - toc:
       permalink: "#"
   - pymdownx.arithmatex
   - pymdownx.betterem:
