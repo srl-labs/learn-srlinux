@@ -672,6 +672,21 @@ rtt min/avg/max/mdev = 2.319/3.816/5.754/1.438 ms
 
 Great, it works! We have built a lab simulating a simple IXP setup where members exchange their routes via Route Server in an open-policy fashion. We followed the control plane operations where BGP peerings were established between each memeber and a route server. And finally, we verified that the datapath has been programmed in accordance to the control plane instructions, and the datapath works between the networks of the respective members.
 
+## Lab lifecycle
+
+Not a single lab is perfect on the first try. Thus, you will often find yourself in need to make changes to the configuration, topology and design. Containerlab strives to give you the best possible user experience in managing your lab and is equipped with a handful set of commands.
+
+Once you made some changes to the topology or attached configurations you can redeploy your lab by first removing the running and deploying it again. This sounds like a lot of moves, but `clab dep -c` (short for `containerlab deploy --reconfigure`) shortcut is all you need to achieve that.
+
+When you need to just remove the lab from your host without re-spinning it up, use `clab des -c` (short for `containerlab destroy --cleanup`) and everything will be gone like it never was there.
+
+!!!note
+    The bridge is not removed by containerlab when you destroy the lab. You have to remove it manually if needed.
+
+To remind yourself if you have any labs running and which nodes are there, use `clab ins -a` (short for `containerlab inspect --all`).
+
+These commands will quickly get into your muscle memory and you will feel like you've never been so fast in running labs!
+
 ## What next?
 
 This lab was designed to be a trivial IXP setup. It lays a foundation on which you can build way more elaborated use cases:
