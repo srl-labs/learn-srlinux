@@ -311,7 +311,7 @@ match from any set large-community local-as:0:neighbor-as
 As the comments indicate, this is a trivialized configuration that automatically peers with any BGP speaker available in the `192.168.0.0/24` network. There is no filtering configured, and every received BGP route is sent to all peers.  
 When `openbgpd` container starts, it reads this file automatically, since we mounted it by the well-known path. As a result of that, the peerings will be automatically set up with our two members running SR Linux and cEOS.
 
-Do you remember [that `exec` statement](), that we have in our topology file?
+Do you remember that `exec` statement, that we have in our topology file?
 
 ```yaml
 topology:
