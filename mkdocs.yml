@@ -63,6 +63,7 @@ nav:
   - Community: community.md
   - Blog:
       - blog/index.md
+      - Subscribe: blog/subscribe.md
 
 site_author: SR Linux
 site_description: >-
