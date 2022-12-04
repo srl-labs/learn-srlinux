@@ -9,7 +9,7 @@ on:
   pull_request:
 
 env:
-  MKDOCS_MATERIAL_VER: 8.5.10-insiders-4.26.2-hellt
+  MKDOCS_MATERIAL_VER: 8.5.11-insiders-4.26.6-hellt
 
 jobs:
   docs-test:
