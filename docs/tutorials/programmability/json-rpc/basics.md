@@ -6,15 +6,16 @@ comments: true
 
 # JSON-RPC Basics
 
-| Summary                     |                                                                                  |
-| --------------------------- | -------------------------------------------------------------------------------- |
-| **Tutorial name**           | JSON-RPC Basics                                                                  |
-| **Lab components**          | Single Nokia SR Linux node                                                       |
-| **Resource requirements**   | :fontawesome-solid-microchip: 2 vCPU <br/>:fontawesome-solid-memory: 4 GB        |
-| **Lab**                     | [single-srlinux][lab]                                                            |
-| **Main ref documents**      | [JSON-RPC Configuration][json-cfg-guide], [JSON-RPC Management][json-mgmt-guide] |
-| **Version information**[^1] | [`srlinux:22.11.1`][srlinux-container], [`containerlab:0.33.0`][clab-install]     |
-| **Authors**                 | Roman Dodin [:material-twitter:][rd-twitter] [:material-linkedin:][rd-linkedin]  |
+| Summary                     |                                                                                              |
+| --------------------------- | -------------------------------------------------------------------------------------------- |
+| **Tutorial name**           | JSON-RPC Basics                                                                              |
+| **Lab components**          | Single Nokia SR Linux node                                                                   |
+| **Resource requirements**   | :fontawesome-solid-microchip: 2 vCPU <br/>:fontawesome-solid-memory: 4 GB                    |
+| **Lab**                     | [single-srlinux][lab]                                                                        |
+| **Main ref documents**      | [JSON-RPC Configuration][json-cfg-guide], [JSON-RPC Management][json-mgmt-guide]             |
+| **Version information**[^1] | [`srlinux:22.11.1`][srlinux-container], [`containerlab:0.33.0`][clab-install]                |
+| **Authors**                 | Roman Dodin [:material-twitter:][rd-twitter] [:material-linkedin:][rd-linkedin]              |
+| **Discussions**             | [:material-twitter: Twitter][twitter-share] · [:material-linkedin: LinkedIn][linkedin-share] |
 
 [rd-linkedin]: https://linkedin.com/in/rdodin
 [rd-twitter]: https://twitter.com/ntdvps
@@ -23,6 +24,8 @@ comments: true
 [json-mgmt-guide]: https://documentation.nokia.com/srlinux/22-6/SR_Linux_Book_Files/SysMgmt_Guide/json-interface.html
 [srlinux-container]: https://github.com/nokia/srlinux-container-image
 [clab-install]: https://containerlab.dev/install/
+[twitter-share]: https://twitter.com/ntdvps/status/1600261024719917057
+[linkedin-share]: https://www.linkedin.com/feed/update/urn:li:activity:7006028123045548033/
 
 As of release 22.11.1, Nokia SR Linux Network OS employs three fully modeled management interfaces:
 
