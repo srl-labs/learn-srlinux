@@ -860,6 +860,9 @@ One of the reasons we ended up having JSON-RPC interface and not RESTCONF was th
 
 With JSON-RPC CLI method we allow users to remotely execute CLI commands while offering HTTP transport reliability and saving users from the burdens of screen scraping.
 
+!!!tip
+    CLI method also allows to call CLI commands that are not modelled, such as aliases or plugins (e.g. `show version`).
+
 Staring with basics, let's see what it takes to execute a simple `show version` command using JSON-RPC?
 
 === "Request"
@@ -1194,6 +1197,40 @@ You guessed it right, you can also perform configuration tasks with CLI method a
             description "this is a new interface"
             admin-state enable
         }
+    ```
+
+#### Tools commands
+
+Remember how we executed the tools commands within the Set method? We can do the same with CLI method, but in this case we provide the command in the CLI-style. Using the same command to clear statistics counters:
+
+=== "Request"
+    ```bash
+    curl -s http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc -d @- <<EOF | jq
+    {
+        "jsonrpc": "2.0",
+        "id": 0,
+        "method": "cli",
+        "params": {
+            "commands": [
+                "tools interface mgmt0 statistics clear"
+            ]
+        }
+    }
+    EOF
+    ```
+=== "Response"
+    The result contains the text output of the tools command which confirms that the command worked:
+
+    ```json
+    {
+      "result": [
+        {
+          "text": "/interface[name=mgmt0]:\n    interface mgmt0 statistics cleared\n\n"
+        }
+      ],
+      "id": 0,
+      "jsonrpc": "2.0"
+    }
     ```
 
 ## HTTPS
