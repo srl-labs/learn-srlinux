@@ -367,7 +367,7 @@ JSON-RPC allows users to batch commands of the same method in the same request. 
 
 ### Set
 
-JSON-RPC is quite flexible when it comes to creating, updating and deleting configuration on SR Linux. And additionally, Set method allows users to execute operational (aka `/tools`) commands.
+JSON-RPC is quite flexible when it comes to creating, updating and deleting configuration on SR Linux[^7]. And additionally, Set method allows users to execute operational (aka `/tools`) commands.
 
 When changing configuration with the Set method, the JSON-RPC server creates a private candidate datastore, applies the changes and performs an implicit commit. Thus, changes are commited automatically (if they are valid) for each RPC.
 
@@ -1283,3 +1283,4 @@ EOF
 [^4]: JSON-RPC, as gNMI, can run in a user-configured network-instance.
 [^5]: https://github.com/openconfig/reference/blob/master/rpc/gnmi/gnmi-path-conventions.md
 [^6]: Tools paths can be viewed in our [tree YANG browser](https://yang.srlinux.dev/v22.11.1/tree.html).
+[^7]: Support for setting configuration with Openconfig schema will be added at a later date. Currently only CLI method allows working with Openconfig schema via `enter oc` command.
