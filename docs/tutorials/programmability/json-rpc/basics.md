@@ -122,7 +122,7 @@ The management interface sends requests[^3] to the JSON-RPC server and receives 
 
     * `jsonrpc` - selects the version of the management interface and at the moment of this writing should be always set to `2.0`.
     * `id` - sets the ID of a request which is echoed back in the response to help correlate the message flows.
-    * `method` - sets one of the supported RPC [methods](#what-json-rpc-offers) used for this request.
+    * `method` - sets one of the supported RPC [methods](#json-rpc-methods) used for this request.
     * `params` - container for RPC commands. We will cover the contents of this container through the practical exercises.
 === "Response"
     ```json
