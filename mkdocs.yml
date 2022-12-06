@@ -39,6 +39,8 @@ nav:
                   - Script: tutorials/programmability/event-handler/oper-group/script.md
                   - Oper group in action: tutorials/programmability/event-handler/oper-group/opergroup-operation.md
                   - Summary: tutorials/programmability/event-handler/oper-group/summary.md
+          - JSON-RPC:
+              - Basics: tutorials/programmability/json-rpc/basics.md
   - NDK:
       - Introduction: ndk/intro.md
       - Developers Guide:
