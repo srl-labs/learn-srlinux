@@ -1284,6 +1284,48 @@ curl -s --cacert ./clab-srl01/ca/root/root-ca.pem https://admin:NokiaSrl1!@clab-
 EOF
 ```
 
+## Error handling
+
+When either of the commands specified in the RPC request message fails, the returned message will contain an error, even if other commands might be correct. This atomicity of the commands is valid for both Get and Set methods.
+
+For example, the following request has two commands, where 2nd command uses a wrong path.
+
+=== "Request"
+    ```bash
+    curl -v http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc -d @- <<EOF
+    {
+        "jsonrpc": "2.0",
+        "id": 0,
+        "method": "get",
+        "params": {
+            "commands": [
+                {
+                    "path": "/interface[name=mgmt0]/statistics",
+                    "datastore": "state"
+                },
+                {
+                    "path": "/system/somethingwrong",
+                    "datastore": "state"
+                }
+            ]
+        }
+    }
+    EOF
+    ```
+=== "Response"
+    ```json
+    {
+      "error": {
+        "code": -1,
+        "message": "Path not valid - unknown element 'somethingwrong'. Options are [features, trace-options, management, configuration, aaa, authentication, warm-reboot, boot, l2cp-transparency, lacp, lldp, mtu, name, dhcp-server, event-handler, ra-guard-policy, gnmi-server, tls, json-rpc-server, bridge-table, license, dns, ntp, clock, ssh-server, ftp-server, snmp, sflow, load-balancing, banner, information, logging, mirroring, network-instance, maintenance, app-management]"
+      },
+      "id": 0,
+      "jsonrpc": "2.0"
+    }
+    ```
+
+The response will contain just an error container, even though technically the first command is correct. Note, that the HTTP response code is still `200 OK`, since JSON-RPC was able to deliver and execute the RPC, it is just that the RPC lead to an error.
+
 [^1]: the following versions have been used to create this tutorial. The newer versions might work; please pin the version to the mentioned ones if they don't.
 [^2]: differences in capabilities that different management interfaces provide are driven by the interfaces standards.
 [^3]: using HTTP POST method.
