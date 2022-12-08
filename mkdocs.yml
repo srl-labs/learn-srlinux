@@ -41,6 +41,7 @@ nav:
                   - Summary: tutorials/programmability/event-handler/oper-group/summary.md
           - JSON-RPC:
               - Basics: tutorials/programmability/json-rpc/basics.md
+              - Ansible: tutorials/programmability/json-rpc/ansible.md
   - NDK:
       - Introduction: ndk/intro.md
       - Developers Guide:
