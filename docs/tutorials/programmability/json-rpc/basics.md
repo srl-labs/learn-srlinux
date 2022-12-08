@@ -863,12 +863,12 @@ And SR Linux immediately returns an error explaining where exactly the error was
 
 ### CLI
 
-One of the reasons we ended up having JSON-RPC interface and not RESTCONF was the need to support CLI-formatted operations. At SR Linux, we are a big believers in all things modeled, but we can't neglect the fact that transition to model-based world may take time for some teams. In the interim, these teams can effectively accomplish operational tasks using CLI-based automation.
+One of the reasons we ended up having JSON-RPC interface and not RESTCONF was the need to support CLI-formatted operations. At SR Linux, we are big believers in all things modeled, but we can't neglect the fact that transition to model-based world may take time for some teams. In the interim, these teams can effectively accomplish operational tasks using CLI-based automation.
 
 With JSON-RPC CLI method we allow users to remotely execute CLI commands while offering HTTP transport reliability and saving users from the burdens of screen scraping.
 
 !!!tip
-    CLI method also allows to call CLI commands that are not modelled, such as aliases or plugins (e.g. `show version`).
+    CLI method also allows to call CLI commands that are not modelled, such as aliases or plugins (e.g. `show version`). But it is not possible to execute interactive commands, e.g. `ping`, `bash`, etc.
 
 Staring with basics, let's see what it takes to execute a simple `show version` command using JSON-RPC?
 
@@ -1283,6 +1283,48 @@ curl -s --cacert ./clab-srl01/ca/root/root-ca.pem https://admin:NokiaSrl1!@clab-
 }
 EOF
 ```
+
+## Error handling
+
+When either of the commands specified in the RPC request message fails, the returned message will contain an error, even if other commands might be correct. This atomicity of the commands is valid for both Get and Set methods.
+
+For example, the following request has two commands, where 2nd command uses a wrong path.
+
+=== "Request"
+    ```bash
+    curl -v http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc -d @- <<EOF
+    {
+        "jsonrpc": "2.0",
+        "id": 0,
+        "method": "get",
+        "params": {
+            "commands": [
+                {
+                    "path": "/interface[name=mgmt0]/statistics",
+                    "datastore": "state"
+                },
+                {
+                    "path": "/system/somethingwrong",
+                    "datastore": "state"
+                }
+            ]
+        }
+    }
+    EOF
+    ```
+=== "Response"
+    ```json
+    {
+      "error": {
+        "code": -1,
+        "message": "Path not valid - unknown element 'somethingwrong'. Options are [features, trace-options, management, configuration, aaa, authentication, warm-reboot, boot, l2cp-transparency, lacp, lldp, mtu, name, dhcp-server, event-handler, ra-guard-policy, gnmi-server, tls, json-rpc-server, bridge-table, license, dns, ntp, clock, ssh-server, ftp-server, snmp, sflow, load-balancing, banner, information, logging, mirroring, network-instance, maintenance, app-management]"
+      },
+      "id": 0,
+      "jsonrpc": "2.0"
+    }
+    ```
+
+The response will contain just an error container, even though technically the first command is correct. Note, that the HTTP response code is still `200 OK`, since JSON-RPC was able to deliver and execute the RPC, it is just that the RPC lead to an error.
 
 [^1]: the following versions have been used to create this tutorial. The newer versions might work; please pin the version to the mentioned ones if they don't.
 [^2]: differences in capabilities that different management interfaces provide are driven by the interfaces standards.
