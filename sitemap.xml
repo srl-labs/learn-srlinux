@@ -46,6 +46,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://learn.srlinux.dev/blog/2022/using-ansible-with-sr-linuxs-json-rpc-interface/</loc>
+         <lastmod>2022-12-08</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://learn.srlinux.dev/blog/2022/json-rpc-management-interface/</loc>
          <lastmod>2022-12-08</lastmod>
          <changefreq>daily</changefreq>
