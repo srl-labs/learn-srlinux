@@ -863,12 +863,12 @@ And SR Linux immediately returns an error explaining where exactly the error was
 
 ### CLI
 
-One of the reasons we ended up having JSON-RPC interface and not RESTCONF was the need to support CLI-formatted operations. At SR Linux, we are a big believers in all things modeled, but we can't neglect the fact that transition to model-based world may take time for some teams. In the interim, these teams can effectively accomplish operational tasks using CLI-based automation.
+One of the reasons we ended up having JSON-RPC interface and not RESTCONF was the need to support CLI-formatted operations. At SR Linux, we are big believers in all things modeled, but we can't neglect the fact that transition to model-based world may take time for some teams. In the interim, these teams can effectively accomplish operational tasks using CLI-based automation.
 
 With JSON-RPC CLI method we allow users to remotely execute CLI commands while offering HTTP transport reliability and saving users from the burdens of screen scraping.
 
 !!!tip
-    CLI method also allows to call CLI commands that are not modelled, such as aliases or plugins (e.g. `show version`).
+    CLI method also allows to call CLI commands that are not modelled, such as aliases or plugins (e.g. `show version`). But it is not possible to execute interactive commands, e.g. `ping`, `bash`, etc.
 
 Staring with basics, let's see what it takes to execute a simple `show version` command using JSON-RPC?
 
