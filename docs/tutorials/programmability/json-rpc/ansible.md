@@ -726,6 +726,10 @@ Free Memory          : 14955894 kB
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ```
 
+## HTTPS
+
+[URI module][ansible-uri-doc] allows users to use secured transport and optionally skip certificate verification. Check the basics tutorial [section on https](basics.md#https) details and how containerlab certificates can help you test the secured connection.
+
 ## Summary
 
 While Ansible may not be the best tool for the network automation job due to complicated troubleshooting, weird looping mechanisms, challenging ways to manipulate and extract modelled data - it is still being used by many teams.
