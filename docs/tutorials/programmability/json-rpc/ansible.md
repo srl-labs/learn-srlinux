@@ -4,16 +4,16 @@ comments: true
 
 # Using Ansible with SR Linux's JSON-RPC Interface
 
-| Summary                     |                                                                                              |
-| --------------------------- | -------------------------------------------------------------------------------------------- |
-| **Tutorial name**           | JSON-RPC with Ansible                                                                              |
-| **Lab components**          | 2 Nokia SR Linux nodes                                                                   |
-| **Resource requirements**   | :fontawesome-solid-microchip: 2 vCPU <br/>:fontawesome-solid-memory: 4 GB                    |
-| **Lab**                     | [jsonrpc-ansible][lab]                                                                        |
-| **Main ref documents**      | [JSON-RPC Configuration][json-cfg-guide], [JSON-RPC Management][json-mgmt-guide]<br/>[Ansible URI module][ansible-uri-doc]             |
-| **Version information**[^1] | [`srlinux:22.11.1`][srlinux-container], [`containerlab:0.33.0`][clab-install], [`ansible:v6.6`][ansible-install]                |
-| **Authors**                 | Roman Dodin [:material-twitter:][rd-twitter] [:material-linkedin:][rd-linkedin]              |
-<!-- | **Discussions**             | [:material-twitter: Twitter][twitter-share] · [:material-linkedin: LinkedIn][linkedin-share] | -->
+| Summary                     |                                                                                                                            |
+| --------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| **Tutorial name**           | JSON-RPC with Ansible                                                                                                      |
+| **Lab components**          | 2 Nokia SR Linux nodes                                                                                                     |
+| **Resource requirements**   | :fontawesome-solid-microchip: 2 vCPU <br/>:fontawesome-solid-memory: 4 GB                                                  |
+| **Lab**                     | [jsonrpc-ansible][lab]                                                                                                     |
+| **Main ref documents**      | [JSON-RPC Configuration][json-cfg-guide], [JSON-RPC Management][json-mgmt-guide]<br/>[Ansible URI module][ansible-uri-doc] |
+| **Version information**[^1] | [`srlinux:22.11.1`][srlinux-container], [`containerlab:0.33.0`][clab-install], [`ansible:v6.6`][ansible-install]           |
+| **Authors**                 | Roman Dodin [:material-twitter:][rd-twitter] [:material-linkedin:][rd-linkedin]                                            |
+| **Discussions**             | [:material-twitter: Twitter][twitter-share] · [:material-linkedin: LinkedIn][linkedin-share]                               |
 
 [rd-linkedin]: https://linkedin.com/in/rdodin
 [rd-twitter]: https://twitter.com/ntdvps
@@ -24,8 +24,8 @@ comments: true
 [clab-install]: https://containerlab.dev/install/
 [ansible-uri-doc]: https://docs.ansible.com/ansible/6/collections/ansible/builtin/uri_module.html
 [ansible-install]: https://docs.ansible.com/ansible/6/installation_guide/index.html
-[twitter-share]: https://twitter.com/ntdvps/status/1600261024719917057
-[linkedin-share]: https://www.linkedin.com/feed/update/urn:li:activity:7006028123045548033/
+[twitter-share]: https://twitter.com/ntdvps/status/1600920062214688768
+[linkedin-share]: https://www.linkedin.com/feed/update/urn:li:activity:7006686238267039745/
 
 [^1]: the following versions have been used to create this tutorial. The newer versions might work; please pin the version to the mentioned ones if they don't.
 
