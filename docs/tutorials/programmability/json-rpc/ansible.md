@@ -40,7 +40,7 @@ Arguably, using `curl` for network automation tasks that aren't trivial may be c
 
     Still, network teams who have experience with Ansible may work around its limitations and make the tool do the job without falling into a trap of troubleshooting playbooks, variable shadowing and jinja-programming.
 
-The topic of this tutorial is exactly this - using Ansible and SR Linux's JSON-RPC interface to automate common network operations. This task-oriented tutorial will help you understand how Ansible can be used to perform day0+ operations on our magnificient Nokia SR Linux Network OS.
+The topic of this tutorial is exactly this - using Ansible and SR Linux's JSON-RPC interface to automate common network operations. This task-oriented tutorial will help you understand how Ansible can be used to perform day0+ operations on our magnificent Nokia SR Linux Network OS.
 
 [^2]: Or home-grown automation tools leveraging some general purpose programming language.
 
@@ -120,9 +120,19 @@ docker run --rm -it \
 3. to make sure that Ansible container can reach the nodes deployed by containerlab we mount the `/etc/hosts` file to it. That way ansible inside the container can resolve node names to IP addresses.
 
 !!!note
+    With Ansible running in a container connected to the default bridge network and the rest of the nodes running in the `clab` docker network users may experience communication problems between Ansible and network elements.  
+    This stems from the default iptables rules Docker maintains preventing container communications between different networks. To overcome this, consider one of the following methods (one of them, not all):
+
+    1. Install iptables rule to allow packets to `docker0` network:
+       ```
+       sudo iptables -I DOCKER-USER -o docker0 -j ACCEPT -m comment --comment "allow inter-network comms"
+       ```
+    2. Instruct containerlab to start nodes in the Docker [default network](https://containerlab.dev/manual/network/#default-docker-network).
+    3. Run Ansible container in the network that containerlab uses (`clab` by default)
+
     Using this container image is not required for this tutorial, you still can install Ansible using any of the supported methods.
 
-    With the container image we tried to make sure you will have one problem less to worry about.
+    With the container image, we tried to make sure you will have one problem less to worry about.
 
 ### URI module
 
