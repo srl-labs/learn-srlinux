@@ -149,8 +149,10 @@ The management interface sends requests[^3] to the JSON-RPC server and receives 
 JSON-RPC server uses basic authentication for both HTTP and HTTPS transports, which means user information must be provided in a request.
 
 ```bash title="User credentials are passed in a request"
-curl -s -X POST http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc
+curl -s -X POST http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc #(1)!
 ```
+
+1. If you are using an Linux host such as Fedora, you may need to escape the URL with quotes. For example: `curl -s -X POST "http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc"`
 
 In the example above, the user `admin` with a password `NokiaSrl1!` is used to authenticate with the JSON-RPC API.
 
