@@ -358,8 +358,7 @@ For your convenience, in case you want to jump over the config routines and star
             /routing-policy {
                 policy all {
                     default-action {
-                        accept {
-                        }
+                        policy-result accept
                     }
                 }
             }
@@ -482,8 +481,7 @@ For your convenience, in case you want to jump over the config routines and star
             /routing-policy {
                 policy all {
                     default-action {
-                        accept {
-                        }
+                        policy-result accept
                     }
                 }
             }
@@ -605,8 +603,7 @@ For your convenience, in case you want to jump over the config routines and star
             /routing-policy {
                 policy all {
                     default-action {
-                        accept {
-                        }
+                        policy-result accept
                     }
                 }
             }
