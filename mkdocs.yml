@@ -76,7 +76,7 @@ repo_name: srl-labs/learn-srlinux
 repo_url: https://github.com/srl-labs/learn-srlinux
 edit_uri: edit/main/docs/
 site_url: "https://learn.srlinux.dev/"
-copyright: Copyright &copy; 2021-2022 Nokia
+copyright: Copyright &copy; 2021-2023 Nokia
 theme:
   name: material
   custom_dir: docs/overrides
