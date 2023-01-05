@@ -3,7 +3,7 @@ name: evpn01
 topology:
   kinds:
     srl:
-      image: ghcr.io/nokia/srlinux
+      image: ghcr.io/nokia/srlinux:22.11.1
     linux:
       image: ghcr.io/hellt/network-multitool
 

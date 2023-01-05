@@ -4,3 +4,4 @@ clab-*
 site/
 tmp
 .*clab.y*ml
+.*clab.y*ml.bak
