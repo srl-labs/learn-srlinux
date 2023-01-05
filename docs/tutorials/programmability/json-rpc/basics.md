@@ -149,7 +149,7 @@ The management interface sends requests[^3] to the JSON-RPC server and receives 
 JSON-RPC server uses basic authentication for both HTTP and HTTPS transports, which means user information must be provided in a request.
 
 ```bash title="User credentials are passed in a request"
-curl -s -X POST http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc
+curl -s -X POST 'http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc'
 ```
 
 In the example above, the user `admin` with a password `NokiaSrl1!` is used to authenticate with the JSON-RPC API.
@@ -171,7 +171,7 @@ Starting with the basics, let's see how we can query SR Linux configuration and 
     Our `commands` list contains a single object with `path` and `datastore` values set.
 
     ```bash
-    curl -s http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc -d @- <<EOF | jq
+    curl -s 'http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc' -d @- <<EOF | jq
     {
         "jsonrpc": "2.0",
         "id": 0,
@@ -237,7 +237,7 @@ When datastore value is omitted, `running` datastore is assumed. For example, re
 
 === "Request"
     ```bash
-    curl -s http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc -d @- <<EOF | jq
+    curl -s 'http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc' -d @- <<EOF | jq
     {
         "jsonrpc": "2.0",
         "id": 0,
@@ -272,7 +272,7 @@ The response object contains the same ID used in the request, as well as the lis
     It is quite easy, actually. Just send the request with the `/` path:
 
     ```bash
-    curl -s http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc -d @- <<EOF | jq
+    curl -s 'http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc' -d @- <<EOF | jq
     {
         "jsonrpc": "2.0",
         "id": 0,
@@ -293,7 +293,7 @@ The response object contains the same ID used in the request, as well as the lis
     In the same way, to get the full state of the switch, add `state` datastore:
 
     ```bash
-    curl -s http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc -d @- <<EOF | jq '.result[]' > /tmp/test.json
+    curl -s 'http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc' -d @- <<EOF | jq '.result[]' > /tmp/test.json
     {
         "jsonrpc": "2.0",
         "id": 0,
@@ -319,7 +319,7 @@ JSON-RPC allows users to batch commands of the same method in the same request. 
 
 === "Request"
     ```bash
-    curl -s http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc -d @- <<EOF | jq
+    curl -s 'http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc' -d @- <<EOF | jq
     {
         "jsonrpc": "2.0",
         "id": 0,
@@ -384,7 +384,7 @@ Switching to the 1st gear, let's just add a description to our `mgmt0` interface
 
 === "Request"
     ```bash
-    curl -s http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc -d @- <<EOF | jq
+    curl -s 'http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc' -d @- <<EOF | jq
     {
         "jsonrpc": "2.0",
         "id": 0,
@@ -414,7 +414,7 @@ Switching to the 1st gear, let's just add a description to our `mgmt0` interface
     Checking that the interface description has been set successfully.
 
     ```bash
-    curl -s http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc -d @- <<EOF | jq
+    curl -s 'http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc' -d @- <<EOF | jq
     {
         "jsonrpc": "2.0",
         "id": 0,
@@ -464,7 +464,7 @@ Alternatively, users can specify the value using the `"value"` field inside the 
     Set two leaves - `location` and `contact` under the `/system/information` container by using the `value` field of the command.
 
     ```bash
-    curl -s http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc -d @- <<EOF | jq
+    curl -s 'http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc' -d @- <<EOF | jq
     {
         "jsonrpc": "2.0",
         "id": 0,
@@ -496,7 +496,7 @@ Alternatively, users can specify the value using the `"value"` field inside the 
     ```
 === "Verification"
     ```bash
-    curl -s http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc -d @- <<EOF | jq
+    curl -s 'http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc' -d @- <<EOF | jq
     {
         "jsonrpc": "2.0",
         "id": 0,
@@ -549,7 +549,7 @@ Let's replace this conatiner with setting just the contact leaf to "John Doe" va
 
 === "Request"
     ```bash
-    curl -s http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc -d @- <<EOF | jq
+    curl -s 'http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc' -d @- <<EOF | jq
     {
         "jsonrpc": "2.0",
         "id": 0,
@@ -594,7 +594,7 @@ Notice, how the verification command proves that the whole configuration under `
     One of the common management tasks is to replace the entire config with a golden or intended configuration. To do that with JSON-RPC use `/` path and a file with JSON-formatted config:
 
     ```bash
-    curl -s http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc -d @- <<EOF
+    curl -s 'http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc' -d @- <<EOF
     {
         "jsonrpc": "2.0",
         "id": 0,
@@ -629,7 +629,7 @@ To delete a configuration region for a certain path use `delete` action of the S
 === "Request"
     Delete the configuration under the `/system/information` container.
     ```bash
-    curl -s http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc -d @- <<EOF | jq
+    curl -s 'http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc' -d @- <<EOF | jq
     {
         "jsonrpc": "2.0",
         "id": 0,
@@ -678,7 +678,7 @@ For example, let's create an RPC that will have all the actions batched together
     In this composite request we replace the description for the management interface, then create a new network-instance `vrf-red` and finally deleteing a login banner. All those actions will be committed together as a single transaction.
 
     ```bash
-    curl -s http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc -d @- <<EOF | jq
+    curl -s 'http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc' -d @- <<EOF | jq
     {
         "jsonrpc": "2.0",
         "id": 0,
@@ -739,7 +739,7 @@ The difference being that with Set method users should specify the modelled path
 === "Request"
     Clearing statistics of `mgmt0` interface by calling the `/tools` command using the modelled path[^6].
     ```bash
-    curl -s http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc -d @- <<EOF | jq
+    curl -s 'http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc' -d @- <<EOF | jq
     {
         "jsonrpc": "2.0",
         "id": 0,
@@ -788,7 +788,7 @@ Validate method works with the same actions as Set method - update, replace and 
 
 === "Request"
     ```bash
-    curl -s http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc -d @- <<EOF | jq
+    curl -s 'http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc' -d @- <<EOF | jq
     {
         "jsonrpc": "2.0",
         "id": 0,
@@ -831,7 +831,7 @@ The empty result object indicates that changes were successfully validated and n
 
 === "Request"
     ```bash
-    curl -s http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc -d @- <<EOF | jq
+    curl -s 'http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc' -d @- <<EOF | jq
     {
         "jsonrpc": "2.0",
         "id": 0,
@@ -874,7 +874,7 @@ Staring with basics, let's see what it takes to execute a simple `show version` 
 
 === "Request"
     ```bash
-    curl -s http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc -d @- <<EOF | jq
+    curl -s 'http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc' -d @- <<EOF | jq
     {
         "jsonrpc": "2.0",
         "id": 0,
@@ -972,7 +972,7 @@ With `output-format` field of the request we can choose the formatting of the re
 === "Req with `text`"
     `jq` arguments used in this command filter out the result element and use the raw processing to render newlines.
     ```bash
-    curl -s http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc -d @- <<EOF | jq -r '.result[]'
+    curl -s 'http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc' -d @- <<EOF | jq -r '.result[]'
     {
         "jsonrpc": "2.0",
         "id": 0,
@@ -1004,7 +1004,7 @@ With `output-format` field of the request we can choose the formatting of the re
     ```
 === "Req with `table`"
     ```bash
-    curl -s http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc -d @- <<EOF | jq -r '.result[]'
+    curl -s 'http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc' -d @- <<EOF | jq -r '.result[]'
     {
         "jsonrpc": "2.0",
         "id": 0,
@@ -1036,7 +1036,7 @@ The next RPC, as expected, will not maintain the context of a previous RPC; by d
 
 === "Request"
     ```bash
-    curl -s http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc -d @- <<EOF | jq
+    curl -s 'http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc' -d @- <<EOF | jq
     {
         "jsonrpc": "2.0",
         "id": 0,
@@ -1093,7 +1093,7 @@ You guessed it right, you can also perform configuration tasks with CLI method a
     This method is error-prone, since tracking the context changes is tedious. But, still, this is an option.
     === "Request"
         ```bash
-        curl -s http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc -d @- <<EOF | jq
+        curl -s 'http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc' -d @- <<EOF | jq
         {
             "jsonrpc": "2.0",
             "id": 0,
@@ -1131,7 +1131,7 @@ You guessed it right, you can also perform configuration tasks with CLI method a
     Flattened commands are levied from the burdens of the contextual commands, as each command starts from the root. This makes configuration snippets longer, but safer to use.
     === "Request"
         ```bash
-        curl -s http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc -d @- <<EOF | jq
+        curl -s 'http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc' -d @- <<EOF | jq
         {
             "jsonrpc": "2.0",
             "id": 0,
@@ -1164,7 +1164,7 @@ You guessed it right, you can also perform configuration tasks with CLI method a
     Another popular way to use CLI-styled configs is to dump the configuration from the device, template or change a few fields in the text blob and use it for configuration. In the example below we did `info from running /interface ethernet-1/1` and captured the output. We used this output as is in our request body just escaping the quotes.
     === "Request"
         ```bash
-        curl -s http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc -d @- <<EOF | jq
+        curl -s 'http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc' -d @- <<EOF | jq
         {
             "jsonrpc": "2.0",
             "id": 0,
@@ -1212,7 +1212,7 @@ Remember how we executed the tools commands within the Set method? We can do the
 
 === "Request"
     ```bash
-    curl -s http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc -d @- <<EOF | jq
+    curl -s 'http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc' -d @- <<EOF | jq
     {
         "jsonrpc": "2.0",
         "id": 0,
@@ -1292,7 +1292,7 @@ For example, the following request has two commands, where 2nd command uses a wr
 
 === "Request"
     ```bash
-    curl -v http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc -d @- <<EOF
+    curl -v 'http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc' -d @- <<EOF
     {
         "jsonrpc": "2.0",
         "id": 0,
