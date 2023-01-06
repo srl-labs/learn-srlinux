@@ -74,7 +74,7 @@ We will introduce all of these methods in detail during the practical section of
 
 SR Linux factory configuration doesn't have JSON-RPC management enabled, but it is easy to configure one. [JSON-RPC Configuration Guide][json-cfg-guide] does a good job explaining all the bits and pieces of interface configuration, so to not repeat ourselves let's look at what containerlab configures automatically for every SR Linux node based on a [single-node lab][lab] that we use in this tutorial.
 
-```
+```srl
 --{ running }--[  ]--
 A:srl# info /system json-rpc-server
     system {
