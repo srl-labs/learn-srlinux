@@ -307,7 +307,7 @@ Here is a [parser](https://github.com/srl-labs/srlinux-pygments/blob/v0.0.1/srli
 
 #### Other
 
-Other parsers in the `parsers.py` file are responsible for handling Comments and String literals and are simple regexp rules.
+Other parsers in the `parsers.py` file are responsible for handling Route Targets, Comments, and String literals and are simple regexp rules.
 
 ### Constructing the lexer
 
@@ -332,6 +332,7 @@ from .parsers import (
     ipv4,
     ipv6,
     nums,
+    rt,
 )
 
 __all__ = ("SRLinuxLexer",)
@@ -360,6 +361,7 @@ class SRLinuxLexer(RegexLexer):
     tokens["root"].extend(ipv4)
     tokens["root"].extend(ipv6)
     tokens["root"].extend(nums)
+    tokens["root"].extend(rt)
 ```
 
 !!!note
