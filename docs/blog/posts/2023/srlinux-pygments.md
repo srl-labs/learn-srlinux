@@ -438,6 +438,17 @@ Knowing the CSS class of a particular token let's find which color variable mkdo
 
 With this information, you can pick up the Tokens and the corresponding colors to make your syntax highlighting style to match your design ideas.
 
+## Summary
+
+Making a simple custom highlighter for Pygments turned out to be an easy job. The only prerequisite - is familiarity with regular expressions, and Pygments handles the rest.
+
+I am quite happy with the result and plan to fine-tune the parsers based on users' feedback. Likelty, there is a bunch of important keywords we will discover in the CLI snippets worth highlighting.
+
+You can check the [EVPN Layer 2 Tutorial](../../../tutorials/l2evpn/intro.md), where snippets have been fixed to use the `srl` highlighting style.
+
+!!!tip
+    Make sure to [subscribe](../../subscribe.md) to receive email/rss notifications when new blog posts are published.
+
 [srl-pygments-repo]: https://github.com/srl-labs/srlinux-pygments
 [mkdocs-material]: https://squidfunk.github.io/mkdocs-material/
 [pygments]: https://pygments.org/
