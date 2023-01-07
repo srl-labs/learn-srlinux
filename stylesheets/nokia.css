@@ -120,3 +120,8 @@ th {
 .ext-code-divider>.vertical-middle {
   vertical-align: middle;
 }
+
+/* make 2nd prompt line of srlinux render bold with srlinux-pygments */
+:is(.language-srl, .language-srlmin) :is(.n) {
+  font-weight: 900;
+}
