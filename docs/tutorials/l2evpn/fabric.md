@@ -34,7 +34,7 @@ Let's witness the step by step process of an interface configuration on a `leaf1
 
 1. Enter the `candidate` configuration mode to make edits to the configuration
 
-    ```
+    ```srl
     Welcome to the srlinux CLI.
     Type 'help' (and press <ENTER>) if you need any help using this.
 
@@ -45,21 +45,21 @@ Let's witness the step by step process of an interface configuration on a `leaf1
 
 2. The prompt will indicate the changed active mode
 
-    ```
+    ```srl
     --{ candidate shared default }--[  ]--
     A:leaf1#                              
     ```
 
 3. Enter into the interface configuration context
 
-    ```
+    ```srl
     --{ candidate shared default }--[  ]--
     A:leaf1# interface ethernet-1/49      
     ```
 
 4. Create a subinterface under the parent interface to configure IPv4 address on it
 
-    ```
+    ```srl
     --{ * candidate shared default }--[ interface ethernet-1/49 ]--
     A:leaf1# subinterface 0                                        
     --{ * candidate shared default }--[ interface ethernet-1/49 subinterface 0 ]--
@@ -68,7 +68,7 @@ Let's witness the step by step process of an interface configuration on a `leaf1
 
 5. Apply the configuration changes by issuing a `commit now` command. The changes will be written to the running configuration.
 
-    ```
+    ```srl
     --{ * candidate shared default }--[ interface ethernet-1/49 subinterface 0 ipv4 address 192.168.11.1/30 ]--
     A:leaf1# commit now                                                                                        
     All changes have been committed. Leaving candidate mode.
@@ -77,7 +77,7 @@ Let's witness the step by step process of an interface configuration on a `leaf1
 Below you will find the relevant configuration snippets[^2] for leafs and spine of our fabric which you can paste in the terminal while being in candidate mode.
 
 === "leaf1"
-    ```
+    ```srl
     interface ethernet-1/49 {
         subinterface 0 {
             ipv4 {
@@ -89,7 +89,7 @@ Below you will find the relevant configuration snippets[^2] for leafs and spine 
     ```
 
 === "leaf2"
-    ```
+    ```srl
     interface ethernet-1/49 {
         subinterface 0 {
             ipv4 {
@@ -100,7 +100,7 @@ Below you will find the relevant configuration snippets[^2] for leafs and spine 
     }
     ```
 === "spine1"
-    ```
+    ```srl
     interface ethernet-1/1 {
         subinterface 0 {
             ipv4 {
@@ -121,7 +121,7 @@ Below you will find the relevant configuration snippets[^2] for leafs and spine 
 
 Once those snippets are committed to the running configuration with `commit now` command, we can ensure that the changes have been applied by showing the interface status:
 
-```
+```srl
 --{ + running }--[  ]--                             
 A:spine1# show interface ethernet-1/1               
 ====================================================
@@ -138,7 +138,7 @@ ethernet-1/1 is up, speed 10G, type None
 At this moment, the configured interfaces can not be used as they are not yet associated with any [network instance](../../kb/netwinstance.md). Below we are placing the interfaces to the network-instance `default` that is created automatically by SR Linux.
 
 === "leaf1 & leaf2"
-    ```
+    ```srl
     --{ + candidate shared default }--[  ]--
     A:leaf1# network-instance default interface ethernet-1/49.0
 
@@ -148,7 +148,7 @@ At this moment, the configured interfaces can not be used as they are not yet as
     ```
 
 === "spine1"
-    ```
+    ```srl
     --{ + candidate shared default }--[  ]--
     A:spine1# network-instance default interface ethernet-1/1.0
 
@@ -192,7 +192,7 @@ Here is a breakdown of the steps that are needed to configure EBGP on `leaf1` to
 1. **Add BGP protocol to network-instance**  
     Routing protocols are configured under a network-instance context. By adding BGP protocol to the default network-instance we implicitly enable this protocol.  
 
-    ```
+    ```srl
     --{ + candidate shared default }--[  ]--       
     A:leaf1# network-instance default protocols bgp
     ```
@@ -201,7 +201,7 @@ Here is a breakdown of the steps that are needed to configure EBGP on `leaf1` to
     The ASN is reported to peers when BGP speaker opens a session towards another router.  
     According to the diagram above, `leaf1` has ASN 101.  
 
-    ```
+    ```srl
     --{ +* candidate shared default }--[ network-instance default protocols bgp ]--
     A:leaf1# autonomous-system 101
     ```
@@ -210,7 +210,7 @@ Here is a breakdown of the steps that are needed to configure EBGP on `leaf1` to
     This is the BGP identifier reported to peers when this network-instance opens a BGP session towards another router.  
     Leaf1 has a router-id of 10.0.0.1.
 
-    ```
+    ```srl
     --{ +* candidate shared default }--[ network-instance default protocols bgp ]--
     A:leaf1# router-id 10.0.0.1
     ```
@@ -220,7 +220,7 @@ Here is a breakdown of the steps that are needed to configure EBGP on `leaf1` to
     When you later configure individual neighbors or groups, you can override the enabled families at those levels.  
     For the sake of IPv4 loopbacks advertisement, we only need to enable `ipv4-unicast` address family:
 
-    ```
+    ```srl
     --{ +* candidate shared default }--[ network-instance default protocols bgp ]--
     A:leaf1# ipv4-unicast admin-state enable
     ```
@@ -231,7 +231,7 @@ Here is a breakdown of the steps that are needed to configure EBGP on `leaf1` to
 
     The routing policies are configured at `/routing-policy` context, so first, we switch to it from the current `bgp` context:
 
-    ```
+    ```srl
     --{ * candidate shared default }--[ network-instance default protocols bgp ]--
     A:leaf1# /routing-policy                                                      
 
@@ -241,7 +241,7 @@ Here is a breakdown of the steps that are needed to configure EBGP on `leaf1` to
 
     Now that we are in the right context, we can paste the policy definition:
 
-    ```
+    ```srl
     --{ +* candidate shared default }--[ routing-policy ]--
     A:leaf1# info
         policy all {
@@ -258,7 +258,7 @@ Here is a breakdown of the steps that are needed to configure EBGP on `leaf1` to
 
     First, we come back to the bgp context from the routing-policy context:
 
-    ```
+    ```srl
     --{ * candidate shared default }--[ routing-policy ]--
     A:leaf1# /network-instance default protocols bgp      
 
@@ -268,7 +268,7 @@ Here is a breakdown of the steps that are needed to configure EBGP on `leaf1` to
 
     Now create the peer group. The common group configuration includes the `peer-as` and `export-policy` statements.
 
-    ```
+    ```srl
     --{ +* candidate shared default }--[ network-instance default protocols bgp ]--
     A:leaf1# group eBGP-underlay
 
@@ -287,7 +287,7 @@ Here is a breakdown of the steps that are needed to configure EBGP on `leaf1` to
     In this minimal configuration example, the only required configuration for the neighbor is its association with the group `eBGP-underlay` that was previously created.  
     New neighbors are administratively enabled by default.
 
-    ```
+    ```srl
     --{ +* candidate shared default }--[ network-instance default protocols bgp ]--
     A:leaf1# neighbor 192.168.11.2 peer-group eBGP-underlay
     ```
@@ -296,7 +296,7 @@ Here is a breakdown of the steps that are needed to configure EBGP on `leaf1` to
     It seems like the EBGP config has been sorted out. Let's see what we have in our candidate datastore so far.  
     Regardless of which context you are currently in, you can see the diff against the baseline config by doing `diff /`
 
-    ```
+    ```diff
     --{ * candidate shared default }--[ network-instance default protocols bgp group eBGP-underlay ]--
     A:leaf1# diff /                                                                                   
         network-instance default {
@@ -329,7 +329,7 @@ Here is a breakdown of the steps that are needed to configure EBGP on `leaf1` to
 
     That is what we've added in all those steps above, everything looks OK, so we are good to commit the configuration.
 
-    ```
+    ```srl
     --{ +* candidate shared default }--[ network-instance default protocols bgp ]--
     A:leaf1# commit now
     ```
@@ -337,7 +337,7 @@ Here is a breakdown of the steps that are needed to configure EBGP on `leaf1` to
 EBGP configuration on `leaf2` and `spine1` is almost a twin of the one we did for `leaf1`. Here is a copy-paste-able[^3] config snippets for all of the nodes:
 
 === "leaf1"
-    ```
+    ```srl
     network-instance default {
         protocols {
             bgp {
@@ -366,7 +366,7 @@ EBGP configuration on `leaf2` and `spine1` is almost a twin of the one we did fo
     }
     ```
 === "leaf2"
-    ```
+    ```srl
     network-instance default {
         protocols {
             bgp {
@@ -396,7 +396,7 @@ EBGP configuration on `leaf2` and `spine1` is almost a twin of the one we did fo
     ```
 === "spine1"
     Spine configuration is a bit different, in a way that `peer-as` is specified under the neighbor context, and not the group one.
-    ```
+    ```srl
     network-instance default {
         protocols {
             bgp {
@@ -443,7 +443,7 @@ In the context of the VXLAN data plane, a special kind of a loopback needs to be
 Configuration of the `system0` interface is exactly the same as for the regular interfaces. The IPv4 addresses we assign to `system0` interfaces will match the Router-ID of a given BGP speaker.
 
 === "leaf1"
-    ```
+    ```srl
     /interface system0 {
         admin-state enable
         subinterface 0 {
@@ -459,7 +459,7 @@ Configuration of the `system0` interface is exactly the same as for the regular 
     }
     ```
 === "leaf2"
-    ```
+    ```srl
     /interface system0 {
         admin-state enable
         subinterface 0 {
@@ -475,7 +475,7 @@ Configuration of the `system0` interface is exactly the same as for the regular 
     }
     ```
 === "spine1"
-    ```
+    ```srl
     /interface system0 {
         admin-state enable
         subinterface 0 {
@@ -499,7 +499,7 @@ As stated in the beginning of this section, the VXLAN VTEPs need to be advertise
 
 The first thing worth verifying is that BGP protocol is enabled and operational on all devices. Below is an example of a BGP summary command issued on `leaf1`:
 
-``` linenums="1"
+```srl linenums="1"
 --{ + running }--[  ]--
 A:leaf1# show network-instance default protocols bgp summary
 -------------------------------------------------------------
@@ -546,7 +546,7 @@ EVPN-unicast AFI/SAFI
 
 Equally important is the neighbor summary status that we can observe with the following:
 
-```
+```srl
 --{ + running }--[  ]--
 A:spine1# show network-instance default protocols bgp neighbor
 ----------------------------------------------------------------------------------------------------------------------------------------------
@@ -575,7 +575,7 @@ With this command we can ensure that the ipv4-unicast routes are exchanged betwe
 
 The reason we configured EBGP in the fabric's the underlay is to advertise the VXLAN tunnel endpoints - `system0` interfaces. In the below output we verify that `leaf1` advertises the prefix of `system0` (`10.0.0.1/32`) interface towards its EBGP `spine1` peer:
 
-```
+```srl
 --{ + running }--[  ]--
 A:leaf1# show network-instance default protocols bgp neighbor 192.168.11.2 advertised-rou
 tes ipv4
@@ -601,7 +601,7 @@ Origin codes: i=IGP, e=EGP, ?=incomplete
 
 On the far end of the fabric, `leaf2` receives both the `leaf1` and `spine1` system interface prefixes:
 
-```
+```srl
 --{ + running }--[  ]--
 A:leaf2# show network-instance default protocols bgp neighbor 192.168.12.2 received-route
 s ipv4
@@ -634,7 +634,7 @@ Origin codes: i=IGP, e=EGP, ?=incomplete
 
 The last stop in the control plane verification ride would be to check if the remote loopback prefixes were installed in the `default` network-instance where we expect them to be:
 
-``` linenums="1" hl_lines="12 15"
+```srl linenums="1" hl_lines="12 15"
 --{ running }--[  ]--
 A:leaf1# show network-instance default route-table ipv4-unicast summary
 -----------------------------------------------------------------------------------------------------------------------------------
@@ -697,7 +697,7 @@ Below you will find aggregated configuration snippets which contain the entire f
     `enter candidate` and `commit now` commands are part of the snippets, so it is possible to paste them right after you logged into the devices as well as the changes will get committed to running config.
 
 === "leaf1"
-    ```
+    ```srl
     enter candidate
 
     # configuration of the physical interface and its subinterface
@@ -741,7 +741,7 @@ Below you will find aggregated configuration snippets which contain the entire f
     commit now
     ```
 === "leaf2"
-    ```
+    ```srl
     enter candidate
 
     # configuration of the physical interface and its subinterface
@@ -785,7 +785,7 @@ Below you will find aggregated configuration snippets which contain the entire f
     commit now
     ```
 === "spine1"
-    ```
+    ```srl
     enter candidate
 
     # configuration of the physical interface and its subinterface
@@ -837,7 +837,7 @@ Below you will find aggregated configuration snippets which contain the entire f
     commit now
     ```
 
-[^1]: default SR Linux credentials are `admin:admin`.
+[^1]: default SR Linux credentials are `admin:NokiaSrl1!`.
 [^2]: the snippets were extracted with `info interface ethernet-1/x` command issued in running mode.
 [^3]: you can paste those snippets right after you do `enter candidate`
 [^4]: a more practical import/export policy would only export/import the loopback prefixes from leaf nodes. The spine nodes would export/import only the bgp-owned routes, as services are not typically present on the spines.

@@ -1,6 +1,6 @@
 MKDOCS_VER = 8.5.3
 # insiders version/tag https://github.com/srl-labs/mkdocs-material-insiders/pkgs/container/mkdocs-material-insiders
-MKDOCS_INS_VER = 8.5.11-insiders-4.27.0-hellt
+MKDOCS_INS_VER = 9.0.2-insiders-4.27.0-hellt
 
 .PHONY: docs
 docs:
@@ -15,6 +15,11 @@ serve:
 .PHONY: serve-insiders
 serve-insiders:
 	docker run -it --rm -p 8001:8000 -v $$(pwd):/docs ghcr.io/srl-labs/mkdocs-material-insiders:$(MKDOCS_INS_VER)
+
+# serve the site locally using mkdocs-material insiders container using dirty-reloader
+.PHONY: serve-insiders-dirty
+serve-insiders-dirty:
+	docker run -it --rm -p 8001:8000 -v $$(pwd):/docs ghcr.io/srl-labs/mkdocs-material-insiders:$(MKDOCS_INS_VER) serve --dirtyreload -a 0.0.0.0:8000
 
 .PHONY: htmltest
 htmltest:

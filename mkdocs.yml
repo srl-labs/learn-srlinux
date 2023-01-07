@@ -189,6 +189,7 @@ markdown_extensions:
   - pymdownx.highlight:
       linenums_style: pymdownx-inline
       anchor_linenums: true
+      pygments_lang_class: true
   - pymdownx.inlinehilite
   - pymdownx.keys
   - pymdownx.magiclink:

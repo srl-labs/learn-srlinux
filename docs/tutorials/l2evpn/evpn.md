@@ -45,7 +45,7 @@ For that iBGP configuration we will create a group called `iBGP-overlay` which w
 Then for each leaf we add a new BGP neighbor addressed by the remote `system0` interface address and local system address as the source. Below you will find the pastable snippets with the aforementioned config:
 
 === "leaf1"
-    ```
+    ```srl
     enter candidate
 
     /network-instance default protocols bgp
@@ -75,7 +75,7 @@ Then for each leaf we add a new BGP neighbor addressed by the remote `system0` i
     commit now
     ```
 === "leaf2"
-    ```
+    ```srl
     enter candidate
 
     /network-instance default protocols bgp
@@ -107,7 +107,7 @@ Then for each leaf we add a new BGP neighbor addressed by the remote `system0` i
 
 Ensure that the iBGP session is established before proceeding any further:
 
-``` linenums="1"
+```srl linenums="1"
 A:leaf1# /show network-instance default protocols bgp neighbor 10.0.0.2
 ----------------------------------------------------------------------------------------------------------------
 BGP neighbor summary for network-instance "default"
@@ -135,7 +135,7 @@ Configuration of an access interface is nothing special, we already [configured 
 
 The following config is applied to both leaf switches:
 
-```
+```srl
 enter candidate
     /interface ethernet-1/1 {
         vlan-tagging true
@@ -175,7 +175,7 @@ network-instance. VNI can be in the range of `1..16777215`.
 
 The above information translates to a configuration snippet which is applicable both to `leaf1` and `leaf2` nodes.
 
-```
+```srl
 enter candidate
     /tunnel-interface vxlan1 {
         vxlan-interface 1 {
@@ -190,7 +190,7 @@ commit now
 
 To verify the tunnel interface configuration:
 
-```
+```srl
 A:leaf2# show tunnel-interface vxlan-interface brief
 ---------------------------------------------------------------------------------
 Show report for vxlan-tunnels
@@ -215,7 +215,7 @@ The network-instance type `mac-vrf` functions as a broadcast domain. Each mac-vr
 
 By associating the access and vxlan interfaces with the mac-vrf we bound them to this network-instance:
 
-```
+```srl
 enter candidate
     /network-instance vrf-1 {
         type mac-vrf
@@ -271,7 +271,7 @@ PING 192.168.0.2 (192.168.0.2) 56(84) bytes of data.
 
 That failed, expectedly, as our servers connected to different leafs, and those leafs do not yet have a shared broadcast domain. But by just trying to ping the remote party from server 1, we made the `srv1` interface MAC to get learned by the `leaf1` mac-vrf network instance:
 
-```
+```srl
 A:leaf1# show network-instance vrf-1 bridge-table mac-table all
 ----------------------------------------------------------------------------------------------------------------------
 Mac-table of network instance vrf-1
@@ -304,7 +304,7 @@ EVPN configuration under the mac-vrf network instance will require two configura
 
 The following configuration is entered on both leafs:
 
-```
+```srl
 enter candidate
     /network-instance vrf-1
         protocols {
@@ -329,7 +329,7 @@ commit now
 
 Once configured, the `bgp-vpn` instance can be checked to have the RT/RD values set:
 
-```
+```srl
 A:leaf1# show network-instance vrf-1 protocols bgp-vpn bgp-instance 1
 =====================================================================
 Net Instance   : vrf-1
@@ -353,7 +353,7 @@ For your convenience, in case you want to jump over the config routines and star
 
 ???example "pastable snippets"
     === "leaf1"
-        ```
+        ```srl
         enter candidate
             /routing-policy {
                 policy all {
@@ -476,7 +476,7 @@ For your convenience, in case you want to jump over the config routines and star
         commit now
         ```
     === "leaf2"
-        ```
+        ```srl
         enter candidate
             /routing-policy {
                 policy all {
@@ -598,7 +598,7 @@ For your convenience, in case you want to jump over the config routines and star
         commit now
         ```
     === "spine1"
-        ```
+        ```srl
         enter candidate
             /routing-policy {
                 policy all {
@@ -688,7 +688,7 @@ For your convenience, in case you want to jump over the config routines and star
 
 When the BGP-EVPN is configured in the mac-vrf instance, the leafs start to exchange EVPN routes, which we can verify with the following commands:
 
-```
+```srl
 A:leaf1# /show network-instance default protocols bgp neighbor 10.0.0.2
 ----------------------------------------------------------------------------------------------------------------
 BGP neighbor summary for network-instance "default"
@@ -714,7 +714,7 @@ The IMET route is advertised as soon as bgp-evpn is enabled in the MAC-VRF; it h
 The IMET/RT3 routes can be viewed in summary and detailed modes:
 
 === "RT3 summary"
-    ```
+    ```srl
     A:leaf1# /show network-instance default protocols bgp routes evpn route-type 3 summary
     ----------------------------------------------------------------------------------------------------------------
     Show report for the BGP route table of network-instance "default"
@@ -735,7 +735,7 @@ The IMET/RT3 routes can be viewed in summary and detailed modes:
     ----------------------------------------------------------------------------------------------------------------
     ```
 === "RT3 detailed"
-    ```
+    ```srl
     A:leaf1# /show network-instance default protocols bgp routes evpn route-type 3 detail
     -------------------------------------------------------------------------------------
     Show report for the EVPN routes in network-instance  "default"
@@ -770,7 +770,7 @@ The IMET/RT3 routes can be viewed in summary and detailed modes:
 
 When the IMET routes from `leaf2` are imported for `vrf-1` network-instance, the corresponding multicast VXLAN destinations are added and can be checked with the following command:
 
-```
+```srl
 A:leaf1# show tunnel-interface vxlan1 vxlan-interface 1 bridge-table multicast-destinations destination *
 -------------------------------------------------------------------------------
 Show report for vxlan-interface vxlan1.1 multicast destinations (flooding-list)
@@ -794,7 +794,7 @@ As to the unicast destinations there are none so far, and this is because we hav
 
 After receiving EVPN routes from the remote leafs with VXLAN encapsulation[^5], SR Linux creates VXLAN tunnels towards remote VTEP, whose address is received in EVPN IMET routes. The state of a single remote VTEP we have in our lab is shown below from the `leaf1` switch.
 
-```
+```srl
 A:leaf1# /show tunnel vxlan-tunnel all
 ----------------------------------------------------------
 Show report for vxlan-tunnels
@@ -814,7 +814,7 @@ The VXLAN tunnel is built between the `vxlan` interfaces in the MAC-VRF network 
 
 Once a VTEP is created in the vxlan-tunnel table with a non-zero allocated index[^6], an entry in the tunnel-table is also created for the tunnel.
 
-```
+```srl
 A:leaf1# /show network-instance default tunnel-table all
 -------------------------------------------------------------------------------------------------------
 Show report for network instance "default" tunnel table
@@ -832,7 +832,7 @@ Show report for network instance "default" tunnel table
 
 As was mentioned, when the leafs exchanged only EVPN IMET routes they build the BUM flooding tree (aka multicast destinations), but unicast destinations are yet unknown, which is seen in the below output:
 
-```
+```srl
 A:leaf1# show tunnel-interface vxlan1 vxlan-interface 1 bridge-table unicast-destinations destination *
 -------------------------------------------------------------------------------
 Show report for vxlan-interface vxlan1.1 unicast destinations
@@ -850,7 +850,7 @@ Summary
 
 This is due to the fact that no [MAC/IP EVPN routes](https://datatracker.ietf.org/doc/html/rfc7432#section-7.2) are being advertised yet. If we take a look at the MAC table of the `vrf-1`, we will see that no local MAC addresses are there, and this is because the servers haven't yet sent any frames towards the leafs[^7].
 
-```
+```srl
 A:leaf1# show network-instance vrf-1 bridge-table mac-table all
 -------------------------------------------------------------------------------
 Mac-table of network instance vrf-1
@@ -882,7 +882,7 @@ rtt min/avg/max/mdev = 0.784/0.986/1.275/0.209 ms
 
 Much better! The dataplane works and we can check that the MAC table in the `vrf-1` network-instance has been populated with local and EVPN-learned MACs:
 
-```
+```srl
 A:leaf1# show network-instance vrf-1 bridge-table mac-table all
 ---------------------------------------------------------------------------------------------------------------------------------------------
 Mac-table of network instance vrf-1
@@ -910,7 +910,7 @@ When traffic is exchanged between `srv1` and `srv2`, the MACs are learned on the
 
 The below output shows the MAC/IP EVPN route that `leaf1` received from its neighbor. The NLRI information contains the MAC of the `srv2`:
 
-```
+```srl
 A:leaf1# show network-instance default protocols bgp routes evpn route-type 2 summary
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 Show report for the BGP route table of network-instance "default"
@@ -935,7 +935,7 @@ Type 2 MAC-IP Advertisement Routes
 
 The MAC/IP EVPN routes also triggers the creation of the unicast tunnel destinations which were empty before:
 
-```
+```srl
 A:leaf1# show tunnel-interface vxlan1 vxlan-interface 1 bridge-table unicast-destinations destination *
 ---------------------------------------------------------------------------------------------------------------------------------------------
 Show report for vxlan-interface vxlan1.1 unicast destinations
