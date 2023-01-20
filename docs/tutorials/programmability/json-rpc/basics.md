@@ -950,7 +950,7 @@ Staring with basics, let's see what it takes to execute a simple `show version` 
     ---------------------------------------------------
     ```
 
-Okay, there is a lot of output here, focus first on the request message. In the request body, we have `cli`` method set and the `commands` list contains a list of strings, where each string is a CLI command as it is seen in the CLI. We have only one command to execute, hence our list has only one element - `show version`.
+Okay, there is a lot of output here, focus first on the request message. In the request body, we have `cli` method set, and the `commands` list contains a list of strings, where each string is a CLI command as it is seen in the CLI. We have only one command to execute, hence our list has only one element - `show version`.
 
 The response message contains a list of results. Since we had only one command, our results list contains a single element, which matches the output of the `show version | as json` command when it is invoked in the CLI.
 

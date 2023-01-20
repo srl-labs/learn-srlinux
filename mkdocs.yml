@@ -95,6 +95,7 @@ theme:
     - navigation.tabs
     - search.suggest
     - content.code.annotate
+    - content.code.copy
     - toc.follow
     - content.tooltips
     - navigation.indexes
