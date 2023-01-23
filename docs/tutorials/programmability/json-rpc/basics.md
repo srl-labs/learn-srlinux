@@ -1111,21 +1111,21 @@ You guessed it right, you can also perform configuration tasks with CLI method a
         EOF
         ```
     === "Response"
-    ```json
-    {
-      "result": [
-        {},
-        {},
-        {},
-        {},
+        ```json
         {
-          "text": "All changes have been committed. Leaving candidate mode.\n"
+          "result": [
+            {},
+            {},
+            {},
+            {},
+            {
+              "text": "All changes have been committed. Leaving candidate mode.\n"
+            }
+          ],
+          "id": 0,
+          "jsonrpc": "2.0"
         }
-      ],
-      "id": 0,
-      "jsonrpc": "2.0"
-    }
-    ```
+        ```
 
 === "Flattened commands"
     Flattened commands are levied from the burdens of the contextual commands, as each command starts from the root. This makes configuration snippets longer, but safer to use.
@@ -1147,19 +1147,19 @@ You guessed it right, you can also perform configuration tasks with CLI method a
         EOF
         ```
     === "Response"
-    ```json
-    {
-      "result": [
-        {},
-        {},
+        ```json
         {
-          "text": "All changes have been committed. Leaving candidate mode.\n"
+          "result": [
+            {},
+            {},
+            {
+              "text": "All changes have been committed. Leaving candidate mode.\n"
+            }
+          ],
+          "id": 0,
+          "jsonrpc": "2.0"
         }
-      ],
-      "id": 0,
-      "jsonrpc": "2.0"
-    }
-    ```
+        ```
 === "Config dump"
     Another popular way to use CLI-styled configs is to dump the configuration from the device, template or change a few fields in the text blob and use it for configuration. In the example below we did `info from running /interface ethernet-1/1` and captured the output. We used this output as is in our request body just escaping the quotes.
     === "Request"
@@ -1183,19 +1183,19 @@ You guessed it right, you can also perform configuration tasks with CLI method a
         EOF
         ```
     === "Response"
-    ```json
-    {
-      "result": [
-        {},
-        {},
+        ```json
         {
-          "text": "All changes have been committed. Leaving candidate mode.\n"
+          "result": [
+            {},
+            {},
+            {
+              "text": "All changes have been committed. Leaving candidate mode.\n"
+            }
+          ],
+          "id": 0,
+          "jsonrpc": "2.0"
         }
-      ],
-      "id": 0,
-      "jsonrpc": "2.0"
-    }
-    ```
+        ```
 === "Verification"
     All of the methods should result in the same configuration added:
     ```bash
