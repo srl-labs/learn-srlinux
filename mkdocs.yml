@@ -8,6 +8,29 @@ nav:
       - Configuration management: kb/cfgmgmt.md
       - Interfaces: kb/ifaces.md
       - Network instances: kb/netwinstance.md
+  - Programmability:
+      - programmability/index.md
+      - YANG:
+          - yang/index.md
+          - YANG Browser: yang/browser.md
+      - NDK:
+          - Introduction: ndk/intro.md
+          - Developers Guide:
+              - NDK Architecture: ndk/guide/architecture.md
+              - Agent Structure: ndk/guide/agent.md
+              - Agent Installation & Operations: ndk/guide/agent-install-and-ops.md
+              - Environment Setup:
+                  - Go: ndk/guide/env/go.md
+                  - Python: ndk/guide/env/python.md
+              - Developing with NDK:
+                  - Go: ndk/guide/dev/go.md
+                  - Python: ndk/guide/dev/python.md
+          - App Catalog:
+              - ndk/apps/index.md
+              - EVPN Proxy: ndk/apps/evpn-proxy.md
+              - kButler: ndk/apps/kbutler.md
+              - Prometheus Telemetry Exporter: ndk/apps/srl-prom-exporter.md
+              - Satellite Tracker: ndk/apps/satellite.md
   - Tutorials:
       # - SR Linux tutorials: tutorials/about.md
       - tutorials/index.md
@@ -42,27 +65,6 @@ nav:
           - JSON-RPC:
               - Basics: tutorials/programmability/json-rpc/basics.md
               - Ansible: tutorials/programmability/json-rpc/ansible.md
-  - NDK:
-      - Introduction: ndk/intro.md
-      - Developers Guide:
-          - NDK Architecture: ndk/guide/architecture.md
-          - Agent Structure: ndk/guide/agent.md
-          - Agent Installation & Operations: ndk/guide/agent-install-and-ops.md
-          - Environment Setup:
-              - Go: ndk/guide/env/go.md
-              - Python: ndk/guide/env/python.md
-          - Developing with NDK:
-              - Go: ndk/guide/dev/go.md
-              - Python: ndk/guide/dev/python.md
-      - App Catalog:
-          - ndk/apps/index.md
-          - EVPN Proxy: ndk/apps/evpn-proxy.md
-          - kButler: ndk/apps/kbutler.md
-          - Prometheus Telemetry Exporter: ndk/apps/srl-prom-exporter.md
-          - Satellite Tracker: ndk/apps/satellite.md
-  - YANG:
-      - SR Linux & YANG: yang/yang.md
-      - YANG Browser: yang/browser.md
   - Community: community.md
   - Blog:
       - blog/index.md

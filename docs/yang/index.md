@@ -2,6 +2,8 @@
 comments: true
 ---
 
+# SR Linux & YANG
+
 <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/hellt/drawio-js@main/embed2.js" async></script>
 Model-driven (MD) interfaces are becoming essential for robust and modern Network OSes. The changes required to create fully model-driven interfaces can not happen overnight - it is a long and tedious process that requires substantial R&D effort.  
 Traditional Network OSes often had to take an evolutionary route with adding MD interfaces on top of the existing internal infrastructure.
