@@ -14,7 +14,7 @@ nav:
           - yang/index.md
           - YANG Browser: yang/browser.md
       - NDK:
-          - Introduction: ndk/intro.md
+          - ndk/index.md
           - Developers Guide:
               - NDK Architecture: ndk/guide/architecture.md
               - Agent Structure: ndk/guide/agent.md
@@ -155,6 +155,10 @@ plugins:
       categories:
         - tags
       comments_path: "#__comments"
+  - redirects:
+      redirect_maps:
+        "ndk/intro.md": "ndk/index.md"
+        "yang/yang.md": "yang/index.md"
 
 # Customization
 extra:
