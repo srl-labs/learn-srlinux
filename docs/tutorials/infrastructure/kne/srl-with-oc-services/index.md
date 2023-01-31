@@ -142,7 +142,7 @@ kubectl -n 2-srl-ixr6 exec -it srl1 -- sr_cli # (1)!
 
 <small>[:octicons-book-16: Openconfig docs][oc-doc]</small>
 
-By default, Nokia SR Linux uses native [YANG models](../../../../yang/yang.md). Openconfig YANG models are already enabled in the configuration file used in this lab.
+By default, Nokia SR Linux uses native [YANG models](../../../../yang/index.md). Openconfig YANG models are already enabled in the configuration file used in this lab.
 
 For completeness, the below section shows how to enable Openconfig via different management interfaces.
 
@@ -176,7 +176,7 @@ For completeness, the below section shows how to enable Openconfig via different
 
 gNMI service is enabled over port `57400` in the configuration files used with this lab and exposed over `9339` port for external connectivity.
 
-gNMI instance configured in the `mgmt` network instance uses native [YANG models](../../../../yang/yang.md). This is driven by the default configuration value of the `/system/gnmi-server/network-instance[name=mgmt]/yang-models` leaf and selects which models are going to be used when gNMI paths are provided without the [`origin`](https://github.com/openconfig/reference/blob/c243b35b36e366852f9476c87fb2efe6e9050dfe/rpc/gnmi/gnmi-specification.md#222-paths) information in the path.
+gNMI instance configured in the `mgmt` network instance uses native [YANG models](../../../../yang/index.md). This is driven by the default configuration value of the `/system/gnmi-server/network-instance[name=mgmt]/yang-models` leaf and selects which models are going to be used when gNMI paths are provided without the [`origin`](https://github.com/openconfig/reference/blob/c243b35b36e366852f9476c87fb2efe6e9050dfe/rpc/gnmi/gnmi-specification.md#222-paths) information in the path.
 
 Users can change the `yang-models` leaf value to `openconfig` should they want to use openconfig paths with gNMI without providing the `origin` value.
 

@@ -9,6 +9,7 @@ The main three components of an agent:
 3. Agent configuration file
 
 ## Executable file
+
 An executable file is called when the agent starts running on SR Linux system. It contains the application logic and is typically an executable binary or a script.
 
 The application logic handles the agents' configuration that may be provided via any management interface (CLI, gNMI, etc.) and contains the core logic of interfacing with gRPC based NDK services.
@@ -18,7 +19,8 @@ In the subsequent sections of the Developers Guide, we will cover how to write t
 An executable file can be placed at `/usr/local/bin` directory.
 
 ## YANG module
-SR Linux is a [fully modeled](../../yang/yang.md) Network OS - any native or custom application that can be configured or can have state is required to have a proper YANG model.
+
+SR Linux is a [fully modeled](../../yang/index.md) Network OS - any native or custom application that can be configured or can have state is required to have a proper YANG model.
 
 The "cost" associated with requiring users to write YANG models for their apps pays off immensely as this
 
@@ -34,6 +36,7 @@ And secondly, the YANG modules for custom apps are not that hard to write as the
 YANG files related to an agent are typically located by the `/opt/$agentName/yang` path.
 
 ## Configuration file
+
 Due to SR Linux modular architecture, each application, be it an internal app like `bgp` or a custom NDK agent, needs to have a configuration file. This file contains application parameters read by the Application Manager service to onboard the application onto the system.
 
 With an agent's config file, users define properties of an application, for example:
@@ -132,6 +135,7 @@ Through the subsequent chapters of the Developers Guide, we will cover the most 
     ```
 
 ## Dependency and other files
+
 Quite often, an agent may require additional files for its operation. It can be a virtual environment for your Python agent or some JSON file that your agent consumes.
 
 All those auxiliary files can be saved by the `/opt/$agentName/` directory.

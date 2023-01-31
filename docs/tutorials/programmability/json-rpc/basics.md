@@ -204,7 +204,7 @@ There is something to unpack in the message used in this exchange. First, note t
 
 #### Path
 
-The `path` is a string that follows gNMI Path Conventions[^5] and used to point to an element that is . It is not hard to spot that the `path` follows the [SR Linux YANG model](../../../yang/yang.md) and allows us to select a certain leaf that contains the version information.
+The `path` is a string that follows gNMI Path Conventions[^5] and used to point to an element that is . It is not hard to spot that the `path` follows the [SR Linux YANG model](../../../yang/index.md) and allows us to select a certain leaf that contains the version information.
 
 #### Datastore
 
