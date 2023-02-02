@@ -31,5 +31,5 @@ ISS coordinates are populated into the SR Linux'es state datastore and can be re
 [^1]: International Space Station
 [srl]: https://www.nokia.com/networks/products/service-router-linux-NOS/
 [src]: https://github.com/KTodts/srl-satellite-tracker
-[ndk]: ../intro.md
+[ndk]: ../index.md
 [auth1]: https://www.linkedin.com/in/kevin-todts/

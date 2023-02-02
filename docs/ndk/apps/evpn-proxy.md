@@ -30,5 +30,5 @@ The agent gets installed on SR Linux NOS and enables the control plane stitching
 
 [srl]: https://www.nokia.com/networks/products/service-router-linux-NOS/
 [src]: https://github.com/jbemmel/srl-evpn-proxy
-[ndk]: ../intro.md
+[ndk]: ../index.md
 [auth1]: https://www.linkedin.com/in/jeroenvbemmel/

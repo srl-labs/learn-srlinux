@@ -4,7 +4,7 @@ comments: true
 
 # SR Linux YANG Browser
 
-YANG data models are the map one should use when looking for their way to configure or retrieve any data on SR Linux system. A central role that is given to [YANG in SR Linux](yang.md) demands a convenient interface to **browse**, **search** through, and **process** these data models.
+YANG data models are the map one should use when looking for their way to configure or retrieve any data on SR Linux system. A central role that is given to [YANG in SR Linux](index.md) demands a convenient interface to **browse**, **search** through, and **process** these data models.
 
 To answer these demands, we created a web portal - [**yang.srlinux.dev**][yang-portal] - it offers:
 [yang-portal]: https://yang.srlinux.dev
