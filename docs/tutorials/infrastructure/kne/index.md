@@ -1,3 +1,10 @@
+---
+title: SR Linux with KNE
+tags:
+  - kne
+  - openconfig
+---
+
 # SR Linux with KNE
 
 For easy-to-spin personal network labs, we have open-sourced [containerlab](https://containerlab.dev) project, which many companies and individuals use with and without SR Linux. The simplicity and user-friendliness of containerlab, while being the key ingredients of its success, also bear some limitations. For example, multi-node topologies are not yet possible with containerlab, which means that your lab size is limited by the resources your containerlab host has.

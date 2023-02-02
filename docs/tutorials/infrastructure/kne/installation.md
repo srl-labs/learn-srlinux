@@ -1,5 +1,6 @@
 ---
 comments: true
+title: KNE Installation
 ---
 
 # Installation
