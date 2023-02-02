@@ -1,5 +1,6 @@
 ---
 comments: true
+title: JSON-RPC Basics
 ---
 
 <script type="text/javascript" src="https://viewer.diagrams.net/js/viewer-static.min.js" async></script>

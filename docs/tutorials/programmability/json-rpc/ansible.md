@@ -1,5 +1,6 @@
 ---
 comments: true
+title: Using Ansible with SR Linux's JSON-RPC Interface
 ---
 
 # Using Ansible with SR Linux's JSON-RPC Interface
