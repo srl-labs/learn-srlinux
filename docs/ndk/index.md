@@ -1,3 +1,8 @@
+---
+title: NetOps Development Kit
+tags:
+  - ndk
+---
 # NetOps Development Kit
 
 Nokia SR Linux enables its users to create high-performance applications which run alongside native apps on SR Linux Network OS. These "on-box custom applications" can be deeply integrated with the rest of the SR Linux system and thus can perform tasks that are not possible with traditional management interfaces standard for the typical network operating systems.
