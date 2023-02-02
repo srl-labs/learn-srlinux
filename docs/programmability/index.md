@@ -1,1 +1,83 @@
-Programmability rocks
+---
+hide:
+  - toc
+  - edit-button
+---
+
+<style>
+  .md-content__button {
+    display: none;
+  }
+</style>
+
+<div class="grid cards" markdown>
+
+- :material-yin-yang:{ .lg .middle } **YANG**
+
+    ---
+
+    Nokia SR Linux was ground-up designed with YANG data models taking a central role.  
+    Full YANG coverage for every component of SR Linux[^1] powers model-driven management interfaces and enables unprecedented automation capabilities.
+
+    [:octicons-arrow-right-24: Continue](../yang/index.md)
+
+- :octicons-stack-24:{ .lg .middle } **NetOps Development Kit (NDK)**
+
+    ---
+
+    The NDK enables operators to integrate their own and third-party applications into the system with all the same benefits as Nokia applications.
+
+    [:octicons-arrow-right-24: Reference](../ndk/index.md)
+
+- :material-puzzle-plus:{ .lg .middle } **Customizable CLI**
+
+    ---
+
+    An advanced, Python-based CLI provides a flexible framework for accessing the system’s underlying data models.
+
+    Operators can leverage CLI plugins to customize the way CLI looks, feels, and reacts.
+
+    <small>:material-progress-wrench: Article coming soon...</small>
+
+- :fontawesome-brands-golang:{ .lg .middle } **Go API**
+
+    ---
+
+    Up your automation workflows using Go API[^2] for SR Linux and leverage type hinting, compile-time validation and full schema conformance.
+
+    Time to leave confguration templating at runtime in the past!
+
+    [:octicons-arrow-right-24: Experiment](https://github.com/srl-labs/ygotsrl)
+
+- :material-ansible:{ .lg .middle } **Ansible modules**
+
+    ---
+
+    Does your networking team rely on Ansible for network automation, and you'd rather continue using it with SR Linux fabric?  
+    We have you covered with Ansible modules developed for SR Linux fully modelled JSON-RPC interface.
+
+    <small>:material-progress-wrench: Coming soon...</small>
+
+- :octicons-terminal-24:{ .lg .middle } **Screen scraping**
+
+    ---
+
+    Fully modeled, structured, and performant interfaces is not particularly your cup of tea? No worries, we added plugins for the two most popular screen craping libraries:
+
+    <!-- markdownlint-disable MD007 -->
+
+    - Scrapli ([py][scraplipy-srl], [go][scrapligo-srl])
+    - [Netmiko][netmiko-srl]
+
+    <!-- markdownlint-enable MD007 -->
+
+    <small>:material-progress-wrench: Tutorials coming soon...</small>
+
+</div>
+
+[scraplipy-srl]: https://github.com/scrapli/scrapli_community/tree/main/scrapli_community/nokia/srlinux
+[scrapligo-srl]: https://github.com/scrapli/scrapligo/blob/main/assets/platforms/nokia_srl.yaml
+[netmiko-srl]: https://github.com/ktbyers/netmiko/blob/develop/netmiko/nokia/nokia_srl.py
+
+[^1]: Including [NDK applications](../ndk/apps/index.md) written by users.
+[^2]: Generated with [openconfig/ygot](https://github.com/openconfig/ygot).
