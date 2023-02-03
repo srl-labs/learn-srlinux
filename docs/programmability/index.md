@@ -49,6 +49,26 @@ hide:
 
     [:octicons-arrow-right-24: Experiment](https://github.com/srl-labs/ygotsrl)
 
+- :material-arrow-decision-outline:{ .lg .middle } **Event Handler**
+
+    ---
+
+    Event handler is a framework that enables SR Linux to react to specific system events, using programmable logic to define the actions taken in response to the events.
+
+    Couple the fully-modelled configuration and state datastores with a versatile and simple Python language and you get a powerful automation execution framework running on the NOS.
+
+    [:octicons-arrow-right-24: Checkout examples](../blog/tags.md#event-handler)
+
+- :octicons-flame-24:{ .lg .middle } **NAPALM**
+
+    ---
+
+    Familiar with a multi-vendor network automation interface that spits fire?
+
+    With [`napalm-srlinux`](https://github.com/napalm-automation-community/napalm-srlinux) community driver we plug in the NAPALM ecosystem using gNMI as the underlying management interface.
+
+    [:octicons-arrow-right-24: Try yourself](https://github.com/napalm-automation-community/napalm-srlinux)
+
 - :material-ansible:{ .lg .middle } **Ansible modules**
 
     ---
