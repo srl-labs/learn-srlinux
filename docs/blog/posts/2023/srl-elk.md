@@ -689,7 +689,7 @@ In the `Analytics -> Dashboard` users get a chance to create interactive dashboa
 
 The provided dashboard also makes it easy to skim through logs and select the ones you need to dive into:
 
-<video width="100%" controls><source src="https://gitlab.com/rdodin/pics/-/wikis/uploads/bfa97831e557a5d0ab6f4245497d9e81/2023-02-11_18-23-48.mp4" type="video/mp4"></video>
+<video width="100%" controls playsinline><source src="https://gitlab.com/rdodin/pics/-/wikis/uploads/bfa97831e557a5d0ab6f4245497d9e81/2023-02-11_18-23-48.mp4" type="video/mp4"></video>
 
 ## Summary
 
