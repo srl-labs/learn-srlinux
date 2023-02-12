@@ -459,15 +459,16 @@ Ultimately, however, you know more about your data and how you want to use it th
 To see the documents stored in the Elastic index we can leverage Elastic API using `curl` or Dev Tools panel of Kibana.
 
 ???example "Query examples with `curl`"
-    === "Listing all documents with `curl`"
-        ```json
+    === "Listing all documents"
+        ```bash
         ❯ curl -s "http://localhost:9200/fabric-logs-*/_search" -H 'Content-Type: application/json' -d'
         {
           "query": {
             "match_all": {}
           }
         }' | jq
-
+        ```
+        ```json
         {
           "took": 8,
           "timed_out": false,
@@ -535,9 +536,9 @@ To see the documents stored in the Elastic index we can leverage Elastic API usi
           }
         }
         ```
-    === "Searching for a particular document with `curl`"
+    === "Searching for a particular document"
         Listing logs emitted by `aaa` subsystem of SR Linux from `leaf1` node.
-        ```json
+        ```bash
         curl -s "http://localhost:9200/fabric-logs-*/_search" -H 'Content-Type: application/json' -d'
         {
           "query": {
@@ -557,6 +558,8 @@ To see the documents stored in the Elastic index we can leverage Elastic API usi
             }
           }
         }' | jq
+        ```
+        ```json
         {
           "took": 35,
           "timed_out": false,
@@ -620,6 +623,91 @@ To see the documents stored in the Elastic index we can leverage Elastic API usi
                 }
               },
               // snipped
+            ]
+          }
+        }
+        ```
+    === "Regexp search pattern"
+        ```bash
+        curl -s "http://localhost:9200/fabric-logs-*/_search" -H 'Content-Type: application/json' -d'
+        {
+          "query": {
+            "bool": {
+              "must": [
+                {
+                  "regexp": {
+                    "message": ".*[bB][gG][pP].*"
+                  }
+                }
+              ]
+            }
+          }
+        }' | jq
+        ```
+        ```json
+        {
+          "took": 9,
+          "timed_out": false,
+          "_shards": {
+            "total": 1,
+            "successful": 1,
+            "skipped": 0,
+            "failed": 0
+          },
+          "hits": {
+            "total": {
+              "value": 44,
+              "relation": "eq"
+            },
+            "max_score": 1,
+            "hits": [
+              {
+                "_index": "fabric-logs-2023.02.12",
+                "_type": "_doc",
+                "_id": "3gSSRYYB-MNGUHTegRKj",
+                "_score": 1,
+                "_source": {
+                  "host": {
+                    "ip": "172.22.22.23",
+                    "hostname": "leaf3"
+                  },
+                  "ecs": {
+                    "version": "1.12.2"
+                  },
+                  "@timestamp": "2023-02-12T13:21:14.000Z",
+                  "process": {
+                    "name": "sr_bgp_mgr"
+                  },
+                  "message": "In network-instance default, the BGP session with VR default (1): Group ibgp-evpn: Peer 10.0.0.6 was closed because the router sent this neighbor a NOTIFICATION with code CEASE and subcode CONN_COLL_RES",
+                  "tags": [
+                    "syslog",
+                    "srlinux"
+                  ],
+                  "srl": {
+                    "syslog": {
+                      "initial": "W",
+                      "subsystem": "bgp",
+                      "pid": "1595",
+                      "thread": "1622",
+                      "sequence": "00006"
+                    }
+                  },
+                  "log": {
+                    "syslog": {
+                      "severity": {
+                        "code": 4,
+                        "name": "Warning"
+                      },
+                      "facility": {
+                        "code": 22,
+                        "name": "local6"
+                      },
+                      "priority": 180
+                    }
+                  }
+                }
+              },
+            // snipped
             ]
           }
         }
