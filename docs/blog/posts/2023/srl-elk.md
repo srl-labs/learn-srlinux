@@ -12,6 +12,8 @@ authors:
 
 # SR Linux logging with ELK
 
+<small>**Join the discussion:** [:material-linkedin: LinkedIn post][discussion-linkedin] · [:material-twitter: Twitter thread][discussion-twitter]</small>
+
 In a not-so-distant past, manually extracting, parsing, and reading log files produced by network elements was standard practice for a sysadmin. With arcane piping of old-but-good `grep`, `awk`, and `sed` tools, one could swiftly identify a problem in a relatively large system. This was a viable approach for quite some time, but it became prey to a massive scale.
 
 Today's network infrastructures often count thousands of elements, each emitting log messages. Getting through a log collection of this size with CLI tools designed decades ago might not be the best tactic. As well as correlating logs between network elements and application logs might be impossible without software solutions built with such use cases in mind.
@@ -38,7 +40,7 @@ DC Fabric comes preconfigured with an EVPN-VXLAN L2 domain instance, and syslog-
 | **Lab components**          | Nokia SR Linux, ELK stack                                                                                                                    |
 | **Resource requirements**   | :fontawesome-solid-microchip: 6 vCPU <br/>:fontawesome-solid-memory: 12 GB                                                                   |
 | **Lab**                     | [srl-labs/srl-elk-lab][lab-repo]                                                                                                             |
-| **Version information**[^1] | [`containerlab:0.36.1`][clab-install], [`srlinux:22.11.1`][srl-container], ELK stack 7.17.7                                                   |
+| **Version information**[^1] | [`containerlab:0.36.1`][clab-install], [`srlinux:22.11.1`][srl-container], ELK stack 7.17.7                                                  |
 | **Authors**                 | Anton Zyablov [:material-linkedin:][azyablov-linkedin] <br/> Roman Dodin [:material-twitter:][rd-twitter] [:material-linkedin:][rd-linkedin] |
 
 [Lab repository][lab-repo] contains all necessary configuration artifacts, which are mounted to the respective container nodes as outlined in the [topology file][topo-file].
@@ -110,10 +112,10 @@ When defining a Linux OS facility or SR Linux subsystem as a log source, users c
 
 A [destination][log-dest-docs] for the ingested and filtered log messages can be one of the following:
 
-* **local log file:** a file on disk that can be configured with retention policies.
-* **buffer:** an in-memory file.
-* **console:** console output.
-* **remote:** remote server.
+- **local log file:** a file on disk that can be configured with retention policies.
+- **buffer:** an in-memory file.
+- **console:** console output.
+- **remote:** remote server.
 
 In the course of this blog post, we will work with a `remote-destination` output type, as we intend to send the log messages over to Logstash for processing.
 
@@ -721,9 +723,9 @@ Even though Elastic is the core of the stack, we made a very short stop at it, b
 
 Kibana enables you to give shape to your data and navigate the Elastic Stack. With Kibana, you can:
 
-* **Search, observe, and protect your data.** From discovering documents to analyzing logs to finding security vulnerabilities, Kibana is your portal for accessing these capabilities and more.
-* **Analyze your data.** Search for hidden insights, visualize what you’ve found in charts, gauges, maps, graphs, and more, and combine them in a dashboard.
-* **Manage, monitor, and secure the Elastic Stack.** Manage your data, monitor the health of your Elastic Stack cluster, and control which users have access to which features.
+- **Search, observe, and protect your data.** From discovering documents to analyzing logs to finding security vulnerabilities, Kibana is your portal for accessing these capabilities and more.
+- **Analyze your data.** Search for hidden insights, visualize what you’ve found in charts, gauges, maps, graphs, and more, and combine them in a dashboard.
+- **Manage, monitor, and secure the Elastic Stack.** Manage your data, monitor the health of your Elastic Stack cluster, and control which users have access to which features.
 
 In the context of this post, we will use the stack management, searching, and visualization capabilities of Kibana.
 
@@ -814,6 +816,8 @@ We left A LOT behind the brackets of this post. API access, logs correlation, Lo
 [elastic-docs]: https://www.elastic.co/guide/en/elasticsearch/reference/7.17/index.html
 [kibana-docs]: https://www.elastic.co/guide/en/kibana/7.17/index.html
 [kibana-index-pattern-docs]: https://www.elastic.co/guide/en/kibana/7.17/index-patterns.html
+[discussion-linkedin]: https://www.linkedin.com/feed/update/urn:li:activity:7030840418195906560/
+[discussion-twitter]: https://twitter.com/ntdvps/status/1625074576286748672
 
 [^1]: The lab was tested with these particular versions. It might work with a more recent version of the components.
 [^2]: The SR Linux installs a minimal version of the `/etc/rsyslog.conf` file and maintains an SR Linux-specific configuration file in the `/etc/rsyslog.d/` directory.
