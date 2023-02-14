@@ -2,6 +2,7 @@
 hide:
   - toc
   - edit-button
+title: Programmability
 ---
 
 <style>

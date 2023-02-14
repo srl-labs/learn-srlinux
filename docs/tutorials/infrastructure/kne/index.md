@@ -1,5 +1,4 @@
 ---
-title: SR Linux with KNE
 tags:
   - kne
   - openconfig
