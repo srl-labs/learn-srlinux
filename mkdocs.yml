@@ -71,6 +71,7 @@ nav:
   - Blog:
       - blog/index.md
       - Subscribe: blog/subscribe.md
+      - Tags: blog/tags.md
 
 site_author: SR Linux
 site_description: >-
