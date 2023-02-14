@@ -1,5 +1,4 @@
 ---
-title: NetOps Development Kit
 tags:
   - ndk
 ---

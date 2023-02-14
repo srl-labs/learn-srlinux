@@ -1,6 +1,5 @@
 ---
 comments: true
-title: SR Linux with Openconfig Services
 ---
 
 # SR Linux with Openconfig services

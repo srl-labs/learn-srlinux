@@ -2,7 +2,6 @@
 comments: true
 tags:
   - yang
-title: SR Linux & YANG
 ---
 
 # SR Linux & YANG
