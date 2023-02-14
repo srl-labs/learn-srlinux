@@ -1,3 +1,7 @@
+---
+hide: navigation
+---
+
 SR Linux packs a lot of unique features that the data center networking teams can leverage.
 Some of the features are truly new to the networking domain.
 The goal of this portal is to introduce SR Linux to visitors through interactive tutorials centered around SR Linux services and capabilities.
@@ -19,6 +23,8 @@ docker pull ghcr.io/nokia/srlinux
 ```
 
 When image is referenced without a tag, the latest container image version will be pulled. To obtain a specific version of a containerized SR Linux, refer to the [list of tags](https://github.com/orgs/nokia/packages/container/srlinux/versions) the `nokia/srlinux` image has and change the `docker pull` command accordingly.
+
+###
 
 ### Running SR Linux
 
@@ -136,6 +142,16 @@ The logs of the running container can be displayed with `docker logs <container-
 
 In case of the misconfiguration or runtime errors, container may exit abruptly. In that case it won't appear in the `docker ps` output as this command only shows running containers. Containers which are in the exited status will be part of the `docker ps -a` output.  
 In case your container exits abruptly, check the logs as they typically reveal the cause of termination.
+
+## Documentation
+
+This portal does not substitute but augments the official SR Linux documentation. You can find official docs using one of the following links:
+
+1. SR Linux documentation collection - https://documentation.nokia.com/srlinux
+2. Short and memorizable URLs with the release version being part of the URL
+    1. https://doc.srlinux.dev/22-11 for the main documentation pages of SR Linux 22.11 release.
+    2. https://doc.srlinux.dev/rn22-11-2 for a direct link to Release Notes.
+3. Network Infrastructure documentation collection - https://bit.ly/iondoc
 
 ## Connecting to SR Linux
 
