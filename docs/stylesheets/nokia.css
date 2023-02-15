@@ -125,3 +125,34 @@ th {
 :is(.language-srl, .language-srlmin) :is(.n) {
   font-weight: 900;
 }
+
+/* classes to make iframe elements responsive */
+.iframe-container {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%;
+  height: 0;
+}
+
+.iframe-container iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* this is for low-height iframe audio containers */
+.iframe-audio2-container {
+  position: relative;
+  width: 100%;
+  padding-bottom: 2rem;
+}
+
+.iframe-audio2-container iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}

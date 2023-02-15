@@ -72,6 +72,7 @@ nav:
       - blog/index.md
       - Subscribe: blog/subscribe.md
       - Tags: blog/tags.md
+      - In the Media: blog/media.md
 
 site_author: SR Linux
 site_description: >-
@@ -148,6 +149,10 @@ plugins:
       categories: false
   - tags:
       tags_file: blog/tags.md
+      # media.md is a file that only shows posts with `media` tag
+      tags_extra_files:
+        blog/media.md:
+          - media
   - search
   - minify:
       minify_html: true
@@ -176,6 +181,9 @@ extra:
   analytics:
     provider: google
     property: G-VNYX781Q48
+  tags:
+    # tags and their identifiers
+    media: media # media tag is used to show posts in media.md
 
 # Extensions
 markdown_extensions:
