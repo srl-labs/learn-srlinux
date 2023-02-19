@@ -2,327 +2,327 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://learn.srlinux.dev/</loc>
-         <lastmod>2023-02-15</lastmod>
+         <lastmod>2023-02-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/alwayson/</loc>
-         <lastmod>2023-02-15</lastmod>
+         <lastmod>2023-02-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/community/</loc>
-         <lastmod>2023-02-15</lastmod>
+         <lastmod>2023-02-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/get-started/</loc>
-         <lastmod>2023-02-15</lastmod>
+         <lastmod>2023-02-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/blog/</loc>
-         <lastmod>2023-02-15</lastmod>
+         <lastmod>2023-02-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/blog/media/</loc>
-         <lastmod>2023-02-15</lastmod>
+         <lastmod>2023-02-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/blog/subscribe/</loc>
-         <lastmod>2023-02-15</lastmod>
+         <lastmod>2023-02-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/blog/tags/</loc>
-         <lastmod>2023-02-15</lastmod>
+         <lastmod>2023-02-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/blog/2022/sr-linux-blog-launch/</loc>
-         <lastmod>2023-02-15</lastmod>
+         <lastmod>2023-02-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/blog/2022/configuration-backup-with-event-handler/</loc>
-         <lastmod>2023-02-15</lastmod>
+         <lastmod>2023-02-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/blog/2022/using-ansible-with-sr-linuxs-json-rpc-interface/</loc>
-         <lastmod>2023-02-15</lastmod>
+         <lastmod>2023-02-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/blog/2022/json-rpc-management-interface/</loc>
-         <lastmod>2023-02-15</lastmod>
+         <lastmod>2023-02-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/blog/2022/material-youtube-devops-approaches-for-enhanced-netops-with-nokia-data-center-fabric-solution/</loc>
-         <lastmod>2023-02-15</lastmod>
+         <lastmod>2023-02-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/blog/2022/basic-ixp-lab-with-openbgpd-route-server/</loc>
-         <lastmod>2023-02-15</lastmod>
+         <lastmod>2023-02-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/blog/2022/material-podcast-design-deploy-and-operate-with-nokia-data-center-fabric-solution/</loc>
-         <lastmod>2023-02-15</lastmod>
+         <lastmod>2023-02-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/blog/2022/material-podcast-develop-custom-network-apps-with-nokias-sr-linux-ndk/</loc>
-         <lastmod>2023-02-15</lastmod>
+         <lastmod>2023-02-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/blog/2023/material-podcast-event-driven-automation-with-nokias-sr-linux-event-handler-framework/</loc>
-         <lastmod>2023-02-15</lastmod>
+         <lastmod>2023-02-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/blog/2023/sr-linux-logging-with-elk/</loc>
-         <lastmod>2023-02-15</lastmod>
+         <lastmod>2023-02-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/blog/2023/sr-linux-syntax-highlighting-with-pygments/</loc>
-         <lastmod>2023-02-15</lastmod>
+         <lastmod>2023-02-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/kb/cfgmgmt/</loc>
-         <lastmod>2023-02-15</lastmod>
+         <lastmod>2023-02-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/kb/hwtypes/</loc>
-         <lastmod>2023-02-15</lastmod>
+         <lastmod>2023-02-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/kb/ifaces/</loc>
-         <lastmod>2023-02-15</lastmod>
+         <lastmod>2023-02-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/kb/mgmt/</loc>
-         <lastmod>2023-02-15</lastmod>
+         <lastmod>2023-02-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/kb/netwinstance/</loc>
-         <lastmod>2023-02-15</lastmod>
+         <lastmod>2023-02-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/mgmt/</loc>
-         <lastmod>2023-02-15</lastmod>
+         <lastmod>2023-02-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/ndk/</loc>
-         <lastmod>2023-02-15</lastmod>
+         <lastmod>2023-02-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/ndk/apps/</loc>
-         <lastmod>2023-02-15</lastmod>
+         <lastmod>2023-02-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/ndk/apps/evpn-proxy/</loc>
-         <lastmod>2023-02-15</lastmod>
+         <lastmod>2023-02-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/ndk/apps/kbutler/</loc>
-         <lastmod>2023-02-15</lastmod>
+         <lastmod>2023-02-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/ndk/apps/satellite/</loc>
-         <lastmod>2023-02-15</lastmod>
+         <lastmod>2023-02-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/ndk/apps/srl-prom-exporter/</loc>
-         <lastmod>2023-02-15</lastmod>
+         <lastmod>2023-02-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/ndk/guide/agent-install-and-ops/</loc>
-         <lastmod>2023-02-15</lastmod>
+         <lastmod>2023-02-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/ndk/guide/agent/</loc>
-         <lastmod>2023-02-15</lastmod>
+         <lastmod>2023-02-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/ndk/guide/architecture/</loc>
-         <lastmod>2023-02-15</lastmod>
+         <lastmod>2023-02-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/ndk/guide/dev/go/</loc>
-         <lastmod>2023-02-15</lastmod>
+         <lastmod>2023-02-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/ndk/guide/dev/python/</loc>
-         <lastmod>2023-02-15</lastmod>
+         <lastmod>2023-02-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/ndk/guide/env/go/</loc>
-         <lastmod>2023-02-15</lastmod>
+         <lastmod>2023-02-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/ndk/guide/env/python/</loc>
-         <lastmod>2023-02-15</lastmod>
+         <lastmod>2023-02-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/programmability/</loc>
-         <lastmod>2023-02-15</lastmod>
+         <lastmod>2023-02-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/tutorials/</loc>
-         <lastmod>2023-02-15</lastmod>
+         <lastmod>2023-02-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/tutorials/infrastructure/kne/</loc>
-         <lastmod>2023-02-15</lastmod>
+         <lastmod>2023-02-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/tutorials/infrastructure/kne/installation/</loc>
-         <lastmod>2023-02-15</lastmod>
+         <lastmod>2023-02-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/tutorials/infrastructure/kne/topology/</loc>
-         <lastmod>2023-02-15</lastmod>
+         <lastmod>2023-02-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/tutorials/infrastructure/kne/srl-with-oc-services/</loc>
-         <lastmod>2023-02-15</lastmod>
+         <lastmod>2023-02-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/tutorials/l2evpn/evpn/</loc>
-         <lastmod>2023-02-15</lastmod>
+         <lastmod>2023-02-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/tutorials/l2evpn/fabric/</loc>
-         <lastmod>2023-02-15</lastmod>
+         <lastmod>2023-02-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/tutorials/l2evpn/intro/</loc>
-         <lastmod>2023-02-15</lastmod>
+         <lastmod>2023-02-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/tutorials/l2evpn/summary/</loc>
-         <lastmod>2023-02-15</lastmod>
+         <lastmod>2023-02-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/tutorials/mpls/mpls-ldp/intro/</loc>
-         <lastmod>2023-02-15</lastmod>
+         <lastmod>2023-02-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/tutorials/mpls/mpls-ldp/ldp/</loc>
-         <lastmod>2023-02-15</lastmod>
+         <lastmod>2023-02-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/tutorials/mpls/mpls-ldp/routing/</loc>
-         <lastmod>2023-02-15</lastmod>
+         <lastmod>2023-02-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/tutorials/programmability/event-handler/oper-group/lab/</loc>
-         <lastmod>2023-02-15</lastmod>
+         <lastmod>2023-02-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/tutorials/programmability/event-handler/oper-group/oper-group-cfg/</loc>
-         <lastmod>2023-02-15</lastmod>
+         <lastmod>2023-02-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/tutorials/programmability/event-handler/oper-group/oper-group-intro/</loc>
-         <lastmod>2023-02-15</lastmod>
+         <lastmod>2023-02-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/tutorials/programmability/event-handler/oper-group/opergroup-operation/</loc>
-         <lastmod>2023-02-15</lastmod>
+         <lastmod>2023-02-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/tutorials/programmability/event-handler/oper-group/problem-statement/</loc>
-         <lastmod>2023-02-15</lastmod>
+         <lastmod>2023-02-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/tutorials/programmability/event-handler/oper-group/script/</loc>
-         <lastmod>2023-02-15</lastmod>
+         <lastmod>2023-02-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/tutorials/programmability/event-handler/oper-group/summary/</loc>
-         <lastmod>2023-02-15</lastmod>
+         <lastmod>2023-02-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/tutorials/programmability/json-rpc/ansible/</loc>
-         <lastmod>2023-02-15</lastmod>
+         <lastmod>2023-02-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/tutorials/programmability/json-rpc/basics/</loc>
-         <lastmod>2023-02-15</lastmod>
+         <lastmod>2023-02-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/yang/</loc>
-         <lastmod>2023-02-15</lastmod>
+         <lastmod>2023-02-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/yang/browser/</loc>
-         <lastmod>2023-02-15</lastmod>
+         <lastmod>2023-02-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/blog/tags/</loc>
-         <lastmod>2023-02-15</lastmod>
+         <lastmod>2023-02-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/blog/media/</loc>
-         <lastmod>2023-02-15</lastmod>
+         <lastmod>2023-02-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://learn.srlinux.dev/blog/page/2/</loc>
-         <lastmod>2023-02-15</lastmod>
+         <lastmod>2023-02-19</lastmod>
          <changefreq>daily</changefreq>
     </url>
 </urlset>
