@@ -105,7 +105,7 @@ INFO[0003] Writing /etc/hosts file
 A few seconds later containerlab finishes the deployment with providing a summary table that outlines connection details of the deployed nodes. In the "Name" column we have the names of the deployed containers and those names can be used to reach the nodes, for example to connect to the SSH of `leaf1`:
 
 ```bash
-# default credentials admin:admin
+# default credentials admin:NokiaSrl1!
 ssh admin@clab-evpn01-leaf1
 ```
 
