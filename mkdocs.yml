@@ -97,7 +97,7 @@ theme:
 
   features:
     - navigation.top
-    - navigation.instant
+    # - navigation.instant # removed until code selection are fixed https://github.com/squidfunk/mkdocs-material/issues/5066
     - navigation.tabs
     - search.suggest
     - content.code.annotate
