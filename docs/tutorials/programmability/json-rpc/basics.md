@@ -614,7 +614,7 @@ Notice, how the verification command proves that the whole configuration under `
 
 #### Delete
 
-To delete a configuration region for a certain path use `delete` action of the Set method. For example, let's delete everythin under the `/system/information` container:
+To delete a configuration region for a certain path use `delete` action of the Set method. For example, let's delete everything under the `/system/information` container:
 
 === "Initial state"
     We start with `information` container containing `contact` leaf.
