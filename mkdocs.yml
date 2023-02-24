@@ -154,6 +154,7 @@ plugins:
       tags_extra_files:
         blog/media.md:
           - media
+  - typeset
   - search
   - minify:
       minify_html: true
