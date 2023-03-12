@@ -66,6 +66,26 @@ Topology file utilizes [startup configuration](../topology.md#file) provided in 
 
 As a result of this startup config, the nodes come up online with these services in an already operational state.
 
+???tip "How to configure Openconfig services via CLI"
+    In order to configure the below mentioned Openconfig services users can spin up a single-node SR Linux topology with containerlab and enter the follwoing commands in the CLI:
+
+    ```srl
+    enter candidate
+    /system tls
+    replace "server-profile clab-profile" with "server-profile kne-profile"
+
+    set / system gnmi-server network-instance mgmt tls-profile kne-profile
+    set / system json-rpc-server network-instance mgmt https tls-profile kne-profile
+
+    set / system management openconfig admin-state enable
+    set / system gnmi-server network-instance mgmt yang-models openconfig
+
+    set / system gribi-server admin-state enable network-instance mgmt admin-state enable tls-profile kne-profile
+    set / network-instance mgmt protocols gribi admin-state enable
+
+    set / system p4rt-server admin-state enable network-instance mgmt admin-state enable tls-profile kne-profile
+    ```
+
 ### TLS certificate
 
 A generated TLS profile is present in the configuration and can be found by `/system tls server-profile kne-profile` path. This server profile named `kne-profile` contains a TLS certificate and a key. This server profile is used by a number of SR Linux management services that require TLS-enabled security.
