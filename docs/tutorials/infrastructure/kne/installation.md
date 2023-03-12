@@ -10,8 +10,8 @@ To start deploying labs orchestrated by KNE a user needs to install `kne` comman
 !!!note "Versions"
     We used the following components and their versions in this tutorial:
 
-    * [`kne @8daa214`](https://github.com/openconfig/kne/tree/8daa2149cd6a6093a16177db23e4b399b025160d)
-    * [`kind v0.17.0`](https://github.com/kubernetes-sigs/kind/releases/tag/v0.17.0)
+    * [`kne @8daa214`](https://github.com/openconfig/kne/tree/8daa2149cd6a6093a16177db23e4b399b025160d)[^1]
+    * [`kind v0.17.0`](https://github.com/kubernetes-sigs/kind/releases/tag/v0.17.0)[^2]
 
 By following the setup instructions, you should have the following utilities successfully installed:
 
