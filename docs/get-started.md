@@ -32,7 +32,7 @@ When the image is pulled to a local image store, you can start exploring SR Linu
 
 A system on which you can run SR Linux containers should conform to the following requirements:
 
-1. Linux OS with a kernel v4+[^1].
+1. Linux OS with a kernel v4.10+[^1].
 1. [Docker](https://docs.docker.com/engine/install/) container runtime.
 1. At least 2 vCPU and 4GB RAM.
 1. A user with administrative privileges.
@@ -211,6 +211,6 @@ supported models:
 <SNIP>
 ```
 
-[^1]: Centos 7.3+ although having a 3.x kernel is still capable of running SR Linux container
+[^1]: Centos 7.3+ has a 3.x kernel and won't be able to run SR Linux container images newer than v22.11.
 [^2]: for example [gnmic](https://gnmic.openconfig.net)
 [^3]: The labs referenced on this site are deployed with containerlab unless stated otherwise
