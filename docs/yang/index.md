@@ -28,8 +28,8 @@ SR Linux exposes the YANG models to the supported management APIs. For example, 
 
 With this design, there is no way around YANG; the data model is defined first for any application SR Linux has, then the CLI, APIs, and show output formats derived from it.
 
-[rfc6020]: https://www.rfcreader.com/#rfc6020
-[rfc7950]: https://www.rfcreader.com/#rfc7950
+[rfc6020]: https://datatracker.ietf.org/doc/html/rfc6020
+[rfc7950]: https://datatracker.ietf.org/doc/html/rfc7950
 
 ## SR Linux YANG Models
 

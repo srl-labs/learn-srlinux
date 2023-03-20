@@ -5,7 +5,7 @@ title: KNE Topology
 
 # KNE Topology
 
-Everything is ready for KNE users to create network topologies when [installation](installation.md) steps are out of the way. KNE offers a declarative way of defining network topologies using a topology file that captures the state of a topology. Topology message in the [`topo.proto`](https://github.com/openconfig/kne/blob/9d835bbaa1e4b26ab03b0d456461a044f2ec9ea0/proto/topo.proto) file defines the schema that the KNE topology follows. Consult with the schema to see which fields a topology can have.
+Everything is ready for KNE users to create network topologies when [installation](installation.md) steps are out of the way. KNE offers a declarative way of defining network topologies using a topology file that captures the state of a topology. Topology message in the [`topo.proto`][topo.proto] file defines the schema that the KNE topology follows. Consult with the schema to see which fields a topology can have.
 
 KNE topology file can be provided in the following formats:
 
@@ -15,7 +15,7 @@ KNE topology file can be provided in the following formats:
 Both prototext and YAML files offer the same functionality; given the dominance of the prototext format in the kne repository, we will use this format in the tutorial.
 
 !!!tip
-    The parts of the topology used in this section are taken from the [`2node-srl-ixr6-with-oc-services.pbtxt`](https://github.com/openconfig/kne/blob/main/examples/nokia/srlinux-services/2node-srl-ixr6-with-oc-services.pbtxt) topology file hosted at the kne repository.
+    The parts of the topology used in this section are taken from the [`2node-srl-ixr6-with-oc-services.pbtxt`][srl-with-oc-topo-file] topology file hosted at the kne repository.
 
 ## Topology Name
 
@@ -56,11 +56,11 @@ nodes: {
 
 ### Vendor
 
-To let KNE know which vendor is defined within the node section, the `vendor` field is provided. Several vendors are supported by KNE and the full list is provided in the [topo.proto](https://github.com/openconfig/kne/blob/9d835bbaa1e4b26ab03b0d456461a044f2ec9ea0/proto/topo.proto#L30) file.
+The vendor field is provided to let KNE know which vendor is defined within the node section. KNE supports several vendors; the full list is provided in the [topo.proto](https://github.com/openconfig/kne/blob/v0.1.9/proto/topo.proto#L32) file.
 
 ```proto
 nodes: {
-    vendor: NOKIA # (1)!
+    vendor: NOKIA // (1)!
     // other node parameters snipped for brevity
 }
 ```
@@ -68,9 +68,9 @@ nodes: {
 1. Note, the vendor value needs to be provided exactly as defined in the Vendor enum field of the proto file. Without quotes.
 
 !!!note
-    Some KNE examples may utilize `type` parameter with a value of `NOKIA_SRL` or similar. This filed is going to be deprecated in favor of seperate fields: `vendor`/`model`/`os`/`version`.
+    Some KNE examples may utilize the `type` parameter with a value of `NOKIA_SRL` or similar. This field will be deprecated in favor of the separate fields: `vendor`/`model`/`os`/`version`.
 
-When working with Nokia SR Linux nodes, the vendor field must be set to `NOKIA`.
+The vendor field must be set to `NOKIA` when working with Nokia SR Linux nodes.
 
 ### Model
 
@@ -94,14 +94,15 @@ The essential field under the Config block is `image`. It sets the container ima
 ```proto
 nodes: {
     config:{
-        image: "ghcr.io/nokia/srlinux:22.6.1"
+        image: "ghcr.io/nokia/srlinux:22.6.4"
     }
     // other node parameters snipped for brevity
 }
 ```
 
 !!!note
-    When `kind` cluster is used, users might want to [load the container image](installation.md#image-load) before creating the topologies.
+    1. In the [`2node-srl-ixr6-with-oc-services.pbtxt`][srl-with-oc-topo-file] the image is omitted, as the intention there to use the latest available image, which is a default value for the `image` field.
+    2. When `kind` cluster is used, users might want to [load the container image](installation.md#image-load) before creating the topologies.
 
 #### File
 
@@ -245,5 +246,8 @@ nodes: {
 !!!note
     It is not mandatory to provide interface mapping information if no external system that needs to know this mapping will be used.
 
+[topo.proto]: https://github.com/openconfig/kne/blob/v0.1.9/proto/topo.proto
+[srl-with-oc-topo-file]: https://github.com/openconfig/kne/blob/v0.1.9/examples/nokia/srlinux-services/2node-srl-ixr6-with-oc-services.pbtxt
+
 [^1]: https://developers.google.com/protocol-buffers/docs/text-format-spec
-[^2]: full specification of a Node element is contained in the [topology proto file](https://github.com/openconfig/kne/blob/9d835bbaa1e4b26ab03b0d456461a044f2ec9ea0/proto/topo.proto#L44-L80).
+[^2]: full specification of a Node element is contained in the [topology proto file](https://github.com/openconfig/kne/blob/v0.1.9/proto/topo.proto#L46-L84).

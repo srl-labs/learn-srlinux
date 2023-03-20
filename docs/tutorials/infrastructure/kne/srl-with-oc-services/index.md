@@ -4,15 +4,15 @@ comments: true
 
 # SR Linux with Openconfig services
 
-| Summary                     |                                                                                                                                        |
-| --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| **Tutorial name**           | SR Linux with KNE                                                                                                                      |
-| **Lab components**          | 2 Nokia SR Linux nodes                                                                                                                 |
-| **Resource requirements**   | :fontawesome-solid-microchip: 2 vCPU <br/>:fontawesome-solid-memory: 4 GB                                                              |
-| **Lab**                     | [kne/examples/srlinux/2node-srl-ixr6-with-oc-services.pbtxt][lab]                                                                      |
-| **Main ref documents**      | [kne documentation][knedoc]                                                                                                            |
-| **Version information**[^1] | [`kne`][kne-install], [`srlinux:22.6.4`][srlinux-container], [`srl-controller:0.4.4`][srl-controller], [`kind:0.14.0`][kind-install] |
-| **Authors**                 | Roman Dodin [:material-twitter:][rd-twitter] [:material-linkedin:][rd-linkedin]                                                        |
+| Summary                     |                                                                                                                                              |
+| --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Tutorial name**           | SR Linux with KNE                                                                                                                            |
+| **Lab components**          | 2 Nokia SR Linux nodes                                                                                                                       |
+| **Resource requirements**   | :fontawesome-solid-microchip: 2 vCPU <br/>:fontawesome-solid-memory: 4 GB                                                                    |
+| **Lab**                     | [kne/examples/srlinux/2node-srl-ixr6-with-oc-services.pbtxt][lab]                                                                            |
+| **Main ref documents**      | [kne documentation][knedoc]                                                                                                                  |
+| **Version information**[^1] | [`kne v0.1.9`][kne-install], [`srlinux:22.11.2`][srlinux-container], [`srl-controller:0.5.0`][srl-controller], [`kind:0.17.0`][kind-install] |
+| **Authors**                 | Roman Dodin [:material-twitter:][rd-twitter] [:material-linkedin:][rd-linkedin]                                                              |
 
 KNE repository contains a set of [example topologies](https://github.com/openconfig/kne/tree/main/examples) that aim to help new users get started with using KNE to orchestrate virtual network labs. SR Linux team maintains several examples, which include SR Linux nodes.
 
@@ -44,7 +44,7 @@ To deploy this topology, users should complete the following pre-requisite steps
 Once prerequisites are satisfied, topology deployment is just a single command:
 
 ```shell
-kne create examples/srlinux/2node-srl-ixr6-with-oc-services.pbtxt
+kne create examples/nokia/srlinux-services/2node-srl-ixr6-with-oc-services.pbtxt
 ```
 
 When the topology creation succeeds, the final log message `Topology "2-srl-ixr6" created` is displayed.
@@ -65,6 +65,26 @@ The above command confirms that the two nodes specified in the topology files ar
 Topology file utilizes [startup configuration](../topology.md#file) provided in a separate file. This startup configuration contains configuration for essential management and Openconfig services.
 
 As a result of this startup config, the nodes come up online with these services in an already operational state.
+
+???tip "How to configure Openconfig services via CLI"
+    In order to configure the below mentioned Openconfig services users can spin up a single-node SR Linux topology with containerlab and enter the follwoing commands in the CLI:
+
+    ```srl
+    enter candidate
+    /system tls
+    replace "server-profile clab-profile" with "server-profile kne-profile"
+
+    set / system gnmi-server network-instance mgmt tls-profile kne-profile
+    set / system json-rpc-server network-instance mgmt https tls-profile kne-profile
+
+    set / system management openconfig admin-state enable
+    set / system gnmi-server network-instance mgmt yang-models openconfig
+
+    set / system gribi-server admin-state enable network-instance mgmt admin-state enable tls-profile kne-profile
+    set / network-instance mgmt protocols gribi admin-state enable
+
+    set / system p4rt-server admin-state enable network-instance mgmt admin-state enable tls-profile kne-profile
+    ```
 
 ### TLS certificate
 
@@ -91,9 +111,10 @@ Services enabled on SR Linux nodes running in this lab are made available extern
 
 ### SSH
 
-An SSH service enabled on both SR Linux nodes is exposed via port `22`. Users can access SSH using the `External-IP` for a matching service and port `22`.
+An SSH service is enabled on both SR Linux nodes and is exposed via port `22`. Users can access SSH using the `External-IP` for a matching service and port `22`.
 
 ??? "Example"
+    Credentials: `admin:NokiaSrl1!`
     ```
     ❯ ssh admin@172.18.0.50
     Warning: Permanently added '172.18.0.50' (ECDSA) to the list of known hosts.
@@ -174,17 +195,17 @@ For completeness, the below section shows how to enable Openconfig via different
 
 <small>[:octicons-book-16: gNMI docs][gnmi-doc]</small>
 
-gNMI service is enabled over port `57400` in the configuration files used with this lab and exposed over `9339` port for external connectivity.
+gNMI service is enabled over port `57400` in the configuration file used with this lab and exposed by the cluster's LoadBalancer over `9339` port for external connectivity.
 
-gNMI instance configured in the `mgmt` network instance uses native [YANG models](../../../../yang/index.md). This is driven by the default configuration value of the `/system/gnmi-server/network-instance[name=mgmt]/yang-models` leaf and selects which models are going to be used when gNMI paths are provided without the [`origin`](https://github.com/openconfig/reference/blob/c243b35b36e366852f9476c87fb2efe6e9050dfe/rpc/gnmi/gnmi-specification.md#222-paths) information in the path.
+By default, gNMI instance configured in the `mgmt` network instance uses native [YANG models](../../../../yang/index.md). This is driven by the default configuration value of the `/system/gnmi-server/network-instance[name=mgmt]/yang-models` leaf and selects which models are going to be used when gNMI paths are provided without the [`origin`](https://github.com/openconfig/reference/blob/c243b35b36e366852f9476c87fb2efe6e9050dfe/rpc/gnmi/gnmi-specification.md#222-paths) information in the path.
 
-Users can change the `yang-models` leaf value to `openconfig` should they want to use openconfig paths with gNMI without providing the `origin` value.
+Startup configuration file used in this lab has the `yang-models` leaf set to `openconfig`. This makes the paths without the `origin` value to be treated as openconfig paths.
 
 ??? "Example"
     gNMI service can be tested using [gnmic](https://gnmic.openconfig.net) cli client.
     === "Capabilities"
         ```bash
-        ❯ gnmic -a 172.18.0.50:9339 -u admin -p admin --skip-verify capabilities
+        ❯ gnmic -a 172.18.0.50:9339 -u admin -p NokiaSrl1! --skip-verify capabilities
         gNMI version: 0.7.0
         supported models:
           - urn:srl_nokia/aaa:srl_nokia-aaa, Nokia, 2022-06-30
@@ -194,20 +215,20 @@ Users can change the `yang-models` leaf value to `openconfig` should they want t
         -- snip --
         ```
     === "Get using native YANG models"
-        By default, native YANG models are used by the gNMI server. This means that paths without the `origin` information are assumed to belong to the native YANG models.
+        Since the default schema is set ot Openconfig in the startup configuration file, to perform gNMI requests using the native SR Linux models users have to specify the `native` origin. At the time of this wrigin, origin can be provided via Path Prefixes, and soon will be available for paths as well.
         ```bash
-        ❯ gnmic -a 172.18.0.50:9339 -u admin -p admin --skip-verify -e JSON_IETF \
-          get --path /system/information/version
+        ❯ gnmic -a 172.18.0.50:9339 -u admin -p NokiaSrl1! --skip-verify -e JSON_IETF \
+          get --prefix 'native:' --path '/system/information/version'
         [
           {
             "source": "172.18.0.50:9339",
-            "timestamp": 1665490620272174602,
-            "time": "2022-10-11T14:17:00.272174602+02:00",
+            "timestamp": 1678615621140266475,
+            "time": "2023-03-12T11:07:01.140266475+01:00",
             "updates": [
               {
                 "Path": "srl_nokia-system:system/srl_nokia-system-info:information/version",
                 "values": {
-                  "srl_nokia-system:system/srl_nokia-system-info:information/version": "v22.6.4-90-g4b19af2d95"
+                  "srl_nokia-system:system/srl_nokia-system-info:information/version": "v22.11.2-116-gf3be2e95f2"
                 }
               }
             ]
@@ -215,15 +236,15 @@ Users can change the `yang-models` leaf value to `openconfig` should they want t
         ]
         ```
     === "Get using Openconfig YANG models"
-        When openconfig is not configured to be a default schema for gNMI server, users need to set the `origin` field of the path prefix to `openconfig` value:
+        With the configuration leaf `/system/gnmi-server/network-instance[name=mgmt]/yang-models` set to `openconfig`, paths without the `origin` information are assumed to belong to the Openconfig YANG.
         ```bash
-        ❯ gnmic -a 172.18.0.50:9339 -u admin -p admin --skip-verify -e JSON_IETF \
-          get --prefix "openconfig:/" --path "/system/state/hostname"
+        ❯ gnmic -a 172.18.0.50:9339 -u admin -p NokiaSrl1! --skip-verify -e JSON_IETF \
+          get --path "/system/state/hostname"
         [
           {
             "source": "172.18.0.50:9339",
-            "timestamp": 1665493415999114602,
-            "time": "2022-10-11T15:03:35.999114602+02:00",
+            "timestamp": 1678615843724905250,
+            "time": "2023-03-12T11:10:43.72490525+01:00",
             "updates": [
               {
                 "Path": "openconfig-system:system/state/hostname",
@@ -246,7 +267,7 @@ On SR Linux, gNOI service is enabled automatically once gNMI service is operatio
     gNOI service can be tested using [gnoic](https://gnoic.kmrd.dev) cli client.
 
     ```bash
-    ❯ gnoic -a 172.18.0.50:9337 --skip-verify -u admin -p admin file stat --path /etc/os-release
+    ❯ gnoic -a 172.18.0.50:9337 --skip-verify -u admin -p NokiaSrl1! file stat --path /etc/os-release
     +-------------------+-----------------+---------------------------+------------+------------+------+
     |    Target Name    |      Path       |       LastModified        |    Perm    |   Umask    | Size |
     +-------------------+-----------------+---------------------------+------------+------------+------+
@@ -264,7 +285,7 @@ gRIBI server is enabled on a system level and in the `mgmt` network instance of 
     gRIBI service can be tested using [gribic](https://gribic.kmrd.dev) cli client.
 
     ```bash
-    ❯ gribic -a 172.18.0.50:9340 -u admin -p admin --skip-verify get --ns mgmt
+    ❯ gribic -a 172.18.0.50:9340 -u admin -p NokiaSrl1! --skip-verify get --ns mgmt
     INFO[0000] target 172.18.0.50:9340: final get response:  
     INFO[0000] got 1 results
     INFO[0000] "172.18.0.50:9340":
@@ -287,7 +308,7 @@ Lab users still need to [configure interface or device identifiers](https://docu
 [kind-install]: https://kind.sigs.k8s.io/docs/user/quick-start#installation
 [knedoc]: https://github.com/openconfig/kne/#readme
 [kne-install]: https://github.com/openconfig/kne/blob/main/docs/setup.md
-[lab]: https://github.com/openconfig/kne/blob/main/examples/nokia/srlinux-services/2node-srl-ixr6-with-oc-services.pbtxt
+[lab]: https://github.com/openconfig/kne/blob/v0.1.9/examples/nokia/srlinux-services/2node-srl-ixr6-with-oc-services.pbtxt
 [oc-doc]: https://documentation.nokia.com/srlinux/22-6/SR_Linux_Book_Files/SysMgmt_Guide/data-models.html#openconfig-ov
 [p4rt-doc]: https://documentation.nokia.com/srlinux/22-6/SR_Linux_Book_Files/P4RT_Guide/p4rt-overview.html
 [rd-linkedin]: https://linkedin.com/in/rdodin
