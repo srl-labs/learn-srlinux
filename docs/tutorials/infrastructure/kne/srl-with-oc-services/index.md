@@ -4,15 +4,15 @@ comments: true
 
 # SR Linux with Openconfig services
 
-| Summary                     |                                                                                                                                        |
-| --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| **Tutorial name**           | SR Linux with KNE                                                                                                                      |
-| **Lab components**          | 2 Nokia SR Linux nodes                                                                                                                 |
-| **Resource requirements**   | :fontawesome-solid-microchip: 2 vCPU <br/>:fontawesome-solid-memory: 4 GB                                                              |
-| **Lab**                     | [kne/examples/srlinux/2node-srl-ixr6-with-oc-services.pbtxt][lab]                                                                      |
-| **Main ref documents**      | [kne documentation][knedoc]                                                                                                            |
-| **Version information**[^1] | [`kne`][kne-install], [`srlinux:22.6.4`][srlinux-container], [`srl-controller:0.4.4`][srl-controller], [`kind:0.14.0`][kind-install] |
-| **Authors**                 | Roman Dodin [:material-twitter:][rd-twitter] [:material-linkedin:][rd-linkedin]                                                        |
+| Summary                     |                                                                                                                                              |
+| --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Tutorial name**           | SR Linux with KNE                                                                                                                            |
+| **Lab components**          | 2 Nokia SR Linux nodes                                                                                                                       |
+| **Resource requirements**   | :fontawesome-solid-microchip: 2 vCPU <br/>:fontawesome-solid-memory: 4 GB                                                                    |
+| **Lab**                     | [kne/examples/srlinux/2node-srl-ixr6-with-oc-services.pbtxt][lab]                                                                            |
+| **Main ref documents**      | [kne documentation][knedoc]                                                                                                                  |
+| **Version information**[^1] | [`kne v0.1.9`][kne-install], [`srlinux:22.11.2`][srlinux-container], [`srl-controller:0.5.0`][srl-controller], [`kind:0.17.0`][kind-install] |
+| **Authors**                 | Roman Dodin [:material-twitter:][rd-twitter] [:material-linkedin:][rd-linkedin]                                                              |
 
 KNE repository contains a set of [example topologies](https://github.com/openconfig/kne/tree/main/examples) that aim to help new users get started with using KNE to orchestrate virtual network labs. SR Linux team maintains several examples, which include SR Linux nodes.
 
@@ -308,7 +308,7 @@ Lab users still need to [configure interface or device identifiers](https://docu
 [kind-install]: https://kind.sigs.k8s.io/docs/user/quick-start#installation
 [knedoc]: https://github.com/openconfig/kne/#readme
 [kne-install]: https://github.com/openconfig/kne/blob/main/docs/setup.md
-[lab]: https://github.com/openconfig/kne/blob/main/examples/nokia/srlinux-services/2node-srl-ixr6-with-oc-services.pbtxt
+[lab]: https://github.com/openconfig/kne/blob/v0.1.9/examples/nokia/srlinux-services/2node-srl-ixr6-with-oc-services.pbtxt
 [oc-doc]: https://documentation.nokia.com/srlinux/22-6/SR_Linux_Book_Files/SysMgmt_Guide/data-models.html#openconfig-ov
 [p4rt-doc]: https://documentation.nokia.com/srlinux/22-6/SR_Linux_Book_Files/P4RT_Guide/p4rt-overview.html
 [rd-linkedin]: https://linkedin.com/in/rdodin

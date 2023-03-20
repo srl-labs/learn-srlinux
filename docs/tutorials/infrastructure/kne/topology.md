@@ -56,7 +56,7 @@ nodes: {
 
 ### Vendor
 
-The vendor field is provided to let KNE know which vendor is defined within the node section. KNE supports several vendors; the full list is provided in the [topo.proto](https://github.com/openconfig/kne/blob/8daa2149cd6a6093a16177db23e4b399b025160d/proto/topo.proto#L32) file.
+The vendor field is provided to let KNE know which vendor is defined within the node section. KNE supports several vendors; the full list is provided in the [topo.proto](https://github.com/openconfig/kne/blob/v0.1.9/proto/topo.proto#L32) file.
 
 ```proto
 nodes: {
@@ -101,7 +101,8 @@ nodes: {
 ```
 
 !!!note
-    When `kind` cluster is used, users might want to [load the container image](installation.md#image-load) before creating the topologies.
+    1. In the [`2node-srl-ixr6-with-oc-services.pbtxt`][srl-with-oc-topo-file] the image is omitted, as the intention there to use the latest available image, which is a default value for the `image` field.
+    2. When `kind` cluster is used, users might want to [load the container image](installation.md#image-load) before creating the topologies.
 
 #### File
 
@@ -245,8 +246,8 @@ nodes: {
 !!!note
     It is not mandatory to provide interface mapping information if no external system that needs to know this mapping will be used.
 
-[topo.proto]: https://github.com/openconfig/kne/blob/8daa2149cd6a6093a16177db23e4b399b025160d/proto/topo.proto
-[srl-with-oc-topo-file]: https://github.com/openconfig/kne/blob/8daa2149cd6a6093a16177db23e4b399b025160d/examples/nokia/srlinux-services/2node-srl-ixr6-with-oc-services.pbtxt
+[topo.proto]: https://github.com/openconfig/kne/blob/v0.1.9/proto/topo.proto
+[srl-with-oc-topo-file]: https://github.com/openconfig/kne/blob/v0.1.9/examples/nokia/srlinux-services/2node-srl-ixr6-with-oc-services.pbtxt
 
 [^1]: https://developers.google.com/protocol-buffers/docs/text-format-spec
-[^2]: full specification of a Node element is contained in the [topology proto file](https://github.com/openconfig/kne/blob/9d835bbaa1e4b26ab03b0d456461a044f2ec9ea0/proto/topo.proto#L44-L80).
+[^2]: full specification of a Node element is contained in the [topology proto file](https://github.com/openconfig/kne/blob/v0.1.9/proto/topo.proto#L46-L84).
