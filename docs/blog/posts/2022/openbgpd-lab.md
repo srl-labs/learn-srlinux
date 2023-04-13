@@ -300,7 +300,7 @@ group "route-server-clients" {
  neighbor 192.168.0.0/24
 }
 
-# in a lab we can as far as not doing any filtering
+# in a lab we can allow ourselves to not do any filtering
 allow to ebgp
 allow from ebgp
 
