@@ -34,7 +34,7 @@ This blog posts is based on a lab example that builds a simple IXP network with 
 
 ## Prerequisites
 
-The lab leverages the [Containerlab][containerlab] project to spin up a topology of network elements and couple it with containerized software such as openbgpd. A [one-click][clab-install] installation gets containerlab intstalled on any Linux system.
+The lab leverages the [Containerlab][containerlab] project to spin up a topology of network elements and couple it with containerized software such as openbgpd. A [one-click][clab-install] installation gets containerlab installed on any Linux system.
 
 ```bash title="Containerlab installation via installation-script"
 bash -c "$(curl -sL https://get.containerlab.dev)"
