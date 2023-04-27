@@ -200,7 +200,7 @@ Create the `hosts` file as shown in the previous section and you're ready to try
 [galaxy-install]: https://galaxy.ansible.com/docs/using/installing.html
 [ansible-conn-modes]: https://docs.ansible.com/ansible/latest/plugins/connection.html
 [jsonrpc-tutorial]: ../../tutorials/programmability/json-rpc/basics.md
-[ansible-httpapi-conn-plugin]: TODO
+[ansible-httpapi-conn-plugin]: https://docs.ansible.com/ansible/latest/plugins/httpapi.html
 
 [^1]: `nokia.srlinux` collection requires SR Linux 23.3.1 or later.
 [^2]: See [`config`][config] module for details.
