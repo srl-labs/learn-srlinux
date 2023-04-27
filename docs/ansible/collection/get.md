@@ -1,8 +1,12 @@
+---
+comments: true
+---
 # `get` Module
 
 Get module is used to retrieve configuration and state from SR Linux devices. Users provide the datastore from which the data is retrieved and the paths to enclosing node or leaf. The module returns the requested data in JSON format.
 
 === "Example playbook"
+
     ```yaml
     - name: Get container
     hosts: clab
@@ -22,6 +26,7 @@ Get module is used to retrieve configuration and state from SR Linux devices. Us
 
     1. `srl` YANG model is used when unspecified, so in this case this parameter could have been omitted. It is provided for demonstration purposes.
 === "Response"
+
     ```yaml
     ok: [clab-ansible-srl] => {
         "response": {
@@ -159,6 +164,158 @@ Consider the following output when a wrong path is used by the user of a module:
     ```
 
 ## Examples
+
+### Single path
+
+The most simple example of using the `get` module is to retrieve a single path which may point to any YANG node of a chosen datastore.
+
+Consider the example below, where we retrieve the system information from the state datastore providing a path to a YANG container using the `/system/information` path.
+
+=== "Task"
+
+    ```yaml
+    - name: Get /system/information container
+      nokia.srlinux.get:
+        paths:
+          - path: /system/information
+            datastore: state
+      register: get_response
+    ```
+=== "Response"
+
+    ```json
+    ok: [clab-ansible-srl] => {
+        "get_response": {
+            "changed": false,
+            "failed": false,
+            "failed_when_result": false,
+            "jsonrpc_req_id": 6062,
+            "jsonrpc_version": "2.0",
+            "result": [
+                {
+                    "current-datetime": "2023-04-26T21:23:10.364Z",
+                    "description": "SRLinux-v23.3.1-343-gab924f2e64 7250 IXR-6 Copyright (c) 2000-2020 Nokia. Kernel 5.15.0-1036-azure #43-Ubuntu SMP Wed Mar 29 16:11:05 UTC 2023",
+                    "last-booted": "2023-04-26T21:22:29.603Z",
+                    "version": "v23.3.1-343-gab924f2e64"
+                }
+            ]
+        }
+    }
+    ```
+
+As explained in the [`result`](#result) parameter documentation, the result value contains a list of objects one per requested path. Since we requested the module to retrieve the value of a single path `/system/information` which points to a YANG container element, the result list contains only a single element with the object containing the state parameters.
+
+Accessing the values of a response object is done using dotted notation. For example, to access the description value of the returned object registered in the `get_response` variable we can use:
+
+```
+get_response.result[0].description
+```
+
+### Multiple paths
+
+The `get` module allows users to retrieve data from multiple paths, datastores and even YANG models, thus providing great flexibility and efficiency.
+
+In the following example we retrieve infromation from three paths and different datastores:
+
+=== "Task"
+
+    ```yaml
+      name: Get multiple paths
+      nokia.srlinux.get:
+        paths:
+          - path: /system/information
+            datastore: state
+          - path: /system/information/version
+            datastore: state
+          - path: /system/json-rpc-server
+            datastore: running
+    ```
+=== "Response"
+
+    ```yaml
+    ok: [clab-ansible-srl] => {
+        "response": {
+            "changed": false,
+            "failed": false,
+            "jsonrpc_req_id": 23437,
+            "jsonrpc_version": "2.0",
+            "result": [
+                {
+                    "current-datetime": "2023-04-27T10:56:36.670Z",
+                    "description": "SRLinux-v23.3.1-343-gab924f2e64 7250 IXR-6 Copyright (c) 2000-2020 Nokia. Kernel 5.15.0-67-generic #74-Ubuntu SMP Wed Feb 22 14:14:39 UTC 2023",
+                    "last-booted": "2023-04-26T20:14:35.789Z",
+                    "version": "v23.3.1-343-gab924f2e64"
+                },
+                "v23.3.1-343-gab924f2e64",
+                {
+                    "admin-state": "enable",
+                    "network-instance": [
+                        {
+                            "http": {
+                                "admin-state": "enable"
+                            },
+                            "https": {
+                                "admin-state": "enable",
+                                "tls-profile": "clab-profile"
+                            },
+                            "name": "mgmt"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+    ```
+
+When requesting multiple paths, the returned `result` list contains as many elements as many paths have been requested. In this example the three elements form the `result` list.
+
+Note, how the second requested path `/system/information/version` pointed to a YANG leaf, and therefore the 2nd element of the `result` list is just a string of the requested leaf.
+
+The 1st and 3rd elements are json objects, because the paths pointed to a container element. As in the "single path" example, users can access the returned data using the dotted notation.
+
+### Openconfig
+
+To retrieve data using Openconfig model leverage the [`yang_models`](#yang_models) parameter which is set on a per-path level:
+
+=== "Task"
+This task requests `/system/state/hostname` using Openconfig model and `/system/information` using SR Linux native datastore. Note, that OC and SR Linux models are mixed in the paths, the SR Linux `srl` model needs to be set explicitly.
+
+```yaml
+- name: Get /system/information container
+  nokia.srlinux.get:
+    paths:
+      - path: /system/state/hostname
+        yang_models: oc
+        datastore: state
+      - path: /system/information
+        yang_models: srl
+        datastore: state
+  register: response
+```
+
+=== "Response"
+Because Openconfig paths pointed to a YANG leaf, the first element in the `result` list is a string value of the hostname. The 2nd element is an object retrieved using SR Linux YANG model.
+
+```json
+ok: [clab-ansible-srl] => {
+    "response": {
+        "changed": false,
+        "failed": false,
+        "failed_when_result": false,
+        "jsonrpc_req_id": 32499,
+        "jsonrpc_version": "2.0",
+        "result": [
+            "srl",
+            {
+                "current-datetime": "2023-04-26T21:23:46.376Z",
+                "description": "SRLinux-v23.3.1-343-gab924f2e64 7250 IXR-6 Copyright (c) 2000-2020 Nokia. Kernel 5.15.0-1036-azure #43-Ubuntu SMP Wed Mar 29 16:11:05 UTC 2023",
+                "last-booted": "2023-04-26T21:22:29.603Z",
+                "version": "v23.3.1-343-gab924f2e64"
+            }
+        ]
+    }
+}
+```
 
 ## Source code
 
