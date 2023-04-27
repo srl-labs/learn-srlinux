@@ -37,7 +37,8 @@ nav:
           - ansible/index.md
           - Collection:
               - ansible/collection/index.md
-              - jsonrpc_get: ansible/collection/jsonrpc_get.md
+              - get: ansible/collection/get.md
+              - config: ansible/collection/config.md
   - Tutorials:
       # - SR Linux tutorials: tutorials/about.md
       - tutorials/index.md

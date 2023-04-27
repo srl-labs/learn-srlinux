@@ -70,14 +70,14 @@ title: Programmability
 
     [:octicons-arrow-right-24: Try yourself](https://github.com/napalm-automation-community/napalm-srlinux)
 
-- :material-ansible:{ .lg .middle } **Ansible modules**
+- :material-ansible:{ .lg .middle } **Ansible**
 
     ---
 
     Does your networking team rely on Ansible for network automation, and you'd rather continue using it with SR Linux fabric?  
-    We have you covered with Ansible modules developed for SR Linux fully modelled JSON-RPC interface.
+    We have you covered with Ansible collection developed for SR Linux fully modelled management interfaces.
 
-    <small>:material-progress-wrench: Coming soon...</small>
+    [:octicons-arrow-right-24: Documentation](../ansible/index.md)
 
 - :octicons-terminal-24:{ .lg .middle } **Screen scraping**
 
