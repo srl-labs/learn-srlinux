@@ -119,9 +119,10 @@ The `failed` value indicates if any errors occurred during the execution of the 
 
 ### jsonrpc_req_id
 
-<small>type: integer</small>
+<small>type: string</small>
 
-The `jsonrpc_req_id` value is an random integer that the module uses for the JSON-RPC request body. The value is used to match the request with the response when, for instance, checking the JSON-RPC server logs on the device.
+The `jsonrpc_req_id` value is a string identifier that the module uses for the JSON-RPC request. The value is used to match the request with the response when, for instance, checking the JSON-RPC server logs on the device.  
+Its value is set to current UTC time.
 
 ### jsonrpc_version
 
@@ -272,6 +273,24 @@ When requesting multiple paths, the returned `result` list contains as many elem
 Note, how the second requested path `/system/information/version` pointed to a YANG leaf, and therefore the 2nd element of the `result` list is just a string of the requested leaf.
 
 The 1st and 3rd elements are json objects, because the paths pointed to a container element. As in the "single path" example, users can access the returned data using the dotted notation.
+
+??? "Multiple paths with mixing YANG models"
+    It is possible to retrieve data from multiple paths using different YANG models. This is achieved by setting the [`yang_models`](#yang_models) parameter on a per-path level.
+
+    ```yaml
+    - name: Get multiple paths
+      nokia.srlinux.get:
+        paths:
+          - path: /system/state/hostname
+            datastore: state
+            yang_models: oc
+          - path: /system/information/description
+            datastore: state
+            yang_models: srl
+          - path: /system/json-rpc-server
+            datastore: running
+            yang_models: srl
+    ```
 
 ### Openconfig
 
