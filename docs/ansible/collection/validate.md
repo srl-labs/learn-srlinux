@@ -1,5 +1,6 @@
 ---
 comments: true
+title: Validate Module
 ---
 
 # `validate` Module

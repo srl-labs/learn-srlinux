@@ -1,6 +1,8 @@
 ---
 comments: true
+title: Get Module
 ---
+
 # `get` Module
 
 Get module is used to retrieve configuration and state from SR Linux devices. Users provide the datastore from which the data is retrieved and the paths to enclosing node or leaf. The module returns the requested data in JSON format.

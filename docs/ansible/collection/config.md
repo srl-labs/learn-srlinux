@@ -1,5 +1,6 @@
 ---
 comments: true
+title: Config Module
 ---
 
 # `config` Module

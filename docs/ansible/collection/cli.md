@@ -1,3 +1,7 @@
+---
+title: CLI Module
+comments: true
+---
 # `cli` Module
 
 The `cli` module is used to execute CLI commands on SR Linux devices. It is most often used to get the output of `show` or to execute CLI plugins that do not belong to the YANG module.

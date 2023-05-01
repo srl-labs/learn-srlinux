@@ -17,6 +17,9 @@ Ansible collection for SR Linux is identified with `nokia.srlinux` fully qualifi
 
 Modules contained within this collection fully conform to the idempotence principles of Ansible, as well as provide first-class support for diff and check functionality[^2].
 
+!!!tip "Tutorial"
+    Besides examples provided for each module of this collection, checkout [Ansible with SR Linux tutorial](../../tutorials/programmability/json-rpc/ansible.md) to see how to use this collection in practice.
+
 ## Modules
 
 Nokia SR Linux collection provides the following modules that work via HttpApi connection plugin and therefore rely on SR Linux's JSON-RPC server:
