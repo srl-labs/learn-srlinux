@@ -45,9 +45,11 @@ The generic architecture of a module allows configuration changes across the ent
     }
     ```
 
+`path` and `value` parameters take values based on [SR Linux YANG models](../../yang/index.md), enabling fully model-driven configuration operations.
+
 ## Config operations
 
-The module provides an `update`, `replace`` and `delete` operations against SR Linux devices. Moreover, a combination of these operations can be handled by the module enabling rich configuration transactions.
+The module provides an `update`, `replace` and `delete` operations against SR Linux devices. Moreover, a combination of these operations can be handled by the module enabling rich configuration transactions.
 
 ### Idempotency
 
@@ -92,21 +94,19 @@ In the example below, the module is stuffed with multiple updates, replaces and 
 === "Response"
 
     ```json
-    ok: [clab-ansible-srl] => {
-        "get_response": {
-            "changed": false,
+    {
+        "set_response": {
+            "changed": true,
+            "diff": {
+                "jsonrpc_req_id": "2023-05-01 08:37:10:798782",
+                "jsonrpc_version": "2.0",
+                "result": [
+                    "      system {\n          gnmi-server {\n-             trace-options [\n-                 response\n-             ]\n          }\n          json-rpc-server {\n              network-instance mgmt {\n-                 https {\n-                     admin-state enable\n-                     tls-profile clab-profile\n-                 }\n              }\n          }\n          information {\n+             location \"Some location\"\n          }\n      }\n"
+                ]
+            },
             "failed": false,
-            "failed_when_result": false,
-            "jsonrpc_req_id": "2023-04-29 12:19:13:180761",
-            "jsonrpc_version": "2.0",
-            "result": [
-                "Some location",
-                [
-                    "request",
-                    "common"
-                ],
-                {}
-            ]
+            "jsonrpc_req_id": "2023-05-01 08:37:11:009871",
+            "saved": false
         }
     }
     ```
@@ -272,7 +272,21 @@ The `datastore` parameter is a string that represents the name of the datastore 
 
 The only other `datastore` value available is `tools`, which allows users to invoke operational commands via the `tools` datastore. See [the following example](#operational-commands-via-tools-datastore) for more details.
 
-### save-when
+### save_when
+
+<small>choice: `always`, **`never`**, `changed`</small>
+
+The `save_when` parameter allows users to choose when the candidate configuration should be saved to the startup configuration (aka persisted) upon successful commit. The default value is `never`.
+
+By setting the `save_when` to `always`, users can ensure that the candidate configuration is always saved to the startup configuration upon successful commit. And by setting the `save_when` to `changed`, users can ensure that the candidate configuration is saved to the startup configuration only when the candidate configuration is changed upon successful commit.
+
+The `save_when` has no effect when the `check` mode is enabled.
+
+### yang_models
+
+<small>choice: **`srl`**, `oc`</small>
+
+The `yang_models` parameter allows users to choose which YANG models should be used for the configuration operations. The default value is `srl`. See [Get](get.md#yang_models) module docs for more details.
 
 ## Return values
 
@@ -296,7 +310,175 @@ The module returns the results in a structured format which contains both standa
 }
 ```
 
+### changed
+
+<small>type: boolean</small>
+
+The `changed` value indicates if the module has made any changes to the state of a device.
+
+When the module is executed without the `check` mode, the `changed` value is `true` if the module has made any changes to the state of a device. Otherwise, the `changed` value is `false`.
+
+When the module is executed with the `check` mode, the `changed` parameter can also become `true` or `false`, but in any case, the changes will not be committed to the device.
+
+### failed
+
+<small>type: boolean</small>
+
+The `failed` value indicates if any errors occurred during the execution of the module. The `failed` value is `false` when the module completes successfully and `true` otherwise. See the [Error handling](#error-handling) section for more details.
+
+### jsonrpc_req_id
+
+<small>type: string</small>
+
+See [Get](get.md#jsonrpc_req_id) module.
+
+### jsonrpc_version
+
+<small>type: string</small>
+
+See [Get](get.md#jsonrpc_version) module.
+
+### diff
+
+<small>type: dictionary</small>
+
+The `diff` value contains the response of a diff operation that was executed against the device.
+
+As explained in the [idempotency](#idempotency) section, the diff operation is always called to identify if the change is required. The result of that diff RPC is saved in the `diff` response parameter and contains the full response body object.
+
+### saved
+
+<small>type: boolean</small>
+
+The `saved` value indicates if the candidate configuration was saved to the startup configuration upon successful commit. The `saved` value is `true` when the candidate configuration was saved to the startup configuration and `false` otherwise.
+
+## Error handling
+
+The `config` module sets the [`failed`](#failed) return value to `true` when errors occur during the module execution. The error message is returned in the `msg` field of the return value.
+
+Consider the following output when a wrong path is value is used in the `update` operation:
+
+=== "playbook"
+
+    ```yaml
+    - name: Set wrong value
+      hosts: clab
+      gather_facts: false
+      tasks:
+        - name: Set system information with wrong value
+          nokia.srlinux.config:
+            update:
+              - path: /system/information
+                value:
+                  wrong: Some location
+          register: set_response
+    ```
+
+=== "response"
+    The response will have `failed=true` and the `msg` will contain the error message as reported by SR Linux:
+
+    ```bash
+    fatal: [clab-ansible-srl]: FAILED! => {"changed": false, "id": "2023-05-01 08:42:59:116073", "method": "diff", "msg": "Schema '/system/information' has no local leaf with the name 'wrong'. Options are [contact, location, protobuf-metadata]: Parse error on line 1: {\"wrong\": \"Some location\"}\nInput:\n'{\"wrong\": \"Some location\"}'"}
+    ```
+
 ## Examples
+
+### adding an interface
+
+Let's see step by step how to use the `config` module to add the `ethernet-1/1` interface to a device.
+
+First, we need to identify the path to the interface configuration and the values that can be set on that path. One way to do that is to leverage YANG Browser's [Tree viewer](../../yang/browser.md#tree-browser) and visually inspect the YANG model. The following screenshot shows the YANG Browser's [Tree viewer for SR Linux 23.3.1](https://yang.srlinux.dev/release/v23.3.1/tree.html) release with `interfaces` model opened:
+
+![if1](https://gitlab.com/rdodin/pics/-/wikis/uploads/631943f74a2e9ba1e0a1035adf8f3168/image.png){: .img-shadow}
+
+As we can see, the interfaces are nested under the `/interface[name=*]` list. This answers the first question: the path to the interface configuration is `/interface[name=ethernet-1/1]`.
+
+Using the same UI we can see which values can be set on the interface. The following screenshot shows the `interface` model with `subinterface` list expanded:
+
+???tip "screenshot"
+    ![if2](https://gitlab.com/rdodin/pics/-/wikis/uploads/c2deb1b94f2686479de4d2eab412c0bb/image.png){: .img-shadow}
+
+Now we know that the `description` leaf can be set on the interface, and we configure IPv4/6 addresses with subinterfaces. With that info, we can construct the following playbook:
+
+```yaml
+- name: Add interface
+  hosts: clab
+  gather_facts: false
+  tasks:
+    - name: Add interface
+      nokia.srlinux.config:
+        update:
+          - path: /interface[name=ethernet-1/1]
+            value:
+              admin-state: enable
+              description: "interface description set with Ansible"
+              subinterface:
+                - index: 0
+                  admin-state: enable
+                  description: "subinterface description set with Ansible"
+                  ipv4:
+                    admin-state: enable
+                    address:
+                      - ip-prefix: 192.168.0.100/24
+
+      register: set_response
+
+    - debug:
+        var: set_response
+```
+
+When constructing the payload we follow a simple rule:
+
+* a list in the YANG model is represented as a list in the payload
+* a container in the YANG model is represented as a dictionary in the payload
+
+For example, the `subinterface` list is represented as a list in the payload, and the `ipv4` container is represented as a dictionary in the payload.
+
+### multiple configuration operations
+
+The following example shows how to use the `config` module to perform multiple configuration operations in a single task. Note, that you can have multiple `update`, `replace`, and `delete` operations in a single task:
+
+=== "Playbook"
+
+    ```yaml
+    - name: Set multiple paths
+      hosts: clab
+      gather_facts: false
+      tasks:
+        - name: Set with multiple operations
+          nokia.srlinux.config:
+            update:
+              - path: /system/information/location
+                value: Some location
+            replace:
+              - path: /system/gnmi-server/trace-options
+                value:
+                  - request
+                  - common
+            delete:
+              - path: /system/json-rpc-server/network-instance[name=mgmt]/https
+          register: set_response
+    ```
+
+=== "Response"
+
+    ```json
+    {
+        "set_response": {
+            "changed": true,
+            "diff": {
+                "jsonrpc_req_id": "2023-05-01 08:46:38:419093",
+                "jsonrpc_version": "2.0",
+                "result": [
+                    "      system {\n          gnmi-server {\n-             trace-options [\n-                 response\n-             ]\n          }\n          json-rpc-server {\n              network-instance mgmt {\n-                 https {\n-                     admin-state enable\n-                     tls-profile clab-profile\n-                 }\n              }\n          }\n          information {\n+             location \"Some location\"\n          }\n      }\n"
+                ]
+            },
+            "failed": false,
+            "jsonrpc_req_id": "2023-05-01 08:46:38:617927",
+            "saved": false
+        }
+    }
+    ```
 
 ### operational commands via `tools` datastore
 
@@ -311,7 +493,34 @@ SR Linux models operational commands as configuration elements in the `tools` da
     datastore: tools
 ```
 
-[ansible-check-diff]: https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_checkmode.html
+### openconfig
 
-[^1]: Effectively, configuration is sent twice to the device. First to check if a diff is non-empty and if not, second time to actually apply the configuration set. Note, that in this case the diff happens on SR Linux box, and not calculated locally.
+The `config` module supports OpenConfig models. As with `get` module, the `yang_models` parameter must be set to `oc`. Note, that for the `config` module, the `yang_models` parameter is set on a per-task basis.
+
+```yaml
+- name: Set OC leaf
+  hosts: clab
+  gather_facts: false
+  tasks:
+    - name: Set openconfig leaf
+      nokia.srlinux.config:
+        update:
+          - path: /system/config
+            value:
+              motd-banner: "hey ansible"
+        yang_models: oc
+      register: set_response
+
+    - debug:
+        var: set_response
+```
+
+## Source code
+
+Config module is implemented in the [`config.py`][config-gh-url] file.
+
+[ansible-check-diff]: https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_checkmode.html
+[config-gh-url]: https://github.com/nokia/srlinux-ansible-collection/blob/main/plugins/modules/config.py
+
+[^1]: Effectively, the configuration is sent twice to the device. First, to check if a diff is non-empty, and if not, second time to apply the configuration set. In this case, the diff happens on SR Linux box and is not calculated locally.
 [^2]: The diff returned is the same as the one returned by the `diff` CLI command.

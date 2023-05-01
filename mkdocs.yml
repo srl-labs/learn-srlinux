@@ -39,6 +39,8 @@ nav:
               - ansible/collection/index.md
               - get: ansible/collection/get.md
               - config: ansible/collection/config.md
+              - validate: ansible/collection/validate.md
+              - cli: ansible/collection/cli.md
   - Tutorials:
       # - SR Linux tutorials: tutorials/about.md
       - tutorials/index.md

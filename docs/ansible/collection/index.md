@@ -1,3 +1,8 @@
+---
+tags:
+  - ansible
+---
+
 # Ansible Collection For SR Linux
 
 Ansible collection for SR Linux is identified with `nokia.srlinux` fully qualified collection name and contains the plugins and modules to interface with SR Linux devices.

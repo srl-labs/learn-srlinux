@@ -77,7 +77,7 @@ The following datastore values are available:
 
 #### yang_models
 
-<small>type: string</small>
+<small>choice: **`srl`**, `oc`</small>
 
 The `yang_models` parameter selects which [YANG model](../../yang/index.md) is used with a specified path. SR Linux Network OS supports the following two values for the `yang_models` parameter:
 
@@ -115,7 +115,7 @@ For `get` module the `changed` value is always `false`, as retrieval operations 
 
 <small>type: boolean</small>
 
-The `failed` value indicates if any errors occurred during the execution of the module. The `failed` value is `false` when the module completes successfully, and `true` otherwise. See the [Error handling](#error-handling) section for more details.
+The `failed` value indicates if any errors occurred during the execution of the module. The `failed` value is `false` when the module completes successfully and `true` otherwise. See the [Error handling](#error-handling) section for more details.
 
 ### jsonrpc_req_id
 
@@ -140,7 +140,7 @@ The type of the data returned depends on the `path` parameter. For instance, if 
 
 ## Error handling
 
-The `get` module sets the [`failed`](#failed) return value to `true` when any errors occurred during the module execution. The error message is therefore returned in the `msg` field of the return value.
+The `get` module sets the [`failed`](#failed) return value to `true` when errors occur during the module execution. The error message is returned in the `msg` field of the return value.
 
 Consider the following output when a wrong path is used by the user of a module:
 
