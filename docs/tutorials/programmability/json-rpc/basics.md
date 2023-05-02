@@ -112,6 +112,7 @@ With this configuration in place, users can leverage JSON-RPC immediately after 
 The management interface sends requests[^3] to the JSON-RPC server and receives responses. The request/response format is a JSON encoded string and is detailed in the [docs][json-msg-structure]. Let's look at the skeleton of the request/response messages as it will help us getting through practical exercises:
 
 === "Request"
+
     ```json title="JSON-RPC request structure"
     {
       "jsonrpc": "2.0",
@@ -129,10 +130,11 @@ The management interface sends requests[^3] to the JSON-RPC server and receives 
     where:
 
     * `jsonrpc` - selects the version of the management interface and at the moment of this writing should be always set to `2.0`.
-    * `id` - sets the ID of a request which is echoed back in the response to help correlate the message flows.
+    * `id` - sets the ID of a request which is echoed back in the response to help correlate the message flows[^8].
     * `method` - sets one of the supported RPC [methods](#json-rpc-methods) used for this request.
     * `params` - container for RPC commands. We will cover the contents of this container through the practical exercises.
 === "Response"
+
     ```json
     {
       "result": [],
@@ -1334,3 +1336,4 @@ The response will contain just an error container, even though technically the f
 [^5]: https://github.com/openconfig/reference/blob/master/rpc/gnmi/gnmi-path-conventions.md
 [^6]: Tools paths can be viewed in our [tree YANG browser](https://yang.srlinux.dev/release/v22.11.1/tree.html).
 [^7]: Support for setting configuration with Openconfig schema will be added at a later date. Currently only CLI method allows working with Openconfig schema via `enter oc` command.
+[^8]: SR Linux logs JSON-RPC incoming and outgoing requests to `/var/log/srlinux/debug/sr_json_rpc_server.log` log file.

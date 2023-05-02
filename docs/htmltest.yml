@@ -15,7 +15,7 @@ IgnoreURLs:
   - https://github.com/srl-labs/learn-srlinux/edit/
   - twitter.com
   - https://linkedin.com/in
-
+  - https://www.nokia.com/networks/products/service-router-linux-NOS
 
 IgnoreDirectoryMissingTrailingSlash: true
 IgnoreAltMissing: true

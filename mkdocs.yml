@@ -33,6 +33,14 @@ nav:
               - kButler: ndk/apps/kbutler.md
               - Prometheus Telemetry Exporter: ndk/apps/srl-prom-exporter.md
               - Satellite Tracker: ndk/apps/satellite.md
+      - Ansible:
+          - ansible/index.md
+          - nokia.srlinux collection:
+              - ansible/collection/index.md
+              - get: ansible/collection/get.md
+              - config: ansible/collection/config.md
+              - validate: ansible/collection/validate.md
+              - cli: ansible/collection/cli.md
   - Tutorials:
       # - SR Linux tutorials: tutorials/about.md
       - tutorials/index.md
