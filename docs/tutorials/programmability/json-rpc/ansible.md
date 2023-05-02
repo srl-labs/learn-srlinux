@@ -656,10 +656,30 @@ Free Memory          : 14955894 kB
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ```
 
+## HTTPS
+
+All the examples in this tutorial were using HTTP as a transport protocol. However, in production environments, you would want to use HTTPS to secure your communication with the network devices.
+
+Using HTTPS with this collection is as simple as adding the `ansible_httpapi_use_ssl: true` variable. For instance, to the list of variables in the inventory file:
+
+```yaml hl_lines="7"
+all:
+  vars:
+    ansible_connection: ansible.netcommon.httpapi
+    ansible_user: admin
+    ansible_password: NokiaSrl1!
+    ansible_network_os: nokia.srlinux.srlinux
+    ansible_httpapi_use_ssl: true
+  hosts:
+    # snip
+```
+
+To see other options of TLS-secured connections, see the [TLS section](../../../ansible/collection/index.md#tls) of the module's docs.
+
 ## Summary
 
 While Ansible may not be the best tool for the network automation job due to complicated troubleshooting, weird looping mechanisms, and challenging ways to manipulate and extract modelled data - it is still being used by many teams.
 
-Our mission was to demonstrate how Ansible can be used in conjunction with SR Linux Network OS and which interface to choose - [gNMI or JSON-RPC](#gnmi-or-json-rpc)? Then, through a set of task-oriented exercises, we showed how modules in `nokia.srlinux` collection can help you reach your automation goals with Ansible.
+Our mission was to demonstrate how Ansible can be used in conjunction with SR Linux Network OS and which interface to choose - [gNMI or JSON-RPC](#gnmi-or-json-rpc)? Then, through a set of task-oriented exercises, we showed how modules in [`nokia.srlinux`](../../../ansible/collection/index.md) collection can help you reach your automation goals with Ansible.
 
 Do you want us to cover more tasks using Ansible, or any other automation stack? Do let us know in the comments!

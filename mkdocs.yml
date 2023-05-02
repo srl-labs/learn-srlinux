@@ -35,7 +35,7 @@ nav:
               - Satellite Tracker: ndk/apps/satellite.md
       - Ansible:
           - ansible/index.md
-          - Collection:
+          - nokia.srlinux collection:
               - ansible/collection/index.md
               - get: ansible/collection/get.md
               - config: ansible/collection/config.md
