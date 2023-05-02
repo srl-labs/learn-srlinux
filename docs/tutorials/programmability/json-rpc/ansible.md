@@ -72,7 +72,7 @@ In contrast with gNMI, which requires a custom collection to operate, using HTTP
 
 We are pleased to have our [`nokia.srlinux`][nokia-srlinux-collection] collection published that empowers Ansible users to automate Nokia SR Linux-based fabrics.
 
-The collection is available on [Ansible Galaxy](../../../ansible/collection/) and can be installed using the `ansible-galaxy` command. As part of the collection, we provide a set of Ansible modules that allow you to perform common network operations on SR Linux devices:
+The collection is available on [Ansible Galaxy](../../../ansible/collection/index.md#installation) and can be installed using the `ansible-galaxy` command. As part of the collection, we provide a set of Ansible modules that allow you to perform common network operations on SR Linux devices:
 
 * `nokia.srlinux.config` - to configure the device in fully model-driven way.
 * `nokia.srlinux.get` - to retrieve the device configuration and operational state.
