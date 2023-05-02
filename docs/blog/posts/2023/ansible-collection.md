@@ -14,6 +14,8 @@ We are happy to announce that we have released an official Ansible collection fo
 
 In this blog post, we would like to share some details about our design decisions and why we think this collection is a great addition to the Ansible ecosystem.
 
+<!-- more -->
+
 ## Deficiencies of the URI module
 
 The URI module is a great tool for making REST API calls. It is very flexible, generic and can be used to make any type of HTTP/RESTAPI calls. However, its generic nature can also be seen as a drawback.
