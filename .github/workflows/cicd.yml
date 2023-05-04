@@ -44,17 +44,36 @@ jobs:
         with:
           config: docs/htmltest.yml
 
+  # this action deploys mkdocs-material to gh-pages. It is commented out because we moved to cloudflare pages
+  # publish-docs-gh-pages:
+  #   runs-on: ubuntu-20.04
+  #   if: startsWith(github.ref, 'refs/heads/main')
+  #   needs: docs-test
+  #   steps:
+  #     # this is to mitigate unsafe dir errors from git
+  #     # https://github.com/actions/checkout/issues/760
+  #     - name: Add workspace as safe directory
+  #       run: |
+  #         git config --global --add safe.directory /__w/learn-srlinux/learn-srlinux
+
+  #     - name: Checkout
+  #       uses: actions/checkout@v3
+  #       with:
+  #         fetch-depth: 0
+
+  #     - name: Login to GitHub Container Registry
+  #       uses: docker/login-action@v1
+  #       with:
+  #         registry: ghcr.io
+  #         username: ${{ github.actor }}
+  #         password: ${{ secrets.GITHUB_TOKEN }}
+
+  #     - run: docker run -v $(pwd):/docs --entrypoint ash ghcr.io/srl-labs/mkdocs-material-insiders:$MKDOCS_MATERIAL_VER -c 'git config --global --add safe.directory /docs; mkdocs gh-deploy --force'
+
   publish-docs:
     runs-on: ubuntu-20.04
-    if: startsWith(github.ref, 'refs/heads/main')
     needs: docs-test
     steps:
-      # this is to mitigate unsafe dir errors from git
-      # https://github.com/actions/checkout/issues/760
-      - name: Add workspace as safe directory
-        run: |
-          git config --global --add safe.directory /__w/learn-srlinux/learn-srlinux
-
       - name: Checkout
         uses: actions/checkout@v3
         with:
@@ -67,4 +86,15 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - run: docker run -v $(pwd):/docs --entrypoint ash ghcr.io/srl-labs/mkdocs-material-insiders:$MKDOCS_MATERIAL_VER -c 'git config --global --add safe.directory /docs; mkdocs gh-deploy --force'
+      - name: Build docs-test
+        run: docker run -v $(pwd):/docs --user $(id -u):$(id -g) --entrypoint mkdocs ghcr.io/srl-labs/mkdocs-material-insiders:$MKDOCS_INS_VER build --force --strict
+
+      - name: Publish to Cloudflare Pages
+        uses: cloudflare/pages-action@v1
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: 62e7f50db0ad5b34dbf1fb9b0ed2ef81
+          projectName: learn-srlinux
+          directory: site
+          # Optional: Enable this if you want to have GitHub Deployments triggered
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
