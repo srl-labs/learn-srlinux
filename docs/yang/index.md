@@ -11,7 +11,7 @@ Model-driven (MD) interfaces are becoming essential for robust and modern Networ
 Traditional Network OSes often had to take an evolutionary route with adding MD interfaces on top of the existing internal infrastructure.
 
 <figure markdown>
-  ![yang1](https://gitlab.com/rdodin/pics/-/wikis/uploads/9cddf69339c1837019cbb56aee29b860/image.png){: class="img-shadow"}
+  ![yang1](https://gitlab.com/rdodin/pics/-/wikis/uploads/e691b456b77a70b4166a5fe343ff0c4e/yang_vis.webp){: class="img-shadow"}
   <figcaption>SR Linux ground-up support for YANG</figcaption>
 </figure>
 
