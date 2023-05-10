@@ -14,13 +14,13 @@ To answer these demands, we created a web portal - [**yang.srlinux.dev**][yang-p
 * Source `.yang` files neatly stored in [`nokia/srlinux-yang-models`][yang-models-gh] repository for programmatic access and code generation
 
 <figure markdown>
-  ![portal](https://gitlab.com/rdodin/pics/-/wikis/uploads/d135e8ce3b948fe02fa70d912e64053b/image.png)
+  ![portal](https://gitlab.com/rdodin/pics/-/wikis/uploads/2c9de4140da83b0b9021b7407b4a39f1/yang-browser.webp)
 </figure>
 
 The web portal's front page aggregates links to individual releases of YANG models. Select the needed version to open the web view of the YANG tools we offer.
 
 <figure markdown>
-  ![portal](https://gitlab.com/rdodin/pics/-/wikis/uploads/d016e31ae98ee6f4d00d25a49f2a2b3c/image.png)
+  ![portal](https://gitlab.com/rdodin/pics/-/wikis/uploads/47a4fba8dbd59573c3857ef8e6f6e862/yang-browser-2.webp)
 </figure>
 
 The main stage of the YANG Browser view is dedicated to the Path Browser :material-numeric-1-circle:, as it is the most efficient way to search through the model. Additional tools are located in the upper right corner :material-numeric-2-circle:. Let's cover them one by one.
