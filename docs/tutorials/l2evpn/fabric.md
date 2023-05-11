@@ -309,7 +309,7 @@ Here is a breakdown of the steps that are needed to configure EBGP on `leaf1` to
     +                     import-policy all
     +                     peer-as 201
     +                 }
-    +                 ipv4-unicast {
+    +                 afi-safi ipv4-unicast {
     +                     admin-state enable
     +                 }
     +                 neighbor 192.168.11.2 {
@@ -348,7 +348,7 @@ EBGP configuration on `leaf2` and `spine1` is almost a twin of the one we did fo
                     import-policy all
                     peer-as 201
                 }
-                ipv4-unicast {
+                afi-safi ipv4-unicast {
                     admin-state enable
                 }
                 neighbor 192.168.11.2 {
@@ -377,7 +377,7 @@ EBGP configuration on `leaf2` and `spine1` is almost a twin of the one we did fo
                     import-policy all
                     peer-as 201
                 }
-                ipv4-unicast {
+                afi-safi ipv4-unicast {
                     admin-state enable
                 }
                 neighbor 192.168.12.2 {
@@ -406,7 +406,7 @@ EBGP configuration on `leaf2` and `spine1` is almost a twin of the one we did fo
                     export-policy all
                     import-policy all
                 }
-                ipv4-unicast {
+                afi-safi ipv4-unicast {
                     admin-state enable
                 }
                 neighbor 192.168.11.1 {
@@ -733,8 +733,8 @@ Below you will find aggregated configuration snippets which contain the entire f
     set / network-instance default protocols bgp group eBGP-underlay export-policy all
     set / network-instance default protocols bgp group eBGP-underlay import-policy all
     set / network-instance default protocols bgp group eBGP-underlay peer-as 201
-    set / network-instance default protocols bgp ipv4-unicast
-    set / network-instance default protocols bgp ipv4-unicast admin-state enable
+    set / network-instance default protocols bgp afi-safi ipv4-unicast
+    set / network-instance default protocols bgp afi-safi ipv4-unicast admin-state enable
     set / network-instance default protocols bgp neighbor 192.168.11.2
     set / network-instance default protocols bgp neighbor 192.168.11.2 peer-group eBGP-underlay
 
@@ -777,8 +777,8 @@ Below you will find aggregated configuration snippets which contain the entire f
     set / network-instance default protocols bgp group eBGP-underlay export-policy all
     set / network-instance default protocols bgp group eBGP-underlay import-policy all
     set / network-instance default protocols bgp group eBGP-underlay peer-as 201
-    set / network-instance default protocols bgp ipv4-unicast
-    set / network-instance default protocols bgp ipv4-unicast admin-state enable
+    set / network-instance default protocols bgp afi-safi ipv4-unicast
+    set / network-instance default protocols bgp afi-safi ipv4-unicast admin-state enable
     set / network-instance default protocols bgp neighbor 192.168.12.2
     set / network-instance default protocols bgp neighbor 192.168.12.2 peer-group eBGP-underlay
 
@@ -825,8 +825,8 @@ Below you will find aggregated configuration snippets which contain the entire f
     set / network-instance default protocols bgp group eBGP-underlay
     set / network-instance default protocols bgp group eBGP-underlay export-policy all
     set / network-instance default protocols bgp group eBGP-underlay import-policy all
-    set / network-instance default protocols bgp ipv4-unicast
-    set / network-instance default protocols bgp ipv4-unicast admin-state enable
+    set / network-instance default protocols bgp afi-safi ipv4-unicast
+    set / network-instance default protocols bgp afi-safi ipv4-unicast admin-state enable
     set / network-instance default protocols bgp neighbor 192.168.11.1
     set / network-instance default protocols bgp neighbor 192.168.11.1 peer-as 101
     set / network-instance default protocols bgp neighbor 192.168.11.1 peer-group eBGP-underlay

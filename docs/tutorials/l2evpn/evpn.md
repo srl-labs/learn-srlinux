@@ -53,13 +53,14 @@ Then for each leaf we add a new BGP neighbor addressed by the remote `system0` i
             export-policy all
             import-policy all
             peer-as 100
-            ipv4-unicast {
+            afi-safi ipv4-unicast {
                 admin-state disable
             }
-            evpn {
+            afi-safi evpn {
                 admin-state enable
             }
-            local-as 100 {
+            local-as {
+                as-number 100
             }
             timers {
                 minimum-advertisement-interval 1
@@ -83,13 +84,14 @@ Then for each leaf we add a new BGP neighbor addressed by the remote `system0` i
             export-policy all
             import-policy all
             peer-as 100
-            ipv4-unicast {
+            afi-safi ipv4-unicast {
                 admin-state disable
             }
-            evpn {
+            afi-safi evpn {
                 admin-state enable
             }
-            local-as 100 {
+            local-as {
+                as-number 100 
             }
             timers {
                 minimum-advertisement-interval 1
@@ -383,7 +385,7 @@ For your convenience, in case you want to jump over the config routines and star
                             export-policy all
                             import-policy all
                             peer-as 201
-                            ipv4-unicast {
+                            afi-safi ipv4-unicast {
                                 admin-state enable
                             }
                         }
@@ -391,13 +393,14 @@ For your convenience, in case you want to jump over the config routines and star
                             export-policy all
                             import-policy all
                             peer-as 100
-                            ipv4-unicast {
+                            afi-safi ipv4-unicast {
                                 admin-state disable
                             }
-                            evpn {
+                            afi-safi evpn {
                                 admin-state enable
                             }
-                            local-as 100 {
+                            local-as {
+                                as-number 100
                             }
                             timers {
                                 minimum-advertisement-interval 1
@@ -506,7 +509,7 @@ For your convenience, in case you want to jump over the config routines and star
                             export-policy all
                             import-policy all
                             peer-as 201
-                            ipv4-unicast {
+                            afi-safi ipv4-unicast {
                                 admin-state enable
                             }
                         }
@@ -514,13 +517,14 @@ For your convenience, in case you want to jump over the config routines and star
                             export-policy all
                             import-policy all
                             peer-as 100
-                            ipv4-unicast {
+                            afi-safi ipv4-unicast {
                                 admin-state disable
                             }
-                            evpn {
+                            afi-safi evpn {
                                 admin-state enable
                             }
-                            local-as 100 {
+                            local-as {
+                                as-number 100
                             }
                             timers {
                                 minimum-advertisement-interval 1
@@ -623,7 +627,7 @@ For your convenience, in case you want to jump over the config routines and star
                             export-policy all
                             import-policy all
                         }
-                        ipv4-unicast {
+                        afi-safi ipv4-unicast {
                             admin-state enable
                         }
                         neighbor 192.168.11.1 {

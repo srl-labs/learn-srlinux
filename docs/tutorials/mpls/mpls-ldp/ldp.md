@@ -266,14 +266,14 @@ In the following snippets we configure `lo0` loopbacks following with iBGP peeri
     set / network-instance default protocols bgp router-id 10.0.0.1
     set / network-instance default protocols bgp group IBGP
     set / network-instance default protocols bgp group IBGP export-policy EXPORT_LOOPBACK
-    set / network-instance default protocols bgp group IBGP ipv4-unicast
-    set / network-instance default protocols bgp group IBGP ipv4-unicast admin-state enable
-    set / network-instance default protocols bgp ipv4-unicast
-    set / network-instance default protocols bgp ipv4-unicast next-hop-resolution
-    set / network-instance default protocols bgp ipv4-unicast next-hop-resolution ipv4-next-hops
-    set / network-instance default protocols bgp ipv4-unicast next-hop-resolution ipv4-next-hops tunnel-resolution
-    set / network-instance default protocols bgp ipv4-unicast next-hop-resolution ipv4-next-hops tunnel-resolution mode require
-    set / network-instance default protocols bgp ipv4-unicast next-hop-resolution ipv4-next-hops tunnel-resolution allowed-tunnel-types [ ldp ]
+    set / network-instance default protocols bgp group IBGP afi-safi ipv4-unicast
+    set / network-instance default protocols bgp group IBGP afi-safi ipv4-unicast admin-state enable
+    set / network-instance default protocols bgp afi-safi ipv4-unicast
+    set / network-instance default protocols bgp afi-safi ipv4-unicast next-hop-resolution
+    set / network-instance default protocols bgp afi-safi ipv4-unicast next-hop-resolution ipv4-next-hops
+    set / network-instance default protocols bgp afi-safi ipv4-unicast next-hop-resolution ipv4-next-hops tunnel-resolution
+    set / network-instance default protocols bgp afi-safi ipv4-unicast next-hop-resolution ipv4-next-hops tunnel-resolution mode require
+    set / network-instance default protocols bgp afi-safi ipv4-unicast next-hop-resolution ipv4-next-hops tunnel-resolution allowed-tunnel-types [ ldp ]
     set / network-instance default protocols bgp neighbor 10.0.0.3
     set / network-instance default protocols bgp neighbor 10.0.0.3 admin-state enable
     set / network-instance default protocols bgp neighbor 10.0.0.3 peer-as 65001
@@ -315,14 +315,14 @@ In the following snippets we configure `lo0` loopbacks following with iBGP peeri
     set / network-instance default protocols bgp router-id 10.0.0.3
     set / network-instance default protocols bgp group IBGP
     set / network-instance default protocols bgp group IBGP export-policy EXPORT_LOOPBACK
-    set / network-instance default protocols bgp group IBGP ipv4-unicast
-    set / network-instance default protocols bgp group IBGP ipv4-unicast admin-state enable
-    set / network-instance default protocols bgp ipv4-unicast
-    set / network-instance default protocols bgp ipv4-unicast next-hop-resolution
-    set / network-instance default protocols bgp ipv4-unicast next-hop-resolution ipv4-next-hops
-    set / network-instance default protocols bgp ipv4-unicast next-hop-resolution ipv4-next-hops tunnel-resolution
-    set / network-instance default protocols bgp ipv4-unicast next-hop-resolution ipv4-next-hops tunnel-resolution mode require
-    set / network-instance default protocols bgp ipv4-unicast next-hop-resolution ipv4-next-hops tunnel-resolution allowed-tunnel-types [ ldp ]
+    set / network-instance default protocols bgp group IBGP afi-safi ipv4-unicast
+    set / network-instance default protocols bgp group IBGP afi-safi ipv4-unicast admin-state enable
+    set / network-instance default protocols bgp afi-safi ipv4-unicast
+    set / network-instance default protocols bgp afi-safi ipv4-unicast next-hop-resolution
+    set / network-instance default protocols bgp afi-safi ipv4-unicast next-hop-resolution ipv4-next-hops
+    set / network-instance default protocols bgp afi-safi ipv4-unicast next-hop-resolution ipv4-next-hops tunnel-resolution
+    set / network-instance default protocols bgp afi-safi ipv4-unicast next-hop-resolution ipv4-next-hops tunnel-resolution mode require
+    set / network-instance default protocols bgp afi-safi ipv4-unicast next-hop-resolution ipv4-next-hops tunnel-resolution allowed-tunnel-types [ ldp ]
     set / network-instance default protocols bgp neighbor 10.0.0.1
     set / network-instance default protocols bgp neighbor 10.0.0.1 admin-state enable
     set / network-instance default protocols bgp neighbor 10.0.0.1 peer-as 65001
