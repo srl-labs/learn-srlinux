@@ -381,13 +381,13 @@ For your convenience, in case you want to jump over the config routines and star
                     bgp {
                         autonomous-system 101
                         router-id 10.0.0.1
+                        afi-safi ipv4-unicast {
+                            admin-state enable
+                        }
                         group eBGP-underlay {
                             export-policy all
                             import-policy all
                             peer-as 201
-                            afi-safi ipv4-unicast {
-                                admin-state enable
-                            }
                         }
                         group iBGP-overlay {
                             export-policy all
@@ -505,13 +505,13 @@ For your convenience, in case you want to jump over the config routines and star
                     bgp {
                         autonomous-system 102
                         router-id 10.0.0.2
+                        afi-safi ipv4-unicast {
+                            admin-state enable
+                        }
                         group eBGP-underlay {
                             export-policy all
                             import-policy all
                             peer-as 201
-                            afi-safi ipv4-unicast {
-                                admin-state enable
-                            }
                         }
                         group iBGP-overlay {
                             export-policy all
