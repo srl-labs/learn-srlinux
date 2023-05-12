@@ -63,7 +63,9 @@ Let's witness the step by step process of an interface configuration on a `leaf1
     --{ * candidate shared default }--[ interface ethernet-1/49 ]--
     A:leaf1# subinterface 0                                        
     --{ * candidate shared default }--[ interface ethernet-1/49 subinterface 0 ]--
-    A:leaf1# ipv4 address 192.168.11.1/30                                         
+    A:leaf1# ipv4 admin-state enable
+    --{ * candidate shared default }--[ interface ethernet-1/49 subinterface 0 ]--
+    A:leaf1# address 192.168.11.1/30
     ```
 
 5. Apply the configuration changes by issuing a `commit now` command. The changes will be written to the running configuration.
@@ -81,6 +83,7 @@ Below you will find the relevant configuration snippets[^2] for leafs and spine 
     interface ethernet-1/49 {
         subinterface 0 {
             ipv4 {
+                admin-state enable
                 address 192.168.11.1/30 {
                 }
             }
@@ -93,6 +96,7 @@ Below you will find the relevant configuration snippets[^2] for leafs and spine 
     interface ethernet-1/49 {
         subinterface 0 {
             ipv4 {
+                admin-state enable
                 address 192.168.12.1/30 {
                 }
             }
@@ -104,6 +108,7 @@ Below you will find the relevant configuration snippets[^2] for leafs and spine 
     interface ethernet-1/1 {
         subinterface 0 {
             ipv4 {
+                admin-state enable
                 address 192.168.11.2/30 {
                 }
             }
@@ -112,6 +117,7 @@ Below you will find the relevant configuration snippets[^2] for leafs and spine 
     interface ethernet-1/2 {
         subinterface 0 {
             ipv4 {
+                admin-state enable
                 address 192.168.12.2/30 {
                 }
             }
@@ -222,7 +228,7 @@ Here is a breakdown of the steps that are needed to configure EBGP on `leaf1` to
 
     ```srl
     --{ +* candidate shared default }--[ network-instance default protocols bgp ]--
-    A:leaf1# ipv4-unicast admin-state enable
+    A:leaf1# afi-safi ipv4-unicast admin-state enable
     ```
 
 1. **Create export/import policies**  
@@ -448,6 +454,7 @@ Configuration of the `system0` interface is exactly the same as for the regular 
         admin-state enable
         subinterface 0 {
             ipv4 {
+                admin-state enable
                 address 10.0.0.1/32 {
                 }
             }
@@ -464,6 +471,7 @@ Configuration of the `system0` interface is exactly the same as for the regular 
         admin-state enable
         subinterface 0 {
             ipv4 {
+                admin-state enable
                 address 10.0.0.2/32 {
                 }
             }
@@ -480,6 +488,7 @@ Configuration of the `system0` interface is exactly the same as for the regular 
         admin-state enable
         subinterface 0 {
             ipv4 {
+                admin-state enable
                 address 10.0.1.1/32 {
                 }
             }
@@ -703,14 +712,14 @@ Below you will find aggregated configuration snippets which contain the entire f
     # configuration of the physical interface and its subinterface
     set / interface ethernet-1/49
     set / interface ethernet-1/49 subinterface 0
-    set / interface ethernet-1/49 subinterface 0 ipv4
+    set / interface ethernet-1/49 subinterface 0 ipv4 admin-state enable
     set / interface ethernet-1/49 subinterface 0 ipv4 address 192.168.11.1/30
     
     # system interface configuration
     set / interface system0
     set / interface system0 admin-state enable
     set / interface system0 subinterface 0
-    set / interface system0 subinterface 0 ipv4
+    set / interface system0 subinterface 0 ipv4 admin-state enable
     set / interface system0 subinterface 0 ipv4 address 10.0.0.1/32
     
     # associating interfaces with net-ins default
@@ -747,14 +756,14 @@ Below you will find aggregated configuration snippets which contain the entire f
     # configuration of the physical interface and its subinterface
     set / interface ethernet-1/49
     set / interface ethernet-1/49 subinterface 0
-    set / interface ethernet-1/49 subinterface 0 ipv4
+    set / interface ethernet-1/49 subinterface 0 ipv4 admin-state enable
     set / interface ethernet-1/49 subinterface 0 ipv4 address 192.168.12.1/30
     
     # system interface configuration
     set / interface system0
     set / interface system0 admin-state enable
     set / interface system0 subinterface 0
-    set / interface system0 subinterface 0 ipv4
+    set / interface system0 subinterface 0 ipv4 admin-state enable
     set / interface system0 subinterface 0 ipv4 address 10.0.0.2/32
     
     # associating interfaces with net-ins default
@@ -791,18 +800,18 @@ Below you will find aggregated configuration snippets which contain the entire f
     # configuration of the physical interface and its subinterface
     set / interface ethernet-1/1
     set / interface ethernet-1/1 subinterface 0
-    set / interface ethernet-1/1 subinterface 0 ipv4
+    set / interface ethernet-1/1 subinterface 0 ipv4 admin-state enable
     set / interface ethernet-1/1 subinterface 0 ipv4 address 192.168.11.2/30
     set / interface ethernet-1/2
     set / interface ethernet-1/2 subinterface 0
-    set / interface ethernet-1/2 subinterface 0 ipv4
+    set / interface ethernet-1/2 subinterface 0 ipv4 admin-state enable
     set / interface ethernet-1/2 subinterface 0 ipv4 address 192.168.12.2/30
 
     # system interface configuration
     set / interface system0
     set / interface system0 admin-state enable
     set / interface system0 subinterface 0
-    set / interface system0 subinterface 0 ipv4
+    set / interface system0 subinterface 0 ipv4 admin-state enable
     set / interface system0 subinterface 0 ipv4 address 10.0.1.1/32
 
     # associating interfaces with net-ins default

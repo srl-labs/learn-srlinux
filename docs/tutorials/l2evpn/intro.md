@@ -40,66 +40,38 @@ To let you follow along the configuration steps of this tutorial we created a la
 The [containerlab file][topofile] that describes the lab topology is referenced below in full:
 
 ```yaml
-name: evpn01
-
-topology:
-  kinds:
-    srl:
-      image: ghcr.io/nokia/srlinux
-    linux:
-      image: ghcr.io/hellt/network-multitool
-
-  nodes:
-    leaf1:
-      kind: srl
-      type: ixrd2
-    leaf2:
-      kind: srl
-      type: ixrd2
-    spine1:
-      kind: srl
-      type: ixrd3
-    srv1:
-      kind: linux
-    srv2:
-      kind: linux
-
-  links:
-    # inter-switch links
-    - endpoints: ["leaf1:e1-49", "spine1:e1-1"]
-    - endpoints: ["leaf2:e1-49", "spine1:e1-2"]
-    # server links
-    - endpoints: ["srv1:eth1", "leaf1:e1-1"]
-    - endpoints: ["srv2:eth1", "leaf2:e1-1"]
+--8<-- "labs/evpn01.clab.yml"
 ```
 
 Save[^2] the contents of this file under `evpn01.clab.yml` name and you are ready to deploy:
 
 ```
 $ containerlab deploy -t evpn01.clab.yml
+INFO[0000] Containerlab v0.41.0 started                 
 INFO[0000] Parsing & checking topology file: evpn01.clab.yml 
-INFO[0000] Creating lab directory: /root/learn.srlinux.dev/clab-evpn01 
-INFO[0000] Creating root CA                             
-INFO[0001] Creating container: srv2                  
-INFO[0001] Creating container: srv1                  
-INFO[0001] Creating container: leaf2                    
-INFO[0001] Creating container: spine1                   
-INFO[0001] Creating container: leaf1                    
-INFO[0002] Creating virtual wire: leaf1:e1-49 <--> spine1:e1-1 
-INFO[0002] Creating virtual wire: srv2:eth1 <--> leaf2:e1-1 
-INFO[0002] Creating virtual wire: leaf2:e1-49 <--> spine1:e1-2 
-INFO[0002] Creating virtual wire: srv1:eth1 <--> leaf1:e1-1 
-INFO[0003] Writing /etc/hosts file                      
-
-+---+--------------------+--------------+---------------------------------+-------+-------+---------+----------------+----------------------+
-| # |        Name        | Container ID |              Image              | Kind  | Group |  State  |  IPv4 Address  |     IPv6 Address     |
-+---+--------------------+--------------+---------------------------------+-------+-------+---------+----------------+----------------------+
-| 1 | clab-evpn01-leaf1  | 4b81c65af558 | ghcr.io/nokia/srlinux           | srl   |       | running | 172.20.20.7/24 | 2001:172:20:20::7/64 |
-| 2 | clab-evpn01-leaf2  | de000e791dd6 | ghcr.io/nokia/srlinux           | srl   |       | running | 172.20.20.8/24 | 2001:172:20:20::8/64 |
-| 3 | clab-evpn01-spine1 | 231fd97d7e33 | ghcr.io/nokia/srlinux           | srl   |       | running | 172.20.20.6/24 | 2001:172:20:20::6/64 |
-| 4 | clab-evpn01-srv1   | 3a2fa1e6e9f5 | ghcr.io/hellt/network-multitool | linux |       | running | 172.20.20.3/24 | 2001:172:20:20::3/64 |
-| 5 | clab-evpn01-srv2   | fb722453d715 | ghcr.io/hellt/network-multitool | linux |       | running | 172.20.20.5/24 | 2001:172:20:20::5/64 |
-+---+--------------------+--------------+---------------------------------+-------+-------+---------+----------------+----------------------+
+INFO[0005] Creating lab directory: /root/srl-labs/learn-srlinux/clab-evpn01 
+INFO[0005] Creating container: "srv2"                   
+INFO[0005] Creating container: "srv1"                   
+INFO[0005] Creating container: "spine1"                 
+INFO[0005] Creating container: "leaf1"                  
+INFO[0005] Creating container: "leaf2"                  
+INFO[0006] Creating virtual wire: srv2:eth1 <--> leaf2:e1-1 
+INFO[0006] Creating virtual wire: leaf2:e1-49 <--> spine1:e1-2 
+INFO[0006] Creating virtual wire: leaf1:e1-49 <--> spine1:e1-1 
+INFO[0006] Creating virtual wire: srv1:eth1 <--> leaf1:e1-1 
+INFO[0007] Running postdeploy actions for Nokia SR Linux 'spine1' node 
+INFO[0007] Running postdeploy actions for Nokia SR Linux 'leaf1' node 
+INFO[0007] Running postdeploy actions for Nokia SR Linux 'leaf2' node 
+INFO[0021] Adding containerlab host entries to /etc/hosts file 
++---+--------------------+--------------+---------------------------------+-------+---------+-----------------+----------------------+
+| # |        Name        | Container ID |              Image              | Kind  |  State  |  IPv4 Address   |     IPv6 Address     |
++---+--------------------+--------------+---------------------------------+-------+---------+-----------------+----------------------+
+| 1 | clab-evpn01-leaf1  | c88892905319 | ghcr.io/nokia/srlinux:23.3.1    | srl   | running | 172.20.20.11/24 | 2001:172:20:20::b/64 |
+| 2 | clab-evpn01-leaf2  | 55ab0f731815 | ghcr.io/nokia/srlinux:23.3.1    | srl   | running | 172.20.20.7/24  | 2001:172:20:20::7/64 |
+| 3 | clab-evpn01-spine1 | 33565578fc32 | ghcr.io/nokia/srlinux:23.3.1    | srl   | running | 172.20.20.8/24  | 2001:172:20:20::8/64 |
+| 4 | clab-evpn01-srv1   | 86a54b5d1999 | ghcr.io/hellt/network-multitool | linux | running | 172.20.20.10/24 | 2001:172:20:20::a/64 |
+| 5 | clab-evpn01-srv2   | dee331143cda | ghcr.io/hellt/network-multitool | linux | running | 172.20.20.9/24  | 2001:172:20:20::9/64 |
++---+--------------------+--------------+---------------------------------+-------+---------+-----------------+----------------------+
 ```
 
 A few seconds later containerlab finishes the deployment with providing a summary table that outlines connection details of the deployed nodes. In the "Name" column we have the names of the deployed containers and those names can be used to reach the nodes, for example to connect to the SSH of `leaf1`:
