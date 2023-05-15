@@ -63,7 +63,9 @@ Let's witness the step by step process of an interface configuration on a `leaf1
     --{ * candidate shared default }--[ interface ethernet-1/49 ]--
     A:leaf1# subinterface 0                                        
     --{ * candidate shared default }--[ interface ethernet-1/49 subinterface 0 ]--
-    A:leaf1# ipv4 address 192.168.11.1/30                                         
+    A:leaf1# ipv4 admin-state enable
+    --{ * candidate shared default }--[ interface ethernet-1/49 subinterface 0 ]--
+    A:leaf1# address 192.168.11.1/30
     ```
 
 5. Apply the configuration changes by issuing a `commit now` command. The changes will be written to the running configuration.
@@ -81,6 +83,7 @@ Below you will find the relevant configuration snippets[^2] for leafs and spine 
     interface ethernet-1/49 {
         subinterface 0 {
             ipv4 {
+                admin-state enable
                 address 192.168.11.1/30 {
                 }
             }
@@ -93,6 +96,7 @@ Below you will find the relevant configuration snippets[^2] for leafs and spine 
     interface ethernet-1/49 {
         subinterface 0 {
             ipv4 {
+                admin-state enable
                 address 192.168.12.1/30 {
                 }
             }
@@ -104,6 +108,7 @@ Below you will find the relevant configuration snippets[^2] for leafs and spine 
     interface ethernet-1/1 {
         subinterface 0 {
             ipv4 {
+                admin-state enable
                 address 192.168.11.2/30 {
                 }
             }
@@ -112,6 +117,7 @@ Below you will find the relevant configuration snippets[^2] for leafs and spine 
     interface ethernet-1/2 {
         subinterface 0 {
             ipv4 {
+                admin-state enable
                 address 192.168.12.2/30 {
                 }
             }
@@ -222,7 +228,7 @@ Here is a breakdown of the steps that are needed to configure EBGP on `leaf1` to
 
     ```srl
     --{ +* candidate shared default }--[ network-instance default protocols bgp ]--
-    A:leaf1# ipv4-unicast admin-state enable
+    A:leaf1# afi-safi ipv4-unicast admin-state enable
     ```
 
 1. **Create export/import policies**  
@@ -309,7 +315,7 @@ Here is a breakdown of the steps that are needed to configure EBGP on `leaf1` to
     +                     import-policy all
     +                     peer-as 201
     +                 }
-    +                 ipv4-unicast {
+    +                 afi-safi ipv4-unicast {
     +                     admin-state enable
     +                 }
     +                 neighbor 192.168.11.2 {
@@ -348,7 +354,7 @@ EBGP configuration on `leaf2` and `spine1` is almost a twin of the one we did fo
                     import-policy all
                     peer-as 201
                 }
-                ipv4-unicast {
+                afi-safi ipv4-unicast {
                     admin-state enable
                 }
                 neighbor 192.168.11.2 {
@@ -377,7 +383,7 @@ EBGP configuration on `leaf2` and `spine1` is almost a twin of the one we did fo
                     import-policy all
                     peer-as 201
                 }
-                ipv4-unicast {
+                afi-safi ipv4-unicast {
                     admin-state enable
                 }
                 neighbor 192.168.12.2 {
@@ -406,7 +412,7 @@ EBGP configuration on `leaf2` and `spine1` is almost a twin of the one we did fo
                     export-policy all
                     import-policy all
                 }
-                ipv4-unicast {
+                afi-safi ipv4-unicast {
                     admin-state enable
                 }
                 neighbor 192.168.11.1 {
@@ -448,6 +454,7 @@ Configuration of the `system0` interface is exactly the same as for the regular 
         admin-state enable
         subinterface 0 {
             ipv4 {
+                admin-state enable
                 address 10.0.0.1/32 {
                 }
             }
@@ -464,6 +471,7 @@ Configuration of the `system0` interface is exactly the same as for the regular 
         admin-state enable
         subinterface 0 {
             ipv4 {
+                admin-state enable
                 address 10.0.0.2/32 {
                 }
             }
@@ -480,6 +488,7 @@ Configuration of the `system0` interface is exactly the same as for the regular 
         admin-state enable
         subinterface 0 {
             ipv4 {
+                admin-state enable
                 address 10.0.1.1/32 {
                 }
             }
@@ -577,57 +586,49 @@ The reason we configured EBGP in the fabric's the underlay is to advertise the V
 
 ```srl
 --{ + running }--[  ]--
-A:leaf1# show network-instance default protocols bgp neighbor 192.168.11.2 advertised-rou
-tes ipv4
------------------------------------------------------------------------------------------
+A:leaf1# show network-instance default protocols bgp neighbor 192.168.11.2 advertised-routes ipv4
+----------------------------------------------------------------------------------------------------------------------------------------------------------
 Peer        : 192.168.11.2, remote AS: 201, local AS: 101
 Type        : static
 Description : None
 Group       : eBGP-underlay
------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------------------------
 Origin codes: i=IGP, e=EGP, ?=incomplete
-+-------------------------------------------------------------------------------------+
-|    Network        Next Hop       MED     LocPref           AsPath           Origin  |
-+=====================================================================================+
-| 10.0.0.1/32      192.168.11.      -        100     [101]                       i    |
-|                  1                                                                  |
-| 192.168.11.0/3   192.168.11.      -        100     [101]                       i    |
-| 0                1                                                                  |
-+-------------------------------------------------------------------------------------+
------------------------------------------------------------------------------------------
++------------------------------------------------------------------------------------------------------------------------------------------------------+
+|          Network                  Path-id           Next Hop         MED                        LocPref                      AsPath        Origin    |
++======================================================================================================================================================+
+| 10.0.0.1/32                 0                     192.168.11.1        -                           100                     [101]               i      |
+| 192.168.11.0/30             0                     192.168.11.1        -                           100                     [101]               i      |
++------------------------------------------------------------------------------------------------------------------------------------------------------+
+----------------------------------------------------------------------------------------------------------------------------------------------------------
 2 advertised BGP routes
------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------------------------
 ```
 
 On the far end of the fabric, `leaf2` receives both the `leaf1` and `spine1` system interface prefixes:
 
 ```srl
 --{ + running }--[  ]--
-A:leaf2# show network-instance default protocols bgp neighbor 192.168.12.2 received-route
-s ipv4
------------------------------------------------------------------------------------------
+A:leaf2# show network-instance default protocols bgp neighbor 192.168.12.2 received-routes ipv4
+----------------------------------------------------------------------------------------------------------------------------------------------------------
 Peer        : 192.168.12.2, remote AS: 201, local AS: 102
 Type        : static
 Description : None
 Group       : eBGP-underlay
------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------------------------
 Status codes: u=used, *=valid, >=best, x=stale
 Origin codes: i=IGP, e=EGP, ?=incomplete
-+-----------------------------------------------------------------------------------+
-|  Status      Network    Next Hop       MED       LocPref     AsPath      Origin   |
-+===================================================================================+
-|    u*>      10.0.0.1/   192.168.1       -          100      [201,           i     |
-|             32          2.2                                 101]                  |
-|    u*>      10.0.1.1/   192.168.1       -          100      [201]           i     |
-|             32          2.2                                                       |
-|    u*>      192.168.1   192.168.1       -          100      [201]           i     |
-|             1.0/30      2.2                                                       |
-|     *       192.168.1   192.168.1       -          100      [201]           i     |
-|             2.0/30      2.2                                                       |
-+-----------------------------------------------------------------------------------+
------------------------------------------------------------------------------------------
++-------------------------------------------------------------------------------------------------------------------------------------------------------+
+|      Status            Network            Path-id            Next Hop             MED              LocPref             AsPath             Origin      |
++=======================================================================================================================================================+
+|       u*>          10.0.0.1/32        0                  192.168.12.2              -                 100          [201, 101]                 i        |
+|       u*>          10.0.1.1/32        0                  192.168.12.2              -                 100          [201]                      i        |
+|       u*>          192.168.11.0/30    0                  192.168.12.2              -                 100          [201]                      i        |
+|        *           192.168.12.0/30    0                  192.168.12.2              -                 100          [201]                      i        |
++-------------------------------------------------------------------------------------------------------------------------------------------------------+
+----------------------------------------------------------------------------------------------------------------------------------------------------------
 4 received BGP routes : 3 used 4 valid
------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------------------------
 ```
 
 ### Route table
@@ -703,14 +704,14 @@ Below you will find aggregated configuration snippets which contain the entire f
     # configuration of the physical interface and its subinterface
     set / interface ethernet-1/49
     set / interface ethernet-1/49 subinterface 0
-    set / interface ethernet-1/49 subinterface 0 ipv4
+    set / interface ethernet-1/49 subinterface 0 ipv4 admin-state enable
     set / interface ethernet-1/49 subinterface 0 ipv4 address 192.168.11.1/30
     
     # system interface configuration
     set / interface system0
     set / interface system0 admin-state enable
     set / interface system0 subinterface 0
-    set / interface system0 subinterface 0 ipv4
+    set / interface system0 subinterface 0 ipv4 admin-state enable
     set / interface system0 subinterface 0 ipv4 address 10.0.0.1/32
     
     # associating interfaces with net-ins default
@@ -733,8 +734,8 @@ Below you will find aggregated configuration snippets which contain the entire f
     set / network-instance default protocols bgp group eBGP-underlay export-policy all
     set / network-instance default protocols bgp group eBGP-underlay import-policy all
     set / network-instance default protocols bgp group eBGP-underlay peer-as 201
-    set / network-instance default protocols bgp ipv4-unicast
-    set / network-instance default protocols bgp ipv4-unicast admin-state enable
+    set / network-instance default protocols bgp afi-safi ipv4-unicast
+    set / network-instance default protocols bgp afi-safi ipv4-unicast admin-state enable
     set / network-instance default protocols bgp neighbor 192.168.11.2
     set / network-instance default protocols bgp neighbor 192.168.11.2 peer-group eBGP-underlay
 
@@ -747,14 +748,14 @@ Below you will find aggregated configuration snippets which contain the entire f
     # configuration of the physical interface and its subinterface
     set / interface ethernet-1/49
     set / interface ethernet-1/49 subinterface 0
-    set / interface ethernet-1/49 subinterface 0 ipv4
+    set / interface ethernet-1/49 subinterface 0 ipv4 admin-state enable
     set / interface ethernet-1/49 subinterface 0 ipv4 address 192.168.12.1/30
     
     # system interface configuration
     set / interface system0
     set / interface system0 admin-state enable
     set / interface system0 subinterface 0
-    set / interface system0 subinterface 0 ipv4
+    set / interface system0 subinterface 0 ipv4 admin-state enable
     set / interface system0 subinterface 0 ipv4 address 10.0.0.2/32
     
     # associating interfaces with net-ins default
@@ -777,8 +778,8 @@ Below you will find aggregated configuration snippets which contain the entire f
     set / network-instance default protocols bgp group eBGP-underlay export-policy all
     set / network-instance default protocols bgp group eBGP-underlay import-policy all
     set / network-instance default protocols bgp group eBGP-underlay peer-as 201
-    set / network-instance default protocols bgp ipv4-unicast
-    set / network-instance default protocols bgp ipv4-unicast admin-state enable
+    set / network-instance default protocols bgp afi-safi ipv4-unicast
+    set / network-instance default protocols bgp afi-safi ipv4-unicast admin-state enable
     set / network-instance default protocols bgp neighbor 192.168.12.2
     set / network-instance default protocols bgp neighbor 192.168.12.2 peer-group eBGP-underlay
 
@@ -791,18 +792,18 @@ Below you will find aggregated configuration snippets which contain the entire f
     # configuration of the physical interface and its subinterface
     set / interface ethernet-1/1
     set / interface ethernet-1/1 subinterface 0
-    set / interface ethernet-1/1 subinterface 0 ipv4
+    set / interface ethernet-1/1 subinterface 0 ipv4 admin-state enable
     set / interface ethernet-1/1 subinterface 0 ipv4 address 192.168.11.2/30
     set / interface ethernet-1/2
     set / interface ethernet-1/2 subinterface 0
-    set / interface ethernet-1/2 subinterface 0 ipv4
+    set / interface ethernet-1/2 subinterface 0 ipv4 admin-state enable
     set / interface ethernet-1/2 subinterface 0 ipv4 address 192.168.12.2/30
 
     # system interface configuration
     set / interface system0
     set / interface system0 admin-state enable
     set / interface system0 subinterface 0
-    set / interface system0 subinterface 0 ipv4
+    set / interface system0 subinterface 0 ipv4 admin-state enable
     set / interface system0 subinterface 0 ipv4 address 10.0.1.1/32
 
     # associating interfaces with net-ins default
@@ -825,8 +826,8 @@ Below you will find aggregated configuration snippets which contain the entire f
     set / network-instance default protocols bgp group eBGP-underlay
     set / network-instance default protocols bgp group eBGP-underlay export-policy all
     set / network-instance default protocols bgp group eBGP-underlay import-policy all
-    set / network-instance default protocols bgp ipv4-unicast
-    set / network-instance default protocols bgp ipv4-unicast admin-state enable
+    set / network-instance default protocols bgp afi-safi ipv4-unicast
+    set / network-instance default protocols bgp afi-safi ipv4-unicast admin-state enable
     set / network-instance default protocols bgp neighbor 192.168.11.1
     set / network-instance default protocols bgp neighbor 192.168.11.1 peer-as 101
     set / network-instance default protocols bgp neighbor 192.168.11.1 peer-group eBGP-underlay

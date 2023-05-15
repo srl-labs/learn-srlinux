@@ -15,21 +15,21 @@ Let's start with basic interfaces configuration following this diagram:
 The below config snippets configure regular `Ethernet-1/1`, `Ethernet-1/2` and a special loopback [`system0`](../../../kb/ifaces.md#system) interfaces.
 
 === "srl1"
-    ```bash
+    ```srl
     enter candidate # (1)!
 
     set / interface ethernet-1/1
     set / interface ethernet-1/1 admin-state enable
     set / interface ethernet-1/1 subinterface 0
     set / interface ethernet-1/1 subinterface 0 admin-state enable
-    set / interface ethernet-1/1 subinterface 0 ipv4
+    set / interface ethernet-1/1 subinterface 0 ipv4 admin-state enable
     set / interface ethernet-1/1 subinterface 0 ipv4 address 10.1.2.1/30
 
     set / interface system0
     set / interface system0 admin-state enable
     set / interface system0 subinterface 0
     set / interface system0 subinterface 0 admin-state enable
-    set / interface system0 subinterface 0 ipv4
+    set / interface system0 subinterface 0 ipv4 admin-state enable
     set / interface system0 subinterface 0 ipv4 address 10.0.0.1/32
 
     set / network-instance default
@@ -42,28 +42,28 @@ The below config snippets configure regular `Ethernet-1/1`, `Ethernet-1/2` and a
     1. config snippets contain `enter candidate` command to switch to configuration context.  
     At the bottom of the snippet `commit save` command will perform a `commit` operation followed by saving the running config to a startup config file.
 === "srl2"
-    ```bash
+    ```srl
     enter candidate
 
     set / interface ethernet-1/1
     set / interface ethernet-1/1 admin-state enable
     set / interface ethernet-1/1 subinterface 0
     set / interface ethernet-1/1 subinterface 0 admin-state enable
-    set / interface ethernet-1/1 subinterface 0 ipv4
+    set / interface ethernet-1/1 subinterface 0 ipv4 admin-state enable
     set / interface ethernet-1/1 subinterface 0 ipv4 address 10.1.2.2/30
 
     set / interface ethernet-1/2
     set / interface ethernet-1/2 admin-state enable
     set / interface ethernet-1/2 subinterface 0
     set / interface ethernet-1/2 subinterface 0 admin-state enable
-    set / interface ethernet-1/2 subinterface 0 ipv4
+    set / interface ethernet-1/2 subinterface 0 ipv4 admin-state enable
     set / interface ethernet-1/2 subinterface 0 ipv4 address 10.2.3.1/30
 
     set / interface system0
     set / interface system0 admin-state enable
     set / interface system0 subinterface 0
     set / interface system0 subinterface 0 admin-state enable
-    set / interface system0 subinterface 0 ipv4
+    set / interface system0 subinterface 0 ipv4 admin-state enable
     set / interface system0 subinterface 0 ipv4 address 10.0.0.2/32
 
     set / network-instance default
@@ -74,21 +74,21 @@ The below config snippets configure regular `Ethernet-1/1`, `Ethernet-1/2` and a
     commit save
     ```
 === "srl3"
-    ```bash
+    ```srl
     enter candidate
 
     set / interface ethernet-1/1
     set / interface ethernet-1/1 admin-state enable
     set / interface ethernet-1/1 subinterface 0
     set / interface ethernet-1/1 subinterface 0 admin-state enable
-    set / interface ethernet-1/1 subinterface 0 ipv4
+    set / interface ethernet-1/1 subinterface 0 ipv4 admin-state enable
     set / interface ethernet-1/1 subinterface 0 ipv4 address 10.2.3.2/30
 
     set / interface system0
     set / interface system0 admin-state enable
     set / interface system0 subinterface 0
     set / interface system0 subinterface 0 admin-state enable
-    set / interface system0 subinterface 0 ipv4
+    set / interface system0 subinterface 0 ipv4 admin-state enable
     set / interface system0 subinterface 0 ipv4 address 10.0.0.3/32
 
     set / network-instance default
@@ -101,7 +101,7 @@ The below config snippets configure regular `Ethernet-1/1`, `Ethernet-1/2` and a
 When the interface config is committed[^1], routers should be able to ping each neighbor's interface address.
 
 === "srl1 pings srl2"
-    ```
+    ```srl
     --{ running }--[  ]--
     A:srl1# ping network-instance default 10.1.2.2
     Using network instance default
@@ -109,7 +109,7 @@ When the interface config is committed[^1], routers should be able to ping each 
     64 bytes from 10.1.2.2: icmp_seq=1 ttl=64 time=49.7 ms
     ```
 === "srl2 pings srl3"
-    ```
+    ```srl
     --{ running }--[  ]--
     A:srl2# ping network-instance default 10.2.3.2
     Using network instance default
@@ -124,7 +124,7 @@ With interfaces config done, proceed with configuring an IGP protocol to redistr
 <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:3,&quot;zoom&quot;:3,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/srl-labs/learn-srlinux/diagrams/mpls-ldp.drawio&quot;}"></div>
 
 === "srl1"
-    ```bash
+    ```srl
     enter candidate
 
     set / network-instance default protocols isis
@@ -151,7 +151,9 @@ With interfaces config done, proceed with configuring an IGP protocol to redistr
     commit save
     ```
 === "srl2"
-    ```bash
+    ```srl
+    enter candidate
+
     set / network-instance default protocols isis
     set / network-instance default protocols isis instance ISIS
     set / network-instance default protocols isis instance ISIS admin-state enable
@@ -181,7 +183,9 @@ With interfaces config done, proceed with configuring an IGP protocol to redistr
     commit save
     ```
 === "srl3"
-    ```bash
+    ```srl
+    enter candidate
+
     set / network-instance default protocols isis
     set / network-instance default protocols isis instance ISIS
     set / network-instance default protocols isis instance ISIS admin-state enable
@@ -208,7 +212,7 @@ With interfaces config done, proceed with configuring an IGP protocol to redistr
 All routers now should have enabled IS-IS adjacency with their respective neighbors, and the routing table should contain respective `system0.0` loopback addresses. A view from `srl2` side:
 
 === "Adjacency"
-    ```bash
+    ```srl
     --{ running }--[  ]--
     A:srl2# show  /network-instance default protocols isis adjacency
     -----------------------------------------------------------------------------------------------------------------------
@@ -228,7 +232,7 @@ All routers now should have enabled IS-IS adjacency with their respective neighb
     ```
 === "Routing table"
     The below output verifies that `srl2` has successfully received loopbacks prefixes from `srl1/3` nodes.
-    ```
+    ```srl
     --{ running }--[  ]--
     A:srl2# /show network-instance default route-table all | grep isis
     | 10.0.0.1/32 | 0    | isis      | isis_mgr            | True/success        | 10      | 18     | 10.1.2 | ethern |

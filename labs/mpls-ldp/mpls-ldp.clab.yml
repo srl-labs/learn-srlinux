@@ -7,16 +7,16 @@ topology:
     kind: srl
   kinds:
     srl:
-      image: ghcr.io/nokia/srlinux:21.11.3 # tested with srlinux:21.11.3 image
-      type: ixr6 # MPLS dataplane is supported on 7250 IXR 6/10 platforms only as of 21.11.2 release
+      image: ghcr.io/nokia/srlinux:23.3.1
+      type: ixr6e # MPLS dataplane is supported on 7250 IXR chassis only as of 23.3.1 release
   nodes:
     # uncomment startup-config option to have lab nodes to boot with a fully provisioned use case
     srl1:
-      startup-config: srl1.cfg
+      # startup-config: srl1.cfg
     srl2:
-      startup-config: srl2.cfg
+      # startup-config: srl2.cfg
     srl3:
-      startup-config: srl3.cfg
+      # startup-config: srl3.cfg
 
   links:
     # link wiring diagram: srl1:e1-1 <--> e1-1:srl2:e1-2 <--> e1-1:srl3

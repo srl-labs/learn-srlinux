@@ -40,10 +40,11 @@ h4 {
   color: var(--nokia-heading-font-color)
 }
 
-/* setting the code font size a bit smaller */
-.md-typeset code {
+/* setting the code font size a bit smaller. This is commented out now, as it breaks linenumbers in code blocks */
+/* .md-typeset code {
   font-size: .8em;
 }
+
 
 @media screen and (max-width: 76.1875em) {
   .md-header__button.md-icon[for=__drawer] {

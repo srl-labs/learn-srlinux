@@ -8,13 +8,14 @@ LDP is a protocol defined for distributing labels. It is the set of procedures a
 This chapter focuses on LDP configuration with verification steps to ensure that LSPs are set up and traffic is properly encapsulated.
 
 ## MPLS label manager
+
 SR Linux features an MPLS label manager process that shares the MPLS label space among client applications that require MPLS labels; these applications include static MPLS forwarding and LDP.
 
 LDP must be configured with a reference to a predefined range of labels, called a label block. A label block configuration includes a start-label value and an end-label value. LDP requires a dynamic, non-shared label block.
 
 Although it is absolutely fine to configure the same label block on all the nodes, we will configure each device with a distinctive range for readability.
 === "srl1"
-    ```
+    ```srl
     enter candidate
 
     set / system mpls
@@ -26,7 +27,7 @@ Although it is absolutely fine to configure the same label block on all the node
     commit save
     ```
 === "srl2"
-    ```
+    ```srl
     enter candidate
 
     set / system mpls
@@ -38,7 +39,7 @@ Although it is absolutely fine to configure the same label block on all the node
     commit save
     ```
 === "srl3"
-    ```
+    ```srl
     enter candidate
 
     set / system mpls
@@ -51,12 +52,13 @@ Although it is absolutely fine to configure the same label block on all the node
     ```
 
 ## LDP neighbor discovery
+
 LDP neighbor discovery allows SR Linux to discover and connect to LDP peers without manually specifying the peers. SR Linux supports basic LDP discovery for discovering LDP peers, using multicast UDP hello messages.
 
 At a minimum, you should enable the LDP process in the network-instance and specify LDP-enabled interfaces.
 
 === "srl1"
-    ```
+    ```srl
     enter candidate
 
     set / network-instance default protocols ldp
@@ -72,7 +74,7 @@ At a minimum, you should enable the LDP process in the network-instance and spec
     commit save
     ```
 === "srl2"
-    ```
+    ```srl
     enter candidate
 
     set / network-instance default protocols
@@ -93,7 +95,7 @@ At a minimum, you should enable the LDP process in the network-instance and spec
     commit save
     ```
 === "srl3"
-    ```
+    ```srl
     enter candidate
 
     set / network-instance default protocols ldp
@@ -112,9 +114,9 @@ At a minimum, you should enable the LDP process in the network-instance and spec
 Once enabled, LDP neighborship will establish over the specified interfaces.
 
 === "neighbors"
-    ```
-    --{ running }--[  ]--                                                                            
-    A:srl2# show network-instance default protocols ldp neighbor                                     
+    ```srl
+    --{ running }--[  ]--
+    A:srl2# show network-instance default protocols ldp neighbor
     =================================================================================================
     Net-Inst default LDP neighbors
     -------------------------------------------------------------------------------------------------
@@ -130,8 +132,8 @@ Once enabled, LDP neighborship will establish over the specified interfaces.
     =================================================================================================
     ```
 === "sessions"
-    ```
-    A:srl2# /show network-instance default protocols ldp session                                    
+    ```srl
+    A:srl2# /show network-instance default protocols ldp session
     ================================================================================================
     Net-Inst default LDP Sessions
     ------------------------------------------------------------------------------------------------
@@ -148,13 +150,14 @@ Once enabled, LDP neighborship will establish over the specified interfaces.
     [This packet capture][pcap1] sniffed on srl2's `e1-1` shows the LDP multicast hello messages as well as the subsequent Initialization and Notification messages.
 
 ## FEC
+
 It is necessary to precisely specify which packets may be mapped to each LSP. This is done by providing a FEC specification for each LSP. The FEC identifies the set of IP packets that may be mapped to that LSP.
 
 Each FEC is specified as a set of one or more FEC elements. Each FEC element identifies a set of packets that may be mapped to the corresponding LSP.
 
 By default, SR Linux supports /32 IPv4 FEC resolution using IGP routes. For example, on `srl2` we see four FECs have been received, and four FECs have been advertised. These FECs were created for `system0` interface IP addresses advertised via IGP.
 
-```
+```srl
 A:srl2# /show network-instance default protocols ldp ipv4 fec                                     
 ==================================================================================================
 Net-Inst default LDP IPv4: All FEC prefixes table
@@ -189,7 +192,7 @@ Total advertised FEC prefixes: 4
 
 The successful labels exchange leads to a populated tunnel table on each MPLS-enabled router. For instance, the tunnel table on `srl1` lists two tunnels for remote loopbacks of `srl2` and `srl3`:
 
-```
+```srl
 --{ running }--[  ]--                                                                                                   
 A:srl1# show network-instance default tunnel-table all                                                                  
 ------------------------------------------------------------------------------------------------------------------------
@@ -213,7 +216,7 @@ IPv4 tunnel table of network-instance "default"
 
 The label operations can be seen in the mpls route-table report. For example, our LSR `srl2` performs swap operations for labels it assigned for remote FECs and it pops a label `204` as it was assigned to its own `10.0.0.2` FEC.
 
-```
+```srl
 A:srl2# /show network-instance default route-table mpls
 +---------+-----------+-------------+-----------------+------------------------+----------------------+------------------+
 | Label   | Operation | Type        | Next Net-Inst   | Next-hop IP (Type)     | Next-hop             | Next-hop MPLS    |
@@ -226,6 +229,7 @@ A:srl2# /show network-instance default route-table mpls
 ```
 
 ## Testing MPLS dataplane
+
 The tunnels established for `system0` loopback FECs cannot be tested as is because they resolve to the existing IGP routes, and thus plain IPv4 transport is used. To test the MPLS dataplane we would need to create another pair of loopbacks on `srl1`/`srl3` nodes and create an iBGP session exchanging these loopbacks; only this time, we will leverage a specific BGP knob asking to resolve the nexthops for these prefixes via LDP tunnel only.
 
 <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:4,&quot;zoom&quot;:3,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/srl-labs/learn-srlinux/diagrams/mpls-ldp.drawio&quot;}"></div>
@@ -233,7 +237,7 @@ The tunnels established for `system0` loopback FECs cannot be tested as is becau
 In the following snippets we configure `lo0` loopbacks following with iBGP peering setup to advertise them.
 
 === "srl1"
-    ```bash
+    ```srl
     enter candidate
 
     # configuring loopback interface
@@ -241,7 +245,7 @@ In the following snippets we configure `lo0` loopbacks following with iBGP peeri
     set / interface lo0 admin-state enable
     set / interface lo0 subinterface 0
     set / interface lo0 subinterface 0 admin-state enable
-    set / interface lo0 subinterface 0 ipv4
+    set / interface lo0 subinterface 0 ipv4 admin-state enable
     set / interface lo0 subinterface 0 ipv4 address 192.168.99.1/32
 
     set / network-instance default interface lo0.0
@@ -253,10 +257,10 @@ In the following snippets we configure `lo0` loopbacks following with iBGP peeri
     set / routing-policy policy EXPORT_LOOPBACK
     set / routing-policy policy EXPORT_LOOPBACK statement 10
     set / routing-policy policy EXPORT_LOOPBACK statement 10 match
-    set / routing-policy policy EXPORT_LOOPBACK statement 10 match family ipv4-unicast
+    set / routing-policy policy EXPORT_LOOPBACK statement 10 match family [ ipv4-unicast ]
     set / routing-policy policy EXPORT_LOOPBACK statement 10 match prefix-set LOOPBACK
     set / routing-policy policy EXPORT_LOOPBACK statement 10 action
-    set / routing-policy policy EXPORT_LOOPBACK statement 10 action accept
+    set / routing-policy policy EXPORT_LOOPBACK statement 10 action policy-result accept
 
     # configuring iBGP
     set / network-instance default protocols
@@ -266,14 +270,14 @@ In the following snippets we configure `lo0` loopbacks following with iBGP peeri
     set / network-instance default protocols bgp router-id 10.0.0.1
     set / network-instance default protocols bgp group IBGP
     set / network-instance default protocols bgp group IBGP export-policy EXPORT_LOOPBACK
-    set / network-instance default protocols bgp group IBGP ipv4-unicast
-    set / network-instance default protocols bgp group IBGP ipv4-unicast admin-state enable
-    set / network-instance default protocols bgp ipv4-unicast
-    set / network-instance default protocols bgp ipv4-unicast next-hop-resolution
-    set / network-instance default protocols bgp ipv4-unicast next-hop-resolution ipv4-next-hops
-    set / network-instance default protocols bgp ipv4-unicast next-hop-resolution ipv4-next-hops tunnel-resolution
-    set / network-instance default protocols bgp ipv4-unicast next-hop-resolution ipv4-next-hops tunnel-resolution mode require
-    set / network-instance default protocols bgp ipv4-unicast next-hop-resolution ipv4-next-hops tunnel-resolution allowed-tunnel-types [ ldp ]
+    set / network-instance default protocols bgp group IBGP afi-safi ipv4-unicast
+    set / network-instance default protocols bgp group IBGP afi-safi ipv4-unicast admin-state enable
+    set / network-instance default protocols bgp afi-safi ipv4-unicast admin-state enable
+    set / network-instance default protocols bgp afi-safi ipv4-unicast ipv4-unicast next-hop-resolution
+    set / network-instance default protocols bgp afi-safi ipv4-unicast ipv4-unicast next-hop-resolution ipv4-next-hops
+    set / network-instance default protocols bgp afi-safi ipv4-unicast ipv4-unicast next-hop-resolution ipv4-next-hops tunnel-resolution
+    set / network-instance default protocols bgp afi-safi ipv4-unicast ipv4-unicast next-hop-resolution ipv4-next-hops tunnel-resolution mode require
+    set / network-instance default protocols bgp afi-safi ipv4-unicast ipv4-unicast next-hop-resolution ipv4-next-hops tunnel-resolution allowed-tunnel-types [ ldp ]
     set / network-instance default protocols bgp neighbor 10.0.0.3
     set / network-instance default protocols bgp neighbor 10.0.0.3 admin-state enable
     set / network-instance default protocols bgp neighbor 10.0.0.3 peer-as 65001
@@ -282,7 +286,7 @@ In the following snippets we configure `lo0` loopbacks following with iBGP peeri
     commit save
     ```
 === "srl3"
-    ```bash
+    ```srl
     enter candidate
 
     # configuring loopback interface
@@ -290,7 +294,7 @@ In the following snippets we configure `lo0` loopbacks following with iBGP peeri
     set / interface lo0 admin-state enable
     set / interface lo0 subinterface 0
     set / interface lo0 subinterface 0 admin-state enable
-    set / interface lo0 subinterface 0 ipv4
+    set / interface lo0 subinterface 0 ipv4 admin-state enable
     set / interface lo0 subinterface 0 ipv4 address 192.168.99.3/32
 
     set / network-instance default interface lo0.0
@@ -302,10 +306,10 @@ In the following snippets we configure `lo0` loopbacks following with iBGP peeri
     set / routing-policy policy EXPORT_LOOPBACK
     set / routing-policy policy EXPORT_LOOPBACK statement 10
     set / routing-policy policy EXPORT_LOOPBACK statement 10 match
-    set / routing-policy policy EXPORT_LOOPBACK statement 10 match family ipv4-unicast
+    set / routing-policy policy EXPORT_LOOPBACK statement 10 match family [ ipv4-unicast ]
     set / routing-policy policy EXPORT_LOOPBACK statement 10 match prefix-set LOOPBACK
     set / routing-policy policy EXPORT_LOOPBACK statement 10 action
-    set / routing-policy policy EXPORT_LOOPBACK statement 10 action accept
+    set / routing-policy policy EXPORT_LOOPBACK statement 10 action policy-result accept
 
     # configuring iBGP
     set / network-instance default protocols
@@ -315,14 +319,14 @@ In the following snippets we configure `lo0` loopbacks following with iBGP peeri
     set / network-instance default protocols bgp router-id 10.0.0.3
     set / network-instance default protocols bgp group IBGP
     set / network-instance default protocols bgp group IBGP export-policy EXPORT_LOOPBACK
-    set / network-instance default protocols bgp group IBGP ipv4-unicast
-    set / network-instance default protocols bgp group IBGP ipv4-unicast admin-state enable
-    set / network-instance default protocols bgp ipv4-unicast
-    set / network-instance default protocols bgp ipv4-unicast next-hop-resolution
-    set / network-instance default protocols bgp ipv4-unicast next-hop-resolution ipv4-next-hops
-    set / network-instance default protocols bgp ipv4-unicast next-hop-resolution ipv4-next-hops tunnel-resolution
-    set / network-instance default protocols bgp ipv4-unicast next-hop-resolution ipv4-next-hops tunnel-resolution mode require
-    set / network-instance default protocols bgp ipv4-unicast next-hop-resolution ipv4-next-hops tunnel-resolution allowed-tunnel-types [ ldp ]
+    set / network-instance default protocols bgp group IBGP afi-safi ipv4-unicast admin-state enable
+    set / network-instance default protocols bgp group IBGP afi-safi ipv4-unicast admin-state enable
+    set / network-instance default protocols bgp afi-safi ipv4-unicast admin-state enable
+    set / network-instance default protocols bgp afi-safi ipv4-unicast ipv4-unicast next-hop-resolution
+    set / network-instance default protocols bgp afi-safi ipv4-unicast ipv4-unicast next-hop-resolution ipv4-next-hops
+    set / network-instance default protocols bgp afi-safi ipv4-unicast ipv4-unicast next-hop-resolution ipv4-next-hops tunnel-resolution
+    set / network-instance default protocols bgp afi-safi ipv4-unicast ipv4-unicast next-hop-resolution ipv4-next-hops tunnel-resolution mode require
+    set / network-instance default protocols bgp afi-safi ipv4-unicast ipv4-unicast next-hop-resolution ipv4-next-hops tunnel-resolution allowed-tunnel-types [ ldp ]
     set / network-instance default protocols bgp neighbor 10.0.0.1
     set / network-instance default protocols bgp neighbor 10.0.0.1 admin-state enable
     set / network-instance default protocols bgp neighbor 10.0.0.1 peer-as 65001
@@ -333,7 +337,7 @@ In the following snippets we configure `lo0` loopbacks following with iBGP peeri
 
 The iBGP peering should establish and both `srl1` and `srl3` nodes should receive loopback prefixes and install them in the routing table. From `srl1` point of view it received the remote loopback over BGP:
 
-```
+```srl
 A:srl1# /show network-instance default protocols bgp neighbor 10.0.0.3 received-routes ipv4                                                        
 ---------------------------------------------------------------------------------------------------------------------------------------------------
 Peer        : 10.0.0.3, remote AS: 65001, local AS: 65001
@@ -354,7 +358,7 @@ Origin codes: i=IGP, e=EGP, ?=incomplete
 
 And installed it in the routing table. The notable difference here is that the nexthop (`10.0.0.3`) is indirect, as it is being resolved via mpls/ldp tunnel. We can even see which label will be pushed on the stack[^1].
 
-```
+```srl
 A:srl1# /show network-instance default route-table ipv4-unicast prefix 192.168.99.3/32 detail                                                      
 ---------------------------------------------------------------------------------------------------------------------------------------------------
 IPv4 unicast route table of network instance default
@@ -378,9 +382,9 @@ Next hops: 1 entries
 
 Now it is time to test the datapath with a ping between newly created loopbacks[^2].
 
-```
---{ + running }--[  ]--                                                                                                                            
-A:srl1# ping network-instance default 192.168.99.3 -I 192.168.99.1                                                                                 
+```srl
+--{ + running }--[  ]--
+A:srl1# ping network-instance default 192.168.99.3 -I 192.168.99.1
 Using network instance default
 PING 192.168.99.3 (192.168.99.3) from 192.168.99.1 : 56(84) bytes of data.
 64 bytes from 192.168.99.3: icmp_seq=1 ttl=64 time=15.3 ms
@@ -395,7 +399,7 @@ rtt min/avg/max/mdev = 9.316/14.063/16.727/2.823 ms
 
 Yay! It works. Now let's see if we indeed had MPLS encapsulation used for that packet exchange. To quickly test this you can run a tcpdump on any node of the topology filtering mpls packets. For instance, let's connect to `srl1` shell via `docker exec` command and start listening for mpls packets on e1-1 interface:
 
-```yaml
+```bash
 docker exec -it srl1 bash
 [root@srl1 /]# tcpdump -nnvi e1-1 mpls
 
@@ -422,40 +426,21 @@ This evidence clearly shows the MPLS encapsulation in play. In addition to that,
 ![pic](https://gitlab.com/rdodin/pics/-/wikis/uploads/9f448c82a667603c0eebb1bcc40fbfba/image.png)
 
 ## Complete lab
+
 It is great to follow the tutorial doing all the steps yourself. But maybe not every single time :stuck_out_tongue_winking_eye: For those who just want to get a looksee at the LDP-in-action we created complete config snippets for the nodes so that they can boot with everything pre-provisioned and ready.
 
 You can fetch the config snippets with `curl`:
+
 ```
 curl -LO https://raw.githubusercontent.com/srl-labs/learn-srlinux/main/labs/mpls-ldp/srl1.cfg
 curl -LO https://raw.githubusercontent.com/srl-labs/learn-srlinux/main/labs/mpls-ldp/srl2.cfg
 curl -LO https://raw.githubusercontent.com/srl-labs/learn-srlinux/main/labs/mpls-ldp/srl3.cfg
 ```
 
-Put the downloaded config files next to the topology file and make sure to set up startup-config for each node:
+Put the downloaded config files next to the topology file and make sure to uncomment `startup-config` elements for each node:
 
 ```yaml
-name: mpls-ldp
-prefix: ""
-
-topology:
-  defaults:
-    kind: srl
-  kinds:
-    srl:
-      image: ghcr.io/nokia/srlinux:21.11.3
-      type: ixr6
-  nodes:
-
-    srl1:
-      startup-config: srl1.cfg
-    srl2:
-      startup-config: srl2.cfg
-    srl3:
-      startup-config: srl3.cfg
-
-  links:
-    - endpoints: ["srl1:e1-1", "srl2:e1-1"]
-    - endpoints: ["srl2:e1-2", "srl3:e1-1"]
+--8<-- "labs/mpls-ldp/mpls-ldp.clab.yml"
 ```
 
 Deploy the lab as usual, and you should have everything ready once the lab is deployed.

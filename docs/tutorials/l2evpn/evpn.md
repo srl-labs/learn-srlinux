@@ -53,13 +53,14 @@ Then for each leaf we add a new BGP neighbor addressed by the remote `system0` i
             export-policy all
             import-policy all
             peer-as 100
-            ipv4-unicast {
+            afi-safi ipv4-unicast {
                 admin-state disable
             }
-            evpn {
+            afi-safi evpn {
                 admin-state enable
             }
-            local-as 100 {
+            local-as {
+                as-number 100
             }
             timers {
                 minimum-advertisement-interval 1
@@ -83,13 +84,14 @@ Then for each leaf we add a new BGP neighbor addressed by the remote `system0` i
             export-policy all
             import-policy all
             peer-as 100
-            ipv4-unicast {
+            afi-safi ipv4-unicast {
                 admin-state disable
             }
-            evpn {
+            afi-safi evpn {
                 admin-state enable
             }
-            local-as 100 {
+            local-as {
+                as-number 100 
             }
             timers {
                 minimum-advertisement-interval 1
@@ -209,11 +211,11 @@ Summary
 
 ## MAC-VRF
 
-Now it is a turn of MAC-VRF to get configured.
+Now it is the turn of MAC-VRF to get configured.
 
-The network-instance type `mac-vrf` functions as a broadcast domain. Each mac-vrf network-instance builds a bridge table composed of MAC addresses that can be learned via the data path on network-instance interfaces, learned via BGP EVPN or provided with static configuration.
+The network-instance type `mac-vrf` functions as a broadcast domain. Each mac-vrf network-instance builds a bridge table composed of MAC addresses that can be learned via the data path on network-instance interfaces, via BGP EVPN or provided with static configuration.
 
-By associating the access and vxlan interfaces with the mac-vrf we bound them to this network-instance:
+With the below snippet, which is applicable to both leaf1 and leaf2, we are associating the access and vxlan interfaces with the mac-vrf. With that we bound them to this network-instance.
 
 ```srl
 enter candidate
@@ -230,13 +232,13 @@ commit now
 
 ## Server interfaces
 
-The servers in our fabric do not have any addresses on their `eth1` interfaces by default. It is time to configure IP addresses on both servers, so that they will be ready to communicate with each other once we complete the EVPN service configuration.
+The servers in our fabric have IPv4 addresses for their `eth1` interfaces configured as per the `exec` instructions in the [topology file](intro.md#lab-deployment). For completeness, we show below how to manually configure the IPv4 addresses on the `eth1` interfaces of the servers.
 
-By the end of this section, we will have the following addressing scheme complete:
+Our servers connectivity diagram looks like this:
 
 <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:7,&quot;zoom&quot;:3,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/srl-labs/learn-srlinux/diagrams/quickstart.drawio&quot;}"></div>
 
-To connect to a shell of a server execute `docker exec -it <container-name> bash`:
+To connect to a bash shell of a server execute `docker exec -it <container-name> bash`:
 
 === "srv1"
     ```
@@ -379,25 +381,26 @@ For your convenience, in case you want to jump over the config routines and star
                     bgp {
                         autonomous-system 101
                         router-id 10.0.0.1
+                        afi-safi ipv4-unicast {
+                            admin-state enable
+                        }
                         group eBGP-underlay {
                             export-policy all
                             import-policy all
                             peer-as 201
-                            ipv4-unicast {
-                                admin-state enable
-                            }
                         }
                         group iBGP-overlay {
                             export-policy all
                             import-policy all
                             peer-as 100
-                            ipv4-unicast {
+                            afi-safi ipv4-unicast {
                                 admin-state disable
                             }
-                            evpn {
+                            afi-safi evpn {
                                 admin-state enable
                             }
-                            local-as 100 {
+                            local-as {
+                                as-number 100
                             }
                             timers {
                                 minimum-advertisement-interval 1
@@ -459,6 +462,7 @@ For your convenience, in case you want to jump over the config routines and star
             /interface ethernet-1/49 {
                 subinterface 0 {
                     ipv4 {
+                        admin-state enable
                         address 192.168.11.1/30 {
                         }
                     }
@@ -468,6 +472,7 @@ For your convenience, in case you want to jump over the config routines and star
                 admin-state enable
                 subinterface 0 {
                     ipv4 {
+                        admin-state enable
                         address 10.0.0.1/32 {
                         }
                     }
@@ -502,25 +507,26 @@ For your convenience, in case you want to jump over the config routines and star
                     bgp {
                         autonomous-system 102
                         router-id 10.0.0.2
+                        afi-safi ipv4-unicast {
+                            admin-state enable
+                        }
                         group eBGP-underlay {
                             export-policy all
                             import-policy all
                             peer-as 201
-                            ipv4-unicast {
-                                admin-state enable
-                            }
                         }
                         group iBGP-overlay {
                             export-policy all
                             import-policy all
                             peer-as 100
-                            ipv4-unicast {
+                            afi-safi ipv4-unicast {
                                 admin-state disable
                             }
-                            evpn {
+                            afi-safi evpn {
                                 admin-state enable
                             }
-                            local-as 100 {
+                            local-as {
+                                as-number 100
                             }
                             timers {
                                 minimum-advertisement-interval 1
@@ -581,6 +587,7 @@ For your convenience, in case you want to jump over the config routines and star
             interface ethernet-1/49 {
                 subinterface 0 {
                     ipv4 {
+                        admin-state enable
                         address 192.168.12.1/30 {
                         }
                     }
@@ -590,6 +597,7 @@ For your convenience, in case you want to jump over the config routines and star
                 admin-state enable
                 subinterface 0 {
                     ipv4 {
+                        admin-state enable
                         address 10.0.0.2/32 {
                         }
                     }
@@ -623,7 +631,7 @@ For your convenience, in case you want to jump over the config routines and star
                             export-policy all
                             import-policy all
                         }
-                        ipv4-unicast {
+                        afi-safi ipv4-unicast {
                             admin-state enable
                         }
                         neighbor 192.168.11.1 {
@@ -641,6 +649,7 @@ For your convenience, in case you want to jump over the config routines and star
             /interface ethernet-1/1 {
                 subinterface 0 {
                     ipv4 {
+                        admin-state enable
                         address 192.168.11.2/30 {
                         }
                     }
@@ -649,6 +658,7 @@ For your convenience, in case you want to jump over the config routines and star
             interface ethernet-1/2 {
                 subinterface 0 {
                     ipv4 {
+                        admin-state enable
                         address 192.168.12.2/30 {
                         }
                     }
@@ -658,6 +668,7 @@ For your convenience, in case you want to jump over the config routines and star
                 admin-state enable
                 subinterface 0 {
                     ipv4 {
+                        admin-state enable
                         address 10.0.1.1/32 {
                         }
                     }
