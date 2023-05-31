@@ -40,7 +40,7 @@ DC Fabric comes preconfigured with an EVPN-VXLAN L2 domain instance, and syslog-
 | **Lab components**          | Nokia SR Linux, ELK stack                                                                                                                    |
 | **Resource requirements**   | :fontawesome-solid-microchip: 6 vCPU <br/>:fontawesome-solid-memory: 12 GB                                                                   |
 | **Lab**                     | [srl-labs/srl-elk-lab][lab-repo]                                                                                                             |
-| **Version information**[^1] | [`containerlab:0.36.1`][clab-install], [`srlinux:22.11.1`][srl-container], ELK stack 7.17.7                                                  |
+| **Version information**[^1] | [`containerlab:0.41.2`][clab-install], [`srlinux:22.11.1`][srl-container], ELK stack 7.17.7                                                  |
 | **Authors**                 | Anton Zyablov [:material-linkedin:][azyablov-linkedin] <br/> Roman Dodin [:material-twitter:][rd-twitter] [:material-linkedin:][rd-linkedin] |
 
 [Lab repository][lab-repo] contains all necessary configuration artifacts, which are mounted to the respective container nodes as outlined in the [topology file][topo-file].
