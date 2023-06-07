@@ -781,6 +781,51 @@ The difference being that with Set method users should specify the modelled path
         }
     ```
 
+#### Commit confirmation
+
+Starting from SR Linux version 23.3.2 users can leverage `confirm-timeout` parameter available in the Set method. This parameter allows users to specify the amount of time in seconds that the system will wait for a confirmation from the user before committing the configuration specified in this particular Set request. If the user does not confirm the commit within the specified time, the configuration is rolled back.
+
+=== "Set request"
+    This request sets a description for the management interface and waits for 5 seconds for a confirmation from the user before committing the configuration.
+    ```bash
+    curl -s 'http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc' -d @- <<EOF | jq
+    {
+        "jsonrpc": "2.0",
+        "id": 0,
+        "method": "set",
+        "params": {
+            "commands": [
+                {
+                    "action": "update",
+                    "path": "/interface[name=mgmt0]/description:set-via-json-rpc"
+                }
+            ],
+            "confirm-timeout": 5
+        }
+    }
+    EOF
+    ```
+=== "Confirmation"
+    Confirmation of the commit is done via `tools` command.
+    ```bash
+    curl -s 'http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc' -d @- <<EOF | jq
+    {
+        "jsonrpc": "2.0",
+        "id": 0,
+        "method": "set",
+        "params": {
+            "datastore": "tools",
+            "commands": [
+                {
+                    "action": "update",
+                    "path": "/system/configuration/confirmed-accept"
+                }
+            ]
+        }
+    }
+    EOF
+    ```
+
 ### Validate
 
 One of the infamous fallacies that people associate with gNMI is its inability to work with candidate datastores, do confirmed commits and validate configs. While JSON-RPC interface doesn't let you do incremental updates to an opened candidate datastore with the Set method, it allows you to validate a portion of a config using Validate method.
