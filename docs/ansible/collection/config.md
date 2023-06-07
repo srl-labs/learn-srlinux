@@ -265,6 +265,26 @@ The `delete` parameter is a list of delete operations that are applied to the ca
 
 The `path` parameter is a string that represents a path to the configuration element that needs to be deleted. The path is provided in the XPATH-like notation and is relative to the root of the candidate datastore. No value is provided, since delete operation does not require any.
 
+### confirm_timeout
+
+<small>added in: v0.3.0 · min. SR Linux version: v23.3.2</small>
+
+Prior to SR Linux version 23.3.2 users could have set the global commit confirm timeout by setting the value of the `commit-confirmed-timeout` leaf under `json-rpc-server` stanza:
+
+```srl
+--{ + running }--[  ]--
+A:srl# enter candidate  
+
+--{ + candidate shared default }--[  ]--
+A:srl# /system json-rpc-server commit-confirmed-timeout 10
+```
+
+This setting would have applied to all configuration changes made through JSON-RPC interface and would require a commit confirmation to be issued before the timer expires.
+
+Starting from SR Linux version 23.3.2 and nokia/srlinux collection v0.3.0, users can set the commit confirm timeout on a per-task basis by setting the `confirm_timeout` parameter. The `confirm_timeout` parameter is an integer that represents the number of seconds the commit confirm operation should wait for the user to confirm the commit.
+
+Check out the [following example](#commit-confirmation) for a workflow demonstrating the use of the `confirm_timeout` parameter.
+
 ### datastore
 
 <small>type: string</small>
@@ -491,7 +511,6 @@ SR Linux models operational commands as configuration elements in the `tools` da
     datastore: tools
     update:
       - path: /interface[name=mgmt0]/statistics/clear
-    datastore: tools
 ```
 
 ### openconfig
@@ -514,6 +533,41 @@ The `config` module supports OpenConfig models. As with `get` module, the `yang_
 
     - debug:
         var: set_response
+```
+
+### Commit confirmation
+
+The `config` module supports per-task [commit confirmation](#confirm_timeout). The following example shows how to set the commit confirmation timeout and confirm the changes in the allowed time:
+
+```yaml
+- name: Confirm timeout
+  hosts: clab
+  gather_facts: false
+  tasks:
+    - name: Add interface description with confirm timeout
+      nokia.srlinux.config:
+        update:
+          - path: /interface[name=mgmt0]/description
+            value: "this description would be gone without commit confirm"
+        # after 4 seconds commit is reverted if not confirmed
+        confirm_timeout: 4
+
+    - name: Confirm the commit
+      nokia.srlinux.config:
+        datastore: tools
+        update:
+          - path: /system/configuration/confirmed-accept
+
+    - ansible.builtin.pause:
+        prompt: "Waiting 4 seconds to ensure commit is successfully confirmed"
+        seconds: 4
+
+    - name: Ensure leaf has been set
+      nokia.srlinux.get:
+        paths:
+          - path: /interface[name=mgmt0]/description
+            datastore: state
+      failed_when: get_response.result[0] != "this description would be gone without commit confirm"
 ```
 
 ## Source code
