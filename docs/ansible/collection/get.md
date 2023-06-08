@@ -11,19 +11,19 @@ Get module is used to retrieve configuration and state from SR Linux devices. Us
 
     ```yaml
     - name: Get container
-    hosts: clab
-    gather_facts: false
-    tasks:
-      - name: Get /system/information container
-        nokia.srlinux.get:
-          paths:
-            - path: /system/information
-              datastore: state
-              yang_models: srl #(1)!
-        register: response
+      hosts: clab
+      gather_facts: false
+      tasks:
+        - name: Get /system/information container
+          nokia.srlinux.get:
+            paths:
+              - path: /system/information
+                datastore: state
+                yang_models: srl #(1)!
+          register: response
 
-      - debug:
-        var: response
+        - debug:
+          var: response
     ```
 
     1. `srl` YANG model is used when unspecified, so in this case this parameter could have been omitted. It is provided for demonstration purposes.
