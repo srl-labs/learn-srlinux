@@ -23,7 +23,7 @@ Get module is used to retrieve configuration and state from SR Linux devices. Us
           register: response
 
         - debug:
-          var: response
+            var: response
     ```
 
     1. `srl` YANG model is used when unspecified, so in this case this parameter could have been omitted. It is provided for demonstration purposes.
