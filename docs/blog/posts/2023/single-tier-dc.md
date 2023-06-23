@@ -37,7 +37,7 @@ MC-LAG solutions are based on vendor proprietary control plane. Although they so
 
 ## EVPN Multihoming
 
-[EVPN Multihoming](https://documentation.nokia.com/srlinux/23-3/books/advanced-solutions/evpn-vxlan-layer-2-multi-hom.html#multi-hom-configuration-evpn-broadcast-domains) ([RFC8365](https://datatracker.ietf.org/doc/html/rfc8365#autoid-19)) replaces the vendor-proprietary MC-LAG mechanisms with an IETF standard based solution. EVPN-MH solves the challenges mentioned above by introducing new route types in BGP EVPN family specification. It still needs L3 connectivity to the peer but doesn’t need a dedicated ICL.
+[EVPN Multihoming](https://documentation.nokia.com/srlinux/23-3/books/advanced-solutions/evpn-vxlan-layer-2-multi-hom.html#multi-hom-configuration-evpn-broadcast-domains) ([RFC7432](https://datatracker.ietf.org/doc/html/rfc7432) and [RFC8365](https://datatracker.ietf.org/doc/html/rfc8365#autoid-19) for its applicability to VXLAN) replaces the vendor-proprietary MC-LAG mechanisms with an IETF standard based solution. EVPN-MH solves the challenges mentioned above by introducing new route types in BGP EVPN family specification. It still needs L3 connectivity to the peer but doesn’t need a dedicated ICL.
 
 EVPN-MH takes a holistic view of the end-to-end challenges and provides a comprehensive multihoming solution to L2 and L3 services running locally, and/or across an underlay L3 network. It provides various mechanism to handle scenarios like MAC Learning, avoid MAC duplication, loop detection, limit broadcast domain, mass withdrawal of MAC/IP routes, L2/L3 load balancing etc.
 
