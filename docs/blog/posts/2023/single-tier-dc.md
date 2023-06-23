@@ -45,6 +45,22 @@ EVPN-MH takes a holistic view of the end-to-end challenges and provides a compre
 
 Network Operators with MC-LAG deployments can consider migrating to EVPN-MH on single rack as a first step to simplify and scale their solution. This solution is ideal for those looking to deploy or reimagine a small datacenter with just a few servers in a rack. You could be running only a few virtualized workloads or needing a remote datacenter connecting to central on-prem or cloud datacenter via a backbone network.
 
+The following table summarizes the differences between MC-LAG and EVPN-MH:
+
+| Consideration                                          | MC-LAG                                                                                                                                        | EVPN-MH                                                                                               |
+| ------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| Standards-based                                        | No                                                                                                                                            | IETF based                                                                                            |
+| Industry acceptance                                    | Vendors moving to EVPN MH                                                                                                                     | Supported by major vendors in DC space (tested at EANTC)                                              |
+| All-active and port-based active-standby               | Partial support for Port-based                                                                                                                | Yes                                                                                                   |
+| Single-active (per-service load-balancing)             | Not supported                                                                                                                                 | Yes                                                                                                   |
+| Supports more than 2 multi-homing nodes                | Limited to 2                                                                                                                                  | Unlimited (HW vendors often support up to 4)                                                          |
+| Supports more than 2 protocol peers                    | Limited to 2 peers                                                                                                                            | Unlimited                                                                                             |
+| When used for overlays, works with IP and MPLS tunnels | No ECMP overlay for MPLS MC-LAG relies on an anycast VTEP for load-balancing from network to access. Anycast VTEPs only work with IP tunnels. | Agnostic of the tunnel Supports overlay ECMP (aliasing) based on ESI                                  |
+| Requires Inter-chassis dedicated LAG                   | Yes                                                                                                                                           | No                                                                                                    |
+| Other merits                                           |                                                                                                                                               | virtual ES control over the DF Election works with any logical interface, and not only lag interfaces |
+
+<center><small>MC-LAG vs EVPN-MH</small></center>
+
 ## The 1-Rack Solution
 
 You can spin a Datacenter with as little as just two Top-of-Rack (ToRs) from [7220 IXR-D](https://www.nokia.com/networks/data-center/data-center-fabric/7220-interconnect-router/) family devices sitting on top of your rack of servers. The ToR switches are connected with their uplinks to an existing core for North-South traffic.
