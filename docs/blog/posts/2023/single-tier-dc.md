@@ -23,7 +23,7 @@ MC-LAG solutions are based on vendor proprietary control plane. Although they so
 
 * **Split-Brain Situations:** This occurs when the two chassis lose connectivity with each other. This leads to inconsistencies, traffic loops and potential downtimes.
 
-* **Complexity:** The MC-LAG solution can be quite complex in configuration and in management. It requires a lot of careful planning and monitoring to ensure smooth operations.
+* **Complexity:** The MC-LAG solution can become rather complex in management as it requires good planning and monitoring to ensure smooth operations.
 
 * **Race conditions:** Synchronization of MAC, ARP and Route tables across the two chassis is absolutely critical to the functioning of MC-LAG. But this synchronization invariably has some latency leaving room for highly error-prone race conditions following various changes in the network.
 
