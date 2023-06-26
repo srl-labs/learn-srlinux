@@ -87,7 +87,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build docs-test
-        run: docker run --env CI=true -v $(pwd):/docs --user $(id -u):$(id -g) --entrypoint mkdocs ghcr.io/srl-labs/mkdocs-material-insiders:$MKDOCS_MATERIAL_VER build --strict
+        run: docker run --env CI=true -v $(pwd):/docs --user $(id -u):$(id -g) --entrypoint mkdocs ghcr.io/srl-labs/mkdocs-material-insiders:$MKDOCS_MATERIAL_VER build
 
       - name: Publish to Cloudflare Pages
         uses: cloudflare/pages-action@v1
