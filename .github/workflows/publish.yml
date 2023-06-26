@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 env:
-  MKDOCS_MATERIAL_VER: 8.4.3-insiders-4.22.1 # insiders version
+  MKDOCS_MATERIAL_VER: 9.1.16-insiders-4.36.0-hellt-4 # insiders version
 
 jobs:
   publish-docs:
