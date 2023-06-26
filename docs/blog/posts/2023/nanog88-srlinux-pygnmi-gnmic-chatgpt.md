@@ -13,7 +13,7 @@ authors:
 
 <small>:material-youtube: [NANOG88](https://youtu.be/dyY4PUFV2nw)</small>
 
-I am happy to announce that during NANOG88 conference, I had the privilege of presenting an enlightening tutorial that I am now pleased to inform you is available for viewing by the wider audience on YouTube.
+I am happy that during NANOG88 conference, I had the privilege of presenting a tutorial that I am now pleased to inform you is available for viewing by the wider audience on YouTube.
 
 NANOG88 provided a remarkable platform for knowledge exchange and collaboration among esteemed professionals in the field of networking and Internet operations. I was fortunate to have the opportunity to contribute to this extraordinary event by delivering this tutorial. 
 
