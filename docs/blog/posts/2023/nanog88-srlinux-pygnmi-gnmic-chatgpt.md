@@ -6,7 +6,7 @@ tags:
     - demo
     - presentation
 authors:
-  - mau rojas    
+  - mau
 ---
 
 # :material-youtube: NANOG88: GNMI and ChatGPT to troubleshoot EVPN Datacenter Fabrics
