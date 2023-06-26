@@ -26,7 +26,7 @@ This tutorial is suitable for both experienced network engineers and beginners w
 Don't miss out on this opportunity to improve your network engineering abilities and take your skills to the next level.
 
 <div class="iframe-container">
-<iframe width="853" height="480" src="https://www.youtube.com/embed/A3gFqi3eUC8" title="4760 The New, Encrypted Protocol Stack &amp; how to deal with it" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+<iframe width="853" height="480" src="https://www.youtube.com/embed/dyY4PUFV2nw" title="4795 pyGNMI and ChatGPT to troubleshoot EVPN Datacenter Fabrics" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 </div>
 
 
