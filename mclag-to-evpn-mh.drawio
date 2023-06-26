@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2023-06-26T14:33:15.961Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36" etag="2ovm8y5hxg1BPAArS7sY" version="21.5.0" type="github" pages="5">
+<mxfile host="app.diagrams.net" modified="2023-06-26T14:37:58.872Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36" etag="TMesodiZZepdwFc_7RJZ" version="21.5.0" type="github" pages="5">
   <diagram id="TaE2ys9rEfVsJn4JcLC4" name="[0] topo">
     <mxGraphModel dx="703" dy="381" grid="0" gridSize="2" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="#4D5766" math="0" shadow="0">
       <root>
@@ -984,9 +984,6 @@
             <mxPoint x="423" y="426" as="sourcePoint" />
             <mxPoint x="342" y="426" as="targetPoint" />
           </mxGeometry>
-        </mxCell>
-        <mxCell id="o57He8krpduWM_FmLZgK-0" value="" style="shape=cross;whiteSpace=wrap;html=1;strokeColor=none;rotation=120;fillColor=#FF0000;" vertex="1" parent="qtBIoYcWClS0hW1aMB7t-1">
-          <mxGeometry x="353" y="420" width="12" height="12" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
