@@ -3,8 +3,8 @@ date: 2023-06-22
 tags:
   - evpn
   - mc-lag
-  - datacenter
-  - multi-homing
+  - multihoming
+  - evpn-mh
 authors:
   - amitk
 ---
@@ -13,7 +13,8 @@ authors:
 
 Multi-Chassis LAG (MC-LAG) was a welcome technology that helped enterprises move away from xSTP based L2 networks. It solved many of the issues inherent to xSTP networks, like underutilized links, long convergence times, and layer 2 loops. It became a common design pattern in many datacenters at the access and aggregate layers.
 
-And as with any other technology, MC-LAG started to show its limitations as the scale of the datacenters network grew. The need for a more scalable, interoperable and simpler solution led to the development of EVPN Multihoming (EVPN-MH) design. This article discusses the migration path from MC-LAG-based to EVPN-MH deployments for small, single-tier datacenters.
+And as with any other technology, MC-LAG started to show its deficiencies as the datacenter networks continued to evolve. The need for a more scalable, interoperable and simpler solution led to the development of EVPN Multihoming (EVPN-MH) design. In this blog post we will discuss how a small-scale, single-rack datacenter deployment can benefit from EVPN-Multihoming-based design.  
+We finish the post by introducing a path to scale up from a single-rack deployment to a multi-rack deployment.
 
 <!-- more -->
 
@@ -37,7 +38,7 @@ MC-LAG solutions are based on vendor proprietary control plane. Although they so
 
 ## EVPN Multihoming
 
-[EVPN Multihoming](https://documentation.nokia.com/srlinux/23-3/books/advanced-solutions/evpn-vxlan-layer-2-multi-hom.html#multi-hom-configuration-evpn-broadcast-domains) ([RFC7432](https://datatracker.ietf.org/doc/html/rfc7432) and [RFC8365](https://datatracker.ietf.org/doc/html/rfc8365#autoid-19) for its applicability to VXLAN) replaces the vendor-proprietary MC-LAG mechanisms with an IETF standard based solution. EVPN-MH solves the challenges mentioned above by introducing new route types in BGP EVPN family specification. It still needs L3 connectivity to the peer but doesn’t need a dedicated ICL.
+[EVPN Multihoming](https://documentation.nokia.com/srlinux/23-3/books/advanced-solutions/evpn-vxlan-layer-2-multi-hom.html#multi-hom-configuration-evpn-broadcast-domains) ([RFC7432](https://datatracker.ietf.org/doc/html/rfc7432) and [RFC8365](https://datatracker.ietf.org/doc/html/rfc8365#autoid-19) for its applicability to VXLAN) replaces the vendor-proprietary MC-LAG mechanisms with an IETF standard based solution. EVPN-MH solves the challenges mentioned above by introducing new route types in BGP EVPN family specification. It still needs L3 connectivity to the peer but doesn’t need a dedicated ICL[^1].
 
 EVPN-MH takes a holistic view of the end-to-end challenges and provides a comprehensive multihoming solution to L2 and L3 services running locally, and/or across an underlay L3 network. It provides various mechanism to handle scenarios like MAC Learning, avoid MAC duplication, loop detection, limit broadcast domain, mass withdrawal of MAC/IP routes, L2/L3 load balancing etc.
 
@@ -65,23 +66,24 @@ The following table summarizes the differences between MC-LAG and EVPN-MH:
 
 You can spin a Datacenter with as little as just two Top-of-Rack (ToRs) from [7220 IXR-D](https://www.nokia.com/networks/data-center/data-center-fabric/7220-interconnect-router/) family devices sitting on top of your rack of servers. The ToR switches are connected with their uplinks to an existing core for North-South traffic.
 
-![pic1](https://gitlab.com/rdodin/pics/-/wikis/uploads/3efa581a5c39d721a1a8d79e48ca26b2/image__1_.webp){.img-shadow}
+<div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:0,&quot;zoom&quot;:2,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/srl-labs/learn-srlinux/diagrams/mclag-to-evpn-mh.drawio&quot;}"></div>
 
 ### Components
 
-**Servers**
+#### Servers
 
 * Multi-home the servers to the two ToRs.
 
 * Create LACP (or static) LAG interfaces with different links ending on different ToRs to act as uplink from each server.
 
-**ToRs**
+#### ToRs
 
-We use Top-of-Rack and Leaf terms interchangeably in this post, both terms indicate a switch that servers in a rack are connected.
+We use Top-of-Rack and Leaf terms interchangeably in this post; both terms indicate a switch that servers in a rack are connected.
 
-* Provision one or two IP interfaces between the ToRs.
+* Provision loopback IP interfaces on the ToRs.
 
-* Use these interfaces as underlay for iBGP peering needed for EVPN-MH. Connectivity to the core provides backup underlay reachability to iBGP peer. This underlay can be established via eBGP or IGP.
+* Use these interfaces for iBGP peering needed for EVPN-MH. The Inter-switch link (ISL, or ICL) is used here for plain IP connectivity between the ToRs, as the existing Core switches are only used for BGP v4/v6 peering.  
+  Alternatively, the Core switches might provide connectivity between leaf's loopbacks; in this case, ISL/ICL is not required.
 
 * [Enable All-Active EVPN-MH](https://documentation.nokia.com/srlinux/23-3/books/advanced-solutions/evpn-vxlan-layer-2-multi-hom.html#all-active-multi-hom-configurations) on the Leaf.
 
@@ -97,9 +99,7 @@ The various failure scenarios that pose big challenges to traditional MC-LAG set
 
 When the link connecting Leaf to one of the servers fails, LACP detects this event at the server. This allows the server to react locally by dropping the failed link from its LAG membership and utilizing the alternate uplink.
 
-<figure markdown>
-  ![pic2](https://gitlab.com/rdodin/pics/-/wikis/uploads/85181b3dfcc942b5a28f2782baae874c/image__2_.webp){ .img-shadow width="400" }
-</figure>
+<div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:1,&quot;zoom&quot;:2,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/srl-labs/learn-srlinux/diagrams/mclag-to-evpn-mh.drawio&quot;}"></div>
 
 For datacenters requiring more levels of resiliency, there are two options:
 
@@ -109,17 +109,13 @@ For datacenters requiring more levels of resiliency, there are two options:
 
 #### Inter-Chassis Link Failure
 
-<figure markdown>
-  ![pic2](https://gitlab.com/rdodin/pics/-/wikis/uploads/e866147daba870b0db2c24bef27d82c6/image__3_.webp){ .img-shadow width="400" }
-</figure>
+<div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:3,&quot;zoom&quot;:2,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/srl-labs/learn-srlinux/diagrams/mclag-to-evpn-mh.drawio&quot;}"></div>
 
-The inter-chassis link should be formed using multiple IP interfaces. This allows one level of failure protection. However, if this all these links fail (say due to a fiber cut), a Leaf still has two alternate paths to reach its iBGP peer via Core. This provides multiple levels of protection against what is called Split-Brain situation.
+The inter-chassis link should be formed using multiple IP interfaces that protects the link from a failure of a 1st degree. It is highly unlikely that all the links between the ToRs will fail at the same time as both endpoints are in the same rack.
 
 #### Leaf-Core Link Failure
 
-<figure markdown>
-  ![pic2](https://gitlab.com/rdodin/pics/-/wikis/uploads/b81ca28b7461d03ed6aea1a21391dcfe/image__4_.webp){ .img-shadow width="400" }
-</figure>
+<div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:2,&quot;zoom&quot;:2,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/srl-labs/learn-srlinux/diagrams/mclag-to-evpn-mh.drawio&quot;}"></div>
 
 The North-South traffic is protected via ECMP between Leaf and Core routers. In the unlikely event where a Leaf loses connectivity to both Core Routers via its uplink, it can still reach the Core Routers via the less-than-optimal Inter-Chassis Links. The link cost configuration should make sure that ICLs are used only as a last resort for data traffic, as those links will be oversubscribed.
 
@@ -128,42 +124,28 @@ However, to avoid ICLs from being used in the data path, it is desired if Leaf c
 !!!tip
     Check out [Opergroups with Event Handler tutorial](../../../tutorials/programmability/event-handler/oper-group/oper-group-intro.md) for a complete deep dive on this topic.
 
-#### Split-Brain Situation
-
-In rare cases, a Leaf can lose complete connectivity to its peer Leaf despite multiple levels of redundant paths. Without proper configuration, this can lead to inconsistencies, traffic loops and potential downtimes.
-
-<figure markdown>
-  ![pic2](https://gitlab.com/rdodin/pics/-/wikis/uploads/b4af49b42747cd6d9cc07dffe85b1137/image__5_.webp){ .img-shadow width="400" }
-</figure>
-
-If the server continues to send traffic to this leaf switch, traffic can get blackholed. To protect against this scenario, we can designate the Leaf switches as primary and secondary.
-
-While downlinks on both Leaf switches remain in active-active state under normal working conditions, we can program the downlink on secondary device to get disabled when a Split-Brain situation is detected. This is achieved by:
-
-* tracking availability of peer Leaf node (via management network-instance) and iBGP peering (via BFD).
-
-* if iBGP peering is lost, but peer Leaf node is still available, this indicates a Split-Brain situation.
-
-When this happens, Event Handler is used to disable downlink on secondary Leaf. The downlink on primary Leaf continues to receive and forward traffic.
+Opergroups can also be used to shutdown the server-facing interfaces on the Leaf to avoid any traffic loss in the case when both uplinks and the ICL is down.
 
 ## Scaling Up the Datacenter
 
-Thanks to EVPN fabric architecture and features like Maintenance mode, SR Linux datacenter solution easily scales horizontally. This involves migrating from EVPN-MH based MC-LAG solution to EVPN based Leaf-Spine architecture.
+Thanks to EVPN fabric architecture and features like Maintenance mode, SR Linux datacenter solution easily scales horizontally. This involves migrating from EVPN-MH with inter-chassis link solution to an EVPN-based Leaf-Spine architecture.
 
-<figure markdown>
-  ![pic2](https://gitlab.com/rdodin/pics/-/wikis/uploads/8c449e99d484f5e65a0b847071ad2264/image__6_.webp){ .img-shadow}
-</figure>
+<div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:4,&quot;zoom&quot;:2,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/srl-labs/learn-srlinux/diagrams/mclag-to-evpn-mh.drawio&quot;}"></div>
 
-Take for instance scaling 1-rack solution to 2-rack solution described below:
-
-### Network Modifications
-
-The change of network from 1-rack solution of Figure 1 to 2-rack solution of Figure 2 involves these steps:
+For example, scaling a 1-rack solution to 2-rack solution described involves these steps:
 
 1. Add a new rack and connect Spine switches to all Leaf switches.
 
 2. Configure the underlay eBGP peering between Leaf and Spine nodes. iBGP peering between the Leafs of existing rack will continue to use ICL links due to lesser cost. At the same time, North-South traffic of existing rack will also continue using direct Leaf-Core Router links.
 
-3. Put ICL and direct Leaf-Core links on existing rack in maintenance mode. The north-south traffic and BGP peering between ToRs will start going via spine switches.
+3. Put ICL and direct Leaf-Core links on existing rack in [maintenance mode][maint-mode]. The north-south traffic and BGP peering between ToRs will start going via spine switches.
 
 4. Remove these links and you have successfully moved to the new Leaf-Spine architecture without disruption to existing services.
+
+As you can see, adding new racks and scaling the datacenter horizontally is a non-disruptive process with each rack deployment process being identical to the previous one.
+
+[^1]: In the single-tier/single-rack design that we describe in this post the ICL is still present simply to provide L3 connectivity between the ToRs, while not relying on Core switches that might be not under your control. When the design scales beyond a single rack typically a spine layer is introduced and ICL is removed.
+
+[maint-mode]: https://documentation.nokia.com/srlinux/23-3/books/config-basics/maintenance-mode.html
+
+<script type="text/javascript" src="https://viewer.diagrams.net/js/viewer-static.min.js" async></script>
