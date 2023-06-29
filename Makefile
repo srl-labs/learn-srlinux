@@ -21,6 +21,9 @@ serve-insiders:
 serve-insiders-dirty:
 	docker run -it --rm -p 8001:8000 -v $$(pwd):/docs ghcr.io/srl-labs/mkdocs-material-insiders:$(MKDOCS_INS_VER) serve --dirtyreload -a 0.0.0.0:8000
 
+.PHONY: serve-docs
+serve-docs: serve-insiders-dirty
+
 .PHONY: htmltest
 htmltest:
 	docker run --rm -v $$(pwd):/docs --entrypoint mkdocs ghcr.io/srl-labs/mkdocs-material-insiders:$(MKDOCS_INS_VER) build --clean --strict
