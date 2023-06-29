@@ -24,8 +24,6 @@ MC-LAG solutions are based on vendor proprietary control plane. Although they so
 
 * **Split-Brain Situations:** This occurs when the two chassis lose connectivity with each other. This leads to inconsistencies, traffic loops and potential downtimes.
 
-* **Complexity:** The MC-LAG solution can become rather complex in management as it requires good planning and monitoring to ensure smooth operations.
-
 * **Race conditions:** Synchronization of MAC, ARP and Route tables across the two chassis is absolutely critical to the functioning of MC-LAG. But this synchronization invariably has some latency leaving room for highly error-prone race conditions following various changes in the network.
 
 * **Reliance on Inter-chassis Link (ICL):** MC-LAG designs rely heavily on a LAG interface between the two chassis. These links can’t be disabled or modified easily. Also, network events can easily result in traffic flows to use ICLs and overwhelm them.
@@ -40,11 +38,11 @@ MC-LAG solutions are based on vendor proprietary control plane. Although they so
 
 [EVPN Multihoming](https://documentation.nokia.com/srlinux/23-3/books/advanced-solutions/evpn-vxlan-layer-2-multi-hom.html#multi-hom-configuration-evpn-broadcast-domains) ([RFC7432](https://datatracker.ietf.org/doc/html/rfc7432) and [RFC8365](https://datatracker.ietf.org/doc/html/rfc8365#autoid-19) for its applicability to VXLAN) replaces the vendor-proprietary MC-LAG mechanisms with an IETF standard based solution. EVPN-MH solves the challenges mentioned above by introducing new route types in BGP EVPN family specification. It still needs L3 connectivity to the peer but doesn’t need a dedicated ICL[^1].
 
-EVPN-MH takes a holistic view of the end-to-end challenges and provides a comprehensive multihoming solution to L2 and L3 services running locally, and/or across an underlay L3 network. It provides various mechanism to handle scenarios like MAC Learning, avoid MAC duplication, loop detection, limit broadcast domain, mass withdrawal of MAC/IP routes, L2/L3 load balancing etc.
+EVPN-MH takes a holistic view of the end-to-end challenges and provides a comprehensive multihoming solution to L2 and L3 services running locally, and/or across an underlay L3 network. It provides various mechanisms to handle scenarios like MAC Learning, avoid MAC duplication, loop detection, limit broadcast domain, mass withdrawal of MAC/IP routes, L2/L3 load balancing etc.
 
 ### Replace MC-LAG with EVPN-MH
 
-Network Operators with MC-LAG deployments can consider migrating to EVPN-MH on single rack as a first step to simplify and scale their solution. This solution is ideal for those looking to deploy or reimagine a small datacenter with just a few servers in a rack. You could be running only a few virtualized workloads or needing a remote datacenter connecting to central on-prem or cloud datacenter via a backbone network.
+Network Operators with MC-LAG deployments can consider migrating to EVPN-MH on a single rack as a first step to simplify and scale their solution. This solution is ideal for those looking to deploy or reimagine a small datacenter with just a few servers in a rack. You could be running only a few virtualized workloads or needing a remote datacenter connecting to a central on-prem or cloud datacenter via a backbone network.
 
 The following table summarizes the differences between MC-LAG and EVPN-MH:
 
@@ -74,7 +72,7 @@ You can spin a Datacenter with as little as just two Top-of-Rack (ToRs) from [72
 
 * Multi-home the servers to the two ToRs.
 
-* Create LACP (or static) LAG interfaces with different links ending on different ToRs to act as uplink from each server.
+* Create LACP (or static) LAG interfaces with different links ending on different ToRs to act as uplinks from each server.
 
 #### ToRs
 
@@ -111,7 +109,7 @@ For datacenters requiring more levels of resiliency, there are two options:
 
 <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:3,&quot;zoom&quot;:2,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/srl-labs/learn-srlinux/diagrams/mclag-to-evpn-mh.drawio&quot;}"></div>
 
-The inter-chassis link should be formed using multiple IP interfaces that protects the link from a failure of a 1st degree. It is highly unlikely that all the links between the ToRs will fail at the same time as both endpoints are in the same rack.
+The inter-chassis link should be formed using multiple IP interfaces that protects the link from a failure of a 1st degree. It is implausible that all the links between the ToRs will fail simultaneously as both endpoints are in the same rack.
 
 #### Leaf-Core Link Failure
 
