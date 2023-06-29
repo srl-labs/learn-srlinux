@@ -178,6 +178,13 @@ plugins:
       redirect_maps:
         "ndk/intro.md": "ndk/index.md"
         "yang/yang.md": "yang/index.md"
+  - git-revision-date-localized:
+      enable_creation_date: true
+      enabled: !ENV [CI, false]
+  - git-committers:
+      repository: srl-labs/learn-srlinux
+      branch: main
+      enabled: !ENV [CI, false]
 
 # Customization
 extra:
