@@ -14,8 +14,8 @@
   --nokia-get-started-hover-btn-color: #00c9ff;
 }
 
-[data-md-color-scheme="slate"] {
-  --md-typeset-a-color: #00c9ff !important;
+[data-md-color-scheme="slate"][data-md-color-primary="indigo"] {
+  --md-typeset-a-color: #00c9ff;
   --md-accent-fg-color: #ff3154;
 
   /* --nokia-heading-font-color: #bec8d2; this is a greyish version for comparison */
