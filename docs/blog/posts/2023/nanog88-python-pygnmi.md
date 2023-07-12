@@ -1,5 +1,5 @@
 ---
-date: 2023-06-26
+date: 2023-07-13
 tags:
   - media
   - nanog
@@ -23,7 +23,7 @@ Check out the full details in the corresponding [Git Repo](https://github.com/cl
 
 ## How this app works
 
-This application connects to a list of specified routers via the gNMI protocol, retrieving BGP EVPN and BGP VPN information, which is then formatted for easy viewing unsing tabulate and Prettytable.
+This application connects to a list of specified routers via the gNMI protocol, retrieving BGP EVPN and BGP VPN information, which is then formatted for easy viewing using Python modules like tabulate and Prettytable.
 
 The heart of the application is the SrlDevice class, representing a router. The class is initialized with the router's basic details and employs the gNMI client to extract BGP EVPN and BGP VPN data. The app creates a list of these SrlDevice instances based on a YAML configuration file ('datacenter-nodes.yml'), resulting in two tables sorted by router name and network instance.
 
@@ -91,11 +91,8 @@ Finally, you can print the table by using this snippet:
     print(table)
 ```
 This will highlight any typo – in our case, it will flag any errors in the EVI.
+You can see the old presentation in a previous post [right here](https://learn-srlinux.pages.dev/blog/2023/material-youtube-nanog88-gnmi-and-chatgpt-to-troubleshoot-evpn-datacenter-fabrics/).
 Catch you next time.
-
-<div class="iframe-container">
-<iframe width="853" height="480" src="https://www.youtube.com/embed/dyY4PUFV2nw" title="4795 pyGNMI and ChatGPT to troubleshoot EVPN Datacenter Fabrics" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-</div>
 
 Participants: [:material-linkedin:][pin-linkedin] Mauricio (Mau) Rojas
 
