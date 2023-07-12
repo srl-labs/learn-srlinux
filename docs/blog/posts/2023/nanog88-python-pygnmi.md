@@ -91,7 +91,7 @@ Finally, you can print the table by using this snippet:
     print(table)
 ```
 This will highlight any typo – in our case, it will flag any errors in the EVI.
-You can see the old presentation in a previous post [right here](https://learn-srlinux.pages.dev/blog/2023/material-youtube-nanog88-gnmi-and-chatgpt-to-troubleshoot-evpn-datacenter-fabrics/).
+You can see the full presentation in a previous post [right here](https://learn-srlinux.pages.dev/blog/2023/material-youtube-nanog88-gnmi-and-chatgpt-to-troubleshoot-evpn-datacenter-fabrics/).
 Catch you next time.
 
 Participants: [:material-linkedin:][pin-linkedin] Mauricio (Mau) Rojas
