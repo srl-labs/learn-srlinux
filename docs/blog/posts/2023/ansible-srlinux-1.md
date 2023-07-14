@@ -743,13 +743,36 @@ l2vpn:
 
 Run the playbook again and verify that the new service instance is configured on the leafs.
 
-#### Pruning services
+#### Deleting services
 
-**Pruning** services deserve special attention as the approach and requirements are different from creating and updating services. Rather than taking the typical approach of introducing a flag to indicate that a service should be deleted (e.g. `state: deleted`, `state: present`), we take a different approach with this project. In order to delete services, we need _state_ history of the intent to know what services existing before and no longer exist in the current intent. For this, we use the device configuration state and retrieve it at the start of the playbook (role: `common/init`). 
+There are 2 ways to delete a service:
 
-In short, to remove a service, it suffices to remove it from the intent.
+- implicitly by removing it from the intent. We call this *pruning* or *purging* resources
+- explicitly by setting the `_state` field to `deleted`
 
-You can try this out by commenting out or removing e.g. the `macvrf-200` service in the `l2vpn` intent amd run the playbook as follows:
+In the first case, resources are removed from the device configuration if they are not present in the infra and services intents. The playbook uses the running configuration of the device to determine what resources to remove. This means that if you manually add resources to the device configuration, they will be removed when you run the playbook. This approach is suited for network teams that take a _hands-off_ approach to the device configuration and only use the playbook to configure the network. 
+
+Pruning is controlled via the `purge` and `purgeable` variables in the `cf_fabric.yml`:
+  
+```yaml title="cf_fabric.yml (partial)"
+- name: Configure fabric
+  gather_facts: no
+  hosts: 
+  - leaf
+  - spine
+  vars:
+    purge: yes # purge resources from device not in intent
+    purgeable: # list of resources to purge
+      - interface
+      - subinterface
+      - network-instance
+```
+
+!!! note
+    In order for pruning to work, you must run a full play, i.e. don't specify tags with `ansible-playbook` (like `--tags services`) that limit the scope of the play. Pruning is disabled if there is a partial run via tags since it results in an incomplete intent. 
+
+
+You can try out pruning by commenting out or removing e.g. the `macvrf-200` service in the `l2vpn` intent amd run the playbook as follows:
 
 ```bash
 ENV=test ansible-playbook --diff cf_fabric.yml
@@ -757,8 +780,37 @@ ENV=test ansible-playbook --diff cf_fabric.yml
 
 Check the status with `fcli` or on the Linux containers attached to that service.
 
-!!! warning
-    In order for pruning to work, you must run a full play, i.e. don't specify tags with `ansible-playbook` (like `--tags services`) that limit the scope of the play. Pruning is explicity disabled if there is a partial run via tags since it results in an incomplete intent. 
+With explicit deletion, you set the `_state` field of a resource or service to `deleted` in the intent. This will remove the service (or resource) from the device configuration. This approach is suited for cases where only parts of the configuration are managed by the playbook. The playbook will only touch resources that are present in the intent and will only delete resources if through explicit tagging.
+
+!!! note
+    Use of the initial `_` in a field name is a convention to indicate that the field is not part of the intent but is _metadata_ used by the playbook to control the behaviour of the playbook.
+
+To try this out, make sure macvrf-200 is present in the `l2vpn` intent and run the playbook to ensure that the service is configured on the leafs. Now remove the service explicitly by adding the `_state` field as follows:
+
+```yaml title="roles/services/l2vpn/vars/test/l2vpn.yaml"
+l2vpn:
+  macvrf-200:
+    _state: deleted # <--
+    id: 200
+    type: mac-vrf
+    description: MACVRF200
+    interface_list:
+      clab-4l2s-l1:
+      - ethernet-1/1.1
+      clab-4l2s-l2:
+      - ethernet-1/1.1
+      clab-4l2s-l3:
+      - ethernet-1/1.0
+      clab-4l2s-l4:
+      - ethernet-1/1.0
+    export_rt: 100:200
+    import_rt: 100:200
+    vlan: untagged
+```
+
+Run the playbook again and verify that the service is removed from the leafs. In this case, you can do a partial run only for the services. It is not required to run a full play since the deletion is not based on intent deviation from the device configuration. 
+
+During next runs services or resources tagged for deletion remain in the intent but serve little purpose after the deletion has occurred. You may decide to keep it in the intent for _documentation_ purposes or remove it from the intent after the deletion has occurred.
 
 
 #### L3VPN services
