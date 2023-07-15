@@ -25,7 +25,7 @@ The approach we discuss here only partially covers the SR Linux configuration or
 The intent or desired state of the fabric in this solution is abstracting the device-specific implementation. The abstraction level is always a trade-off between usability of the automation and feature coverage of the managed infrastructure: the higher the abstraction, the more user-friendly it becomes, but at the expense of feature coverage. The right abstraction level depends on your specific use cases and requirements.
 
 ## Setting up your environment
- 
+
 ### Prerequisites
 
 - To fully appreciate this project, you should have a basic understanding of SR Linux and its network constructs to understand what this project does. Things like _mac-vrfs_, _network instances_, _irb_'s, _sub-interfaces_, etc. should be familiar to you. If not, we recommend you first read the [SR Linux documentation](https://documentation.nokia.com/srlinux/).
@@ -46,11 +46,9 @@ The intent or desired state of the fabric in this solution is abstracting the de
 
 Install the SR Linux Ansible collection from [Ansible Galaxy](https://galaxy.ansible.com/) with the following command:
 
-
 ```bash
 ansible-galaxy collection install nokia.srlinux
 ```
-
 
 ### Clone the project repository
 
@@ -90,7 +88,7 @@ sudo containerlab inspect -t 4l2s.clab.yml
 
 ### The Ansible Inventory
 
-In this project, we use the native file-based Ansible inventory. It lists the hosts that are part of the fabric and groups them in a way that reflects the fabric topology. The inventory file is located in the `inv` directory and contains next to the inventory file `ansible-inventory.yml` also `host_vars` and `group_vars` directories that contain host- and group-specific variables. 
+In this project, we use the native file-based Ansible inventory. It lists the hosts that are part of the fabric and groups them in a way that reflects the fabric topology. The inventory file is located in the `inv` directory and contains next to the inventory file `ansible-inventory.yml` also `host_vars` and `group_vars` directories that contain host- and group-specific variables.
 
 ```bash
 inv
@@ -110,9 +108,9 @@ Ansible is instructed to use this inventory file by setting `inventory = inv` in
 
 The `ansible-inventory.yml` defines 3 groups:
 
-  - 'srl' for all SR Linux nodes
-  - 'spine' for the spine nodes
-  - 'leaf' for the leaf nodes. 
+- 'srl' for all SR Linux nodes
+- 'spine' for the spine nodes
+- 'leaf' for the leaf nodes.
   
   The `host_vars` directory contains a file for each host that defines host-specific variables. The `group_vars` directory contains a single file for the `srl` group to define Ansible-specific variables that are required for the JSON-RPC connection-plugin as well as some system-level configuration data.
 
@@ -153,27 +151,28 @@ The playbook is structured in 3 sections:
 - the `vars` variable at play-level defines variables that are used by the roles. In this case, the `purge` variable is set to `yes` to remove resources from the nodes that are not defined in the intent. The `purgeable` variable defines the resource types that are purged from the nodes when missing from the intent. In this case, these resources are: interfaces, sub-interfaces and network instances.
 - the `roles` variable at play-level defines the roles that are applied to the hosts in the `leaf` and `spine` groups. The roles are applied in the order they are defined in the playbook. The roles are grouped in 4 sections: `INIT`, `INFRA`, `SERVICES` and `CONFIG`.
 
-    - **INIT**: This section initializes some extra global variables or _Ansible facts_ that are used by other roles. These facts include:
-        - the current 'running config' of the device
-        - the software version of SRLinux
-        - the LLDP neighborship states
-    - **INFRA**: This section configures the infrastructural network resources needed for services to operate. It configures the inter-switch interfaces, base routing, policies and the default instance
-    - **SERVICES**: This section configures the services on the nodes. It configures the L2VPN and L3VPN services, based on a high-level abstraction defined in each role's variables
-    - **CONFIG**: This section applies configuration to the nodes. It is always executed, even if no changes are made to the configuration. This is to ensure that the configuration on the node is always in sync with the intent.
+  - **INIT**: This section initializes some extra global variables or _Ansible facts_ that are used by other roles. These facts include:
+    - the current 'running config' of the device
+    - the software version of SRLinux
+    - the LLDP neighborship states
+  - **INFRA**: This section configures the infrastructural network resources needed for services to operate. It configures the inter-switch interfaces, base routing, policies and the default instance
+  - **SERVICES**: This section configures the services on the nodes. It configures the L2VPN and L3VPN services, based on a high-level abstraction defined in each role's variables
+  - **CONFIG**: This section applies configuration to the nodes. It is always executed, even if no changes are made to the configuration. This is to ensure that the configuration on the node is always in sync with the intent.
 
-The `common/init` role checks if the `ENV` environment variable is set. If it's missing, the playbook will fail. The value of the `ENV` variable is used to select the correct role variables that represent the intent. This is to support multiple environments, like 'test' and 'prod' environments, for which intents may be different. In this project, only the `test` environment is defined. 
+The `common/init` role checks if the `ENV` environment variable is set. If it's missing, the playbook will fail. The value of the `ENV` variable is used to select the correct role variables that represent the intent. This is to support multiple environments, like 'test' and 'prod' environments, for which intents may be different. In this project, only the `test` environment is defined.
 
 Roles also have _tags_ associated with them to run a subset of the roles in the playbook. For example, to only run the `infra` roles, you can use the following command:
 
 ```bash
 ENV=test ansible-playbook cf_fabric.yml --tags infra
 ```
+
 !!!note
-    To leverage the _pruning_ capability of the playbook, all roles must be executed to achieve a full intent. If tags are specified for a partial run, no purging will be performed by the playbook. 
+    To leverage the _pruning_ capability of the playbook, all roles must be executed to achieve a full intent. If tags are specified for a partial run, no purging will be performed by the playbook.
 
 ### Role structure
 
-This project provides a set of Ansible roles to manage the resources on SR Linux nodes. The roles are organized in a directory structure that reflects the configuration section of the nodes it manages. 
+This project provides a set of Ansible roles to manage the resources on SR Linux nodes. The roles are organized in a directory structure that reflects the configuration section of the nodes it manages.
 
 The roles are grouped in the following directories:
 
@@ -203,10 +202,10 @@ The `infra` and `services` roles operate on the configuration of the underlay of
 
 Following INFRA roles are defined:
 
-  - `interface`: manages intent for interfaces in the underlay configuration
-  - `networkinstance`: manages intent for the 'default' network-instance
-  - `policy`: manages intent for routing policies in the underlay configuration
-  - `system`: manages system-wide configuration of the node
+- `interface`: manages intent for interfaces in the underlay configuration
+- `networkinstance`: manages intent for the 'default' network-instance
+- `policy`: manages intent for routing policies in the underlay configuration
+- `system`: manages system-wide configuration of the node
 
 The generic structure of the `infra` roles is as follows:
 
@@ -238,17 +237,16 @@ The `tasks/main.yml` file defines the tasks that are executed by the role. The `
     intent: "{{ intent | default({}) | combine(my_intent, recursive=true) }}"
 ```
 
-The `infra/interface` role loads the host-specific intent by calling another role, the `utils/load_intent` role. This role takes the group- and host-level intents from the `vars/${ENV}` folder - in our case `ENV=test` -  and merges them into a single role-specific intent (`my_intent`). The `my_intent` variable is then merged with the global per-device   `intent` variable that may have been already partially populated by other roles. 
+The `infra/interface` role loads the host-specific intent by calling another role, the `utils/load_intent` role. This role takes the group- and host-level intents from the `vars/${ENV}` folder - in our case `ENV=test` -  and merges them into a single role-specific intent (`my_intent`). The `my_intent` variable is then merged with the global per-device   `intent` variable that may have been already partially populated by other roles.
 
 Other infra roles follow the same approach.
-
 
 #### SERVICES roles
 
 Two service roles are defined:
 
-  - **l2vpn**: manages intent for _fabric-wide_ L2VPN services. These are a set of mac-vrf instances on a subset of the nodes in the fabric with associated interfaces and policies
-  - **l3vpn**: manages intent for _fabric-wide_ L3VPN services. These are a set of ip-vrf instances on a subset of the nodes in the fabric and are associated with mac-vrf instances
+- **l2vpn**: manages intent for _fabric-wide_ L2VPN services. These are a set of mac-vrf instances on a subset of the nodes in the fabric with associated interfaces and policies
+- **l3vpn**: manages intent for _fabric-wide_ L3VPN services. These are a set of ip-vrf instances on a subset of the nodes in the fabric and are associated with mac-vrf instances
 
 For these roles, we decided to take the abstraction to a new level. Below is an example how a L2VPN is defined:
 
@@ -268,10 +266,10 @@ For these roles, we decided to take the abstraction to a new level. Below is an 
       vlan: 200           # vlan-id for the mac-vrf instance. 
                           # all sub-interfaces on all participating nodes will be configured with this vlan-id
   ```
+
 The _l2vpn_ role will transform this _fabric-wide_ intent into a node-specific intent per resource (network-instance, subinterface, tunnel-interface) and will merge this with the global node intent.
 
 The _l3vpn_ role follows a similar approach but depends on the _l2vpn_ role to define the intent for the mac-vrf instances. If not, the playbook will fail. The _l3vpn_ role knows if an ip-vrf instance applies to the node based of the mac-vrf definitions associated with the ip-vrf. The mac-vrf definition in the L2VPN intent includes the node association.
-
 
 An example of a L3VPN intent is shown below:
 
@@ -299,7 +297,7 @@ It also generates a `delete` variable containing a list of configuration paths t
 Following diagram gives an overview how the low-level device intent is constructed from the various roles:
 
 <figure markdown>
-  <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:0,&quot;zoom&quot;:2,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/wdesmedt/ansible-srl-demo/main/img/ansible-srl-intent.drawio.svg&quot;}"></div>
+  <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":0,"zoom":2,"highlight":"#0000ff","nav":true,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/wdesmedt/ansible-srl-demo/main/img/ansible-srl-intent.drawio.svg"}'></div>
   <figcaption>Transforming high-level intent to device configuration</figcaption>
 </figure>
 
@@ -307,7 +305,7 @@ Following diagram gives an overview how the low-level device intent is construct
 
 ### Startup configuration
 
-The initial configuration of the fabric nodes after setting up your environment, only contains the required statements to allow management connections to the nodes (SSH, gNMI, JSON-RPC). No further configuration is applied to the nodes. 
+The initial configuration of the fabric nodes after setting up your environment, only contains the required statements to allow management connections to the nodes (SSH, gNMI, JSON-RPC). No further configuration is applied to the nodes.
 
 If you have installed the [fcli](https://github.com/srl-labs/nornir-srl) tool, you can verify the initial state of the fabric with the following command that lists all the network-instances active on the fabric nodes. Alternatively, you can log into the nodes and verify the configuration manually. Only a single network instance `mgmt` should be present on each node.
 
@@ -345,7 +343,7 @@ If you have installed the [fcli](https://github.com/srl-labs/nornir-srl) tool, y
     |              | ethernet-1/2  | l2         | ethernet-1/48 |               |
     |              | ethernet-1/3  | l3         | ethernet-1/48 |               |
     |              | ethernet-1/4  | l4         | ethernet-1/48 |               |
-    +---------------------------------------------------------------------------+    
+    +---------------------------------------------------------------------------+
     ```
 === "Network instances and interfaces"
     ```bash
@@ -378,16 +376,15 @@ To configure the underlay of the fabric - the configuration of interfaces and ro
 ENV=test ansible-playbook --tags infra cf_fabric.yml
 ```
 
-This will use the underlay intent stored in `roles/infra/*/vars/` that comes with to project to configure the underlay of the fabric. The `ENV` variable is used to select the correct variable folder from the infra roles. 
+This will use the underlay intent stored in `roles/infra/*/vars/` that comes with to project to configure the underlay of the fabric. The `ENV` variable is used to select the correct variable folder from the infra roles.
 
 If you have the `fcli` tool installed, you can verify the configuration of the underlay with the following command that lists all the network-instances active on the fabric nodes. Alternatively, you can log into the nodes and verify the configuration manually. The `infra` roles should have configured the interfaces and routing on the nodes.
-
 
 === "Network-instances and interfaces"
     ```bash
     $ fcli -i fabric=yes nwi-itfs
-                                                          Network-Instance Interfaces                                                   
-                                                      Inventory:{'fabric': 'yes'}                                                   
+                                                          Network-Instance Interfaces
+                                                      Inventory:{'fabric': 'yes'}
     +------------------------------------------------------------------------------------------------------------------------------+
     | Node         | ni      | oper | type    | router-id       | Subitf          | if-oper | ipv4                   | mtu  | vlan |
     |--------------+---------+------+---------+-----------------+-----------------+---------+------------------------+------+------|
@@ -429,8 +426,8 @@ If you have the `fcli` tool installed, you can verify the configuration of the u
 === "BGP peers"
     ```bash
     ❯ fcli -i fabric=yes bgp-peers -b ascii
-                                                                     BGP Peers                                                                     
-                                                            Inventory:{'fabric': 'yes'}                                                            
+                                                                     BGP Peers
+                                                            Inventory:{'fabric': 'yes'}
     +-------------------------------------------------------------------------------------------------------------------------------------------------+
     |              |          |                 | AFI/SAFI  | AFI/SAFI  |                |         |               |          |         |             |
     |              |          |                 | EVPN      | IPv4-UC   |                |         |               |          |         |             |
@@ -574,23 +571,23 @@ clab-4l2s-l4               : ok=11   changed=0    unreachable=0    failed=0    s
 clab-4l2s-s1               : ok=11   changed=0    unreachable=0    failed=0    skipped=12   rescued=0    ignored=0   
 clab-4l2s-s2               : ok=11   changed=0    unreachable=0    failed=0    skipped=12   rescued=0    ignored=0   
 ```
+
 To apply the configuration to the devices, we run the playbook without the `--check` option:
 
 ```bash
   ENV=test ansible-playbook --tags services cf_fabric.yml
 ```
 
-To verify the _idempotence_ of the playbook, you can run this command multiple times without any changes being applied to the devices. 
-
+To verify the _idempotence_ of the playbook, you can run this command multiple times without any changes being applied to the devices.
 
 With `fcli` we can verify that the service is configured correctly:
 
 === "Network Instances"
     ```
     ❯ fcli -i fabric=yes nwi-itfs -f ni="macvrf*"
-                                          Network-Instance Interfaces                                        
-                                            Fields:{'ni': 'macvrf*'}                                         
-                                          Inventory:{'fabric': 'yes'}                                        
+                                          Network-Instance Interfaces
+                                            Fields:{'ni': 'macvrf*'}
+                                          Inventory:{'fabric': 'yes'}
     +--------------------------------------------------------------------------------------------------------+
     | Node         | ni         | oper | type    | router-id | Subitf         | if-oper | ipv4 | mtu  | vlan |
     |--------------+------------+------+---------+-----------+----------------+---------+------+------+------|
@@ -602,9 +599,9 @@ With `fcli` we can verify that the service is configured correctly:
 === "MAC table of `macvrf-200`"
     ```
     ❯ fcli -i fabric=yes mac-table -f Netw-Inst=macvrf-200
-                                                        MAC Table                                                     
-                                            Fields:{'Netw-Inst': 'macvrf-200'}                                        
-                                              Inventory:{'fabric': 'yes'}                                            
+                                                        MAC Table
+                                            Fields:{'Netw-Inst': 'macvrf-200'}
+                                              Inventory:{'fabric': 'yes'}
     +----------------------------------------------------------------------------------------------------------------+
     | Node         | Netw-Inst  | Address           | Dest                                                  | Type   |
     |--------------+------------+-------------------+-------------------------------------------------------+--------|
@@ -621,11 +618,11 @@ In the topology, we have linux containers connected to these interfaces: `cl10` 
 === "Server `cl10`"
     ```
         ❯ docker exec -it clab-4l2s-cl10 ip addr show dev eth1
-        1229: eth1@if1228: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 9500 qdisc noqueue state UP group default 
+        1229: eth1@if1228: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 9500 qdisc noqueue state UP group default
         link/ether aa:c1:ab:7b:e7:ef brd ff:ff:ff:ff:ff:ff link-netnsid 1
         inet 10.0.0.1/24 scope global eth1
           valid_lft forever preferred_lft forever
-        inet6 fe80::a8c1:abff:fe7b:e7ef/64 scope link 
+        inet6 fe80::a8c1:abff:fe7b:e7ef/64 scope link
           valid_lft forever preferred_lft forever
 
         ❯ docker exec -it clab-4l2s-cl10 ping -c3 10.0.0.2
@@ -637,11 +634,11 @@ In the topology, we have linux containers connected to these interfaces: `cl10` 
 === "Server `cl20`"
     ```
     ❯ docker exec -it clab-4l2s-cl20 ip addr sh dev eth1
-    1249: eth1@if1248: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 9500 qdisc noqueue state UP group default 
+    1249: eth1@if1248: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 9500 qdisc noqueue state UP group default
     link/ether aa:c1:ab:b2:42:95 brd ff:ff:ff:ff:ff:ff link-netnsid 1
     inet 10.0.0.2/24 scope global eth1
        valid_lft forever preferred_lft forever
-    inet6 fe80::a8c1:abff:feb2:4295/64 scope link 
+    inet6 fe80::a8c1:abff:feb2:4295/64 scope link
        valid_lft forever preferred_lft forever
     ❯ docker exec -it clab-4l2s-cl20 ping -c3 10.0.0.1
     PING 10.0.0.1 (10.0.0.1) 56(84) bytes of data.
@@ -655,6 +652,7 @@ In the topology, we have linux containers connected to these interfaces: `cl10` 
     ```      
 
 In a next step we **update** the service to include the 2 other leafs with the following intent:
+
 ```yaml
 l2vpn:
   macvrf-200:
@@ -698,12 +696,12 @@ Run the playbook again as before, and we can see that the service is now configu
 To further illustrate the _declarative_ nature of the intents, you could change the `vlan` field to e.g. 10. This will break connectivty between the connected servers but it will yield a correct configuration on the leafs.
 
 !!!note
-    When an update to a service intent results in low-level resources (subinteface, network-instance, tunnel-interface, ...) being replaced (e.g. change subinterface ethernet-1/1.0 to ethernet-1/1.1), running a partial playbook with `--tags services` may fail model validation by SR Linux because the old interface is not deleted, resulting in 2 sub-interfaces on same parent interface with same encapsulation. 
-    
+    When an update to a service intent results in low-level resources (subinteface, network-instance, tunnel-interface, ...) being replaced (e.g. change subinterface ethernet-1/1.0 to ethernet-1/1.1), running a partial playbook with `--tags services` may fail model validation by SR Linux because the old interface is not deleted, resulting in 2 sub-interfaces on same parent interface with same encapsulation.
+
     We therefore recommend to run the full playbook (no tags or `--tags all`) when updating a service intent.
 
 Next, we add a new l2vpn instance `macvrf-201` so that th l2vpn intent looks like this:
- 
+
 ```yaml title="roles/services/l2vpn/vars/test/l2vpn.yaml"
 l2vpn:
   macvrf-200:
@@ -737,9 +735,8 @@ l2vpn:
     vlan: 20
 ```
 
-
 !!!note
-    You can also split the `l2vpn` intents in multiple files inside the role's `vars` directory. Ansible will load variables from all files in aplhabetical order. This is useful if you want to split the configuration in multiple files for better readability, e.g. a file per service instance. 
+    You can also split the `l2vpn` intents in multiple files inside the role's `vars` directory. Ansible will load variables from all files in aplhabetical order. This is useful if you want to split the configuration in multiple files for better readability, e.g. a file per service instance.
 
 Run the playbook again and verify that the new service instance is configured on the leafs.
 
@@ -747,10 +744,10 @@ Run the playbook again and verify that the new service instance is configured on
 
 There are 2 ways to delete a service:
 
-- implicitly by removing it from the intent. We call this *pruning* or *purging* resources
+- implicitly by removing it from the intent. We call this _pruning_ or _purging_ resources
 - explicitly by setting the `_state` field to `deleted`
 
-In the first case, resources are removed from the device configuration if they are not present in the infra and services intents. The playbook uses the running configuration of the device to determine what resources to remove. This means that if you manually add resources to the device configuration, they will be removed when you run the playbook. This approach is suited for network teams that take a _hands-off_ approach to the device configuration and only use the playbook to configure the network. 
+In the first case, resources are removed from the device configuration if they are not present in the infra and services intents. The playbook uses the running configuration of the device to determine what resources to remove. This means that if you manually add resources to the device configuration, they will be removed when you run the playbook. This approach is suited for network teams that take a _hands-off_ approach to the device configuration and only use the playbook to configure the network.
 
 Pruning is controlled via the `purge` and `purgeable` variables in the `cf_fabric.yml`:
   
@@ -769,8 +766,7 @@ Pruning is controlled via the `purge` and `purgeable` variables in the `cf_fabri
 ```
 
 !!! note
-    In order for pruning to work, you must run a full play, i.e. don't specify tags with `ansible-playbook` (like `--tags services`) that limit the scope of the play. Pruning is disabled if there is a partial run via tags since it results in an incomplete intent. 
-
+    In order for pruning to work, you must run a full play, i.e. don't specify tags with `ansible-playbook` (like `--tags services`) that limit the scope of the play. Pruning is disabled if there is a partial run via tags since it results in an incomplete intent.
 
 You can try out pruning by commenting out or removing e.g. the `macvrf-200` service in the `l2vpn` intent amd run the playbook as follows:
 
@@ -808,10 +804,9 @@ l2vpn:
     vlan: untagged
 ```
 
-Run the playbook again and verify that the service is removed from the leafs. In this case, you can do a partial run only for the services. It is not required to run a full play since the deletion is not based on intent deviation from the device configuration. 
+Run the playbook again and verify that the service is removed from the leafs. In this case, you can do a partial run only for the services. It is not required to run a full play since the deletion is not based on intent deviation from the device configuration.
 
 During next runs services or resources tagged for deletion remain in the intent but serve little purpose after the deletion has occurred. You may decide to keep it in the intent for _documentation_ purposes or remove it from the intent after the deletion has occurred.
-
 
 #### L3VPN services
 
@@ -824,13 +819,12 @@ A L3VPN service is an abstract L3 construct that is composed of a set of subnets
   <figcaption>L3VPN Service</figcaption>
 </figure>
 
-
 The mac-vrf referenced in the subnet (`snet_list`) links to a mac-vrf instance associated with a L2VPN intent in `roles/services/l2vpn/vars/` directory. The mac-vrf instance must be defined in the L2VPN intent before it can be referenced in the L3VPN intent. This is where the physical attachments of the subnet are defined by means of interfaces and VLAN encapsulation.
 
 At the device-level, a L3VPN service is composed of an ip-vrf instance on all the partipating nodes:
 
 <figure markdown>
-  <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:0,&quot;zoom&quot;:2,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/wdesmedt/ansible-srl-demo/main/img/ansible-srl-l3vpn-lo.drawio.svg&quot;}"></div>
+  <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":0,"zoom":2,"highlight":"#0000ff","nav":true,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/wdesmedt/ansible-srl-demo/main/img/ansible-srl-l3vpn-lo.drawio.svg"}'></div>
   <figcaption>Device-level L3VPN Service</figcaption>
 </figure>
 
@@ -892,7 +886,7 @@ l2vpn:
 
 Now run the playbook again and verify that the L3VPN service is configured on the leafs.
 
-  - Servers `cl10`, `cl20`, `cl30` and `cl40` have a vlan-interface (`eth1.300` and `eth1.301`) configured with an IP address in the subnet associated with the L3VPN service. You can verify connectivty by connecting to each container. For `cl10`:
+- Servers `cl10`, `cl20`, `cl30` and `cl40` have a vlan-interface (`eth1.300` and `eth1.301`) configured with an IP address in the subnet associated with the L3VPN service. You can verify connectivty by connecting to each container. For `cl10`:
 
     ```bash
     docker exec -it cl10 bash
@@ -901,7 +895,8 @@ Now run the playbook again and verify that the L3VPN service is configured on th
     $ ping 10.1.2.2 # cl40
     ```
 
-  - with `fcli`:
+- with `fcli`:
+
     ```bash
     ❯ fcli -i fabric=yes nwi-itfs -f ni="ipvrf*"
                                               Network-Instance Interfaces                                           
@@ -926,22 +921,20 @@ In this project, we took the approach to translate intents or desired-state from
 
 The reasons for this approach are:
 
-- avoid *dependencies* between resources and *sequencing* issues. Since SR Linux is a model-driven NOS, dependencies of resources, as described in the Yang modules are enforced by SR Linux. Pushing config snippets rather than complete configs will be more error-prone of model constraints are not met, e.g. pushing configuration that adds sub-interfaces to a network instance that are not created beforehand, will result in a configuration error. By grouping all configuration statements together and call the config module only once, we avoid these issues. SR Linux will take care of the sequencing and apply changes in a single transaction.
-- support for *resource pruning*. By building a full intent for managed resources, we know exactly the desired state the fabric should be in. Using the SR Linux node as configuration state store, we can compare the desired state with the actual configuration state of the node and prune any resources that are not part of the desired state. There is no need to flag such resources for deletion which is the typical approach with Ansible NetRes modules for other NOS's.
-- support for *network audit*. The same playbook that is used to apply the desired state can be used to audit the network. By comparing the full desired state with the actual configuration state of the node, we can detect any drift and report it to the user. This is achieved by running the playbook in _dry-run_ or _check_ mode.
+- avoid _dependencies_ between resources and _sequencing_ issues. Since SR Linux is a model-driven NOS, dependencies of resources, as described in the Yang modules are enforced by SR Linux. Pushing config snippets rather than complete configs will be more error-prone of model constraints are not met, e.g. pushing configuration that adds sub-interfaces to a network instance that are not created beforehand, will result in a configuration error. By grouping all configuration statements together and call the config module only once, we avoid these issues. SR Linux will take care of the sequencing and apply changes in a single transaction.
+- support for _resource pruning_. By building a full intent for managed resources, we know exactly the desired state the fabric should be in. Using the SR Linux node as configuration state store, we can compare the desired state with the actual configuration state of the node and prune any resources that are not part of the desired state. There is no need to flag such resources for deletion which is the typical approach with Ansible NetRes modules for other NOS's.
+- support for _network audit_. The same playbook that is used to apply the desired state can be used to audit the network. By comparing the full desired state with the actual configuration state of the node, we can detect any drift and report it to the user. This is achieved by running the playbook in _dry-run_ or _check_ mode.
 - keeping role-specific intent with the role itself, in the associated variables, results in separation of concerns and makes the playbook more readable and maintainable. It's like functions in a generic programming language: the role is the function and the variables are the arguments.
 
 This is a 'low-code' approach to network automation using only Jinja2 templating and the Ansible domain-specific language. It does require some basic development and troubleshooting skills as playbook errors will happen and debugging will be required. For example, when adding new capabilities to roles/templates, when SR Linux model changes happen across software releases, .... These events may break template rendering inside the roles.
 
-*Network-wide transactions* could be implemented with *Git*. You `git commit` your changes (intents/roles) to a Git repository after any change to intents or roles. If some issues occur during the playbook run, e.g. some nodes fail in the playbook resulting in a partial fabric-wide deployment or changes appear to be permanently service-affecting, you can revert back to a previous commit with e.g. `git revert` and run the playbook again from a known good state (intent/roles).
+*Network-wide transactions* could be implemented with _Git_. You `git commit` your changes (intents/roles) to a Git repository after any change to intents or roles. If some issues occur during the playbook run, e.g. some nodes fail in the playbook resulting in a partial fabric-wide deployment or changes appear to be permanently service-affecting, you can revert back to a previous commit with e.g. `git revert` and run the playbook again from a known good state (intent/roles).
 
 Transformation from high-level intent to per-device low-level configuration is a one-way street. There is no way to go back from the low-level configuration to the high-level intent. This means that it is not possible to _reconcile_ changes in the network that were not driven by intent. For this to happen, a manual step is required to update the intent with the new state of the network.
 
 Finally, we would appreciate your feedback on this project. Please open an issue in the [GitHub repository][ansible-srl-demo] if you have any questions or remarks.
 
-
 [collection-doc-link]: ../../../ansible/collection/index.md
 [ansible-srl-demo]: https://github.com/wdesmedt/ansible-srl-demo
-
 
 <script type="text/javascript" src="https://viewer.diagrams.net/js/viewer-static.min.js" async></script>
