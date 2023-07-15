@@ -72,7 +72,7 @@ sudo containerlab deploy -t 4l2s.clab.yml -c
 This will create a lab environment with 6 SR Linux nodes and a set of linux containers to act as hosts:
 
 <figure markdown>
-  ![Fabric Topology](https://raw.githubusercontent.com/wdesmedt/ansible-srl-demo/main/img/ansible-srl-topo.drawio.svg){ width=500 }
+  <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":0,"zoom":2,"highlight":"#0000ff","nav":true,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/wdesmedt/ansible-srl-demo/main/img/ansible-srl-topo.drawio.svg"}'></div>
   <figcaption> Fabric topology</figcaption>
 </figure>
 
