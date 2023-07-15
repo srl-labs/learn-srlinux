@@ -299,7 +299,7 @@ It also generates a `delete` variable containing a list of configuration paths t
 Following diagram gives an overview how the low-level device intent is constructed from the various roles:
 
 <figure markdown>
-  ![Fabric Topology](https://raw.githubusercontent.com/wdesmedt/ansible-srl-demo/main/img/ansible-srl-intent.drawio.svg){ width=600 }
+  <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:0,&quot;zoom&quot;:2,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/wdesmedt/ansible-srl-demo/main/img/ansible-srl-intent.drawio.svg&quot;}"></div>
   <figcaption>Transforming high-level intent to device configuration</figcaption>
 </figure>
 
@@ -830,7 +830,7 @@ The mac-vrf referenced in the subnet (`snet_list`) links to a mac-vrf instance a
 At the device-level, a L3VPN service is composed of an ip-vrf instance on all the partipating nodes:
 
 <figure markdown>
-  ![Fabric Topology](https://raw.githubusercontent.com/wdesmedt/ansible-srl-demo/main/img/ansible-srl-l3vpn-lo.drawio.svg){ width=500 }
+  <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:0,&quot;zoom&quot;:2,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/wdesmedt/ansible-srl-demo/main/img/ansible-srl-l3vpn-lo.drawio.svg&quot;}"></div>
   <figcaption>Device-level L3VPN Service</figcaption>
 </figure>
 
@@ -944,3 +944,4 @@ Finally, we would appreciate your feedback on this project. Please open an issue
 [ansible-srl-demo]: https://github.com/wdesmedt/ansible-srl-demo
 
 
+<script type="text/javascript" src="https://viewer.diagrams.net/js/viewer-static.min.js" async></script>
