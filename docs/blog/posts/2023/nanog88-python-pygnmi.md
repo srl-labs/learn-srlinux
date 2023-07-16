@@ -1,33 +1,36 @@
 ---
 date: 2023-07-13
 tags:
-  - media
-  - nanog
-  - chatgpt
   - gnmi
-  - gnmic
   - pygnmi
+  - evpn
 authors:
   - mau
 ---
 
-# :material-github: Finding missconfigurations in your Fabric
+# Finding misconfigurations in your fabric using pyGNMI
 
 <small>:material-github: [Git Repo](https://github.com/cloud-native-everything/pygnmi-srl-nanog88)</small>
 
-Today, I'm sharing another piece of my experience from the [NANOG88](https://www.nanog.org/events/nanog-88/) conference where I had the privilege of presenting a tutorial featuring pyGNMI, a powerful tool for diagnosing network issues. During my talk, I used pyGNMI to visualize EVPN Layer2 and Layer 3 domains, sorting them by switch or network instance. I also added a special feature that detects discrepancies in the settings between different switches using the same EVPN domain – a great way to catch typos in your BGP/VXLAN settings.
+Today, I'm sharing another piece of my experience from the [NANOG88](https://www.nanog.org/events/nanog-88/) conference where I had the privilege of presenting a tutorial featuring pyGNMI, a powerful tool for diagnosing network issues. During my talk, I used [pyGNMI](https://github.com/akarneliuk/pygnmi) to visualize EVPN Layer2 and Layer 3 domains, sorting them by switch or network instance. I also added a special feature that detects discrepancies in the settings between different switches using the same EVPN domain – a great way to catch typos in your BGP/VXLAN settings.
 
-For this demonstration, I leveraged containerlab and SR Linux to build a VXLAN-EVPN Fabric, replicating a typical configuration I often use in my Kubernetes labs. I incorporated eBGP for underlay communication, and the topology I utilized comprised two spines, two leaf switches, and a border leaf.
+!!!note
+    The script demonstrates how to use pyGNMI to retrieve BGP EVPN information from a list of routers. It then formats the data for easy viewing.  
+    For real world use cases, you would likely wrap pyGNMI with Nornir and leverage Nornir's inventory and task management capabilities, like shown [here](https://github.com/srl-labs/nornir-srl).
 
-Check out the full details in the corresponding [Git Repo](https://github.com/cloud-native-everything/pygnmi-srl-nanog88)
+For this demonstration, I leveraged [containerlab](https://containerlab.dev) and [Nokia SR Linux](https://learn.srlinux.dev) to build a VXLAN-EVPN Fabric, replicating a typical configuration I often use in my Kubernetes labs. I incorporated eBGP for underlay communication, and the topology I utilized comprised two spines, two leaf switches, and a border leaf.
+
+In this blog post we are going to dive into the details of the script, discovering how it works and what it is capable of. If you want to try it out yourself, you can find the source code in the [pygnmi-srl-nanog88 repo](https://github.com/cloud-native-everything/pygnmi-srl-nanog88)
+
+<!-- more -->
 
 ## How this app works
 
 This application connects to a list of specified routers via the gNMI protocol, retrieving BGP EVPN and BGP VPN information, which is then formatted for easy viewing using Python modules like tabulate and Prettytable.
 
-The heart of the application is the SrlDevice class, representing a router. The class is initialized with the router's basic details and employs the gNMI client to extract BGP EVPN and BGP VPN data. The app creates a list of these SrlDevice instances based on a YAML configuration file ('datacenter-nodes.yml'), resulting in two tables sorted by router name and network instance.
+The heart of the application is the `SrlDevice` class, representing a router. The class is initialized with the router's basic details and employs the gNMI client to extract BGP EVPN and BGP VPN data. The app creates a list of these SrlDevice instances based on a YAML configuration file ('datacenter-nodes.yml'), resulting in two tables sorted by router name and network instance.
 
-Running the python script 'display_evpn_per_netinst.py' with the YAML configuration file generates an output like the one shown below:
+Running the python script `display_evpn_per_netinst.py` with the YAML configuration file generates an output like the one shown below:
 
 ```bash
 [root@rbc-r2-hpe4 py-scripts]# python3 display_evpn_per_netinst.py datacenter-nodes.yml
@@ -57,11 +60,14 @@ Table: Sorted by Network Instance
 +-----------------------+------------------+----+------------------+-----------------+------+------+------------+--------------+-------------------+-------------------+
 Total time: 1.42 seconds
 ```
-Now, if you have a typo in the EVI number, then, I added a function will show you that:
-![EVPN configuration typo](https://github.com/cloud-native-everything/pygnmi-srl-nanog88/blob/main/py-scripts/images/Highligthed-Typo-EVPN-Fabric-Configuration.png)
+
+Now, if you have a typo in the EVI number, then the script will show you that:
+![EVPN configuration typo](https://github.com/cloud-native-everything/pygnmi-srl-nanog88/blob/4a8046a239eabf1613cb2d8b204d83b3509fd4c8/py-scripts/images/Highligthed-Typo-EVPN-Fabric-Configuration.png?raw=true){.img-shadow}
 
 ## How to use it
+
 To use the python class, you'll need to install some modules, including tabulate and pygnmi. Following this, you can import the class as such:
+
 ```python
 from srl_evpn_class import SrlDevice
 from srl_evpn_class import MergeEvpnToArray
@@ -81,6 +87,7 @@ We're using the yaml module to import data for the app. Once you've imported the
 As the data is located in different places (VXLAN info and EVPN/iBGP info), we use the MergeEvpnToArray method to consolidate it.
 
 Finally, you can print the table by using this snippet:
+
 ```python
     sorted_rows = sorted(rows, key=lambda x: x[1])
     print("Table: Sorted by Network Instance")          
@@ -90,10 +97,7 @@ Finally, you can print the table by using this snippet:
                                                 'RD', 'import-rt', 'export-rt'], tablefmt="pretty")
     print(table)
 ```
-This will highlight any typo – in our case, it will flag any errors in the EVI.
+
+This will highlight any typos – in our case, it will flag any errors in the EVI.
 You can see the full presentation in a previous post [right here](https://learn-srlinux.pages.dev/blog/2023/material-youtube-nanog88-gnmi-and-chatgpt-to-troubleshoot-evpn-datacenter-fabrics/).
 Catch you next time.
-
-Participants: [:material-linkedin:][pin-linkedin] Mauricio (Mau) Rojas
-
-[pin-linkedin]: https://www.linkedin.com/in/pinrojas/
