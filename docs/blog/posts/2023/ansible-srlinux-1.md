@@ -483,7 +483,7 @@ Adding and modifying services follow the same process. It takes a full **declara
 
 Let's start by **adding** a l2vpn service on 2 leafs with interface `ethernet-1/1` on each leaf as downlink or access interface. Only untagged traffic is mapped into the l2vpn. This corresponds with the initial intent that comes with the project:
 
-```yaml
+```yaml title="roles/services/l2vpn/vars/test/l2vpn.yml"
 l2vpn:
   macvrf-200:
     id: 200
@@ -847,12 +847,7 @@ l3vpn:
     import_rt: 100:2001
 ```
 
-Both `macvrf-300` and `macvrf-301` are not defined in the current L2VPN intent. Running the playbook will throw an error message like this:
-
-```bash
-TASK [services/l3vpn : services/l3vpn: Generate low-level intent for L3VPN] **********************************************************************************
-fatal: [clab-4l2s-l1]: FAILED! => {"msg": "The task includes an option with an undefined variable. The error was: 'dict object' has no attribute 'macvrf-300'\n\nThe ...
-```
+Both `macvrf-300` and `macvrf-301` are not defined in the current L2VPN intent. Running the playbook will will not create the L3VPN service due to missing definitions of the macvrfs of the `snet_list` in the L2VPN intent.
 
 Let's fix this by adding the missing macvrfs to the L2VPN intent:
 
@@ -917,14 +912,15 @@ Now run the playbook again and verify that the L3VPN service is configured on th
 
 ## Closing remarks
 
-In this project, we took the approach to translate intents or desired-state from the variables associated with each role. These variables contain structured data and follow a model that is interpreted by the role's template to generate input for the `config` module. Only one role, the `common/configure` role, uses the `config` module directly and is run as a last step in the play. The other roles only generate the low-level intent, i.e. the input to the `config` module, from the higher-level intent stored in the role's variables and in the inventory.
+In this project, we took the approach to translate intents or desired-state from the variables associated with each role. These variables contain structured data and follow a model that is interpreted by the role's template to generate input for the `config` module. Only one role, the `common/configure` role, uses the `nokia.srlinux.config` module directly and is run as a last step in the play. The other roles only generate the low-level intent, i.e. the input to the `config` module, from the higher-level intent stored in the role's variables and in the inventory.
 
 The reasons for this approach are:
 
-- avoid _dependencies_ between resources and _sequencing_ issues. Since SR Linux is a model-driven NOS, dependencies of resources, as described in the Yang modules are enforced by SR Linux. Pushing config snippets rather than complete configs will be more error-prone of model constraints are not met, e.g. pushing configuration that adds sub-interfaces to a network instance that are not created beforehand, will result in a configuration error. By grouping all configuration statements together and call the config module only once, we avoid these issues. SR Linux will take care of the sequencing and apply changes in a single transaction.
+- avoid _dependencies_ between resources and _sequencing_ issues. Since SR Linux is a model-driven NOS, dependencies of resources, as described in the Yang modules are enforced by SR Linux. Pushing config snippets rather than complete configs will be more error-prone to model constraints, e.g. pushing configuration that adds sub-interfaces to a network instance that are not created beforehand, will result in a configuration error. By grouping all configuration statements together and call the config module only once, we avoid these issues. SR Linux will take care of the sequencing and apply changes in a single transaction.
 - support for _resource pruning_. By building a full intent for managed resources, we know exactly the desired state the fabric should be in. Using the SR Linux node as configuration state store, we can compare the desired state with the actual configuration state of the node and prune any resources that are not part of the desired state. There is no need to flag such resources for deletion which is the typical approach with Ansible NetRes modules for other NOS's.
 - support for _network audit_. The same playbook that is used to apply the desired state can be used to audit the network. By comparing the full desired state with the actual configuration state of the node, we can detect any drift and report it to the user. This is achieved by running the playbook in _dry-run_ or _check_ mode.
 - keeping role-specific intent with the role itself, in the associated variables, results in separation of concerns and makes the playbook more readable and maintainable. It's like functions in a generic programming language: the role is the function and the variables are the arguments.
+- device-level single transaction. The `config` module is called only once per device and results in a single transaction per device - _all or nothing_. This is important to keep the device configuration consistent. If the playbook would call the `config` module multiple times, e.g. once per role, and some of the roles would fail, this would leave the device in an inconsistent state with only partial config applied. 
 
 This is a 'low-code' approach to network automation using only Jinja2 templating and the Ansible domain-specific language. It does require some basic development and troubleshooting skills as playbook errors will happen and debugging will be required. For example, when adding new capabilities to roles/templates, when SR Linux model changes happen across software releases, .... These events may break template rendering inside the roles.
 
