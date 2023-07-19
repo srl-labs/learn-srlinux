@@ -52,14 +52,14 @@ ansible-galaxy collection install nokia.srlinux
 
 ### Clone the project repository
 
-The entire project is contained in the [ansible-srl-demo][ansible-srl-demo] repository. Following command will clone the repository to the current directory on your machine (in folder ansible-srl-demo):
+The entire project is contained in the [intent-based-ansible-lab][intent-based-ansible-lab] repository. Following command will clone the repository to the current directory on your machine (in folder `intent-based-ansible-lab`):
 
   ```bash
-  git clone https://github.com/wdesmedt/ansible-srl-demo.git
-  cd ansible-srl-demo
+  git clone https://github.com/srl-labs/intent-based-ansible-lab.git
+  cd intent-based-ansible-lab
   ```
 
-The following sections assume you are in the `ansible-srl-demo` directory.
+The following sections assume you are in the `intent-based-ansible-lab` directory.
 
 ### Setting up your SR Linux lab environment
 
@@ -928,9 +928,9 @@ This is a 'low-code' approach to network automation using only Jinja2 templating
 
 Transformation from high-level intent to per-device low-level configuration is a one-way street. There is no way to go back from the low-level configuration to the high-level intent. This means that it is not possible to _reconcile_ changes in the network that were not driven by intent. For this to happen, a manual step is required to update the intent with the new state of the network.
 
-Finally, we would appreciate your feedback on this project. Please open an issue in the [GitHub repository][ansible-srl-demo] if you have any questions or remarks.
+Finally, we would appreciate your feedback on this project. Please open an issue in the [GitHub repository][intent-based-ansible-lab] if you have any questions or remarks.
 
 [collection-doc-link]: ../../../ansible/collection/index.md
-[ansible-srl-demo]: https://github.com/wdesmedt/ansible-srl-demo
+[intent-based-ansible-lab]: https://github.com/srl-labs/intent-based-ansible-lab
 
 <script type="text/javascript" src="https://viewer.diagrams.net/js/viewer-static.min.js" async></script>
