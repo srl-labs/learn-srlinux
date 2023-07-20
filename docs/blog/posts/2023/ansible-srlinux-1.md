@@ -129,12 +129,12 @@ The [`host_vars`](https://github.com/srl-labs/intent-based-ansible-lab/tree/main
 
 ### The Ansible Playbook
 
-The Ansible playbook `cf_fabric.yml` is the main entry point for the project. It contains a single play that applies a sequence of roles to all nodes in the `leaf` and `spine` groups:
+The Ansible playbook [`cf_fabric.yml`](https://github.com/srl-labs/intent-based-ansible-lab/blob/main/cf_fabric.yml) is the main entry point for the project. It contains a single play that applies a sequence of roles to all nodes in the `leaf` and `spine` groups:
 
 ```yaml title="cf_fabric.yml"
 - name: Configure fabric
   gather_facts: no
-  hosts: 
+  hosts:
    - leaf
    - spine
   vars:
@@ -160,17 +160,16 @@ The Ansible playbook `cf_fabric.yml` is the main entry point for the project. It
 
 The playbook is structured in 3 sections:
 
-- the `hosts` variable at play-level defines the hosts that are part of the fabric. In this case, all hosts in the `leaf` and `spine` groups. Group definition and membership is defined in the inventory file.
-- the `vars` variable at play-level defines variables that are used by the roles. In this case, the `purge` variable is set to `yes` to remove resources from the nodes that are not defined in the intent. The `purgeable` variable defines the resource types that are purged from the nodes when missing from the intent. In this case, these resources are: interfaces, sub-interfaces and network instances.
-- the `roles` variable at play-level defines the roles that are applied to the hosts in the `leaf` and `spine` groups. The roles are applied in the order they are defined in the playbook. The roles are grouped in 4 sections: `INIT`, `INFRA`, `SERVICES` and `CONFIG`.
-
-  - **INIT**: This section initializes some extra global variables or _Ansible facts_ that are used by other roles. These facts include:
-    - the current 'running config' of the device
-    - the software version of SRLinux
-    - the LLDP neighborship states
-  - **INFRA**: This section configures the infrastructural network resources needed for services to operate. It configures the inter-switch interfaces, base routing, policies and the default instance
-  - **SERVICES**: This section configures the services on the nodes. It configures the L2VPN and L3VPN services, based on a high-level abstraction defined in each role's variables
-  - **CONFIG**: This section applies configuration to the nodes. It is always executed, even if no changes are made to the configuration. This is to ensure that the configuration on the node is always in sync with the intent.
+1. the `hosts` variable at play-level defines the hosts that are part of the fabric. In this case, all hosts in the `leaf` and `spine` groups. Group definition and membership is defined in the inventory file.
+2. the `vars` variable defines variables that are used by the roles. In this case, the `purge` variable is set to `yes` to remove resources from the nodes that are not defined in the intent. The `purgeable` variable defines the resource types that are purged from the nodes when missing from the intent. In this case, these resources are: interfaces, sub-interfaces and network instances.
+3. the `roles` variable defines the roles that are applied to the hosts in the `leaf` and `spine` groups. The roles are applied in the order they are defined in the playbook. The roles are grouped in 4 sections: `INIT`, `INFRA`, `SERVICES` and `CONFIG`.
+    - **INIT**: This section initializes some extra global variables or _Ansible facts_ that are used by other roles. These facts include:
+        - the current 'running config' of the device
+        - the software version of SR Linux
+        - the LLDP neighborship states
+    - **INFRA**: This section configures the infrastructural network resources needed for services to operate. It configures the inter-switch interfaces, base routing, policies and the default instance
+    - **SERVICES**: This section configures the services on the nodes. It configures the L2VPN and L3VPN services based on a high-level abstraction defined in each role's variables
+    - **CONFIG**: This section applies configuration to the nodes. It is always executed, even if no changes are made to the configuration. This is to ensure that the configuration on the node is always in sync with the intent.
 
 The `common/init` role checks if the `ENV` environment variable is set. If it's missing, the playbook will fail. The value of the `ENV` variable is used to select the correct role variables that represent the intent. This is to support multiple environments, like 'test' and 'prod' environments, for which intents may be different. In this project, only the `test` environment is defined.
 
