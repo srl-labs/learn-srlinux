@@ -101,15 +101,15 @@ sudo containerlab inspect -t 4l2s.clab.yml
 
 ### The Ansible Inventory
 
-In this project, we use the native file-based Ansible inventory. It lists the hosts that are part of the fabric and groups them in a way that reflects the fabric topology. The inventory file is located in the `inv` directory and contains next to the inventory file `ansible-inventory.yml` also `host_vars` and `group_vars` directories that contain host- and group-specific variables.
+In this project, we use the native file-based Ansible inventory. It lists the hosts that are part of the fabric and groups them in a way that reflects the fabric topology. The inventory file - [`ansible-inventory.yml`](https://github.com/srl-labs/intent-based-ansible-lab/blob/main/inv/ansible-inventory.yml) - is located in the [`inv`](https://github.com/srl-labs/intent-based-ansible-lab/tree/main/inv) directory; `host_vars` and `group_vars` directories next to it contain host- and group-specific variables.
 
 ```bash
 inv
-├── ansible-inventory.yml # => the inventory file
+├── ansible-inventory.yml # the inventory file
 ├── group_vars
-│   └── srl.yml  # => group-specific variables for the srl group
+│   └── srl.yml  # group-specific variables for the srl group
 └── host_vars
-    ├── clab-4l2s-l1.yml # => host-specific variables for the clab-4l2s-l1 host
+    ├── clab-4l2s-l1.yml # host-specific variables for the clab-4l2s-l1 host
     ├── clab-4l2s-l2.yml
     ├── clab-4l2s-l3.yml
     ├── clab-4l2s-l4.yml
@@ -117,15 +117,15 @@ inv
     └── clab-4l2s-s2.yml
 ```
 
-Ansible is instructed to use this inventory file by setting `inventory = inv` in the `ansible.cfg` configuration file.
+Ansible is instructed to use this inventory file by setting `inventory = inv` in the [`ansible.cfg`](https://github.com/srl-labs/intent-based-ansible-lab/blob/main/ansible.cfg#L4) configuration file.
 
 The `ansible-inventory.yml` defines 3 groups:
 
-- 'srl' for all SR Linux nodes
-- 'spine' for the spine nodes
-- 'leaf' for the leaf nodes.
-  
-  The `host_vars` directory contains a file for each host that defines host-specific variables. The `group_vars` directory contains a single file for the `srl` group to define Ansible-specific variables that are required for the JSON-RPC connection-plugin as well as some system-level configuration data.
+- `srl` - for all SR Linux nodes
+- `spine` - for the spine nodes
+- `leaf` - for the leaf nodes.
+
+The [`host_vars`](https://github.com/srl-labs/intent-based-ansible-lab/tree/main/inv/host_vars) directory contains a file for each host that defines host-specific variables. The [`group_vars`](https://github.com/srl-labs/intent-based-ansible-lab/tree/main/inv/group_vars) directory contains a single file for the `srl` group to define Ansible-specific variables that are required for the JSON-RPC connection-plugin as well as some system-level configuration data.
 
 ### The Ansible Playbook
 
