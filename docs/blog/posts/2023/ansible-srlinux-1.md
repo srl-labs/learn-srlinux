@@ -14,15 +14,20 @@ authors:
 
 ## Introduction
 
-Ansible is today the _lingua franca_ for network engineers to automate the configuration of network devices. Due to its simplicity and low barrier to entry, it is a popular choice for network automation that provides for maintainable and reusable automation code within network teams.
+Ansible is today the _lingua franca_ for many network engineers to automate the configuration of network devices. Due to its simplicity and low entry barrier, it is a popular choice for network automation that features modular and reusable automation tasks available to network teams.
 
-Our intention with this post is to provide a practical example how you can use Ansible to manage configuration of an SR Linux fabric by leveraging the official [Ansible collection for SR Linux][collection-doc-link]. It is not an 'off-the-shelf' solution, but rather a demonstration of the capabilities of the Ansible collection and hopefully a source of inspiration for your own automation projects.
+???tip "Disclaimer: Select the right tool for the job"
+    As with every tool there are pros and cons to consider when selecting Ansible for your network automation project. While being simple in many aspects, Ansible tends to be hard to troubleshoot or shoehorn for complex and/or call-intensivle automation projects.
+
+    Do your own due dilligence and select the right tool for the job at hand. This post explains "a way" to achieve intent-based configuration management, but it is not the only way, nor is it a silver bullet for all automation projects.
+
+With this post, we aim to provide a practical example of using Ansible to manage the configuration of an SR Linux fabric with the **intent-based approach** leveraging the official [Ansible collection for SR Linux][collection-doc-link]. Remember that the demo code we provide throughout this blog post is not an 'off-the-shelf' solution but a demonstration of Ansible collection capabilities and hopefully a source of inspiration for your own automation projects.
+
+The **intent** or desired state of the fabric in this solution is abstracting the device-specific implementation. The abstraction level is always a trade-off between usability of the automation and feature coverage of the managed infrastructure: the higher the abstraction, the more user-friendly it becomes, but at the expense of feature coverage. The right abstraction level depends on your specific use cases and requirements.
+
+The approach we discuss here only partially covers the SR Linux configuration or data model. Only resources required to establish and maintain a functional fabric are covered. The solution is meant to be extended as needed to cover other aspects of the configuration or data model by employing similar techniques, but this is left as an exercise for the reader.
 
 <!-- more -->
-
-The approach we discuss here only partially covers the SR Linux configuration or data model. Only resources required to establish and maintain a functional fabric are covered. The solution could be extended to cover other aspects of the configuration or data model by employing similar techniques but this is left as an exercise for the reader.
-
-The intent or desired state of the fabric in this solution is abstracting the device-specific implementation. The abstraction level is always a trade-off between usability of the automation and feature coverage of the managed infrastructure: the higher the abstraction, the more user-friendly it becomes, but at the expense of feature coverage. The right abstraction level depends on your specific use cases and requirements.
 
 ## Setting up your environment
 
@@ -920,7 +925,7 @@ The reasons for this approach are:
 - support for _resource pruning_. By building a full intent for managed resources, we know exactly the desired state the fabric should be in. Using the SR Linux node as configuration state store, we can compare the desired state with the actual configuration state of the node and prune any resources that are not part of the desired state. There is no need to flag such resources for deletion which is the typical approach with Ansible NetRes modules for other NOS's.
 - support for _network audit_. The same playbook that is used to apply the desired state can be used to audit the network. By comparing the full desired state with the actual configuration state of the node, we can detect any drift and report it to the user. This is achieved by running the playbook in _dry-run_ or _check_ mode.
 - keeping role-specific intent with the role itself, in the associated variables, results in separation of concerns and makes the playbook more readable and maintainable. It's like functions in a generic programming language: the role is the function and the variables are the arguments.
-- device-level single transaction. The `config` module is called only once per device and results in a single transaction per device - _all or nothing_. This is important to keep the device configuration consistent. If the playbook would call the `config` module multiple times, e.g. once per role, and some of the roles would fail, this would leave the device in an inconsistent state with only partial config applied. 
+- device-level single transaction. The `config` module is called only once per device and results in a single transaction per device - _all or nothing_. This is important to keep the device configuration consistent. If the playbook would call the `config` module multiple times, e.g. once per role, and some of the roles would fail, this would leave the device in an inconsistent state with only partial config applied.
 
 This is a 'low-code' approach to network automation using only Jinja2 templating and the Ansible domain-specific language. It does require some basic development and troubleshooting skills as playbook errors will happen and debugging will be required. For example, when adding new capabilities to roles/templates, when SR Linux model changes happen across software releases, .... These events may break template rendering inside the roles.
 
