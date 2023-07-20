@@ -17,9 +17,9 @@ authors:
 Ansible is today the _lingua franca_ for many network engineers to automate the configuration of network devices. Due to its simplicity and low entry barrier, it is a popular choice for network automation that features modular and reusable automation tasks available to network teams.
 
 ???tip "Disclaimer: Select the right tool for the job"
-    As with every tool there are pros and cons to consider when selecting Ansible for your network automation project. While being simple in many aspects, Ansible tends to be hard to troubleshoot or shoehorn for complex and/or call-intensivle automation projects.
+    As with every tool there are pros and cons to consider when selecting Ansible for your network automation project. While being simple in many aspects, Ansible tends to be hard to troubleshoot or shoehorn for complex and/or call-intensive automation projects.
 
-    Do your own due dilligence and select the right tool for the job at hand. This post explains "a way" to achieve intent-based configuration management, but it is not the only way, nor is it a silver bullet for all automation projects.
+    Do your own due diligence and select the right tool for the job at hand. This post explains "a way" to achieve intent-based configuration management, but it is not the only way, nor is it a silver bullet for all automation projects.
 
 With this post, we aim to provide a practical example of using Ansible to manage the configuration of an SR Linux fabric with the **intent-based approach** leveraging the official [Ansible collection for SR Linux][collection-doc-link]. Remember that the demo code we provide throughout this blog post is not an 'off-the-shelf' solution but a demonstration of Ansible collection capabilities and hopefully a source of inspiration for your own automation projects.
 
@@ -31,25 +31,27 @@ The approach we discuss here only partially covers the SR Linux configuration or
 
 ## Setting up your environment
 
+To demonstrate the intent-based configuration management with Ansible we prepared a lab environment that you can set up on your own machine. The lab environment consists of a set of SR Linux nodes that are going to be configured by Ansible using intents defined in the Ansible roles.
+
 ### Prerequisites
 
-- To fully appreciate this project, you should have a basic understanding of SR Linux and its network constructs to understand what this project does. Things like _mac-vrfs_, _network instances_, _irb_'s, _sub-interfaces_, etc. should be familiar to you. If not, we recommend you first read the [SR Linux documentation](https://documentation.nokia.com/srlinux/).
+- Readers should have a basic understanding of SR Linux and its network constructs to understand what this project does. Things like _mac-vrfs_, _network instances_, _irb_'s, _sub-interfaces_, etc. should be familiar. For SR Linux newcomers we recommend first reading the [SR Linux documentation](https://documentation.nokia.com/srlinux/) to familiarize with the basic concepts.
 
-- Make sure you are on a machine with Ansible installed. The Ansible version should be 2.9 or higher. We recommend you run Ansible from a Python virtual environment, for example:
+- Make sure Ansible (ansible-core) 2.9+ is installed. We recommend you run Ansible from a Python virtual environment, for example:
 
-  ```bash
+  ```bash title="Creating a venv and installing ansible-core"
     python3 -m venv .venv
     source .venv/bin/activate
-    pip install ansible
+    pip install ansible-core
   ```
 
 - Ensure you have the latest version of [Containerlab](https://containerlab.srlinux.dev/) installed and are meeting the [requirements](https://containerlab.srlinux.dev/install/) to run it.
 
-- We recommend you install the [fcli](https://github.com/srl-labs/nornir-srl) tool to interact with the SR Linux nodes from the command line. It generates fabric-wide reports to verify things like configured services, interfaces, routes, etc. It is not required to run the project, but it's useful to verify the state of the fabric after running the playbook and is used throughout this post to illustrate the effect of the Ansible playbook.
+- We recommend you install the [fcli](https://github.com/srl-labs/nornir-srl#readme) tool that generates fabric-wide reports to verify things like configured services, interfaces, routes, etc. It is not required to run the project, but it's useful to verify the state of the fabric after running the playbook and is used throughout this post to illustrate the effects of the Ansible playbooks.
 
 ### Installing the Ansible collection
 
-Install the SR Linux Ansible collection from [Ansible Galaxy](https://galaxy.ansible.com/) with the following command:
+Install the SR Linux Ansible collection from [Ansible Galaxy](https://galaxy.ansible.com/nokia/srlinux/) with the following command:
 
 ```bash
 ansible-galaxy collection install nokia.srlinux
@@ -57,7 +59,7 @@ ansible-galaxy collection install nokia.srlinux
 
 ### Clone the project repository
 
-The entire project is contained in the [intent-based-ansible-lab][intent-based-ansible-lab] repository. Following command will clone the repository to the current directory on your machine (in folder `intent-based-ansible-lab`):
+The entire project is contained in the [intent-based-ansible-lab][intent-based-ansible-lab] repository. Following command will clone the repository to the current directory on your machine (in `intent-based-ansible-lab` directory):
 
   ```bash
   git clone https://github.com/srl-labs/intent-based-ansible-lab.git
@@ -66,26 +68,32 @@ The entire project is contained in the [intent-based-ansible-lab][intent-based-a
 
 The following sections assume you are in the `intent-based-ansible-lab` directory.
 
-### Setting up your SR Linux lab environment
+### Setting up the lab environment
 
-You need an SR Linux test topology to run the Ansible playbook and roles against. We will use [Containerlab](https://containerlab.srlinux.dev/) to create a lab environment with 6 SR Linux nodes: 4 leaf-nodes and 2 spine-nodes:
+|                                |                                                                                                                    |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------ |
+| **Lab name**                   | 4l2s                                                                                                               |
+| **Lab components**             | 6 SR Linux nodes                                                                                                   |
+| **Resource requirements**      | :fontawesome-solid-microchip: 4vCPU <br/>:fontawesome-solid-memory: 10 GB                                          |
+| **Containerlab topology file** | [4l2s.clab.yml][topofile]                                                                                          |
+| **Version information**[^1]    | [`containerlab:0.42.0`][clab-install], [`srlinux:23.3.3`][srlinux-container], [`docker-ce:23.0.3`][docker-install] |
+
+You need an SR Linux test topology to run the Ansible playbook and roles against. We will use [Containerlab](https://containerlab.dev/) to create a lab environment with 6 SR Linux nodes: 4 leaves and 2 spines:
 
 ```bash
-sudo containerlab deploy -t 4l2s.clab.yml -c
+sudo containerlab deploy -c -t 4l2s.clab.yml
 ```
 
-This will create a lab environment with 6 SR Linux nodes and a set of linux containers to act as hosts:
+This will create a lab environment with 6 SR Linux nodes and a set of Linux containers to act as hosts:
 
 <figure markdown>
   <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":0,"zoom":2,"highlight":"#0000ff","nav":true,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/wdesmedt/ansible-srl-demo/main/img/ansible-srl-topo.drawio.svg"}'></div>
   <figcaption> Fabric topology</figcaption>
 </figure>
 
-Also, the `/etc/hosts` file on the host machine will be updated with the IP addresses of the SR Linux nodes. This will allow us to connect to the nodes with Ansible, that has a matching inventory file inside the `inv` directory.
+Containerlab populates the `/etc/hosts` file on the host machine with the IP addresses of the deployed nodes. This allows Ansible to connect to the nodes that has a matching inventory file inside the `inv` directory.
 
-Verify that all containers are up and running:
-
-```bash
+```bash title="Verifying that all lab nodes are up and running"
 sudo containerlab inspect -t 4l2s.clab.yml
 ```
 
@@ -937,5 +945,11 @@ Finally, we would appreciate your feedback on this project. Please open an issue
 
 [collection-doc-link]: ../../../ansible/collection/index.md
 [intent-based-ansible-lab]: https://github.com/srl-labs/intent-based-ansible-lab
+[topofile]: https://github.com/srl-labs/intent-based-ansible-lab/blob/main/4l2s.clab.yaml
+[clab-install]: https://containerlab.srlinux.dev/install/
+[srlinux-container]: https://github.com/orgs/nokia/packages/container/package/srlinux
+[docker-install]: https://docs.docker.com/engine/install/
+
+[^1]: the following versions have been used to create this tutorial. The newer versions might work, but if they don't, please pin the version to the mentioned ones.
 
 <script type="text/javascript" src="https://viewer.diagrams.net/js/viewer-static.min.js" async></script>
