@@ -32,7 +32,7 @@ title: Using nokia.srlinux Ansible collection
 !!!note
     This is an updated tutorial that uses the new [`nokia.srlinux`][nokia-srlinux-collection] Ansible collection. The previous version of this tutorial that uses Ansible URI module is deprecated but still can be found [here](ansible-with-uri.md).
 
-In the [JSON-RPC Basics](basics.md) tutorial, we focused on the JSON-RPC interface mechanics and its capabilities. The examples we used there used a well-known `curl` command-line utility to put the focal point on the JSON-RPC itself and some automation framework.
+In the [JSON-RPC Basics](../json-rpc/basics.md) tutorial, we focused on the JSON-RPC interface mechanics and its capabilities. The examples we used there used a well-known `curl` command-line utility to put the focal point on the JSON-RPC itself and some automation framework.
 
 Arguably, using `curl` for network automation tasks that aren't trivial may be challenging and likely lead to hairy bash scripting. Instead, network ops teams prefer to use home-grown automation that leverages programming languages or configuration management tools like Ansible[^2] fitted to the networking purpose.
 
@@ -58,7 +58,7 @@ At the time of this writing, SR Linux provides three management interfaces:
 * JSON-RPC
 * CLI
 
-We've [discussed before](basics.md) how these interfaces have the same visibility, but which one to pick for Ansible?
+We've [discussed before](../json-rpc/basics.md) how these interfaces have the same visibility, but which one to pick for Ansible?
 
 A few years back, Nokia open-sourced the [`nokia.grpc`][grpc-coll] galaxy collection to add [gNMI](https://github.com/openconfig/reference/blob/master/rpc/gnmi/gnmi-specification.md) support to Ansible. Unfortunately, due to the complications in the upstream python-grpcio library[^3], this plugin was not widely used in the context of Ansible. In addition to that limitation, Ansible host has to be provided with gRPC libraries as dependencies, which might be problematic for some users.  
 Having said that, it is still possible to use this collection.
@@ -183,7 +183,7 @@ Playbook [`task01/get-state-and-config-data.yml`](https://github.com/srl-labs/js
 
 In the `Get hostname, version and tls-profile` task we leverage the [`nokia.srlinux.get`](../../../ansible/collection/get.md) to fetch three parameters off of the SR Linux node.
 
-Each path in the `paths` list uses an XPATH-like path notation that points to a YANG-modelled node. In this particular example, we retrieve the data from the `state` datastore, as this is the default value for the [datastore](../../../ansible/collection/get.md#datastore) parameter of the get module. Read more on datastores [here](basics.md#datastore).
+Each path in the `paths` list uses an XPATH-like path notation that points to a YANG-modelled node. In this particular example, we retrieve the data from the `state` datastore, as this is the default value for the [datastore](../../../ansible/collection/get.md#datastore) parameter of the get module. Read more on datastores [here](../json-rpc/basics.md#datastore).
 
 To execute the playbook:
 

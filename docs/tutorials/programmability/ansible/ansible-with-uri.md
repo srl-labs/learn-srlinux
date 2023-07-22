@@ -35,7 +35,7 @@ title: Using Ansible's URI module with SR Linux's JSON-RPC Interface
 
 [^1]: the following versions have been used to create this tutorial. The newer versions might work; please pin the version to the mentioned ones if they don't.
 
-In the [JSON-RPC Basics](basics.md) tutorial, we focused on the JSON-RPC interface mechanics and its capabilities. The examples we used there used a well-known `curl` command-line utility to put the focal point on the JSON-RPC itself and some automation framework.
+In the [JSON-RPC Basics](../json-rpc/basics.md) tutorial, we focused on the JSON-RPC interface mechanics and its capabilities. The examples we used there used a well-known `curl` command-line utility to put the focal point on the JSON-RPC itself and some automation framework.
 
 Arguably, using `curl` for network automation tasks that aren't trivial may be challenging and likely lead to hairy bash scripting. Instead, network ops teams prefer to use home-grown automation that leverages programming languages or configuration management tools like Ansible[^2] fitted to the networking purpose.
 
@@ -61,7 +61,7 @@ At the time of this writing, SR Linux provides three management interfaces:
 * JSON-RPC
 * CLI
 
-We've [discussed before](basics.md) how these interfaces have the same visibility, but which one to pick for Ansible?
+We've [discussed before](../json-rpc/basics.md) how these interfaces have the same visibility, but which one to pick for Ansible?
 
 A few years back, Nokia open-sourced the [`nokia.grpc`][grpc-coll] galaxy collection to add [gNMI](https://github.com/openconfig/reference/blob/master/rpc/gnmi/gnmi-specification.md) support to Ansible. Unfortunately, due to the complications in the upstream python-grpcio library[^3], this plugin was not widely used in the context of Ansible. In addition to that limitation, Ansible host has to be provided with gRPC libraries as dependencies, which might be problematic for some users.  
 Having said that, it is still possible to use this collection.
@@ -178,13 +178,13 @@ Here is an example of a playbook with a single play utilizing this module could 
 ```
 
 1. Fully qualified module name
-2. URL to use. See [basics tutorial](basics.md#configuring-json-rpc).
-3. Credentials for [user authentication](basics.md#authentication).
-4. Body of the request as per [basics tutorial](basics.md#requestresponse-structure).
-5. Commands to use in the RPC. See [basics tutorial](basics.md#get) for additional information.
+2. URL to use. See [basics tutorial](../json-rpc/basics.md#configuring-json-rpc).
+3. Credentials for [user authentication](../json-rpc/basics.md#authentication).
+4. Body of the request as per [basics tutorial](../json-rpc/basics.md#requestresponse-structure).
+5. Commands to use in the RPC. See [basics tutorial](../json-rpc/basics.md#get) for additional information.
 6. `body_format=json` will encode the body data structure to json string.
 7. Registering the result will make it possible to extract the results of the RPC in the subsequent tasks.
-8. In case of a successful RPC invocation, the resulting data structure will contain `json` key which provides access to the [`results` list](basics.md#__tabbed_4_2).
+8. In case of a successful RPC invocation, the resulting data structure will contain `json` key which provides access to the [`results` list](../json-rpc/basics.md#__tabbed_4_2).
 
 ## Tasks
 
@@ -227,7 +227,7 @@ Playbook [`task01/get-state-and-config-data.yml`](https://github.com/srl-labs/js
         msg: "Host {{get_result.json.result[0]}} runs {{get_result.json.result[1]}} version and json-rpc server uses '{{get_result.json.result[2]}}' TLS profile"
 ```
 
-In the `Get hostname, version and tls-profile` task we craft the body payload with multiple commands, each of which is targeting a certain leaf. Note, how we provided `state` datastore on the global level and override it in the 3rd command where we needed to use `running` datastore. Read more on datastores [here](basics.md#datastore).
+In the `Get hostname, version and tls-profile` task we craft the body payload with multiple commands, each of which is targeting a certain leaf. Note, how we provided `state` datastore on the global level and override it in the 3rd command where we needed to use `running` datastore. Read more on datastores [here](../json-rpc/basics.md#datastore).
 
 To execute the playbook:
 
@@ -307,7 +307,7 @@ cfg-backup.yml  clab-2srl-srl1.cfg.json  clab-2srl-srl2.cfg.json
 
 Configuration tasks are not the white crows either. Many Ansible operators provision their network devices using popular techniques such as configuration templating.
 
-In [`task03/config.yml`](https://github.com/srl-labs/jsonrpc-ansible/blob/main/task03/config.yml) playbook we switch to the JSON-RPC's [Set method](basics.md#set) and demonstrate different sourcing of configuration data.
+In [`task03/config.yml`](https://github.com/srl-labs/jsonrpc-ansible/blob/main/task03/config.yml) playbook we switch to the JSON-RPC's [Set method](../json-rpc/basics.md#set) and demonstrate different sourcing of configuration data.
 
 The body of our request contains three different commands which demonstrate various ways of changing the configuration on the device.
 
@@ -340,7 +340,7 @@ The first command:
   path: /interface[name=mgmt0]/description:{{inventory_hostname}} management interface
 ```
 
-is a [`replace` action](basics.md#replace) that embeds the value of the leaf we set in the `path` field. Note, that templating can be used throughout the playbook, which we leverage to customize the description value.
+is a [`replace` action](../json-rpc/basics.md#replace) that embeds the value of the leaf we set in the `path` field. Note, that templating can be used throughout the playbook, which we leverage to customize the description value.
 
 This is the most simple way of setting the configuration for a given leaf.
 
@@ -414,7 +414,7 @@ Since `/interface` list is a top-level element in our YANG model (as denoted by 
 
 #### Error handling
 
-To catch [potential errors](basics.md#error-handling) that might happen during config provisioning a task that fails when error is returned by JSON-RPC is part of the playbook.
+To catch [potential errors](../json-rpc/basics.md#error-handling) that might happen during config provisioning a task that fails when error is returned by JSON-RPC is part of the playbook.
 
 ```yaml
 - name: Stop if request contains error
@@ -485,7 +485,7 @@ PING 192.168.0.2 (192.168.0.2) 56(84) bytes of data.
 
 ### Replacing partial config
 
-To replace portions of a config a [Set method with `replace` operation](basics.md#replace) is used.
+To replace portions of a config a [Set method with `replace` operation](../json-rpc/basics.md#replace) is used.
 
 In [`task04/replace-partial-cfg.yml`](https://github.com/srl-labs/jsonrpc-ansible/blob/main/task04/replace-partial-cfg.yml) playbook we replace everything that was configured in the [configuration task](#config-sourced-from-a-file) with a single leaf `admin-state: disable`.
 
@@ -631,7 +631,7 @@ In [`task06/fetch-show-cmd-output.yml`](https://github.com/srl-labs/jsonrpc-ansi
 
 For this playbook we introduce playbook variable - `commands` - that host a list of show commands we would like to execute remotely. In the body part of the request we use the CLI method and our commands refer to the variable.
 
-To save the results of the executed commands we loop over the results array (see [CLI method examples](basics.md#cli) for response format explanation) and save each result in its own file with a sanitized name:
+To save the results of the executed commands we loop over the results array (see [CLI method examples](../json-rpc/basics.md#cli) for response format explanation) and save each result in its own file with a sanitized name:
 
 ```yaml
 - name: Save fetched show outputs
@@ -744,7 +744,7 @@ Free Memory          : 14955894 kB
 
 ## HTTPS
 
-[URI module][ansible-uri-doc] allows users to use secured transport and optionally skip certificate verification. Check the basics tutorial [section on https](basics.md#https) details and how containerlab certificates can help you test the secured connection.
+[URI module][ansible-uri-doc] allows users to use secured transport and optionally skip certificate verification. Check the basics tutorial [section on https](../json-rpc/basics.md#https) details and how containerlab certificates can help you test the secured connection.
 
 ## Summary
 
