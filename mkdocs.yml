@@ -74,7 +74,8 @@ nav:
                   - Summary: tutorials/programmability/event-handler/oper-group/summary.md
           - JSON-RPC:
               - Basics: tutorials/programmability/json-rpc/basics.md
-              - Ansible: tutorials/programmability/json-rpc/ansible.md
+          - Ansible:
+              - Using nokia.srlinux collection: tutorials/programmability/ansible/using-nokia-srlinux-collection.md
   - Community: community.md
   - Blog:
       - blog/index.md
@@ -178,6 +179,7 @@ plugins:
       redirect_maps:
         "ndk/intro.md": "ndk/index.md"
         "yang/yang.md": "yang/index.md"
+        "tutorials/programmability/json-rpc/ansible.md": "tutorials/programmability/ansible/using-nokia-srlinux-collection.md"
   - git-revision-date-localized:
       enable_creation_date: true
       enabled: !ENV [CI, false]

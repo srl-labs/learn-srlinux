@@ -18,7 +18,7 @@ Ansible collection for SR Linux is identified with `nokia.srlinux` fully qualifi
 Modules contained within this collection fully conform to the idempotence principles of Ansible, as well as provide first-class support for diff and check functionality[^2].
 
 !!!tip "Tutorial"
-    Besides examples provided for each module of this collection, checkout [Ansible with SR Linux tutorial](../../tutorials/programmability/json-rpc/ansible.md) to see how to use this collection in practice.
+    Besides examples provided for each module of this collection, checkout [Ansible with SR Linux tutorial](../../tutorials/programmability/ansible/using-nokia-srlinux-collection.md) to see how to use this collection in practice.
 
 ## Modules
 
