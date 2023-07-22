@@ -188,7 +188,7 @@ The `cli` module allows you to execute any CLI command on the device and get the
 
 To help you get started, we have created a set of examples that you can use as a reference when developing your own playbooks. These examples are outlined in the "Examples" section for each [module][collection-doc-link].
 
-Besides that, we have adapted the original [Ansible tutorial](../../../tutorials/programmability/json-rpc/ansible.md) to feature the SR Linux collection.
+Besides that, we have adapted the original [Ansible tutorial](../../../tutorials/programmability/ansible/using-nokia-srlinux-collection.md) to feature the SR Linux collection.
 
 ## Conclusion
 

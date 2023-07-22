@@ -8,7 +8,7 @@ title: Using Ansible's URI module with SR Linux's JSON-RPC Interface
 !!!warning
     This is an original tutorial that predate `nokia.srlinux` collection. It uses Ansible's `uri` module to interact with SR Linux's JSON-RPC interface. It is recommended to use `nokia.srlinux` collection instead.
 
-    A new version of this tutorial is available [here](ansible.md).
+    A new version of this tutorial is available [here](using-nokia-srlinux-collection.md).
 
 | Summary                     |                                                                                                                            |
 | --------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
