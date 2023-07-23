@@ -1,6 +1,6 @@
 # Setting up the environment
 
-To demonstrate the intent-based configuration management with Ansible we prepared a lab environment that you can set up on your own machine. The lab environment consists of a set of SR Linux nodes that are going to be configured by Ansible using intents declared in the Ansible roles.
+To demonstrate the intent-based configuration management with Ansible we prepared a lab environment that you can set up on your own machine[^1]. The lab environment consists of a small SR Linux-based Clos fabric that is going to be configured by Ansible using intents declared in the Ansible roles.
 
 ## Prerequisites
 
@@ -8,17 +8,22 @@ To demonstrate the intent-based configuration management with Ansible we prepare
 
 - Make sure Ansible (ansible-core) 2.9+ is installed. We recommend you run Ansible from a Python virtual environment, for example:
 
-  ```bash title="Creating a venv and installing ansible-core"
-    python3 -m venv .venv
-    source .venv/bin/activate
-    pip install ansible-core
-  ```
+    ```bash title="Creating a venv and installing ansible-core"
+      python3 -m venv .venv
+      source .venv/bin/activate
+      pip install ansible-core
+    ```
 
-- Ensure you have the latest version of [Containerlab](https://containerlab.srlinux.dev/) installed and are meeting the [requirements](https://containerlab.srlinux.dev/install/) to run it.
+- Ensure you have the [Containerlab](https://containerlab.dev/install)[^2] installed and are meeting its installation requirements.
 
-- We recommend you install the [fcli](https://github.com/srl-labs/nornir-srl#readme) tool that generates fabric-wide reports to verify things like configured services, interfaces, routes, etc. It is not required to run the project, but it's useful to verify the state of the fabric after running the playbook and is used throughout this post to illustrate the effects of the Ansible playbooks.
+- We recommend you install the [fcli](https://github.com/srl-labs/nornir-srl#readme) tool that generates fabric-wide reports to verify things like configured services, interfaces, routes, etc.  
+  `fcli` is not required to run the project, but it's useful to verify the state of the fabric after running the playbook and is used throughout this tutorial to illustrate the effects of the Ansible playbooks.
 
-### Installing the Ansible collection
+    ```bash
+    pip install -U nornir-srl
+    ```
+
+## Installing the Ansible collection
 
 Install the SR Linux Ansible collection from [Ansible Galaxy](https://galaxy.ansible.com/nokia/srlinux/) with the following command:
 
@@ -26,7 +31,7 @@ Install the SR Linux Ansible collection from [Ansible Galaxy](https://galaxy.ans
 ansible-galaxy collection install nokia.srlinux
 ```
 
-### Clone the project repository
+## Clone the project repository
 
 The entire project is contained in the [intent-based-ansible-lab][intent-based-ansible-lab] repository. Following command will clone the repository to the current directory on your machine (in `intent-based-ansible-lab` directory):
 
@@ -37,7 +42,7 @@ The entire project is contained in the [intent-based-ansible-lab][intent-based-a
 
 The following sections assume you are in the `intent-based-ansible-lab` directory.
 
-### Setting up the lab environment
+## Deploying the lab
 
 You need an SR Linux test topology to run the Ansible playbook and roles against. We will use [Containerlab](https://containerlab.dev/) to create a lab environment with 6 SR Linux nodes: 4 leaves and 2 spines:
 
@@ -58,5 +63,9 @@ Containerlab populates the `/etc/hosts` file on the host machine with the IP add
 sudo containerlab inspect -t 4l2s.clab.yml
 ```
 
-<script type="text/javascript" src="https://viewer.diagrams.net/js/viewer-static.min.js" async></script>
+With the lab deployed, we can now explore the project's structure and understand the role's layout that powers the intent-based configuration management.
 
+[intent-based-ansible-lab]: https://github.com/srl-labs/intent-based-ansible-lab
+[^1]: As always, the lab is completely free to run, featuring our free and public SR Linux container image.
+[^2]: Using the version not older than the one mentioned in the [tutorial summary](index.md) section.
+<script type="text/javascript" src="https://viewer.diagrams.net/js/viewer-static.min.js" async></script>
