@@ -1,321 +1,10 @@
 ---
-date: 2023-07-06
-tags:
-  - srlinux
-  - ansible
-  - netdevops
-  - netops
-  - iac
-authors:
-  - wdesmedt
+comments: true
 ---
 
-# Managing an SR Linux fabric with Ansible
+# Configuring the fabric
 
-## Introduction
-
-Ansible is today the _lingua franca_ for many network engineers to automate the configuration of network devices. Due to its simplicity and low entry barrier, it is a popular choice for network automation that features modular and reusable automation tasks available to network teams.
-
-???tip "Disclaimer: Select the right tool for the job"
-    As with every tool there are pros and cons to consider when selecting Ansible for your network automation project. While being simple in many aspects, Ansible tends to be hard to troubleshoot or shoehorn for complex and/or call-intensive automation projects.
-
-    Do your own due diligence and select the right tool for the job at hand. This post explains "a way" to achieve intent-based configuration management, but it is not the only way, nor is it a silver bullet for all automation projects.
-
-With this post, we aim to provide a practical example of using Ansible to manage the configuration of an SR Linux fabric with the **intent-based approach** leveraging the official [Ansible collection for SR Linux][collection-doc-link]. Remember that the demo code we provide throughout this blog post is not an 'off-the-shelf' solution but a demonstration of Ansible collection capabilities and hopefully a source of inspiration for your own automation projects.
-
-The **intent** or desired state of the fabric in this solution is abstracting the device-specific implementation. The abstraction level is always a trade-off between usability of the automation and feature coverage of the managed infrastructure: the higher the abstraction, the more user-friendly it becomes, but at the expense of feature coverage. The right abstraction level depends on your specific use cases and requirements.
-
-The approach we discuss here only partially covers the SR Linux configuration or data model. Only resources required to establish and maintain a functional fabric are covered. The solution is meant to be extended as needed to cover other aspects of the configuration or data model by employing similar techniques, but this is left as an exercise for the reader.
-
-<!-- more -->
-
-## Setting up your environment
-
-To demonstrate the intent-based configuration management with Ansible we prepared a lab environment that you can set up on your own machine. The lab environment consists of a set of SR Linux nodes that are going to be configured by Ansible using intents defined in the Ansible roles.
-
-### Prerequisites
-
-- Readers should have a basic understanding of SR Linux and its network constructs to understand what this project does. Things like _mac-vrfs_, _network instances_, _irb_'s, _sub-interfaces_, etc. should be familiar. For SR Linux newcomers we recommend first reading the [SR Linux documentation](https://documentation.nokia.com/srlinux/) to familiarize with the basic concepts.
-
-- Make sure Ansible (ansible-core) 2.9+ is installed. We recommend you run Ansible from a Python virtual environment, for example:
-
-  ```bash title="Creating a venv and installing ansible-core"
-    python3 -m venv .venv
-    source .venv/bin/activate
-    pip install ansible-core
-  ```
-
-- Ensure you have the latest version of [Containerlab](https://containerlab.srlinux.dev/) installed and are meeting the [requirements](https://containerlab.srlinux.dev/install/) to run it.
-
-- We recommend you install the [fcli](https://github.com/srl-labs/nornir-srl#readme) tool that generates fabric-wide reports to verify things like configured services, interfaces, routes, etc. It is not required to run the project, but it's useful to verify the state of the fabric after running the playbook and is used throughout this post to illustrate the effects of the Ansible playbooks.
-
-### Installing the Ansible collection
-
-Install the SR Linux Ansible collection from [Ansible Galaxy](https://galaxy.ansible.com/nokia/srlinux/) with the following command:
-
-```bash
-ansible-galaxy collection install nokia.srlinux
-```
-
-### Clone the project repository
-
-The entire project is contained in the [intent-based-ansible-lab][intent-based-ansible-lab] repository. Following command will clone the repository to the current directory on your machine (in `intent-based-ansible-lab` directory):
-
-  ```bash
-  git clone https://github.com/srl-labs/intent-based-ansible-lab.git
-  cd intent-based-ansible-lab
-  ```
-
-The following sections assume you are in the `intent-based-ansible-lab` directory.
-
-### Setting up the lab environment
-
-|                                |                                                                                                                    |
-| ------------------------------ | ------------------------------------------------------------------------------------------------------------------ |
-| **Lab name**                   | 4l2s                                                                                                               |
-| **Lab components**             | 6 SR Linux nodes                                                                                                   |
-| **Resource requirements**      | :fontawesome-solid-microchip: 4vCPU <br/>:fontawesome-solid-memory: 10 GB                                          |
-| **Containerlab topology file** | [4l2s.clab.yml][topofile]                                                                                          |
-| **Version information**[^1]    | [`containerlab:0.42.0`][clab-install], [`srlinux:23.3.3`][srlinux-container], [`docker-ce:23.0.3`][docker-install] |
-
-You need an SR Linux test topology to run the Ansible playbook and roles against. We will use [Containerlab](https://containerlab.dev/) to create a lab environment with 6 SR Linux nodes: 4 leaves and 2 spines:
-
-```bash
-sudo containerlab deploy -c -t 4l2s.clab.yml
-```
-
-This will create a lab environment with 6 SR Linux nodes and a set of Linux containers to act as hosts:
-
-<figure markdown>
-  <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":0,"zoom":2,"highlight":"#0000ff","nav":true,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/wdesmedt/ansible-srl-demo/main/img/ansible-srl-topo.drawio.svg"}'></div>
-  <figcaption> Fabric topology</figcaption>
-</figure>
-
-Containerlab populates the `/etc/hosts` file on the host machine with the IP addresses of the deployed nodes. This allows Ansible to connect to the nodes that has a matching inventory file inside the `inv` directory.
-
-```bash title="Verifying that all lab nodes are up and running"
-sudo containerlab inspect -t 4l2s.clab.yml
-```
-
-## Project structure
-
-### The Ansible Inventory
-
-In this project, we use the native file-based Ansible inventory. It lists the hosts that are part of the fabric and groups them in a way that reflects the fabric topology. The inventory file - [`ansible-inventory.yml`](https://github.com/srl-labs/intent-based-ansible-lab/blob/main/inv/ansible-inventory.yml) - is located in the [`inv`](https://github.com/srl-labs/intent-based-ansible-lab/tree/main/inv) directory; `host_vars` and `group_vars` directories next to it contain host- and group-specific variables.
-
-```bash
-inv
-├── ansible-inventory.yml # the inventory file
-├── group_vars
-│   └── srl.yml  # group-specific variables for the srl group
-└── host_vars
-    ├── clab-4l2s-l1.yml # host-specific variables for the clab-4l2s-l1 host
-    ├── clab-4l2s-l2.yml
-    ├── clab-4l2s-l3.yml
-    ├── clab-4l2s-l4.yml
-    ├── clab-4l2s-s1.yaml
-    └── clab-4l2s-s2.yml
-```
-
-Ansible is instructed to use this inventory file by setting `inventory = inv` in the [`ansible.cfg`](https://github.com/srl-labs/intent-based-ansible-lab/blob/main/ansible.cfg#L4) configuration file.
-
-The `ansible-inventory.yml` defines 3 groups:
-
-- `srl` - for all SR Linux nodes
-- `spine` - for the spine nodes
-- `leaf` - for the leaf nodes.
-
-The [`host_vars`](https://github.com/srl-labs/intent-based-ansible-lab/tree/main/inv/host_vars) directory contains a file for each host that defines host-specific variables. The [`group_vars`](https://github.com/srl-labs/intent-based-ansible-lab/tree/main/inv/group_vars) directory contains a single file for the `srl` group to define Ansible-specific variables that are required for the JSON-RPC connection-plugin as well as some system-level configuration data.
-
-### The Ansible Playbook
-
-The Ansible playbook [`cf_fabric.yml`](https://github.com/srl-labs/intent-based-ansible-lab/blob/main/cf_fabric.yml) is the main entry point for the project. It contains a single play that applies a sequence of roles to all nodes in the `leaf` and `spine` groups:
-
-```yaml title="cf_fabric.yml"
-- name: Configure fabric
-  gather_facts: no
-  hosts:
-   - leaf
-   - spine
-  vars:
-    purge: yes # purge resources from device not in intent
-    purgeable:
-      - interface
-      - subinterface
-      - network-instance
-  roles:
-## INIT ##
-  - { role: common/init, tags: [always] }
-## INFRA ##
-  - { role: infra/system, tags: [infra, system]}
-  - { role: infra/interface, tags: [infra, interface] }
-  - { role: infra/policy, tags: [infra, policy] }
-  - { role: infra/networkinstance, tags: [infra,]}
-## SERVICES ##
-  - { role: services/l2vpn, tags: [services, l2vpn ]}
-  - { role: services/l3vpn, tags: [services, l3vpn ]}
-## CONFIG ##
-  - { role: common/configure, tags: [always]}
-```
-
-The playbook is structured in 3 sections:
-
-1. the `hosts` variable at play-level defines the hosts that are part of the fabric. In this case, all hosts in the `leaf` and `spine` groups. Group definition and membership is defined in the inventory file.
-2. the `vars` variable defines variables that are used by the roles. In this case, the `purge` variable is set to `yes` to remove resources from the nodes that are not defined in the intent. The `purgeable` variable defines the resource types that are purged from the nodes when missing from the intent. In this case, these resources are: interfaces, sub-interfaces and network instances.
-3. the `roles` variable defines the roles that are applied to the hosts in the `leaf` and `spine` groups. The roles are applied in the order they are defined in the playbook. The roles are grouped in 4 sections: `INIT`, `INFRA`, `SERVICES` and `CONFIG`.
-    - **INIT**: This section initializes some extra global variables or _Ansible facts_ that are used by other roles. These facts include:
-        - the current 'running config' of the device
-        - the software version of SR Linux
-        - the LLDP neighborship states
-    - **INFRA**: This section configures the infrastructural network resources needed for services to operate. It configures the inter-switch interfaces, base routing, policies and the default instance
-    - **SERVICES**: This section configures the services on the nodes. It configures the L2VPN and L3VPN services based on a high-level abstraction defined in each role's variables
-    - **CONFIG**: This section applies configuration to the nodes. It is always executed, even if no changes are made to the configuration. This is to ensure that the configuration on the node is always in sync with the intent.
-
-The `common/init` role checks if the `ENV` environment variable is set. If it's missing, the playbook will fail. The value of the `ENV` variable is used to select the correct role variables that represent the intent. This is to support multiple environments, like 'test' and 'prod' environments, for which intents may be different. In this project, only the `test` environment is defined.
-
-Roles also have _tags_ associated with them to run a subset of the roles in the playbook. For example, to only run the `infra` roles, you can use the following command:
-
-```bash
-ENV=test ansible-playbook cf_fabric.yml --tags infra
-```
-
-!!!note
-    To leverage the _pruning_ capability of the playbook, all roles must be executed to achieve a full intent. If tags are specified for a partial run, no purging will be performed by the playbook.
-
-### Role structure
-
-This project provides a set of Ansible roles to manage the resources on SR Linux nodes. The roles are organized in a directory structure that reflects the configuration section of the nodes it manages.
-
-The roles are grouped in the following directories:
-
-```bash
-roles
-├── common
-│   ├── configure
-│   └── init
-├── infra
-│   ├── interface
-│   ├── networkinstance
-│   ├── policy
-│   └── system
-├── services
-│   ├── l2vpn
-│   └── l3vpn
-└── utils
-    ├── interface
-    ├── load_intent
-    ├── network-instance
-    └── policy
-```
-
-The `infra` and `services` roles operate on the configuration of the underlay of the fabric and the services that run on it respectively. Each of the roles in these directories contributes to an global intent for the SR Linux node.
-
-#### INFRA roles
-
-Following INFRA roles are defined:
-
-- `interface`: manages intent for interfaces in the underlay configuration
-- `networkinstance`: manages intent for the 'default' network-instance
-- `policy`: manages intent for routing policies in the underlay configuration
-- `system`: manages system-wide configuration of the node
-
-The generic structure of the `infra` roles is as follows:
-
-```bash
-├── tasks
-│   └── main.yml
-├── templates
-└── vars
-    ├── prod
-    └── test
-        └── xxx.yml  # the intent
-```
-
-The `tasks/main.yml` file defines the tasks that are executed by the role. The `templates` folder contains a folder per platform - in this case, only SR Linux is supported and is optional. Let's look at the `infra/interface` role as an example:
-
-```yaml title="roles/infra/interface/tasks/main.yml"
-- set_fact:
-    my_intent: {}
-
-- name: "Load vars for ENV:{{ env }}"
-  include_vars:
-    dir: "{{ lookup('env', 'ENV') }}" # Load vars from files in 'dir'
-
-- name: "{{ ansible_role_name}}: Load Intent for /interfaces" 
-  ansible.builtin.include_role:
-    name: utils/load_intent
-
-- set_fact:
-    intent: "{{ intent | default({}) | combine(my_intent, recursive=true) }}"
-```
-
-The `infra/interface` role loads the host-specific intent by calling another role, the `utils/load_intent` role. This role takes the group- and host-level intents from the `vars/${ENV}` folder - in our case `ENV=test` -  and merges them into a single role-specific intent (`my_intent`). The `my_intent` variable is then merged with the global per-device   `intent` variable that may have been already partially populated by other roles.
-
-Other infra roles follow the same approach.
-
-#### SERVICES roles
-
-Two service roles are defined:
-
-- **l2vpn**: manages intent for _fabric-wide_ L2VPN services. These are a set of mac-vrf instances on a subset of the nodes in the fabric with associated interfaces and policies
-- **l3vpn**: manages intent for _fabric-wide_ L3VPN services. These are a set of ip-vrf instances on a subset of the nodes in the fabric and are associated with mac-vrf instances
-
-For these roles, we decided to take the abstraction to a new level. Below is an example how a L2VPN is defined:
-
-  ```yaml title="roles/services/l2vpn/vars/test/l2vpn.yml"
-  l2vpn:                    # root of l2vpn intent, mapping of mac-vrf instances, with key=mac-vrf name 
-    macvrf-200:             # name of the mac-vrf instance
-      id: 200               # id of the mac-vrf instance: used for vlan-id and route-targets
-      type: mac-vrf
-      description: MACVRF1
-      interface_list:       # a mapping with key=node-name and value=list of interfaces
-        clab-4l2s-l1:       # node on which the mac-vrf instance is configured
-        - ethernet-1/1.200  # interface that will be associated with the mac-vrf instance
-        clab-4l2s-l2:
-        - ethernet-1/1.200
-      export_rt: 100:200  # export route-target for EVPN address-family
-      import_rt: 100:200  # import route-target for EVPN address-family
-      vlan: 200           # vlan-id for the mac-vrf instance. 
-                          # all sub-interfaces on all participating nodes will be configured with this vlan-id
-  ```
-
-The _l2vpn_ role will transform this _fabric-wide_ intent into a node-specific intent per resource (network-instance, subinterface, tunnel-interface) and will merge this with the global node intent.
-
-The _l3vpn_ role follows a similar approach but depends on the _l2vpn_ role to define the intent for the mac-vrf instances. If not, the playbook will fail. The _l3vpn_ role knows if an ip-vrf instance applies to the node based of the mac-vrf definitions associated with the ip-vrf. The mac-vrf definition in the L2VPN intent includes the node association.
-
-An example of a L3VPN intent is shown below:
-
-```yaml title="roles/services/l3vpn/vars/test/l3vpn.yml"
-l3vpn:                      # root of l3vpn intent, mapping of ip-vrf instances, with key=ip-vrf name
-  ipvrf-2001:               # name of the ip-vrf instance
-    id: 2001                # id of the ip-vrf instance: used for route-targets
-    type: ip-vrf
-    description: IPVRF1
-    snet_list:              # a list of (macvrf, gw) pairs. The macvrf must be present in the l2vpn intent  
-      - macvrf: macvrf-300  # the macvrf instance to associate with the ip-vrf instance
-        gw: 10.1.1.254/24   # the gateway address for the subnet
-      - macvrf: macvrf-301
-        gw: 10.1.2.254/24
-    export_rt: 100:2001     # export route-target for EVPN address-family (route-type: 5)
-    import_rt: 100:2001     # import route-target for EVPN address-family (route-type: 5)
-```
-
-#### COMMON and UTILS roles
-
-Once the nodal intent has been constructed by the INFRA and SERVICES roles, the playbook calls the `common/configure` role as the last task. This role will take the nodal intent and construct the final configuration for the node. It calls roles in the `utils` folder to construct the configuration for the various resources (interfaces, network-instances, policies, etc) and thus generates the variables `update` and `replace` that are passed as arguments to the `nokia.srlinux.config` module.
-
-It also generates a `delete` variable containing a list of configuration paths to delete when the play variable `purge=true` and when no tags are specified with the `ansible-playbook` command that would result in a partial nodal intent. It uses the node for configuration state (running configuration) that was retrieved by the `common/init` role and compares this against the nodal intent to generate the `delete` variable.
-
-Following diagram gives an overview how the low-level device intent is constructed from the various roles:
-
-<figure markdown>
-  <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":0,"zoom":2,"highlight":"#0000ff","nav":true,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/wdesmedt/ansible-srl-demo/main/img/ansible-srl-intent.drawio.svg"}'></div>
-  <figcaption>Transforming high-level intent to device configuration</figcaption>
-</figure>
-
-## Configuring the fabric
-
-### Startup configuration
+## Startup configuration
 
 The initial configuration of the fabric nodes after setting up your environment, only contains the required statements to allow management connections to the nodes (SSH, gNMI, JSON-RPC). No further configuration is applied to the nodes.
 
@@ -380,7 +69,7 @@ If you have installed the [fcli](https://github.com/srl-labs/nornir-srl) tool, y
     +----------------------------------------------------------------------------------------------------------+
     ```
 
-### Configuring the underlay
+## Configuring the underlay
 
 To configure the underlay of the fabric - the configuration of interfaces and routing to make overlay services possible - we apply the `infra` roles to all nodes in the `leaf` and `spine` groups. The `infra` roles are identified by the `infra` tag in the `cf_fabric.yml` playbook. The following command configures the underlay with the intent defined in the `roles/infra/*/vars/` files:
 
@@ -487,9 +176,9 @@ If you have the `fcli` tool installed, you can verify the configuration of the u
 
 From the BGP Peers output, you can see that we use eBGP for underlay routing (ASNs 65001-65004 for the leafs and ASN 65100 for the spines) and that the iBGP mesh for the overlay (ASN 100) is established through route-reflector (RR) functionality on the spines.
 
-### Configuring services
+## Configuring services
 
-#### Adding and modifying services
+### Adding and modifying services
 
 Adding and modifying services follow the same process. It takes a full **declarative** approach in how you want to configure your services. Adding services means adding configuration data to the service-specific intent files (vars files). Modifying services just involves changing the same source intent files to reflect the desired state. At no time do you need to be concerned with how existing device configuration is handled after a service change. The playbook will take care of that for you.
 
@@ -752,7 +441,7 @@ l2vpn:
 
 Run the playbook again and verify that the new service instance is configured on the leafs.
 
-#### Deleting services
+### Deleting services
 
 There are 2 ways to delete a service:
 
@@ -820,7 +509,7 @@ Run the playbook again and verify that the service is removed from the leafs. In
 
 During next runs services or resources tagged for deletion remain in the intent but serve little purpose after the deletion has occurred. You may decide to keep it in the intent for _documentation_ purposes or remove it from the intent after the deletion has occurred.
 
-#### L3VPN services
+### L3VPN services
 
 So far we only have discussed configuring L2VPN services. The same approach applies for adding, updating and pruning L3VPN services. We discuss L3VPNs at this later stage due to the dependency on L2VPNs. As you will see from the L3VPN intent below, the intent data contains references to macvrfs. As macvrfs are managed through L2VPN intents only, any reference to mac-vrfs in L3VPN intents must have its counterpart in L2VPN intents.
 
@@ -921,39 +610,5 @@ Now run the playbook again and verify that the L3VPN service is configured on th
     | clab-4l2s-l4 | ipvrf-2001 | up   | ip-vrf |           | irb1.301 | up      | ['10.1.2.254/24'] | 1500 |      |
     +--------------------------------------------------------------------------------------------------------------+
     ```
-
-## Closing remarks
-
-In this project, we took the approach to translate intents or desired-state from the variables associated with each role. These variables contain structured data and follow a model that is interpreted by the role's template to generate input for the `config` module. Only one role, the `common/configure` role, uses the `nokia.srlinux.config` module directly and is run as a last step in the play. The other roles only generate the low-level intent, i.e. the input to the `config` module, from the higher-level intent stored in the role's variables and in the inventory.
-
-The reasons for this approach are:
-
-- avoid _dependencies_ between resources and _sequencing_ issues. Since SR Linux is a model-driven NOS, dependencies of resources, as described in the Yang modules are enforced by SR Linux. Pushing config snippets rather than complete configs will be more error-prone to model constraints, e.g. pushing configuration that adds sub-interfaces to a network instance that are not created beforehand, will result in a configuration error. By grouping all configuration statements together and call the config module only once, we avoid these issues. SR Linux will take care of the sequencing and apply changes in a single transaction.
-- support for _resource pruning_. By building a full intent for managed resources, we know exactly the desired state the fabric should be in. Using the SR Linux node as configuration state store, we can compare the desired state with the actual configuration state of the node and prune any resources that are not part of the desired state. There is no need to flag such resources for deletion which is the typical approach with Ansible NetRes modules for other NOS's.
-- support for _network audit_. The same playbook that is used to apply the desired state can be used to audit the network. By comparing the full desired state with the actual configuration state of the node, we can detect any drift and report it to the user. This is achieved by running the playbook in _dry-run_ or _check_ mode.
-- keeping role-specific intent with the role itself, in the associated variables, results in separation of concerns and makes the playbook more readable and maintainable. It's like functions in a generic programming language: the role is the function and the variables are the arguments.
-- device-level single transaction. The `config` module is called only once per device and results in a single transaction per device - _all or nothing_. This is important to keep the device configuration consistent. If the playbook would call the `config` module multiple times, e.g. once per role, and some of the roles would fail, this would leave the device in an inconsistent state with only partial config applied.
-
-This is a 'low-code' approach to network automation using only Jinja templating and the Ansible domain-specific language. It does require some basic development and troubleshooting skills as playbook errors will happen and debugging will be required. For example, when adding new capabilities to roles/templates, invalid data in intent variables, when SR Linux model changes happen across software releases, .... These events may break template rendering inside the roles. Most of the logic is embedded in the Jinja templates but runtime errors are not always easy to pinpoint as Ansible does not provide a stack trace or position of failure within the template. A general troubleshooting process is as follows: 
-
-  1. Reduce the output by limiting the playbook run to a single host that exhibits the problem (`hosts` variable in `cf_fabric.yml`)
-  2. run `ansible-playbook` with the `-vvv` option to get verbose output during the playbook run
-  3. insert  `debug` tasks at strategic places in the playbook to narrow down the problem. Debugging variables `my_intent`, which is local to the role, `intent`, which is built up incrementally as the playbook progresses and `replace`, `update` and `delete` in the `configure` role usually point you to the root cause of the problem. Running a playbook with the debug statements in place will show the values of these variables during a regular playbook run
-
-
-*Network-wide transactions* could be implemented with _Git_. You `git commit` your changes (intents/roles) to a Git repository after any change to intents or roles. If some issues occur during the playbook run, e.g. some nodes fail in the playbook resulting in a partial fabric-wide deployment or changes appear to be permanently service-affecting, you can revert back to a previous commit with e.g. `git revert` and run the playbook again from a known good state (intent/roles).
-
-Transformation from high-level intent to per-device low-level configuration is a one-way street. There is no way to go back from the low-level configuration to the high-level intent. This means that it is not possible to _reconcile_ changes in the network that were not driven by intent. For this to happen, a manual step is required to update the intent with the new state of the network.
-
-Finally, we would appreciate your feedback on this project. Please open an issue in the [GitHub repository][intent-based-ansible-lab] if you have any questions or remarks.
-
-[collection-doc-link]: ../../../ansible/collection/index.md
-[intent-based-ansible-lab]: https://github.com/srl-labs/intent-based-ansible-lab
-[topofile]: https://github.com/srl-labs/intent-based-ansible-lab/blob/main/4l2s.clab.yaml
-[clab-install]: https://containerlab.srlinux.dev/install/
-[srlinux-container]: https://github.com/orgs/nokia/packages/container/package/srlinux
-[docker-install]: https://docs.docker.com/engine/install/
-
-[^1]: the following versions have been used to create this tutorial. The newer versions might work, but if they don't, please pin the version to the mentioned ones.
 
 <script type="text/javascript" src="https://viewer.diagrams.net/js/viewer-static.min.js" async></script>

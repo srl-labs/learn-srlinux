@@ -76,6 +76,12 @@ nav:
               - Basics: tutorials/programmability/json-rpc/basics.md
           - Ansible:
               - Using nokia.srlinux collection: tutorials/programmability/ansible/using-nokia-srlinux-collection.md
+              - Intent-based management with Ansible:
+                  - tutorials/programmability/ansible/intent-based-management/index.md
+                  - Lab environment: tutorials/programmability/ansible/intent-based-management/env.md
+                  - Project structure: tutorials/programmability/ansible/intent-based-management/project-structure.md
+                  - Configuring the fabric: tutorials/programmability/ansible/intent-based-management/config.md
+                  - Summary: tutorials/programmability/ansible/intent-based-management/summary.md
   - Community: community.md
   - Blog:
       - blog/index.md
