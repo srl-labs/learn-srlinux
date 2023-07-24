@@ -1,7 +1,5 @@
 ---
 comments: true
-tags:
-    - ansible
 ---
 
 # Project structure
@@ -26,11 +24,12 @@ inv
 
 Ansible is instructed to use this inventory file by setting `inventory = inv` in the [`ansible.cfg`](https://github.com/srl-labs/intent-based-ansible-lab/blob/main/ansible.cfg#L4) configuration file.
 
-The `ansible-inventory.yml` defines 3 groups:
+The `ansible-inventory.yml` defines four groups:
 
 - `srl` - for all SR Linux nodes
 - `spine` - for the spine nodes
 - `leaf` - for the leaf nodes.
+- `hosts` - for emulated hosts.
 
 The [`host_vars`](https://github.com/srl-labs/intent-based-ansible-lab/tree/main/inv/host_vars) directory contains a file for each host that defines host-specific variables. The [`group_vars`](https://github.com/srl-labs/intent-based-ansible-lab/tree/main/inv/group_vars) directory contains a single file for the `srl` group to define Ansible-specific variables that are required for the JSON-RPC connection-plugin as well as some system-level configuration data.
 
@@ -38,31 +37,8 @@ The [`host_vars`](https://github.com/srl-labs/intent-based-ansible-lab/tree/main
 
 The Ansible playbook [`cf_fabric.yml`](https://github.com/srl-labs/intent-based-ansible-lab/blob/main/cf_fabric.yml) is the main entry point for the project. It contains a single play that applies a sequence of roles to all nodes in the `leaf` and `spine` groups:
 
-```yaml title="cf_fabric.yml"
-- name: Configure fabric
-  gather_facts: no
-  hosts:
-   - leaf
-   - spine
-  vars:
-    purge: yes # purge resources from device not in intent
-    purgeable:
-      - interface
-      - subinterface
-      - network-instance
-  roles:
-## INIT ##
-  - { role: common/init, tags: [always] }
-## INFRA ##
-  - { role: infra/system, tags: [infra, system]}
-  - { role: infra/interface, tags: [infra, interface] }
-  - { role: infra/policy, tags: [infra, policy] }
-  - { role: infra/networkinstance, tags: [infra,]}
-## SERVICES ##
-  - { role: services/l2vpn, tags: [services, l2vpn ]}
-  - { role: services/l3vpn, tags: [services, l3vpn ]}
-## CONFIG ##
-  - { role: common/configure, tags: [always]}
+```yaml title="<code>cf_fabric.yml</code>"
+--8<-- "https://raw.githubusercontent.com/srl-labs/intent-based-ansible-lab/main/cf_fabric.yml"
 ```
 
 The playbook is structured in 3 sections:
@@ -72,7 +48,7 @@ The playbook is structured in 3 sections:
 3. the `roles` variable defines the roles that are applied to the hosts in the `leaf` and `spine` groups. The roles are applied in the order they are defined in the playbook. The roles are grouped in 4 sections: `INIT`, `INFRA`, `SERVICES` and `CONFIG`.
     - **INIT**: This section initializes some extra global variables or _Ansible facts_ that are used by other roles. These facts include:
         - the current 'running config' of the device
-        - the software version of SR Linux
+        - the SR Linux software version
         - the LLDP neighborship states
     - **INFRA**: This section configures the infrastructural network resources needed for services to operate. It configures the inter-switch interfaces, base routing, policies and the default instance
     - **SERVICES**: This section configures the services on the nodes. It configures the L2VPN and L3VPN services based on a high-level abstraction defined in each role's variables
@@ -138,25 +114,13 @@ The generic structure of the `infra` roles is as follows:
         └── xxx.yml  # the intent
 ```
 
-The `tasks/main.yml` file defines the tasks that are executed by the role. The `templates` folder contains a folder per platform - in this case, only SR Linux is supported and is optional. Let's look at the `infra/interface` role as an example:
+The `tasks/main.yml` file defines the tasks that are executed by the role. The `templates` folder contains jinja templates per supported platform; these templates are used by the role when executing tasks. Let's look at the `infra/interface` role as an example:
 
-```yaml title="roles/infra/interface/tasks/main.yml"
-- set_fact:
-    my_intent: {}
-
-- name: "Load vars for ENV:{{ env }}"
-  include_vars:
-    dir: "{{ lookup('env', 'ENV') }}" # Load vars from files in 'dir'
-
-- name: "{{ ansible_role_name}}: Load Intent for /interfaces" 
-  ansible.builtin.include_role:
-    name: utils/load_intent
-
-- set_fact:
-    intent: "{{ intent | default({}) | combine(my_intent, recursive=true) }}"
+```yaml title="<code>roles/infra/interface/tasks/main.yml</code>"
+--8<-- "https://raw.githubusercontent.com/srl-labs/intent-based-ansible-lab/main/roles/infra/interface/tasks/main.yml"
 ```
 
-The `infra/interface` role loads the host-specific intent by calling another role, the `utils/load_intent` role. This role takes the group- and host-level intents from the `vars/${ENV}` folder - in our case `ENV=test` -  and merges them into a single role-specific intent (`my_intent`). The `my_intent` variable is then merged with the global per-device   `intent` variable that may have been already partially populated by other roles.
+The `infra/interface` role loads the host-specific intent by calling another role - `utils/load_intent`. This role takes the group- and host-level intents from the `vars/${ENV}` folder - in our case `ENV=test` -  and merges them into a single role-specific intent (`my_intent`). The `my_intent` variable is then merged with the global per-device `intent` variable that may have been already partially populated by other roles.
 
 Other infra roles follow the same approach.
 
@@ -169,7 +133,7 @@ Two service roles are defined:
 
 For these roles, we decided to take the abstraction to a new level. Below is an example how a L2VPN is defined:
 
-  ```yaml title="roles/services/l2vpn/vars/test/l2vpn.yml"
+  ```yaml title="<code>roles/services/l2vpn/vars/test/l2vpn.yml</code>"
   l2vpn:                    # root of l2vpn intent, mapping of mac-vrf instances, with key=mac-vrf name 
     macvrf-200:             # name of the mac-vrf instance
       id: 200               # id of the mac-vrf instance: used for vlan-id and route-targets
@@ -182,7 +146,7 @@ For these roles, we decided to take the abstraction to a new level. Below is an 
         - ethernet-1/1.200
       export_rt: 100:200  # export route-target for EVPN address-family
       import_rt: 100:200  # import route-target for EVPN address-family
-      vlan: 200           # vlan-id for the mac-vrf instance. 
+      vlan: 200           # vlan-id for the mac-vrf instance.
                           # all sub-interfaces on all participating nodes will be configured with this vlan-id
   ```
 
@@ -192,7 +156,7 @@ The _l3vpn_ role follows a similar approach but depends on the _l2vpn_ role to d
 
 An example of a L3VPN intent is shown below:
 
-```yaml title="roles/services/l3vpn/vars/test/l3vpn.yml"
+```yaml title="<code>roles/services/l3vpn/vars/test/l3vpn.yml</code>"
 l3vpn:                      # root of l3vpn intent, mapping of ip-vrf instances, with key=ip-vrf name
   ipvrf-2001:               # name of the ip-vrf instance
     id: 2001                # id of the ip-vrf instance: used for route-targets
@@ -219,5 +183,7 @@ Following diagram gives an overview how the low-level device intent is construct
   <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":0,"zoom":2,"highlight":"#0000ff","nav":true,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/wdesmedt/ansible-srl-demo/main/img/ansible-srl-intent.drawio.svg"}'></div>
   <figcaption>Transforming high-level intent to device configuration</figcaption>
 </figure>
+
+The abstraction level defined in the roles eventually transforms to the low-level device configs that is then applied to the node. Essentially, the role designers have to decide how much abstraction they want to provide to the user of the role. The more abstraction, the easier it is to use the role, but the less flexibility the user has to configure the node. Network automation engineers then can adapt the provided roles to their needs by changing the abstraction level of the roles.
 
 <script type="text/javascript" src="https://viewer.diagrams.net/js/viewer-static.min.js" async></script>

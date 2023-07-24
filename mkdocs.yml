@@ -245,6 +245,7 @@ markdown_extensions:
   - pymdownx.smartsymbols
   - pymdownx.snippets:
       check_paths: true
+      url_download: true
   - pymdownx.superfences:
       custom_fences:
         - name: mermaid
