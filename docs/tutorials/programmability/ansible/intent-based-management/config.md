@@ -512,7 +512,7 @@ So far we only have discussed configuring L2VPN services. The same approach appl
 A L3VPN service is an abstract L3 construct that is composed of a set of subnets. A subnet is composed of a mac-vrf instance and a gateway IP address. An IP-prefix is assigned to each subnet by means of the gateway IP address. The L3VPN service acts a IP gateway for nodes connected to the subnet. Multiple subnets can be assigned to the same L3VPN service and it will perform inter-subnet routing to provide connectivity between nodes in the associated subnets.
 
 <figure markdown>
-  <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":0,"zoom":2,"highlight":"#0000ff","nav":true,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/wdesmedt/ansible-srl-demo/main/img/ansible-srl-l3vpn.drawio.svg"}'></div>
+  <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":0,"zoom":2,"highlight":"#0000ff","nav":true,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/srl-labs/intent-based-ansible-lab/main/img/ansible-srl-l3vpn.drawio.svg"}'></div>
   <figcaption>L3VPN Service</figcaption>
 </figure>
 
@@ -521,7 +521,7 @@ The mac-vrf referenced in the subnet (`snet_list`) links to a mac-vrf instance a
 At the device-level, a L3VPN service is composed of an ip-vrf instance on all the partipating nodes:
 
 <figure markdown>
-  <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":0,"zoom":2,"highlight":"#0000ff","nav":true,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/wdesmedt/ansible-srl-demo/main/img/ansible-srl-l3vpn-lo.drawio.svg"}'></div>
+  <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":0,"zoom":2,"highlight":"#0000ff","nav":true,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/srl-labs/intent-based-ansible-lab/main/img/ansible-srl-l3vpn-lo.drawio.svg"}'></div>
   <figcaption>Device-level L3VPN Service</figcaption>
 </figure>
 
