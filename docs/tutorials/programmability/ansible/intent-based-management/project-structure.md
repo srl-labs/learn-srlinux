@@ -180,7 +180,7 @@ It also generates a `delete` variable containing a list of configuration paths t
 Following diagram gives an overview how the low-level device intent is constructed from the various roles:
 
 <figure markdown>
-  <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":0,"zoom":2,"highlight":"#0000ff","nav":true,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/wdesmedt/ansible-srl-demo/main/img/ansible-srl-intent.drawio.svg"}'></div>
+  <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":0,"zoom":2,"highlight":"#0000ff","nav":true,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/srl-labs/intent-based-ansible-lab/main/img/ansible-srl-intent.drawio.svg"}'></div>
   <figcaption>Transforming high-level intent to device configuration</figcaption>
 </figure>
 
