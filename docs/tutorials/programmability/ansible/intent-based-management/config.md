@@ -12,7 +12,7 @@ If you have installed the [fcli](https://github.com/srl-labs/nornir-srl) tool, y
 
 === "LLDP neighbors"
     ```bash
-    ❯ fcli -t 4l2s.clab.yaml -i fabric=yes lldp-nbrs -f interface="eth*"
+    ❯ fcli -t 4l2s.clab.yml -i fabric=yes lldp-nbrs -f interface="eth*"
                                    LLDP Neighbors
                             Fields:{'interface': 'eth*'}
                             Inventory:{'fabric': 'yes'}
@@ -44,7 +44,7 @@ If you have installed the [fcli](https://github.com/srl-labs/nornir-srl) tool, y
     ```
 === "Network instances and interfaces"
     ```bash
-    ❯ fcli -t 4l2s.clab.yaml -i fabric=yes nwi-itfs
+    ❯ fcli -t 4l2s.clab.yml -i fabric=yes nwi-itfs
                                         Network-Instance Interfaces
                                         Inventory:{'fabric': 'yes'}
                    ╷      ╷      ╷        ╷           ╷         ╷         ╷                      ╷      ╷
@@ -72,58 +72,59 @@ To configure the underlay of the fabric - the configuration of interfaces and ro
 ENV=test ansible-playbook --tags infra cf_fabric.yml
 ```
 
-This will use the underlay intent stored in `roles/infra/*/vars/` that comes with to project to configure the underlay of the fabric. The `ENV` variable is used to select the correct variable folder from the infra roles.
+This will use the underlay intent stored in `roles/infra/*/vars/` and configure interfaces, import/export policies for underlay eBGP, as well as network instances and eBGP protocol used to exchange leaf's loopbacks.
 
 If you have the `fcli` tool installed, you can verify the configuration of the underlay with the following command that lists all the network-instances active on the fabric nodes. Alternatively, you can log into the nodes and verify the configuration manually. The `infra` roles should have configured the interfaces and routing on the nodes.
 
 === "Network-instances and interfaces"
+
     ```bash
-    $ fcli -i fabric=yes nwi-itfs
-                                                          Network-Instance Interfaces
-                                                      Inventory:{'fabric': 'yes'}
-    +------------------------------------------------------------------------------------------------------------------------------+
-    | Node         | ni      | oper | type    | router-id       | Subitf          | if-oper | ipv4                   | mtu  | vlan |
-    |--------------+---------+------+---------+-----------------+-----------------+---------+------------------------+------+------|
-    | clab-4l2s-l1 | default | up   | default | 192.168.255.1   | ethernet-1/48.0 | up      | ['192.168.1.1/31']     | 1500 |      |
-    |              |         |      |         |                 | ethernet-1/49.0 | up      | ['192.168.0.1/31']     | 1500 |      |
-    |              |         |      |         |                 | system0.0       | up      | ['192.168.255.1/32']   |      |      |
-    |              | mgmt    | up   | ip-vrf  |                 | mgmt0.0         | up      | ['172.20.21.11/24']    | 1500 |      |
-    |--------------+---------+------+---------+-----------------+-----------------+---------+------------------------+------+------|
-    | clab-4l2s-l2 | default | up   | default | 192.168.255.2   | ethernet-1/48.0 | up      | ['192.168.1.3/31']     | 1500 |      |
-    |              |         |      |         |                 | ethernet-1/49.0 | up      | ['192.168.0.3/31']     | 1500 |      |
-    |              |         |      |         |                 | system0.0       | up      | ['192.168.255.2/32']   |      |      |
-    |              | mgmt    | up   | ip-vrf  |                 | mgmt0.0         | up      | ['172.20.21.12/24']    | 1500 |      |
-    |--------------+---------+------+---------+-----------------+-----------------+---------+------------------------+------+------|
-    | clab-4l2s-l3 | default | up   | default | 192.168.255.3   | ethernet-1/48.0 | up      | ['192.168.1.5/31']     | 1500 |      |
-    |              |         |      |         |                 | ethernet-1/49.0 | up      | ['192.168.0.5/31']     | 1500 |      |
-    |              |         |      |         |                 | system0.0       | up      | ['192.168.255.3/32']   |      |      |
-    |              | mgmt    | up   | ip-vrf  |                 | mgmt0.0         | up      | ['172.20.21.13/24']    | 1500 |      |
-    |--------------+---------+------+---------+-----------------+-----------------+---------+------------------------+------+------|
-    | clab-4l2s-l4 | default | up   | default | 192.168.255.4   | ethernet-1/48.0 | up      | ['192.168.1.7/31']     | 1500 |      |
-    |              |         |      |         |                 | ethernet-1/49.0 | up      | ['192.168.0.7/31']     | 1500 |      |
-    |              |         |      |         |                 | system0.0       | up      | ['192.168.255.4/32']   |      |      |
-    |              | mgmt    | up   | ip-vrf  |                 | mgmt0.0         | up      | ['172.20.21.14/24']    | 1500 |      |
-    |--------------+---------+------+---------+-----------------+-----------------+---------+------------------------+------+------|
-    | clab-4l2s-s1 | default | up   | default | 192.168.255.101 | ethernet-1/1.0  | up      | ['192.168.0.0/31']     | 1500 |      |
-    |              |         |      |         |                 | ethernet-1/2.0  | up      | ['192.168.0.2/31']     | 1500 |      |
-    |              |         |      |         |                 | ethernet-1/3.0  | up      | ['192.168.0.4/31']     | 1500 |      |
-    |              |         |      |         |                 | ethernet-1/4.0  | up      | ['192.168.0.6/31']     | 1500 |      |
-    |              |         |      |         |                 | system0.0       | up      | ['192.168.255.101/32'] |      |      |
-    |              | mgmt    | up   | ip-vrf  |                 | mgmt0.0         | up      | ['172.20.21.101/24']   | 1500 |      |
-    |--------------+---------+------+---------+-----------------+-----------------+---------+------------------------+------+------|
-    | clab-4l2s-s2 | default | up   | default | 192.168.255.102 | ethernet-1/1.0  | up      | ['192.168.1.0/31']     | 1500 |      |
-    |              |         |      |         |                 | ethernet-1/2.0  | up      | ['192.168.1.2/31']     | 1500 |      |
-    |              |         |      |         |                 | ethernet-1/3.0  | up      | ['192.168.1.4/31']     | 1500 |      |
-    |              |         |      |         |                 | ethernet-1/4.0  | up      | ['192.168.1.6/31']     | 1500 |      |
-    |              |         |      |         |                 | system0.0       | up      | ['192.168.255.102/32'] |      |      |
-    |              | mgmt    | up   | ip-vrf  |                 | mgmt0.0         | up      | ['172.20.21.102/24']   | 1500 |      |
-    +------------------------------------------------------------------------------------------------------------------------------+
+    ❯ fcli -t 4l2s.clab.yml -i fabric=yes nwi-itfs
+                                                      Network-Instance Interfaces                                                   
+                                                      Inventory:{'fabric': 'yes'}                                                   
+                   ╷         ╷      ╷         ╷                 ╷                 ╷         ╷                        ╷      ╷       
+      Node         │ ni      │ oper │ type    │ router-id       │ Subitf          │ if-oper │ ipv4                   │ mtu  │ vlan  
+     ══════════════╪═════════╪══════╪═════════╪═════════════════╪═════════════════╪═════════╪════════════════════════╪══════╪══════ 
+      clab-4l2s-l1 │ default │ up   │ default │ 192.168.255.1   │ ethernet-1/48.0 │ up      │ ['192.168.1.1/31']     │ 1500 │       
+                   │         │      │         │                 │ ethernet-1/49.0 │ up      │ ['192.168.0.1/31']     │ 1500 │       
+                   │         │      │         │                 │ system0.0       │ up      │ ['192.168.255.1/32']   │      │       
+                   │ mgmt    │ up   │ ip-vrf  │                 │ mgmt0.0         │ up      │ ['172.20.21.11/24']    │ 1500 │       
+     ──────────────┼─────────┼──────┼─────────┼─────────────────┼─────────────────┼─────────┼────────────────────────┼──────┼────── 
+      clab-4l2s-l2 │ default │ up   │ default │ 192.168.255.2   │ ethernet-1/48.0 │ up      │ ['192.168.1.3/31']     │ 1500 │       
+                   │         │      │         │                 │ ethernet-1/49.0 │ up      │ ['192.168.0.3/31']     │ 1500 │       
+                   │         │      │         │                 │ system0.0       │ up      │ ['192.168.255.2/32']   │      │       
+                   │ mgmt    │ up   │ ip-vrf  │                 │ mgmt0.0         │ up      │ ['172.20.21.12/24']    │ 1500 │       
+     ──────────────┼─────────┼──────┼─────────┼─────────────────┼─────────────────┼─────────┼────────────────────────┼──────┼────── 
+      clab-4l2s-l3 │ default │ up   │ default │ 192.168.255.3   │ ethernet-1/48.0 │ up      │ ['192.168.1.5/31']     │ 1500 │       
+                   │         │      │         │                 │ ethernet-1/49.0 │ up      │ ['192.168.0.5/31']     │ 1500 │       
+                   │         │      │         │                 │ system0.0       │ up      │ ['192.168.255.3/32']   │      │       
+                   │ mgmt    │ up   │ ip-vrf  │                 │ mgmt0.0         │ up      │ ['172.20.21.13/24']    │ 1500 │       
+     ──────────────┼─────────┼──────┼─────────┼─────────────────┼─────────────────┼─────────┼────────────────────────┼──────┼────── 
+      clab-4l2s-l4 │ default │ up   │ default │ 192.168.255.4   │ ethernet-1/48.0 │ up      │ ['192.168.1.7/31']     │ 1500 │       
+                   │         │      │         │                 │ ethernet-1/49.0 │ up      │ ['192.168.0.7/31']     │ 1500 │       
+                   │         │      │         │                 │ system0.0       │ up      │ ['192.168.255.4/32']   │      │       
+                   │ mgmt    │ up   │ ip-vrf  │                 │ mgmt0.0         │ up      │ ['172.20.21.14/24']    │ 1500 │       
+     ──────────────┼─────────┼──────┼─────────┼─────────────────┼─────────────────┼─────────┼────────────────────────┼──────┼────── 
+      clab-4l2s-s1 │ default │ up   │ default │ 192.168.255.101 │ ethernet-1/1.0  │ up      │ ['192.168.0.0/31']     │ 1500 │       
+                   │         │      │         │                 │ ethernet-1/2.0  │ up      │ ['192.168.0.2/31']     │ 1500 │       
+                   │         │      │         │                 │ ethernet-1/3.0  │ up      │ ['192.168.0.4/31']     │ 1500 │       
+                   │         │      │         │                 │ ethernet-1/4.0  │ up      │ ['192.168.0.6/31']     │ 1500 │       
+                   │         │      │         │                 │ system0.0       │ up      │ ['192.168.255.101/32'] │      │       
+                   │ mgmt    │ up   │ ip-vrf  │                 │ mgmt0.0         │ up      │ ['172.20.21.101/24']   │ 1500 │       
+     ──────────────┼─────────┼──────┼─────────┼─────────────────┼─────────────────┼─────────┼────────────────────────┼──────┼────── 
+      clab-4l2s-s2 │ default │ up   │ default │ 192.168.255.102 │ ethernet-1/1.0  │ up      │ ['192.168.1.0/31']     │ 1500 │       
+                   │         │      │         │                 │ ethernet-1/2.0  │ up      │ ['192.168.1.2/31']     │ 1500 │       
+                   │         │      │         │                 │ ethernet-1/3.0  │ up      │ ['192.168.1.4/31']     │ 1500 │       
+                   │         │      │         │                 │ ethernet-1/4.0  │ up      │ ['192.168.1.6/31']     │ 1500 │       
+                   │         │      │         │                 │ system0.0       │ up      │ ['192.168.255.102/32'] │      │       
+                   │ mgmt    │ up   │ ip-vrf  │                 │ mgmt0.0         │ up      │ ['172.20.21.102/24']   │ 1500 │       
+                   ╵         ╵      ╵         ╵                 ╵                 ╵         ╵                        ╵      ╵       
     ```
 === "BGP peers"
     ```bash
-    ❯ fcli -i fabric=yes bgp-peers -b ascii
-                                                                     BGP Peers
-                                                            Inventory:{'fabric': 'yes'}
+    ❯ fcli -t 4l2s.clab.yml -i fabric=yes bgp-peers -b ascii
+                                                                        BGP Peers
+                                                                Inventory:{'fabric': 'yes'}
     +-------------------------------------------------------------------------------------------------------------------------------------------------+
     |              |          |                 | AFI/SAFI  | AFI/SAFI  |                |         |               |          |         |             |
     |              |          |                 | EVPN      | IPv4-UC   |                |         |               |          |         |             |
@@ -203,7 +204,7 @@ To apply this service to the fabric, we first run the playbook in _dry-run_ mode
 
 This will show the difference between intent and device configuration and show what configuration would be applied to the devices. We'll show the `diff` output of a single device, as the output is similar for other devices, to illustrate the transformation from 10 lines of intent to a detailed low-level device intent:
 
-```bash
+```diff
 ...
 TASK [common/configure : Update resources on clab-4l2s-l1] ************************************************
 ok: [clab-4l2s-l3]
@@ -280,7 +281,7 @@ With `fcli` we can verify that the service is configured correctly:
 
 === "Network Instances"
     ```
-    ❯ fcli -i fabric=yes nwi-itfs -f ni="macvrf*"
+    ❯ fcli -t 4l2s.clab.yml -i fabric=yes nwi-itfs -f ni="macvrf*"
                                           Network-Instance Interfaces
                                             Fields:{'ni': 'macvrf*'}
                                           Inventory:{'fabric': 'yes'}
@@ -294,7 +295,7 @@ With `fcli` we can verify that the service is configured correctly:
     ```
 === "MAC table of `macvrf-200`"
     ```
-    ❯ fcli -i fabric=yes mac-table -f Netw-Inst=macvrf-200
+    ❯ fcli -t 4l2s.clab.yml -i fabric=yes mac-table -f Netw-Inst=macvrf-200
                                                         MAC Table
                                             Fields:{'Netw-Inst': 'macvrf-200'}
                                               Inventory:{'fabric': 'yes'}
@@ -389,10 +390,10 @@ Run the playbook again as before, and we can see that the service is now configu
 +--------------------------------------------------------------------------------------------------------+
 ```
 
-To further illustrate the _declarative_ nature of the intents, you could change the `vlan` field to e.g. 10. This will break connectivty between the connected servers but it will yield a correct configuration on the leafs.
+To further illustrate the _declarative_ nature of the intents, you could change the `vlan` field to e.g. 10. This will break connectivity between the connected servers but it will yield a correct configuration on the leafs.
 
 !!!note
-    When an update to a service intent results in low-level resources (subinteface, network-instance, tunnel-interface, ...) being replaced (e.g. change subinterface ethernet-1/1.0 to ethernet-1/1.1), running a partial playbook with `--tags services` may fail model validation by SR Linux because the old interface is not deleted, resulting in 2 sub-interfaces on same parent interface with same encapsulation.
+    When an update to a service intent results in low-level resources (subinterface, network-instance, tunnel-interface, ...) being replaced (e.g. change subinterface ethernet-1/1.0 to ethernet-1/1.1), running a partial playbook with `--tags services` may fail model validation by SR Linux because the old interface is not deleted, resulting in 2 sub-interfaces on same parent interface with same encapsulation.
 
     We therefore recommend to run the full playbook (no tags or `--tags all`) when updating a service intent.
 
@@ -508,7 +509,7 @@ During next runs services or resources tagged for deletion remain in the intent 
 
 So far we only have discussed configuring L2VPN services. The same approach applies for adding, updating and pruning L3VPN services. We discuss L3VPNs at this later stage due to the dependency on L2VPNs. As you will see from the L3VPN intent below, the intent data contains references to macvrfs. As macvrfs are managed through L2VPN intents only, any reference to mac-vrfs in L3VPN intents must have its counterpart in L2VPN intents.
 
-A L3VPN service is an abstract L3 construct that is composed of a set of subnets. A subnet is composed of a mac-vrf instance and a gateway IP address. An IP-prefix is assigned to each subnet by means of the gateway IP address. The L3VPN service acts a IP gateway for nodes connected to the subnet. Multiple subnets can be assigned to the same L3VPN service and it will perform inter-subnet routing to provide connectivity between nodes in the associated submets.
+A L3VPN service is an abstract L3 construct that is composed of a set of subnets. A subnet is composed of a mac-vrf instance and a gateway IP address. An IP-prefix is assigned to each subnet by means of the gateway IP address. The L3VPN service acts a IP gateway for nodes connected to the subnet. Multiple subnets can be assigned to the same L3VPN service and it will perform inter-subnet routing to provide connectivity between nodes in the associated subnets.
 
 <figure markdown>
   <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":0,"zoom":2,"highlight":"#0000ff","nav":true,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/wdesmedt/ansible-srl-demo/main/img/ansible-srl-l3vpn.drawio.svg"}'></div>
@@ -524,7 +525,7 @@ At the device-level, a L3VPN service is composed of an ip-vrf instance on all th
   <figcaption>Device-level L3VPN Service</figcaption>
 </figure>
 
-On each of the participating nodes, 1 or more mac-vrfs are instantiated, 1 for each subnet on the node, and associated with the local ip-vrf instance by means of an _irb_ interface. Each mac-vrf gets an unique _irb_ sub-interface that is also added to the ip-vrf instance. The _irb_ sub-interface is assigned the gateway IP address of the subnet. The physical attachments are defined in the assoicated L2VPN intent (linked to L3VPN by means of macvrf name) and correspond to ethernet sub-interfaces that have encapsulation as defined by the `vlan` parameter of the L2VPN intent.
+On each of the participating nodes, 1 or more mac-vrfs are instantiated, 1 for each subnet on the node, and associated with the local ip-vrf instance by means of an _irb_ interface. Each mac-vrf gets an unique _irb_ sub-interface that is also added to the ip-vrf instance. The _irb_ sub-interface is assigned the gateway IP address of the subnet. The physical attachments are defined in the associated L2VPN intent (linked to L3VPN by means of macvrf name) and correspond to ethernet sub-interfaces that have encapsulation as defined by the `vlan` parameter of the L2VPN intent.
 
 Below is an example of an L3VPN intent:
 
@@ -589,7 +590,7 @@ Now run the playbook again and verify that the L3VPN service is configured on th
 - with `fcli`:
 
     ```bash
-    ❯ fcli -i fabric=yes nwi-itfs -f ni="ipvrf*"
+    ❯ fcli -t 4l2s.clab.yml -i fabric=yes nwi-itfs -f ni="ipvrf*"
                                               Network-Instance Interfaces                                           
                                                 Fields:{'ni': 'ipvrf*'}                                             
                                               Inventory:{'fabric': 'yes'}                                           
@@ -605,5 +606,7 @@ Now run the playbook again and verify that the L3VPN service is configured on th
     | clab-4l2s-l4 | ipvrf-2001 | up   | ip-vrf |           | irb1.301 | up      | ['10.1.2.254/24'] | 1500 |      |
     +--------------------------------------------------------------------------------------------------------------+
     ```
+
+With both underlay, L2VPN and L3VPN services configured we conclude the fabric configuration part. Let's [summarize](summary.md) the project goals and design choices.
 
 <script type="text/javascript" src="https://viewer.diagrams.net/js/viewer-static.min.js" async></script>
