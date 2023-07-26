@@ -1,5 +1,5 @@
 ---
-date: 2023-07-13
+date: 2023-27-13
 tags:
   - gnmi
   - pygnmi
@@ -24,11 +24,27 @@ In this blog post we are going to dive into the details of the script, discoveri
 
 <!-- more -->
 
+## Setup
+This script installs and starts Docker, a containerization platform, on a Linux machine using the dnf package manager. Then, it installs containerlab, a tool used for creating and managing container-based network labs
+```bash
+# Install docker
+sudo dnf -y install docker
+sudo systemctl start docker
+sudo systemctl enable docker
+
+# Install containerlab
+bash -c "$(curl -sL https://get.containerlab.dev)"
+```
+
+Then, create your own virtual env for python and install the [requirements](https://github.com/cloud-native-everything/pygnmi-srl-nanog88/blob/main/py-scripts/requirements.txt).
+
+And finally, start the lab with the topology file in the repo: `clab deploy -t topo.yml`
+
 ## How this app works
 
 This application connects to a list of specified routers via the gNMI protocol, retrieving BGP EVPN and BGP VPN information, which is then formatted for easy viewing using Python modules like tabulate and Prettytable.
 
-The heart of the application is the `SrlDevice` class, representing a router. The class is initialized with the router's basic details and employs the gNMI client to extract BGP EVPN and BGP VPN data. The app creates a list of these SrlDevice instances based on a YAML configuration file ('datacenter-nodes.yml'), resulting in two tables sorted by router name and network instance.
+The heart of the application is the `SrlDevice` class, representing a router. The class is initialized with the router's basic details and employs the gNMI client to extract BGP EVPN and BGP VPN data. The app creates a list of these SrlDevice instances based on a YAML configuration file ('[datacenter-nodes.yml](https://github.com/cloud-native-everything/pygnmi-srl-nanog88/blob/main/py-scripts/datacenter-nodes.yml)'), resulting in two tables sorted by router name and network instance.
 
 Running the python script `display_evpn_per_netinst.py` with the YAML configuration file generates an output like the one shown below:
 
@@ -66,12 +82,13 @@ Now, if you have a typo in the EVI number, then the script will show you that:
 
 ## How to use it
 
-To use the python class, you'll need to install some modules, including tabulate and pygnmi. Following this, you can import the class as such:
+To use the python class, you'll need to install some modules, including tabulate and pygnmi. 
+Use this [requirements.txt](https://github.com/cloud-native-everything/pygnmi-srl-nanog88/blob/main/py-scripts/requirements.txt) file in the repo.
 
 ```python
-from srl_evpn_class import SrlDevice
-from srl_evpn_class import MergeEvpnToArray
-from srl_evpn_class import HighlightAlternateGroups
+from SrlEvpn import SrlDevice
+from SrlEvpn import MergeEvpnToArray
+from SrlEvpn import HighlightAlternateGroups
 ```
 
 We're using the yaml module to import data for the app. Once you've imported the data, you can call the class as follows:
