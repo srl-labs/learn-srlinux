@@ -1,5 +1,5 @@
 ---
-date: 2023-27-13
+date: 2023-7-27
 tags:
   - gnmi
   - pygnmi
