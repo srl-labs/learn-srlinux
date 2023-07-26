@@ -76,7 +76,7 @@ This will use the underlay intent stored in `roles/infra/*/vars/` and configure 
 
 <figure markdown>
   <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":0,"zoom":2,"highlight":"#0000ff","nav":true,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/srl-labs/intent-based-ansible-lab/main/img/ansible-srl-underlay.drawio.svg"}'></div>
-  <figcaption>Underlay Routing</figcaption>
+  <figcaption>Underlay Routing infrastructure to support overlay services</figcaption>
 </figure>
 
 If you have the `fcli` tool installed, you can verify the configuration of the underlay with the following command that lists all the network-instances active on the fabric nodes. Alternatively, you can log into the nodes and verify the configuration manually. The `infra` roles should have configured the interfaces and routing on the nodes.
