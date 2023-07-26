@@ -84,8 +84,7 @@ Let's get back to our running fabric and once again verify that we have opergrou
                 }
             }
         }
-
-```
+    ```
 === "ensuring opergroup is running"
     ```js
     A:leaf1# info  from state /system event-handler instance opergroup oper-state
@@ -96,7 +95,7 @@ Let's get back to our running fabric and once again verify that we have opergrou
                 }
             }
         }
-```
+    ```
 
 ### Disabling one uplink
 
