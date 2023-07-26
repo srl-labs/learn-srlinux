@@ -74,6 +74,11 @@ ENV=test ansible-playbook --tags infra cf_fabric.yml
 
 This will use the underlay intent stored in `roles/infra/*/vars/` and configure interfaces, import/export policies for underlay eBGP, as well as network instances and eBGP protocol used to exchange leaf's loopbacks.
 
+<figure markdown>
+  <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":0,"zoom":2,"highlight":"#0000ff","nav":true,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/srl-labs/intent-based-ansible-lab/main/img/ansible-srl-underlay.drawio.svg"}'></div>
+  <figcaption>Underlay Routing</figcaption>
+</figure>
+
 If you have the `fcli` tool installed, you can verify the configuration of the underlay with the following command that lists all the network-instances active on the fabric nodes. Alternatively, you can log into the nodes and verify the configuration manually. The `infra` roles should have configured the interfaces and routing on the nodes.
 
 === "Network-instances and interfaces"
@@ -433,7 +438,7 @@ l2vpn:
 ```
 
 !!!note
-    You can also split the `l2vpn` intents in multiple files inside the role's `vars` directory. Ansible will load variables from all files in aplhabetical order. This is useful if you want to split the configuration in multiple files for better readability, e.g. a file per service instance.
+    You can also split the `l2vpn` intents in multiple files inside the role's `vars` directory. Ansible will load variables from all files in alphabetical order. This is useful if you want to split the configuration in multiple files for better readability, e.g. a file per service instance.
 
 Run the playbook again and verify that the new service instance is configured on the leafs.
 
