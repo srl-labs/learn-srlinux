@@ -13,13 +13,21 @@ authors:
 
 # SR Linux Kubernetes Anycast Lab
 
-[Containerlab](https://containerlab.dev/) is a game-changer for every network engineer. It helps you to effortlessly create complex network topologies and validate features, scenarios... At the same time, [Minikube](https://minikube.sigs.k8s.io/) unlocks the power of Kubernetes on your local machine to quickly test and experiment with containerized applications.
+Network infrastructure is essential to Kubernetes for several reasons:
 
-Wouldn't it be great to combine both worlds?
+1. **DC fabric**: Almost every k8s cluster leverages a DC fabric underneath to interconnect worker nodes together
+2. **Communication Between Services**: Kubernetes applications are often composed of multiple microservices that need to communicate with each other. A well-designed network infrastructure ensures reliable and efficient communication between these services, contributing to overall application performance.
+3. **Load Balancing**: Kubernetes distributes incoming traffic across multiple instances of an application for improved availability and responsiveness. A robust network setup provides load balancing capabilities, preventing overload on specific instances and maintaining a smooth user experience.
+4. **Scalability and Resilience**: Kubernetes is renowned for its ability to scale applications up or down based on demand. A resilient network infrastructure supports this scalability by efficiently routing traffic and maintaining service availability even during high traffic periods.
+
+Being able to test all these features is key for any network engineer working with a fabric supporting a k8s cluster. Wouldn't it be great to have a way to test it?
 
 In this blog post we will explore a lab topology consisting of a Leaf/Spine [SR Linux](https://learn.srlinux.dev/) Fabric connected to a Kubernetes Cluster.
 
 Our k8s Cluster will feature [MetalLB](https://metallb.universe.tf/), which is a load-balancer implementation for bare metal clusters. This will unlock the possibility to have anycast services in our fabric.
+
+To deploy this lab we will use [Containerlab](https://containerlab.dev/) which help us to effortlessly create complex network topologies and validate features, scenarios... And also, [Minikube](https://minikube.sigs.k8s.io/) which is an open-source tool that facilitates running Kubernetes clusters locally to quickly test and experiment with containerized applications.
+
 
 <!-- more -->
 
@@ -42,25 +50,48 @@ The lab leverages [Containerlab](https://containerlab.dev/)  to spin up a Leaf/S
 
 [Docker engine](https://docs.docker.com/engine/install/) has to be installed on the host system.
 
+[kubectl](https://kubernetes.io/docs/tasks/tools/) is also required.
+
 ## Lab topology
 
 The goal of this lab is to provide users with an environment to test the network integration of a Kubernetes cluster with a Leaf/Spine SR Linux fabric.   
 
 
-<center markdown>![topology](sr-linux-kubernetes-anycast-lab/topology.svg){width=100%}</p>
-</small>Topology</small></center>
-
+<figure markdown>
+  <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":0,"zoom":1.7,"highlight":"#0000ff","nav":true,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/srl-labs/srl-k8s-anycast-lab/main/images/topology.drawio"}'></div>
+  <figcaption>Topology</figcaption>
+</figure>
 
 The setup consists of:
 
   - A Leaf/Spine Fabric: 2xSpines, 4xLeaf switches 
-  - Minikube kubernetes cluster (3 nodes) 
-  - Linux clients to simulate connections to k8s services (4 clients)
+  - Minikube kubernetes cluster with MetalLB load balancing implementation (3 nodes)
+  - Kubernetes service deployed on top of Cluster
+  - Linux clients to simulate connections to k8s service (4 clients)
 
-Thanks to MetalLB, Kubernetes nodes establish BGP sessions with Leaf switches to announce the VIP of the service.
+Thanks to MetalLB, Kubernetes nodes establish BGP sessions with Leaf switches. In those sessions the IP addresses of the exposed services (loadBalancerIPs, commonly known as VIPs ) are to announced to the fabric.
 
-Clients will simulate connections to the VIP by using curl. The service is a Nginx HTTP echo server, deployed as multiple pods in the Kubernetes Cluster.
+Clients will simulate connections to the VIP by using curl. 
 
+## Kubernetes Service description
+
+The end service we will use on top of the kubernetes cluster is a Nginx HTTP echo server. This service will be deployed and exposed in all the k8s nodes. With simulated clients, we will verify how traffic is distributed among the different nodes/pods.
+
+## Underlay Networking
+
+The fabric is configured with [BGP unnumbered peering](https://documentation.nokia.com/srlinux/23-3/books/routing-protocols/bgp.html#bgp-unnumbered-peer). Spine switches act as BGP route reflectors for the BGP EVPN family.
+
+## Overlay Networking
+
+Clients and k8s nodes are conected to a dedicated L3 EVPN network-instance `ip-vrf1`. This network instance is present in every leaf switch. Traffic between switches is encapsulated in VXLAN and transported by Spines. Two subnets are configured under this `ip-vrf1`:
+
+- k8s nodes subnet: 192.168.1.0/24
+- clients subnet: 192.168.2.0/24
+
+<figure markdown>
+  <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":0,"zoom":1.7,"highlight":"#0000ff","nav":true,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/srl-labs/srl-k8s-anycast-lab/main/images/logical.drawio"}'></div>
+  <figcaption>Logical network topology</figcaption>
+</figure>
 
 ## Containerlab toplogy file
 
@@ -76,6 +107,7 @@ topology:
   kinds:
     srl:
       image: ghcr.io/nokia/srlinux:23.3.3
+      type: ixrd2l
     linux:
       image: ghcr.io/hellt/network-multitool
   # -- snip --
@@ -87,7 +119,7 @@ We will use the latest [SR linux image](https://github.com/nokia/srlinux-contain
 
 Kubernetes container images and container creation are directly managed by Minikube.
 
-### nodes
+### Nodes
 And let's also review the definition of our Lab components: Leaf/Spine switches, K8s nodes and Linux clients:
 
 ```yaml title="node definition"
@@ -96,7 +128,6 @@ topology:
   nodes:
     leaf1:
       kind: srl
-      type: ixrd2l
       startup-config: configs/leaf1.conf
  
     cluster1: 
@@ -105,20 +136,20 @@ topology:
         - ip address add 192.168.1.11/24 dev eth1
         - ip route add 192.168.0.0/16 via 192.168.1.1
   
-    cli1:
+    client1:
      kind: linux
      binds:
         - configs/hostname.sh:/hostname.sh
+        - configs/client1-config.sh:/client1-config.sh
      exec:
         - bash /hostname.sh # (2)
-        - ip add add 192.168.2.11/24 dev eth1
-        - ip route del 0.0.0.0/0
-        - ip route add 0.0.0.0/0 via  192.168.2.1
+        - bash /client1-config.sh # (3)
 # -- snip --
 ```
 
 1.  Minikube will name k8s container nodes with the  name `minikube` by default. If the minikube option `profile` is used, it will use the profile name. Here, we use the profile name `cluster1`. First node is named `cluster1`, second `cluster1-m02`... 
 2. `bash /hostname.sh` is just a hacky script that updates the shell with the name of the container, so it's easier to see where we are connected when we attach to the client containers.
+3. Client IP addresses and routes are configured through this script.
 
 Containerlab will configure the Leaf/Spine fabric at boot time. You can check the configurations in the [config][clab-configs] folder.
 
@@ -130,7 +161,7 @@ Later in the blog post we will carefully explain the process to fully boot up th
     Consult with [containerlab](https://containerlab.dev/manual/kinds/ext-container/) documentation to learn more about the `ext-container` kind.
 
 
-### links
+### Links
 And finally, let's see how we interconnect all elements:
 
 ```yaml title="Defining links"
@@ -143,22 +174,22 @@ topology:
     - endpoints: ["spine1:e1-2", "leaf2:e1-49"]
     - endpoints: ["spine1:e1-3", "leaf3:e1-49"]
     - endpoints: ["spine1:e1-4", "leaf4:e1-49"]
+
     - endpoints: ["spine2:e1-1", "leaf1:e1-50"]
     - endpoints: ["spine2:e1-2", "leaf2:e1-50"]
     - endpoints: ["spine2:e1-3", "leaf3:e1-50"]
     - endpoints: ["spine2:e1-4", "leaf4:e1-50"]
-
+    
     #### minikube ####
     - endpoints: ["leaf1:e1-1", "cluster1:eth1"]
     - endpoints: ["leaf2:e1-1", "cluster1-m02:eth1"]
     - endpoints: ["leaf3:e1-1", "cluster1-m03:eth1"]
 
-
     #### clients ####
-    - endpoints: ["cli1:eth1", "leaf1:e1-2"]
-    - endpoints: ["cli2:eth1", "leaf2:e1-2"]
-    - endpoints: ["cli3:eth1", "leaf3:e1-2"]
-    - endpoints: ["cli4:eth1", "leaf4:e1-2"]
+    - endpoints: ["client1:eth1", "leaf1:e1-2"]
+    - endpoints: ["client2:eth1", "leaf2:e1-2"]
+    - endpoints: ["client3:eth1", "leaf3:e1-2"]
+    - endpoints: ["client4:eth1", "leaf4:e1-2"]
 ```
 This is the full definition of all the connections required. As you can see, we use the first port (`e1-1`) of every leaf switch to connect the k8s node and second port (`e1-2`) to connect a client for tests.
 
@@ -199,7 +230,7 @@ At the same time, in shell1, you can see how Containerlab starts "patching" `eth
 INFO[0022] node "cluster1-m02" depends on external container "cluster1-m02", which is not running yet. Waited 22s. Retrying...
 INFO[0022] node "cluster1-m02" depends on external container "cluster1-m02", which is not running yet. Waited 22s. Retrying...
 INFO[0022] node "cluster1-m02" depends on external container "cluster1-m02", which is not running yet. Waited 22s. Retrying...
-INFO[0022] Creating virtual wire: metal-leaf2:e1-1 <--> cluster1-m02:eth1
+INFO[0022] Creating virtual wire: leaf2:e1-1 <--> cluster1-m02:eth1
 ```
 
 At the end of the deployment process, you will see the summary table with details about deployed nodes:
@@ -210,19 +241,19 @@ INFO[0000] Containerlab v0.42.0 started
 +----+--------------+--------------+-------------------------------------------------------------------------------------------------------------+---------------+---------+-----------------+----------------------+
 | #  |     Name     | Container ID |                                                    Image                                                    |     Kind      |  State  |  IPv4 Address   |     IPv6 Address     |
 +----+--------------+--------------+-------------------------------------------------------------------------------------------------------------+---------------+---------+-----------------+----------------------+
-|  1 | cluster1     | fe51f4b99245 | gcr.io/k8s-minikube/kicbase:v0.0.39@sha256:bf2d9f1e9d837d8deea073611d2605405b6be904647d97ebd9b12045ddfe1106 | ext-container | running | 192.168.49.2/24 | N/A                  |
-|  2 | cluster1-m02 | ec2c882959c4 | gcr.io/k8s-minikube/kicbase:v0.0.39@sha256:bf2d9f1e9d837d8deea073611d2605405b6be904647d97ebd9b12045ddfe1106 | ext-container | running | 192.168.49.3/24 | N/A                  |
-|  3 | cluster1-m03 | 17e974bd8be4 | gcr.io/k8s-minikube/kicbase:v0.0.39@sha256:bf2d9f1e9d837d8deea073611d2605405b6be904647d97ebd9b12045ddfe1106 | ext-container | running | 192.168.49.4/24 | N/A                  |
-|  4 | cli1         | 077b4a8a1637 | ghcr.io/hellt/network-multitool                                                                             | linux         | running | 172.20.20.7/24  | 2001:172:20:20::7/64 |
-|  5 | cli2         | d37fdfc4dab7 | ghcr.io/hellt/network-multitool                                                                             | linux         | running | 172.20.20.5/24  | 2001:172:20:20::5/64 |
-|  6 | cli3         | 800f2389d7b0 | ghcr.io/hellt/network-multitool                                                                             | linux         | running | 172.20.20.10/24 | 2001:172:20:20::a/64 |
-|  7 | cli4         | 9049f6031e81 | ghcr.io/hellt/network-multitool                                                                             | linux         | running | 172.20.20.11/24 | 2001:172:20:20::b/64 |
-|  8 | leaf1        | 72b35012bfe4 | ghcr.io/nokia/srlinux:23.3.3                                                                                | srl           | running | 172.20.20.2/24  | 2001:172:20:20::2/64 |
-|  9 | leaf2        | afcd88f998d5 | ghcr.io/nokia/srlinux:23.3.3                                                                                | srl           | running | 172.20.20.6/24  | 2001:172:20:20::6/64 |
-| 10 | leaf3        | ba4ac1d2b0cf | ghcr.io/nokia/srlinux:23.3.3                                                                                | srl           | running | 172.20.20.8/24  | 2001:172:20:20::8/64 |
-| 11 | leaf4        | eb04640e81bb | ghcr.io/nokia/srlinux:23.3.3                                                                                | srl           | running | 172.20.20.3/24  | 2001:172:20:20::3/64 |
-| 12 | spine1       | 28adfba1fb86 | ghcr.io/nokia/srlinux:23.3.3                                                                                | srl           | running | 172.20.20.9/24  | 2001:172:20:20::9/64 |
-| 13 | spine2       | 6461294e19fb | ghcr.io/nokia/srlinux:23.3.3                                                                                | srl           | running | 172.20.20.4/24  | 2001:172:20:20::4/64 |
+|  1 | cluster1     | 9fa3a758bb4b | gcr.io/k8s-minikube/kicbase:v0.0.39@sha256:bf2d9f1e9d837d8deea073611d2605405b6be904647d97ebd9b12045ddfe1106 | ext-container | running | 192.168.49.2/24 | N/A                  |
+|  2 | cluster1-m02 | 376501089ecc | gcr.io/k8s-minikube/kicbase:v0.0.39@sha256:bf2d9f1e9d837d8deea073611d2605405b6be904647d97ebd9b12045ddfe1106 | ext-container | running | 192.168.49.3/24 | N/A                  |
+|  3 | cluster1-m03 | 64a4e8bbdd73 | gcr.io/k8s-minikube/kicbase:v0.0.39@sha256:bf2d9f1e9d837d8deea073611d2605405b6be904647d97ebd9b12045ddfe1106 | ext-container | running | 192.168.49.4/24 | N/A                  |
+|  4 | client1      | 592e09690912 | ghcr.io/hellt/network-multitool                                                                             | linux         | running | 172.20.20.8/24  | 2001:172:20:20::8/64 |
+|  5 | client2      | 95220f94b6f0 | ghcr.io/hellt/network-multitool                                                                             | linux         | running | 172.20.20.10/24 | 2001:172:20:20::a/64 |
+|  6 | client3      | 7572185a5ca4 | ghcr.io/hellt/network-multitool                                                                             | linux         | running | 172.20.20.9/24  | 2001:172:20:20::9/64 |
+|  7 | client4      | d97d63b2204b | ghcr.io/hellt/network-multitool                                                                             | linux         | running | 172.20.20.4/24  | 2001:172:20:20::4/64 |
+|  8 | leaf1        | f409d3e950a3 | ghcr.io/nokia/srlinux:23.3.3                                                                                | srl           | running | 172.20.20.7/24  | 2001:172:20:20::7/64 |
+|  9 | leaf2        | bf9c6d3e327f | ghcr.io/nokia/srlinux:23.3.3                                                                                | srl           | running | 172.20.20.2/24  | 2001:172:20:20::2/64 |
+| 10 | leaf3        | c76005991d80 | ghcr.io/nokia/srlinux:23.3.3                                                                                | srl           | running | 172.20.20.11/24 | 2001:172:20:20::b/64 |
+| 11 | leaf4        | ccfd9ddc66f2 | ghcr.io/nokia/srlinux:23.3.3                                                                                | srl           | running | 172.20.20.6/24  | 2001:172:20:20::6/64 |
+| 12 | spine1       | c34f4f75a29f | ghcr.io/nokia/srlinux:23.3.3                                                                                | srl           | running | 172.20.20.3/24  | 2001:172:20:20::3/64 |
+| 13 | spine2       | c2ebfe43499e | ghcr.io/nokia/srlinux:23.3.3                                                                                | srl           | running | 172.20.20.5/24  | 2001:172:20:20::5/64 |
 +----+--------------+--------------+-------------------------------------------------------------------------------------------------------------+---------------+---------+-----------------+----------------------+
 
 ```
@@ -252,7 +283,9 @@ kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/main/config/m
 
 ## Leaf/Spine fabric verification
 
-Because we used startup configuration files for all of the switches of our lab, the BGP peering between Leaf/Spine switches should be working by now:
+By this step, the DC Fabric is deployed and configured and k8s cluster is also ready.
+
+Our k8s test service (Nginx Echo Server) is not yet deployed so our MetalLB BGP sessions between Leaf and kubernetes nodes are not established yet, but the underlay DC Fabric BGP/EVPN sessions between Leaf and Spines switches should be working by now. We can verify that it's working properly:
 
 === "Spine1"
     BGP underlay sessions are configured with [unnumbered peering](https://documentation.nokia.com/srlinux/23-3/books/routing-protocols/bgp.html#bgp-unnumbered-peer).
@@ -383,7 +416,7 @@ Because we used startup configuration files for all of the switches of our lab, 
 
 ## Kubernetes service deployment
 
-Now that we have the infrastructure created, it's time to deploy the end service, represented in the k8s Resource definition file [metal-lb-hello-cluster1.yaml][metal-lb-hello-cluster1]
+After we have verified that the DC Fabric is properly configured, it's time to deploy the end service, represented in the k8s Resource definition file [metal-lb-hello-cluster1.yaml][metal-lb-hello-cluster1]
 
 Let's first review the different parameters that define it:
 
@@ -760,10 +793,10 @@ In the case of clients connected to leaf4, the switch will load-balance traffic 
 
 Now that we have verified that VIP `1.1.1.100` is learned in our network, we can check if clients can access that service.
 
-We use the following command to connect to our clients: `cli1`, `cli2`, `cli3` and `cli4`:
+We use the following command to connect to our clients: `client1`, `client2`, `client3` and `client4`:
 
 ```bash
-docker exec -it cli1 bash
+docker exec -it client1 bash
 ```
 
 === "k8s pods placement"
@@ -777,73 +810,73 @@ docker exec -it cli1 bash
     ```
     In the curl responses we can see the IP address of the pod that served the request. This will help us understand how traffic was load balanced.
 
-=== "cli1"
-    From cli1, connected to leaf1, we try to reach the VIP:
+=== "client1"
+    From client1, connected to leaf1, we try to reach the VIP:
     ```
-    root@cli1:/ $ curl 1.1.1.100
+    root@client1:/ $ curl 1.1.1.100
     Server address: 10.244.0.3:80
     Server name: nginxhello-6b97fd8857-4vp6z
     Date: 09/Aug/2023:10:27:55 +0000
     URI: /
     Request ID: 15c8f5967a98e1455e0c3d7c8bed5018
-    root@cli1:/ $ curl 1.1.1.100
+    root@client1:/ $ curl 1.1.1.100
     Server address: 10.244.1.3:80
     Server name: nginxhello-6b97fd8857-f2ggp
     Date: 09/Aug/2023:10:27:58 +0000
     URI: /
     Request ID: b39222e042f977438b427c8c71abd0c0
-    root@cli1:/ $
+    root@client1:/ $
     ```
     we can see our traffic has been load balanced to `pod1` and `pod2`
 
-=== "cli2"
-    From cli2, connected to leaf2, we try to reach the VIP:
+=== "client2"
+    From client2, connected to leaf2, we try to reach the VIP:
     ```
-    root@cli2:/ $ curl 1.1.1.100
+    root@client2:/ $ curl 1.1.1.100
     Server address: 10.244.0.3:80
     Server name: nginxhello-6b97fd8857-4vp6z
     Date: 09/Aug/2023:10:56:41 +0000
     URI: /
     Request ID: 22eee500ff00fdf1a15947c4cc8790d6
-    root@cli2:/ $ curl 1.1.1.100
+    root@client2:/ $ curl 1.1.1.100
     Server address: 10.244.1.3:80
     Server name: nginxhello-6b97fd8857-f2ggp
     Date: 09/Aug/2023:10:56:45 +0000
     URI: /
     Request ID: c8530bfa2d44a05c80b22eb2783d0b9a
-    root@cli2:/ $
+    root@client2:/ $
     ```
     we can see our traffic has been load balanced to `pod1` and `pod2`
 
-=== "cli3"
-    From cli3, connected to leaf3, we try to reach the VIP:
+=== "client3"
+    From client3, connected to leaf3, we try to reach the VIP:
     ```
-    root@cli3:/ $ curl 1.1.1.100
+    root@client3:/ $ curl 1.1.1.100
     Server address: 10.244.2.3:80
     Server name: nginxhello-6b97fd8857-b2vf8
     Date: 09/Aug/2023:10:58:02 +0000
     URI: /
     Request ID: c90cf6e835d68365467a0f0e246d6990
-    root@cli3:/ $ curl 1.1.1.100
+    root@client3:/ $ curl 1.1.1.100
     Server address: 10.244.1.3:80
     Server name: nginxhello-6b97fd8857-f2ggp
     Date: 09/Aug/2023:10:58:07 +0000
     URI: /
     Request ID: 88eceb46b29ac8bab585cf9d60c8a043
-    root@cli3:/ $
+    root@client3:/ $
     ```
     we can see our traffic has been load balanced to `pod3` and `pod2`
 
-=== "cli4"
-    From cli4, connected to leaf4, we try to reach the VIP:
+=== "client4"
+    From client4, connected to leaf4, we try to reach the VIP:
     ```
-    root@cli4:/ $ curl 1.1.1.100
+    root@client4:/ $ curl 1.1.1.100
     Server address: 10.244.2.3:80
     Server name: nginxhello-6b97fd8857-b2vf8
     Date: 09/Aug/2023:12:47:55 +0000
     URI: /
     Request ID: ae64530197cee8dcf906cd4cd1521178
-    root@cli4:/ $ curl 1.1.1.100
+    root@client4:/ $ curl 1.1.1.100
     Server address: 10.244.1.3:80
     Server name: nginxhello-6b97fd8857-f2ggp
     Date: 09/Aug/2023:12:47:57 +0000
@@ -858,22 +891,27 @@ docker exec -it cli1 bash
 
 From the previous tests we can confirm that, independently where requests are coming from, all connections from clients are spread over the three pods.
 
-We can easily explain how traffic from `cli4` is load balanced over the three nodes: ECMP in leaf4 distributes the traffic.
+We can easily explain how traffic from `client4` is load balanced over the three nodes: ECMP in leaf4 distributes the traffic.
 
-But how is it possible that traffic from `cli1`, `cli2` and `cli3` is also load balanced, when previously we confirmed that it will be routed locally to the kubernetes node?
+But how is it possible that traffic from `client1`, `client2` and `client3` is also load balanced, when previously we confirmed that it will be routed locally to the kubernetes node?
 
 The explanation is simple, we have already seen it in the Kubernetes service definition. **kube-proxy**, thanks to the `externalTrafficPolicy: Cluster` configuration, will load balance the traffic between the available nodes:
 
 
-<center markdown>![ClusterLoadbalancingCluster](sr-linux-kubernetes-anycast-lab/cluster-load-balancing-Cluster.svg){width=100%}</p></center>
+<figure markdown>
+  <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":0,"zoom":1.7,"highlight":"#0000ff","nav":true,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/srl-labs/srl-k8s-anycast-lab/main/images/cluster-load-balancing-Cluster.drawio"}'></div>
+</figure>
+
 
 
 Notice how **kube-proxy** in this case uses source and destination NAT to distribute this traffic.
 
-If we had configured `externalTrafficPolicy: Local`,  then `cli1`, `cli2` and `cli3` traffic to VIP would only reach its locally connected cluster node:
+If we had configured `externalTrafficPolicy: Local`,  then `client1`, `client2` and `client3` traffic to VIP would only reach its locally connected cluster node:
 
+<figure markdown>
+  <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":0,"zoom":1.7,"highlight":"#0000ff","nav":true,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/srl-labs/srl-k8s-anycast-lab/main/images/cluster-load-balancing-Local.drawio"}'></div>
+</figure>
 
-<center markdown>![ClusterLoadbalancingLocal](sr-linux-kubernetes-anycast-lab/cluster-load-balancing-Local.svg){.img-shadow width=100%}</p></center>
 
 With the `Local` policy, **kube-proxy** is not modifying the source IP address.
 
@@ -893,7 +931,12 @@ What happens if the number of possible next-hops changes? In our current kuberne
 
 If for example one of the cluster nodes fails, the hashing will change so it's possible that the switch will select a different next-hop:
 
-<center markdown>![ecmp_hash](sr-linux-kubernetes-anycast-lab/ecmp_hash.svg){.img-shadow width=100%}</p></center>
+
+<figure markdown>
+  <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":0,"zoom":1.7,"highlight":"#0000ff","nav":true,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/srl-labs/srl-k8s-anycast-lab/main/images/ecmp_hash.drawio"}'></div>
+</figure>
+
+
 
 SR Linux provides a way to minimize the number of flows that are moved when the size of the ECMP set changes. This feature is called **Resilient Hashing**. When a next-hop is removed only flows that were previously hashed to that next-hop are moved.
 
@@ -910,7 +953,7 @@ The idea behind **Resilient Hashing** is that we pre-calculate the hashes in buc
 set network-instance ip-vrf-1 ip-load-balancing resilient-hash-prefix 1.1.1.100 max-paths 6 hash-buckets-per-path 4
 ```
 
-We can apply and remove this configuration to leaf4 and see how it affects traffic flow distribution to traffic generated from `cli4`.
+We can apply and remove this configuration to leaf4 and see how it affects traffic flow distribution to traffic generated from `client4`.
 
 ## TL;DR version <a name="tldr"></a>
 
@@ -923,7 +966,7 @@ minikube start --nodes 3 -p cluster1
 minikube addons enable metallb -p cluster1
 kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/main/config/manifests/metallb-frr.yaml
 kubectl apply -f metal-lb-hello-cluster1.yaml
-docker exec -it cli4 curl 1.1.1.100
+docker exec -it client4 curl 1.1.1.100
 ```
 
  We have built a lab that deploys a Leaf/Spine Fabric connected to a kubernetes cluster. We deployed a simple Nginx echo service in **Anycast** mode, in which we publish that service from multiple locations. And finally, we have verified that traffic is distributed to the different nodes of the cluster. 
@@ -944,11 +987,8 @@ To delete this lab:
 [clab-configs]: https://github.com/srl-labs/srl-k8s-anycast-lab/tree/main/configs
 [metal-lb-hello-cluster1]: https://github.com/srl-labs/srl-k8s-anycast-lab/blob/main/metal-lb-hello-cluster1.yaml
 
-[topology]: xxxxxxxxxxx/topology.svg
-[ClusterLoadbalancingCluster]: xxxxxxxxxxx/cluster-load-balancing-Cluster.svg
-[ClusterLoadbalancingLocal]: xxxxxxxxxxx/cluster-load-balancing-Local.svg
-[ecmp_hash]: xxxxxxxxxxx/ecmp_hash.svg
 
+<script type="text/javascript" src="https://viewer.diagrams.net/js/viewer-static.min.js" async></script>
 
 
 
