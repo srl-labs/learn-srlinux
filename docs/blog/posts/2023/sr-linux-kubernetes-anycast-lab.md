@@ -15,18 +15,16 @@ authors:
 
 Network infrastructure is essential to Kubernetes for several reasons:
 
-1. **DC fabric**: Almost every k8s cluster leverages a DC fabric underneath to interconnect worker nodes together
+1. **DC fabric**: Almost every k8s cluster leverages a DC fabric underneath to interconnect worker nodes.
 2. **Communication Between Services**: Kubernetes applications are often composed of multiple microservices that need to communicate with each other. A well-designed network infrastructure ensures reliable and efficient communication between these services, contributing to overall application performance.
 3. **Load Balancing**: Kubernetes distributes incoming traffic across multiple instances of an application for improved availability and responsiveness. A robust network setup provides load balancing capabilities, preventing overload on specific instances and maintaining a smooth user experience.
-4. **Scalability and Resilience**: Kubernetes is renowned for its ability to scale applications up or down based on demand. A resilient network infrastructure supports this scalability by efficiently routing traffic and maintaining service availability even during high traffic periods.
+4. **Scalability and Resilience**: Kubernetes is renowned for scaling applications up or down based on demand. A resilient network infrastructure supports this scalability by efficiently routing traffic and maintaining service availability even during high traffic periods.
 
-Being able to test all these features is key for any network engineer working with a fabric supporting a k8s cluster. Wouldn't it be great to have a way to test it?
+Testing all these features is key for any network engineer working with a fabric supporting a k8s cluster. Wouldn't it be great to have a way to get into all of this without the need of a physical lab?
 
-In this blog post we will explore a lab topology consisting of a Leaf/Spine [SR Linux](https://learn.srlinux.dev/) Fabric connected to a Kubernetes Cluster.
+In this blog post we will dive into a lab topology that serves as a virtual environment to test the integration of a Kubernetes cluster with an IP fabric. The emulated fabric topology consists of a Leaf/Spine [SR Linux](https://learn.srlinux.dev/) nodes with the Kubernetes Cluster nodes connected to it. The k8s Cluster features a [MetalLB](https://metallb.universe.tf/) load-balancer that unlocks the capability of having anycast services deployed in our fabric.
 
-Our k8s Cluster will feature [MetalLB](https://metallb.universe.tf/), which is a load-balancer implementation for bare metal clusters. This will unlock the possibility to have anycast services in our fabric.
-
-To deploy this lab we will use [Containerlab](https://containerlab.dev/) which help us to effortlessly create complex network topologies and validate features, scenarios... And also, [Minikube](https://minikube.sigs.k8s.io/) which is an open-source tool that facilitates running Kubernetes clusters locally to quickly test and experiment with containerized applications.
+With [Minikube](https://minikube.sigs.k8s.io/) we will deploy a personal virtual k8s cluster and [Containerlab](https://containerlab.dev/) will handle the IP fabric emulation and the connection between both environments.
 
 <!-- more -->
 
