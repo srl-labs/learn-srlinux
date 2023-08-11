@@ -28,7 +28,6 @@ Our k8s Cluster will feature [MetalLB](https://metallb.universe.tf/), which is a
 
 To deploy this lab we will use [Containerlab](https://containerlab.dev/) which help us to effortlessly create complex network topologies and validate features, scenarios... And also, [Minikube](https://minikube.sigs.k8s.io/) which is an open-source tool that facilitates running Kubernetes clusters locally to quickly test and experiment with containerized applications.
 
-
 <!-- more -->
 
 ## Lab summary
@@ -54,8 +53,7 @@ The lab leverages [Containerlab](https://containerlab.dev/)  to spin up a Leaf/S
 
 ## Lab topology
 
-The goal of this lab is to provide users with an environment to test the network integration of a Kubernetes cluster with a Leaf/Spine SR Linux fabric.   
-
+The goal of this lab is to provide users with an environment to test the network integration of a Kubernetes cluster with a Leaf/Spine SR Linux fabric.
 
 <figure markdown>
   <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":0,"zoom":1.7,"highlight":"#0000ff","nav":true,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/srl-labs/srl-k8s-anycast-lab/main/images/topology.drawio"}'></div>
@@ -64,14 +62,14 @@ The goal of this lab is to provide users with an environment to test the network
 
 The setup consists of:
 
-  - A Leaf/Spine Fabric: 2xSpines, 4xLeaf switches 
-  - Minikube kubernetes cluster with MetalLB load balancing implementation (3 nodes)
-  - Kubernetes service deployed on top of Cluster
-  - Linux clients to simulate connections to k8s service (4 clients)
+- A Leaf/Spine Fabric: 2xSpines, 4xLeaf switches
+- Minikube kubernetes cluster with MetalLB load balancing implementation (3 nodes)
+- Kubernetes service deployed on top of Cluster
+- Linux clients to simulate connections to k8s service (4 clients)
 
 Thanks to MetalLB, Kubernetes nodes establish BGP sessions with Leaf switches. In those sessions the IP addresses of the exposed services (loadBalancerIPs, commonly known as VIPs ) are to announced to the fabric.
 
-Clients will simulate connections to the VIP by using curl. 
+Clients will simulate connections to the VIP by using curl.
 
 ## Kubernetes Service description
 
@@ -100,6 +98,7 @@ The whole lab topology,  is declared in the Containerlab [`srl-k8s-lab.clab.yml`
 Let's review the different components of our definition file:
 
 ### Images
+
 First we look at the different container images that will be used:
 
 ```yaml title="SR Linux and Client images"
@@ -120,6 +119,7 @@ We will use the latest [SR linux image](https://github.com/nokia/srlinux-contain
 Kubernetes container images and container creation are directly managed by Minikube.
 
 ### Nodes
+
 And let's also review the definition of our Lab components: Leaf/Spine switches, K8s nodes and Linux clients:
 
 ```yaml title="node definition"
@@ -147,7 +147,7 @@ topology:
 # -- snip --
 ```
 
-1.  Minikube will name k8s container nodes with the  name `minikube` by default. If the minikube option `profile` is used, it will use the profile name. Here, we use the profile name `cluster1`. First node is named `cluster1`, second `cluster1-m02`... 
+1. Minikube will name k8s container nodes with the  name `minikube` by default. If the minikube option `profile` is used, it will use the profile name. Here, we use the profile name `cluster1`. First node is named `cluster1`, second `cluster1-m02`...
 2. `bash /hostname.sh` is just a hacky script that updates the shell with the name of the container, so it's easier to see where we are connected when we attach to the client containers.
 3. Client IP addresses and routes are configured through this script.
 
@@ -160,8 +160,8 @@ Later in the blog post we will carefully explain the process to fully boot up th
 !!!tip
     Consult with [containerlab](https://containerlab.dev/manual/kinds/ext-container/) documentation to learn more about the `ext-container` kind.
 
-
 ### Links
+
 And finally, let's see how we interconnect all elements:
 
 ```yaml title="Defining links"
@@ -191,16 +191,13 @@ topology:
     - endpoints: ["client3:eth1", "leaf3:e1-2"]
     - endpoints: ["client4:eth1", "leaf4:e1-2"]
 ```
-This is the full definition of all the connections required. As you can see, we use the first port (`e1-1`) of every leaf switch to connect the k8s node and second port (`e1-2`) to connect a client for tests.
 
+This is the full definition of all the connections required. As you can see, we use the first port (`e1-1`) of every leaf switch to connect the k8s node and second port (`e1-2`) to connect a client for tests.
 
 !!! note
     `eth0`minikube node interfaces are connected to the docker bridge of the host running the topology. `eth1` interfaces, connected to Leaf switches, will be the ones used by MetalLB to establish the BGP the sessions. As reachability is signaled through this interface, clients will also reach k8s cluster services though `eth1`.
 
-
-
 ## Lab deployment
-
 
 First, clone the lab:
 
@@ -210,10 +207,10 @@ https://github.com/srl-labs/srl-k8s-anycast-lab.git && cd srl-k8s-anycast-lab
 
 Open two different shell sessions. One will be used to deploy the Containerlab topology, the other to start the Minikube cluster:
 
-
 ```bash title="shell #1"
 clab deploy --topo srl-k8s-lab.clab.yml
 ```
+
 You will notice that Containerlab starts deploying switches and clients and waits for Minikube nodes to appear.
 
 In the second shell, start Minikube cluster:
@@ -226,7 +223,7 @@ With this command, Minikube will start three k8s nodes (`cluster1`, `cluster1-m0
 
 At the same time, in shell1, you can see how Containerlab starts "patching" `eth1` cluster node interfaces to Leaf switches, as soon as they appear:
 
-```bash 
+```bash
 INFO[0022] node "cluster1-m02" depends on external container "cluster1-m02", which is not running yet. Waited 22s. Retrying...
 INFO[0022] node "cluster1-m02" depends on external container "cluster1-m02", which is not running yet. Waited 22s. Retrying...
 INFO[0022] node "cluster1-m02" depends on external container "cluster1-m02", which is not running yet. Waited 22s. Retrying...
@@ -266,7 +263,7 @@ As are using MetalLB, first we need to enable it in the Minikube cluster:
 minikube addons enable metallb -p cluster1
 ```
 
-MetalLB has two [modes of operation](https://metallb.universe.tf/concepts/): Layer2 and BGP. For this Lab we will use BGP. 
+MetalLB has two [modes of operation](https://metallb.universe.tf/concepts/): Layer2 and BGP. For this Lab we will use BGP.
 
 MetalLB also provides two different [BGP implementations](https://metallb.universe.tf/concepts/bgp/):
 
@@ -275,11 +272,9 @@ MetalLB also provides two different [BGP implementations](https://metallb.univer
 
 We will use the *FRR* implementation. We install it with the following command:
 
-
 ```bash
 kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/main/config/manifests/metallb-frr.yaml
 ```
-
 
 ## Leaf/Spine fabric verification
 
@@ -412,8 +407,6 @@ Our k8s test service (Nginx Echo Server) is not yet deployed so our MetalLB BGP 
     ```
     As expected, the session is not yet established. We first have to deploy the Kubernetes service.
 
-
-
 ## Kubernetes service deployment
 
 After we have verified that the DC Fabric is properly configured, it's time to deploy the end service, represented in the k8s Resource definition file [metal-lb-hello-cluster1.yaml][metal-lb-hello-cluster1]
@@ -479,7 +472,6 @@ spec:
 1. Three pods will be deployed in our cluster
 2. The Nginx hello image echoes back the name and IP address of the pod
 
-
 ```yaml title="Service: exposing our nginxhello application"
 apiVersion: v1
 kind: Service
@@ -497,9 +489,9 @@ spec:
   externalTrafficPolicy: Cluster # (3)
 ```
 
-1.  **port** exposes the Kubernetes service on the specified port within the cluster. Other pods within the cluster can communicate with this server on the specified port
-2.  **targetPort** is the port on which the service will send requests to, that your pod will be listening on
-3.  Two possible configurations: **Local** or **Cluster**
+1. **port** exposes the Kubernetes service on the specified port within the cluster. Other pods within the cluster can communicate with this server on the specified port
+2. **targetPort** is the port on which the service will send requests to, that your pod will be listening on
+3. Two possible configurations: **Local** or **Cluster**
 
     **Local** means that when the packet arrives to a node, kube-proxy will only distribute the load within the same node
   
@@ -508,6 +500,7 @@ spec:
 Finally, it's time to deploy our service. As you can see in the Resource definition file [metal-lb-hello-cluster1.yaml][metal-lb-hello-cluster1], these resources are grouped together in the same file (separated by --- in YAML).
 
 To deploy the service:
+
 ```bash
 kubectl apply -f metal-lb-hello-cluster1.yaml
 ```
@@ -515,6 +508,7 @@ kubectl apply -f metal-lb-hello-cluster1.yaml
 That's it!! We have the fabric running and the service configured. Let's do some checks.
 
 ## Kubernetes verification
+
 We can check the status of our k8s cluster and the service we have just deployed:
 
 === "k8s nodes"
@@ -577,8 +571,6 @@ We can check the status of our k8s cluster and the service we have just deployed
     cluster1#
     ```
     As expected, FRR daemon is announcing the VIP.
-
-
 
 ## Fabric Overlay verification
 
@@ -648,13 +640,12 @@ We have already verified the underlay Fabric and Kubernetes Cluster in the previ
     ```
     As expected, the session is now established and k8s node3 is announcing one prefix
 
-
 We have reviewed that MetalLB sessions are established. Now we can check the contents of the route tables and MetalLB BGP sessions:
 
 === "Leaf1 vrf1 MetalLB BGP prefix"
     We can see k8s node1 sends Leaf1 the `1.1.1.100` prefix. We can also expect the same output in leaf2 and leaf3.
     ```
-    
+
     A:leaf1# show network-instance ip-vrf-1 protocols bgp neighbor 192.168.1.11 received-routes ipv4
     -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     Peer        : 192.168.1.11, remote AS: 65535, local AS: 65535
@@ -782,10 +773,10 @@ We have reviewed that MetalLB sessions are established. Now we can check the con
 
 The summary from these route table verifications is that:
 
- - leaf1/leaf/leaf3 install the route to the VIP `1.1.1.100` with the next-hop of the locally connected k8s node.
- - leaf4, which is not connected to a kubernetes node, only to a client, installs the route to `1.1.1.100` pointing to the three switches where k8s nodes are connected. Traffic will be encapsulated in VXLAN, forwarded to any of the three VTEPs and finally delivered to the k8s node. 
+- leaf1/leaf/leaf3 install the route to the VIP `1.1.1.100` with the next-hop of the locally connected k8s node.
+- leaf4, which is not connected to a kubernetes node, only to a client, installs the route to `1.1.1.100` pointing to the three switches where k8s nodes are connected. Traffic will be encapsulated in VXLAN, forwarded to any of the three VTEPs and finally delivered to the k8s node.
 
-With this setup, it is expected that the traffic to `1.1.1.100` from clients connected to leaf1/leaf2/leaf3 will be delivered to the local k8s node. 
+With this setup, it is expected that the traffic to `1.1.1.100` from clients connected to leaf1/leaf2/leaf3 will be delivered to the local k8s node.
 
 In the case of clients connected to leaf4, the switch will load-balance traffic between the three k8s nodes.  
 
@@ -885,8 +876,6 @@ docker exec -it client1 bash
     ```
     we can see our traffic has been load balanced to `pod3` and `pod2`
 
-
-
 ## Kubernetes Cluster Load Balancing
 
 From the previous tests we can confirm that, independently where requests are coming from, all connections from clients are spread over the three pods.
@@ -897,12 +886,9 @@ But how is it possible that traffic from `client1`, `client2` and `client3` is a
 
 The explanation is simple, we have already seen it in the Kubernetes service definition. **kube-proxy**, thanks to the `externalTrafficPolicy: Cluster` configuration, will load balance the traffic between the available nodes:
 
-
 <figure markdown>
   <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":0,"zoom":1.7,"highlight":"#0000ff","nav":true,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/srl-labs/srl-k8s-anycast-lab/main/images/cluster-load-balancing-Cluster.drawio"}'></div>
 </figure>
-
-
 
 Notice how **kube-proxy** in this case uses source and destination NAT to distribute this traffic.
 
@@ -912,12 +898,10 @@ If we had configured `externalTrafficPolicy: Local`,  then `client1`, `client2` 
   <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":0,"zoom":1.7,"highlight":"#0000ff","nav":true,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/srl-labs/srl-k8s-anycast-lab/main/images/cluster-load-balancing-Local.drawio"}'></div>
 </figure>
 
-
 With the `Local` policy, **kube-proxy** is not modifying the source IP address.
 
-
 !!!tip
-    Kubernetes uses iptables rules to perform these src/dst NAT policies. You can  check this in kubernetes nodes with the command `iptables -vnL -t nat` 
+    Kubernetes uses iptables rules to perform these src/dst NAT policies. You can  check this in kubernetes nodes with the command `iptables -vnL -t nat`
 
 ## ECMP hash calculation
 
@@ -931,23 +915,18 @@ What happens if the number of possible next-hops changes? In our current kuberne
 
 If for example one of the cluster nodes fails, the hashing will change so it's possible that the switch will select a different next-hop:
 
-
 <figure markdown>
   <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":0,"zoom":1.7,"highlight":"#0000ff","nav":true,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/srl-labs/srl-k8s-anycast-lab/main/images/ecmp_hash.drawio"}'></div>
 </figure>
-
-
 
 SR Linux provides a way to minimize the number of flows that are moved when the size of the ECMP set changes. This feature is called **Resilient Hashing**. When a next-hop is removed only flows that were previously hashed to that next-hop are moved.
 
 To configure it you have to provide the prefix and two parameters:
 
-  - hash-buckets-per-path: the number of times each next-hop is repeated in the hash-bucket fill pattern 
-  - max-paths: the maximum number of ECMP next-hops per route associated with the resilient-hash prefix
-
+- hash-buckets-per-path: the number of times each next-hop is repeated in the hash-bucket fill pattern
+- max-paths: the maximum number of ECMP next-hops per route associated with the resilient-hash prefix
 
 The idea behind **Resilient Hashing** is that we pre-calculate the hashes in buckets so in case the ECMP set changes, we don't redistribute the flows.
-
 
 ```bash title="Resilient Hashing configuration"
 set network-instance ip-vrf-1 ip-load-balancing resilient-hash-prefix 1.1.1.100 max-paths 6 hash-buckets-per-path 4
@@ -969,8 +948,7 @@ kubectl apply -f metal-lb-hello-cluster1.yaml
 docker exec -it client4 curl 1.1.1.100
 ```
 
- We have built a lab that deploys a Leaf/Spine Fabric connected to a kubernetes cluster. We deployed a simple Nginx echo service in **Anycast** mode, in which we publish that service from multiple locations. And finally, we have verified that traffic is distributed to the different nodes of the cluster. 
-
+ We have built a lab that deploys a Leaf/Spine Fabric connected to a kubernetes cluster. We deployed a simple Nginx echo service in **Anycast** mode, in which we publish that service from multiple locations. And finally, we have verified that traffic is distributed to the different nodes of the cluster.
 
 ## Lab lifecycle
 
@@ -979,17 +957,10 @@ To delete this lab:
 1. Destroy Containerlab topology: `clab destroy --topo srl-k8s-lab.clab.yml`
 2. Delete Minikube node: `minikube delete --all`
 
-
-
 [rd-linkedin]: https://linkedin.com/in/michelredondo
 [lab]: https://github.com/srl-labs/srl-k8s-anycast-lab
 [clab-topo]: https://github.com/srl-labs/srl-k8s-anycast-lab/blob/main/srl-k8s-lab.clab.yml
 [clab-configs]: https://github.com/srl-labs/srl-k8s-anycast-lab/tree/main/configs
 [metal-lb-hello-cluster1]: https://github.com/srl-labs/srl-k8s-anycast-lab/blob/main/metal-lb-hello-cluster1.yaml
 
-
 <script type="text/javascript" src="https://viewer.diagrams.net/js/viewer-static.min.js" async></script>
-
-
-
-
