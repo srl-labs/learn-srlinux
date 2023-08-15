@@ -37,17 +37,19 @@ With [Minikube](https://minikube.sigs.k8s.io/) we will deploy a personal virtual
 | **Resource requirements** | :fontawesome-solid-microchip: 6 vCPU <br/>:fontawesome-solid-memory: 16 GB                                                                                                                      |
 | **Lab**                   | [srl-labs/srl-k8s-anycast-lab][lab]                                                                                                                                                               |
 | **Version information**   | [`containerlab:0.42.0`](https://containerlab.dev/install/), [`srlinux:23.3.3`](https://github.com/nokia/srlinux-container-image),[`minikube v1.30.1`](https://minikube.sigs.k8s.io/docs/start/)|
-| **Authors**               | Míchel Redondo [:material-linkedin:][rd-linkedin]                                                                                                                                              |
+| **Authors**               | Míchel Redondo [:material-linkedin:][mr-linkedin]                                                                                                                                              |
 
-At the end of this blog post you can find a quick summary of the steps ([TL;DR](#tldr)).
+At the end of this blog post you can find a [quick summary](#tldr-version) of the steps.
 
 ## Prerequisites
 
-The lab leverages [Containerlab](https://containerlab.dev/)  to spin up a Leaf/Spine Fabric coupled with [Minikube](https://minikube.sigs.k8s.io/) to deploy the Kubernetes cluster.
+The following tools are required to be installed to run the lab on any Linux host. The links will get you to the installation instructions.
 
-[Docker engine](https://docs.docker.com/engine/install/) has to be installed on the host system.
+* The lab leverages [Containerlab](https://containerlab.dev/install/) to spin up a Leaf/Spine Fabric coupled with [Minikube](https://minikube.sigs.k8s.io/docs/start/) to deploy the Kubernetes cluster.
 
-[kubectl](https://kubernetes.io/docs/tasks/tools/) is also required.
+* [Docker engine](https://docs.docker.com/engine/install/) has to be installed on the host system.
+
+* [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/) CLI client is also required to interact with the k8s cluster.
 
 ## Lab topology
 
@@ -60,10 +62,10 @@ The goal of this lab is to provide users with an environment to test the network
 
 The setup consists of:
 
-- A Leaf/Spine Fabric: 2xSpines, 4xLeaf switches
-- Minikube kubernetes cluster with MetalLB load balancing implementation (3 nodes)
-- Kubernetes service deployed on top of Cluster
-- Linux clients to simulate connections to k8s service (4 clients)
+* A Leaf/Spine Fabric: 2xSpines, 4xLeaf switches
+* Minikube kubernetes cluster with MetalLB load balancing implementation (3 nodes)
+* Kubernetes service deployed on top of Cluster
+* Linux clients to simulate connections to k8s service (4 clients)
 
 Thanks to MetalLB, Kubernetes nodes establish BGP sessions with Leaf switches. In those sessions the IP addresses of the exposed services (loadBalancerIPs, commonly known as VIPs ) are to announced to the fabric.
 
@@ -81,8 +83,8 @@ The fabric is configured with [BGP unnumbered peering](https://documentation.nok
 
 Clients and k8s nodes are conected to a dedicated L3 EVPN network-instance `ip-vrf1`. This network instance is present in every leaf switch. Traffic between switches is encapsulated in VXLAN and transported by Spines. Two subnets are configured under this `ip-vrf1`:
 
-- k8s nodes subnet: 192.168.1.0/24
-- clients subnet: 192.168.2.0/24
+* k8s nodes subnet: 192.168.1.0/24
+* clients subnet: 192.168.2.0/24
 
 <figure markdown>
   <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":0,"zoom":1.7,"highlight":"#0000ff","nav":true,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/srl-labs/srl-k8s-anycast-lab/main/images/logical.drawio"}'></div>
@@ -771,8 +773,8 @@ We have reviewed that MetalLB sessions are established. Now we can check the con
 
 The summary from these route table verifications is that:
 
-- leaf1/leaf/leaf3 install the route to the VIP `1.1.1.100` with the next-hop of the locally connected k8s node.
-- leaf4, which is not connected to a kubernetes node, only to a client, installs the route to `1.1.1.100` pointing to the three switches where k8s nodes are connected. Traffic will be encapsulated in VXLAN, forwarded to any of the three VTEPs and finally delivered to the k8s node.
+* leaf1/leaf/leaf3 install the route to the VIP `1.1.1.100` with the next-hop of the locally connected k8s node.
+* leaf4, which is not connected to a kubernetes node, only to a client, installs the route to `1.1.1.100` pointing to the three switches where k8s nodes are connected. Traffic will be encapsulated in VXLAN, forwarded to any of the three VTEPs and finally delivered to the k8s node.
 
 With this setup, it is expected that the traffic to `1.1.1.100` from clients connected to leaf1/leaf2/leaf3 will be delivered to the local k8s node.
 
@@ -921,8 +923,8 @@ SR Linux provides a way to minimize the number of flows that are moved when the 
 
 To configure it you have to provide the prefix and two parameters:
 
-- hash-buckets-per-path: the number of times each next-hop is repeated in the hash-bucket fill pattern
-- max-paths: the maximum number of ECMP next-hops per route associated with the resilient-hash prefix
+* hash-buckets-per-path: the number of times each next-hop is repeated in the hash-bucket fill pattern
+* max-paths: the maximum number of ECMP next-hops per route associated with the resilient-hash prefix
 
 The idea behind **Resilient Hashing** is that we pre-calculate the hashes in buckets so in case the ECMP set changes, we don't redistribute the flows.
 
@@ -938,7 +940,7 @@ Want to see a quick summary of the steps? Here you go:
 
 ```bash title="quick summary"
 git clone https://github.com/srl-labs/srl-k8s-anycast-lab && cd srl-k8s-anycast-lab
-clab deploy --topo srl-k8s-lab.clab.yml
+sudo clab deploy --topo srl-k8s-lab.clab.yml
 minikube start --nodes 3 -p cluster1
 minikube addons enable metallb -p cluster1
 kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/main/config/manifests/metallb-frr.yaml
@@ -946,7 +948,7 @@ kubectl apply -f metal-lb-hello-cluster1.yaml
 docker exec -it client4 curl 1.1.1.100
 ```
 
- We have built a lab that deploys a Leaf/Spine Fabric connected to a kubernetes cluster. We deployed a simple Nginx echo service in **Anycast** mode, in which we publish that service from multiple locations. And finally, we have verified that traffic is distributed to the different nodes of the cluster.
+We have built a lab that deploys a Leaf/Spine Fabric connected to a kubernetes cluster. We deployed a simple Nginx echo service in **Anycast** mode, in which we publish that service from multiple locations. And finally, we have verified that traffic is distributed to the different nodes of the cluster.
 
 ## Lab lifecycle
 
@@ -955,7 +957,7 @@ To delete this lab:
 1. Destroy Containerlab topology: `clab destroy --topo srl-k8s-lab.clab.yml`
 2. Delete Minikube node: `minikube delete --all`
 
-[rd-linkedin]: https://linkedin.com/in/michelredondo
+[mr-linkedin]: https://linkedin.com/in/michelredondo
 [lab]: https://github.com/srl-labs/srl-k8s-anycast-lab
 [clab-topo]: https://github.com/srl-labs/srl-k8s-anycast-lab/blob/main/srl-k8s-lab.clab.yml
 [clab-configs]: https://github.com/srl-labs/srl-k8s-anycast-lab/tree/main/configs
