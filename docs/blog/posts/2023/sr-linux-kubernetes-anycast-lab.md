@@ -7,20 +7,23 @@ tags:
   - containerlab
   - metallb
   - anycast
+  - evpn
 authors:
   - michelredondo
 ---
 
 # SR Linux Kubernetes Anycast Lab
 
-Network infrastructure is essential to Kubernetes for several reasons:
+In the era of applications, it is easy to forget about the underlying infrastructure that interconnects them. However, the network is still the foundation of any application as it provides the connectivity and services that applications rely on.
+
+The most popular container orchestration system - Kubernetes - is no exception to this rule where infrastructure is essential for several reasons:
 
 1. **DC fabric**: Almost every k8s cluster leverages a DC fabric underneath to interconnect worker nodes.
 2. **Communication Between Services**: Kubernetes applications are often composed of multiple microservices that need to communicate with each other. A well-designed network infrastructure ensures reliable and efficient communication between these services, contributing to overall application performance.
 3. **Load Balancing**: Kubernetes distributes incoming traffic across multiple instances of an application for improved availability and responsiveness. A robust network setup provides load balancing capabilities, preventing overload on specific instances and maintaining a smooth user experience.
 4. **Scalability and Resilience**: Kubernetes is renowned for scaling applications up or down based on demand. A resilient network infrastructure supports this scalability by efficiently routing traffic and maintaining service availability even during high traffic periods.
 
-Testing all these features is key for any network engineer working with a fabric supporting a k8s cluster. Wouldn't it be great to have a way to get into all of this without the need of a physical lab?
+Getting familiar with all these features is vital for any network engineer working with a fabric supporting a k8s cluster. Wouldn't it be great to have a way to get into all of this without the need of a physical lab?
 
 In this blog post we will dive into a lab topology that serves as a virtual environment to test the integration of a Kubernetes cluster with an IP fabric. The emulated fabric topology consists of a Leaf/Spine [SR Linux](https://learn.srlinux.dev/) nodes with the Kubernetes Cluster nodes connected to it. The k8s Cluster features a [MetalLB](https://metallb.universe.tf/) load-balancer that unlocks the capability of having anycast services deployed in our fabric.
 
@@ -30,28 +33,28 @@ With [Minikube](https://minikube.sigs.k8s.io/) we will deploy a personal virtual
 
 ## Lab summary
 
-| Summary                   |                                                                                                                                                                                                |
-| ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Lab name**              | SR Linux Kubernetes Anycast Lab                                                                                                                                                                        |
-| **Lab components**        | Nokia SR Linux, Kubernetes, MetalLB                                                                                                                                                            |
+| Summary                   |                                                                                                                                                                                                 |
+| ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Lab name**              | SR Linux Kubernetes Anycast Lab                                                                                                                                                                 |
+| **Lab components**        | Nokia SR Linux, Kubernetes, MetalLB                                                                                                                                                             |
 | **Resource requirements** | :fontawesome-solid-microchip: 6 vCPU <br/>:fontawesome-solid-memory: 16 GB                                                                                                                      |
-| **Lab**                   | [srl-labs/srl-k8s-anycast-lab][lab]                                                                                                                                                               |
-| **Version information**   | [`containerlab:0.42.0`](https://containerlab.dev/install/), [`srlinux:23.3.3`](https://github.com/nokia/srlinux-container-image),[`minikube v1.30.1`](https://minikube.sigs.k8s.io/docs/start/)|
-| **Authors**               | Míchel Redondo [:material-linkedin:][mr-linkedin]                                                                                                                                              |
+| **Lab**                   | [srl-labs/srl-k8s-anycast-lab][lab]                                                                                                                                                             |
+| **Version information**   | [`containerlab:0.44.0`](https://containerlab.dev/install/), [`srlinux:23.3.3`](https://github.com/nokia/srlinux-container-image),[`minikube v1.30.1`](https://minikube.sigs.k8s.io/docs/start/) |
+| **Authors**               | Míchel Redondo [:material-linkedin:][mr-linkedin]                                                                                                                                               |
 
-At the end of this blog post you can find a [quick summary](#tldr-version) of the steps.
+At the end of this blog post you can find a [quick summary](#tldr-version) of the steps performed to deploy the lab and configure the use cases.
 
 ## Prerequisites
 
 The following tools are required to be installed to run the lab on any Linux host. The links will get you to the installation instructions.
 
 * The lab leverages [Containerlab](https://containerlab.dev/install/) to spin up a Leaf/Spine Fabric coupled with [Minikube](https://minikube.sigs.k8s.io/docs/start/) to deploy the Kubernetes cluster.
-
-* [Docker engine](https://docs.docker.com/engine/install/) has to be installed on the host system.
-
+* [Docker engine](https://docs.docker.com/engine/install/) to power containerlab.
 * [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/) CLI client is also required to interact with the k8s cluster.
 
-## Lab topology
+## Lab description
+
+### Topology
 
 The goal of this lab is to provide users with an environment to test the network integration of a Kubernetes cluster with a Leaf/Spine SR Linux fabric.
 
@@ -67,19 +70,21 @@ The setup consists of:
 * Kubernetes service deployed on top of Cluster
 * Linux clients to simulate connections to k8s service (4 clients)
 
-Thanks to MetalLB, Kubernetes nodes establish BGP sessions with Leaf switches. In those sessions the IP addresses of the exposed services (loadBalancerIPs, commonly known as VIPs ) are to announced to the fabric.
+Courtesy of MetalLB, Kubernetes nodes establish BGP sessions with Leaf switches. Through the BGP sessions the IP addresses of the exposed services (loadBalancerIPs, commonly known as Virtual IPs or VIPs for short) are announced to the IP fabric.
 
-Clients will simulate connections to the VIP by using curl.
+### Kubernetes Service
 
-## Kubernetes Service description
+To illustrate the integration between the workloads running in the k8s cluster and the IP fabric, we will deploy a simple NGINX server replicated across the three k8s nodes. A kubernetes ClusterIP service will be created to expose the NGINX server inside the cluster and a MetalLB loadBalancer service will be created to expose the NGINX server to the outside world.
 
-The end service we will use on top of the kubernetes cluster is a Nginx HTTP echo server. This service will be deployed and exposed in all the k8s nodes. With simulated clients, we will verify how traffic is distributed among the different nodes/pods.
+With simulated clients, we will verify how traffic is distributed among the different nodes/pods using `curl` and reaching over to the exposed service IP address.
 
-## Underlay Networking
+### Underlay Networking
 
-The fabric is configured with [BGP unnumbered peering](https://documentation.nokia.com/srlinux/23-3/books/routing-protocols/bgp.html#bgp-unnumbered-peer). Spine switches act as BGP route reflectors for the BGP EVPN family.
+The [eBGP unnumbered peering](https://documentation.nokia.com/srlinux/23-3/books/routing-protocols/bgp.html#bgp-unnumbered-peer) makes the core of our IP fabric. Each leaf switch is configured with a unique ASN, whereas all spines share the same ASN, which is a common practice in Leaf/Spine fabrics.
 
-## Overlay Networking
+Through eBGP the loopback/system IP addresses are exchanged between the leaves, making it possible to setup iBGP sessions for the overlay services that support the k8s cluster.
+
+### Overlay Networking
 
 Clients and k8s nodes are conected to a dedicated L3 EVPN network-instance `ip-vrf1`. This network instance is present in every leaf switch. Traffic between switches is encapsulated in VXLAN and transported by Spines. Two subnets are configured under this `ip-vrf1`:
 
@@ -91,7 +96,7 @@ Clients and k8s nodes are conected to a dedicated L3 EVPN network-instance `ip-v
   <figcaption>Logical network topology</figcaption>
 </figure>
 
-## Containerlab toplogy file
+## Containerlab topology file
 
 The whole lab topology,  is declared in the Containerlab [`srl-k8s-lab.clab.yml`][clab-topo] file.
 
