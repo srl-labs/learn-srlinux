@@ -39,7 +39,7 @@ With [Minikube](https://minikube.sigs.k8s.io/) we will deploy a personal virtual
 | **Lab components**        | Nokia SR Linux, Kubernetes, MetalLB                                                                                                                                                             |
 | **Resource requirements** | :fontawesome-solid-microchip: 6 vCPU <br/>:fontawesome-solid-memory: 16 GB                                                                                                                      |
 | **Lab**                   | [srl-labs/srl-k8s-anycast-lab][lab]                                                                                                                                                             |
-| **Version information**   | [`containerlab:0.44.0`](https://containerlab.dev/install/), [`srlinux:23.3.3`](https://github.com/nokia/srlinux-container-image),[`minikube v1.30.1`](https://minikube.sigs.k8s.io/docs/start/) |
+| **Version information**   | [`containerlab:0.44.1`](https://containerlab.dev/install/), [`srlinux:23.3.3`](https://github.com/nokia/srlinux-container-image),[`minikube v1.30.1`](https://minikube.sigs.k8s.io/docs/start/) |
 | **Authors**               | Míchel Redondo [:material-linkedin:][mr-linkedin]                                                                                                                                               |
 
 At the end of this blog post you can find a [quick summary](#tldr-version) of the steps performed to deploy the lab and configure the use cases.
@@ -80,9 +80,19 @@ With simulated clients, we will verify how traffic is distributed among the diff
 
 ### Underlay Networking
 
-The [eBGP unnumbered peering](https://documentation.nokia.com/srlinux/23-3/books/routing-protocols/bgp.html#bgp-unnumbered-peer) makes the core of our IP fabric. Each leaf switch is configured with a unique ASN, whereas all spines share the same ASN, which is a common practice in Leaf/Spine fabrics.
+The [eBGP unnumbered peering](https://documentation.nokia.com/srlinux/23-3/books/routing-protocols/bgp.html#bgp-unnumbered-peer) makes the core of our IP fabric. Each leaf switch is configured with a unique ASN, whereas all spines share the same ASN, which is a common practice in Leaf/Spine fabrics:
 
-Through eBGP the loopback/system IP addresses are exchanged between the leaves, making it possible to setup iBGP sessions for the overlay services that support the k8s cluster.
+<figure markdown>
+  <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":0,"zoom":1.7,"highlight":"#0000ff","nav":true,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/srl-labs/srl-k8s-anycast-lab/main/images/fabric_ebgp.drawio"}'></div>
+  <figcaption>Underlay IPv6 Link Local eBGP sessions</figcaption>
+</figure>
+
+Through eBGP the loopback/system IP addresses are exchanged between the leaves, making it possible to setup iBGP sessions for the overlay services that support the k8s cluster:
+
+<figure markdown>
+  <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":0,"zoom":1.7,"highlight":"#0000ff","nav":true,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/srl-labs/srl-k8s-anycast-lab/main/images/fabric_ibgp.drawio"}'></div>
+  <figcaption>Overlay iBGP EVPN sessions</figcaption>
+</figure>
 
 ### Overlay Networking
 
@@ -90,6 +100,8 @@ Clients and k8s nodes are conected to a dedicated L3 EVPN network-instance `ip-v
 
 * k8s nodes subnet: 192.168.1.0/24
 * clients subnet: 192.168.2.0/24
+
+In an distributed EVPN L3 scenario, all IRB interfaces facing the hosts must have the same IP address and MAC (.1 IP address in our case); that is, an [anycast-GW](https://documentation.nokia.com/srlinux/23-3/books/evpn-vxlan/evpn-vxlan-tunnels-layer-3.html#evpn-l3-multi-hom-anycast-gateways) configuration. This avoids inefficiencies for all-active multi-homing and speeds up convergence for host mobility.
 
 <figure markdown>
   <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":0,"zoom":1.7,"highlight":"#0000ff","nav":true,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/srl-labs/srl-k8s-anycast-lab/main/images/logical.drawio"}'></div>
@@ -158,7 +170,7 @@ topology:
 
 Containerlab will configure the Leaf/Spine fabric at boot time. You can check the configurations in the [config][clab-configs] folder.
 
-Minikube nodes are referenced by using the `kind: ext-container` option. This option instructs Containerlab to wait for containers with the name declared (`cluster1` in the example) to appear. The moment they appear, clab will take care of creating the interface (`192.168.1.11/24 dev eth1`) and default route. Take note that Minikube node creation it's not managed by Containerlab, is directly managed by the Minikube client.
+Minikube nodes are referenced by using the `kind: ext-container` option. This option instructs Containerlab to interact with containers with the name declared (`cluster1` in the example). Clab will take care of creating the interface (`192.168.1.11/24 dev eth1`) and default route. Take note that Minikube node creation it's not managed by Containerlab, is directly managed by the Minikube client.
 
 Later in the blog post we will carefully explain the process to fully boot up the Lab.
 
@@ -210,29 +222,18 @@ First, clone the lab:
 https://github.com/srl-labs/srl-k8s-anycast-lab.git && cd srl-k8s-anycast-lab
 ```
 
-Open two different shell sessions. One will be used to deploy the Containerlab topology, the other to start the Minikube cluster:
+Start Minikube cluster:
 
-```bash title="shell #1"
-clab deploy --topo srl-k8s-lab.clab.yml
-```
-
-You will notice that Containerlab starts deploying switches and clients and waits for Minikube nodes to appear.
-
-In the second shell, start Minikube cluster:
-
-```bash title="shell #2"
+```bash title="Minikube node deployment"
 minikube start --nodes 3 -p cluster1
 ```
 
-With this command, Minikube will start three k8s nodes (`cluster1`, `cluster1-m02` and `cluster1-m03`) under the profile `cluster`.
+With this command, Minikube has started three k8s nodes (`cluster1`, `cluster1-m02` and `cluster1-m03`) under the profile `cluster`.
 
-At the same time, in shell1, you can see how Containerlab starts "patching" `eth1` cluster node interfaces to Leaf switches, as soon as they appear:
+Once Minikube has finished, deploy Containerlab topology:
 
-```bash
-INFO[0022] node "cluster1-m02" depends on external container "cluster1-m02", which is not running yet. Waited 22s. Retrying...
-INFO[0022] node "cluster1-m02" depends on external container "cluster1-m02", which is not running yet. Waited 22s. Retrying...
-INFO[0022] node "cluster1-m02" depends on external container "cluster1-m02", which is not running yet. Waited 22s. Retrying...
-INFO[0022] Creating virtual wire: leaf2:e1-1 <--> cluster1-m02:eth1
+```bash title="Containerlab topology deployment"
+clab deploy --topo srl-k8s-lab.clab.yml
 ```
 
 At the end of the deployment process, you will see the summary table with details about deployed nodes:
@@ -778,7 +779,7 @@ We have reviewed that MetalLB sessions are established. Now we can check the con
 
 The summary from these route table verifications is that:
 
-* leaf1/leaf/leaf3 install the route to the VIP `1.1.1.100` with the next-hop of the locally connected k8s node.
+* leaf1/leaf2/leaf3 install the route to the VIP `1.1.1.100` with the next-hop of the locally connected k8s node.
 * leaf4, which is not connected to a kubernetes node, only to a client, installs the route to `1.1.1.100` pointing to the three switches where k8s nodes are connected. Traffic will be encapsulated in VXLAN, forwarded to any of the three VTEPs and finally delivered to the k8s node.
 
 With this setup, it is expected that the traffic to `1.1.1.100` from clients connected to leaf1/leaf2/leaf3 will be delivered to the local k8s node.
