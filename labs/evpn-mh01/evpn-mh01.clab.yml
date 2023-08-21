@@ -1,0 +1,51 @@
+name: evpn-mh01
+
+topology:
+  kinds:
+    srl:
+      image: ghcr.io/nokia/srlinux:23.3.1
+    linux:
+      image: akpinar/alpine:latest 
+
+  nodes:
+    leaf1:
+      kind: srl
+      type: ixrd2
+      startup-config: configs/leaf1.cfg
+    leaf2:
+      kind: srl
+      type: ixrd2
+      startup-config: configs/leaf2.cfg
+    leaf3:
+      kind: srl
+      type: ixrd2
+      startup-config: configs/leaf3.cfg
+    spine1:
+      kind: srl
+      type: ixrd3
+      startup-config: configs/spine1.cfg
+    ce1:
+      kind: linux
+      binds:  
+        - configs/ce1-config.sh:/ce1-config.sh
+      exec:
+        - bash /ce1-config.sh    
+    ce2:
+      kind: linux
+      binds:
+        - configs/ce2-config.sh:/ce2-config.sh
+      exec:
+        - bash /ce2-config.sh
+
+  links:
+    # inter-switch links
+    - endpoints: ["leaf1:e1-49", "spine1:e1-1"]
+    - endpoints: ["leaf2:e1-49", "spine1:e1-2"]
+    - endpoints: ["leaf3:e1-49", "spine1:e1-3"]
+    # ce links
+    - endpoints: ["ce1:eth1", "leaf1:e1-1"]
+    - endpoints: ["ce1:eth2", "leaf2:e1-1"]
+    - endpoints: ["ce2:eth1", "leaf3:e1-1"]
+    - endpoints: ["ce2:eth2", "leaf3:e1-2"]
+    - endpoints: ["ce2:eth3", "leaf3:e1-3"]
+
