@@ -39,7 +39,7 @@ With [Minikube](https://minikube.sigs.k8s.io/) we will deploy a personal virtual
 | **Lab components**        | Nokia SR Linux, Kubernetes, MetalLB                                                                                                                                                             |
 | **Resource requirements** | :fontawesome-solid-microchip: 6 vCPU <br/>:fontawesome-solid-memory: 16 GB                                                                                                                      |
 | **Lab**                   | [srl-labs/srl-k8s-anycast-lab][lab]                                                                                                                                                             |
-| **Version information**   | [`containerlab:0.44.1`](https://containerlab.dev/install/), [`srlinux:23.3.3`](https://github.com/nokia/srlinux-container-image),[`minikube v1.30.1`](https://minikube.sigs.k8s.io/docs/start/) |
+| **Version information**   | [`containerlab:0.44.1`](https://containerlab.dev/install/), [`srlinux:23.7.1`](https://github.com/nokia/srlinux-container-image),[`minikube v1.30.1`](https://minikube.sigs.k8s.io/docs/start/) |
 | **Authors**               | Míchel Redondo [:material-linkedin:][mr-linkedin]                                                                                                                                               |
 
 At the end of this blog post you can find a [quick summary](#tldr-version) of the steps performed to deploy the lab and configure the use cases.
@@ -103,6 +103,8 @@ Clients and k8s nodes are conected to a dedicated L3 EVPN network-instance `ip-v
 
 In an distributed EVPN L3 scenario, all IRB interfaces facing the hosts must have the same IP address and MAC (.1 IP address in our case); that is, an [anycast-GW](https://documentation.nokia.com/srlinux/23-3/books/evpn-vxlan/evpn-vxlan-tunnels-layer-3.html#evpn-l3-multi-hom-anycast-gateways) configuration. This avoids inefficiencies for all-active multi-homing and speeds up convergence for host mobility.
 
+Kubernetes nodes, thanks to MetalLB, will establish BGP sessions to these anycast-GW IP addresses. These peering sessions are used to advertise the IP addresses of the exposed services.
+
 <figure markdown>
   <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":0,"zoom":1.7,"highlight":"#0000ff","nav":true,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/srl-labs/srl-k8s-anycast-lab/main/images/logical.drawio"}'></div>
   <figcaption>Logical network topology</figcaption>
@@ -122,14 +124,14 @@ First we look at the different container images that will be used:
 topology:
   kinds:
     srl:
-      image: ghcr.io/nokia/srlinux:23.3.3
+      image: ghcr.io/nokia/srlinux:23.7.1
       type: ixrd2l
     linux:
       image: ghcr.io/hellt/network-multitool
   # -- snip --
 ```
 
-We will use the latest [SR linux image](https://github.com/nokia/srlinux-container-image) as of today, that can be pulled as easily as `docker pull ghcr.io/nokia/srlinux:23.3.3`.
+We will use the latest [SR linux image](https://github.com/nokia/srlinux-container-image) as of today, that can be pulled as easily as `docker pull ghcr.io/nokia/srlinux:23.7.1`.
 
 [network-multitool](https://github.com/users/hellt/packages/container/package/network-multitool) versatile Linux image for the client.
 
@@ -239,7 +241,7 @@ clab deploy --topo srl-k8s-lab.clab.yml
 At the end of the deployment process, you will see the summary table with details about deployed nodes:
 
 ```text
-INFO[0000] Containerlab v0.42.0 started
+INFO[0000] Containerlab v0.44.1 started
 --snip--
 +----+--------------+--------------+-------------------------------------------------------------------------------------------------------------+---------------+---------+-----------------+----------------------+
 | #  |     Name     | Container ID |                                                    Image                                                    |     Kind      |  State  |  IPv4 Address   |     IPv6 Address     |
@@ -251,12 +253,12 @@ INFO[0000] Containerlab v0.42.0 started
 |  5 | client2      | 95220f94b6f0 | ghcr.io/hellt/network-multitool                                                                             | linux         | running | 172.20.20.10/24 | 2001:172:20:20::a/64 |
 |  6 | client3      | 7572185a5ca4 | ghcr.io/hellt/network-multitool                                                                             | linux         | running | 172.20.20.9/24  | 2001:172:20:20::9/64 |
 |  7 | client4      | d97d63b2204b | ghcr.io/hellt/network-multitool                                                                             | linux         | running | 172.20.20.4/24  | 2001:172:20:20::4/64 |
-|  8 | leaf1        | f409d3e950a3 | ghcr.io/nokia/srlinux:23.3.3                                                                                | srl           | running | 172.20.20.7/24  | 2001:172:20:20::7/64 |
-|  9 | leaf2        | bf9c6d3e327f | ghcr.io/nokia/srlinux:23.3.3                                                                                | srl           | running | 172.20.20.2/24  | 2001:172:20:20::2/64 |
-| 10 | leaf3        | c76005991d80 | ghcr.io/nokia/srlinux:23.3.3                                                                                | srl           | running | 172.20.20.11/24 | 2001:172:20:20::b/64 |
-| 11 | leaf4        | ccfd9ddc66f2 | ghcr.io/nokia/srlinux:23.3.3                                                                                | srl           | running | 172.20.20.6/24  | 2001:172:20:20::6/64 |
-| 12 | spine1       | c34f4f75a29f | ghcr.io/nokia/srlinux:23.3.3                                                                                | srl           | running | 172.20.20.3/24  | 2001:172:20:20::3/64 |
-| 13 | spine2       | c2ebfe43499e | ghcr.io/nokia/srlinux:23.3.3                                                                                | srl           | running | 172.20.20.5/24  | 2001:172:20:20::5/64 |
+|  8 | leaf1        | f409d3e950a3 | ghcr.io/nokia/srlinux:23.7.1                                                                                | srl           | running | 172.20.20.7/24  | 2001:172:20:20::7/64 |
+|  9 | leaf2        | bf9c6d3e327f | ghcr.io/nokia/srlinux:23.7.1                                                                                | srl           | running | 172.20.20.2/24  | 2001:172:20:20::2/64 |
+| 10 | leaf3        | c76005991d80 | ghcr.io/nokia/srlinux:23.7.1                                                                                | srl           | running | 172.20.20.11/24 | 2001:172:20:20::b/64 |
+| 11 | leaf4        | ccfd9ddc66f2 | ghcr.io/nokia/srlinux:23.7.1                                                                                | srl           | running | 172.20.20.6/24  | 2001:172:20:20::6/64 |
+| 12 | spine1       | c34f4f75a29f | ghcr.io/nokia/srlinux:23.7.1                                                                                | srl           | running | 172.20.20.3/24  | 2001:172:20:20::3/64 |
+| 13 | spine2       | c2ebfe43499e | ghcr.io/nokia/srlinux:23.7.1                                                                                | srl           | running | 172.20.20.5/24  | 2001:172:20:20::5/64 |
 +----+--------------+--------------+-------------------------------------------------------------------------------------------------------------+---------------+---------+-----------------+----------------------+
 
 ```
@@ -675,56 +677,71 @@ We have reviewed that MetalLB sessions are established. Now we can check the con
 === "Leaf1 vrf1 route table"
     We can see that VIP `1.1.1.100` is installed in our route table, with the next-hop of the direcly connected k8s node1 eth1 interface.
 
-    We can also see that in Leaf1 we receive 1.1.1.100 prefixes from leaf2 and leaf3. These routes are not installed because locally received bgp prefixes are prefered over bgp-evpn ones.
+    We can also see that in Leaf1 we receive 1.1.1.100 prefixes from leaf2 and leaf3. These routes are not installed because we prefer locally received bgp prefixes over over bgp-evpn ones. We force this behavior by lowering the preference of local BGP session to 169 (170 is the default preference). 
 
     The same result is expected if leaf2 and leaf3. Locally learned MetalLB prefix is installed.
     ```
     
     A:leaf1# show network-instance ip-vrf-1 route-table
-    -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    ------------------------------------------------------------------------------------------------------------------------------------------------------
     IPv4 unicast route table of network instance ip-vrf-1
-    -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    +-----------------------------+-------+------------+----------------------+----------------------+----------+---------+------------------+------------------+-----------------------+
-    |           Prefix            |  ID   | Route Type |     Route Owner      |        Active        |  Origin  | Metric  |       Pref       | Next-hop (Type)  |  Next-hop Interface   |
-    |                             |       |            |                      |                      | Network  |         |                  |                  |                       |
-    |                             |       |            |                      |                      | Instance |         |                  |                  |                       |
-    +=============================+=======+============+======================+======================+==========+=========+==================+==================+=======================+
-    | 1.1.1.100/32                | 0     | bgp        | bgp_mgr              | True                 | ip-vrf-1 | 0       | 170              | 192.168.1.0/24   | irb1.1                |
-    |                             |       |            |                      |                      |          |         |                  | (indirect/local) |                       |
-    | 1.1.1.100/32                | 0     | bgp-evpn   | bgp_evpn_mgr         | False                | ip-vrf-1 | 0       | 170              | 10.0.1.2/32      |                       |
-    |                             |       |            |                      |                      |          |         |                  | (indirect/vxlan) |                       |
-    |                             |       |            |                      |                      |          |         |                  | 10.0.1.3/32      |                       |
-    |                             |       |            |                      |                      |          |         |                  | (indirect/vxlan) |                       |
-    | 192.168.1.0/24              | 0     | bgp-evpn   | bgp_evpn_mgr         | False                | ip-vrf-1 | 0       | 170              | 10.0.1.2/32      |                       |
-    |                             |       |            |                      |                      |          |         |                  | (indirect/vxlan) |                       |
-    |                             |       |            |                      |                      |          |         |                  | 10.0.1.3/32      |                       |
-    |                             |       |            |                      |                      |          |         |                  | (indirect/vxlan) |                       |
-    | 192.168.1.0/24              | 8     | local      | net_inst_mgr         | True                 | ip-vrf-1 | 0       | 0                | 192.168.1.1      | irb1.1                |
-    |                             |       |            |                      |                      |          |         |                  | (direct)         |                       |
-    | 192.168.1.1/32              | 8     | host       | net_inst_mgr         | True                 | ip-vrf-1 | 0       | 0                | None (extract)   | None                  |
-    | 192.168.1.11/32             | 8     | arp-nd     | arp_nd_mgr           | True                 | ip-vrf-1 | 0       | 1                | 192.168.1.11     | irb1.1                |
-    |                             |       |            |                      |                      |          |         |                  | (direct)         |                       |
-    | 192.168.1.12/32             | 0     | bgp-evpn   | bgp_evpn_mgr         | True                 | ip-vrf-1 | 0       | 170              | 10.0.1.2/32      |                       |
-    |                             |       |            |                      |                      |          |         |                  | (indirect/vxlan) |                       |
-    | 192.168.1.13/32             | 0     | bgp-evpn   | bgp_evpn_mgr         | True                 | ip-vrf-1 | 0       | 170              | 10.0.1.3/32      |                       |
-    |                             |       |            |                      |                      |          |         |                  | (indirect/vxlan) |                       |
-    | 192.168.1.255/32            | 8     | host       | net_inst_mgr         | True                 | ip-vrf-1 | 0       | 0                | None (broadcast) |                       |
-    | 192.168.2.0/24              | 0     | bgp-evpn   | bgp_evpn_mgr         | False                | ip-vrf-1 | 0       | 170              | 10.0.1.2/32      |                       |
-    |                             |       |            |                      |                      |          |         |                  | (indirect/vxlan) |                       |
-    |                             |       |            |                      |                      |          |         |                  | 10.0.1.3/32      |                       |
-    |                             |       |            |                      |                      |          |         |                  | (indirect/vxlan) |                       |
-    |                             |       |            |                      |                      |          |         |                  | 10.0.1.4/32      |                       |
-    |                             |       |            |                      |                      |          |         |                  | (indirect/vxlan) |                       |
-    | 192.168.2.0/24              | 9     | local      | net_inst_mgr         | True                 | ip-vrf-1 | 0       | 0                | 192.168.2.1      | irb1.2                |
-    |                             |       |            |                      |                      |          |         |                  | (direct)         |                       |
-    | 192.168.2.1/32              | 9     | host       | net_inst_mgr         | True                 | ip-vrf-1 | 0       | 0                | None (extract)   | None                  |
-    | 192.168.2.255/32            | 9     | host       | net_inst_mgr         | True                 | ip-vrf-1 | 0       | 0                | None (broadcast) |                       |
-    +-----------------------------+-------+------------+----------------------+----------------------+----------+---------+------------------+------------------+-----------------------+
-    -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    ------------------------------------------------------------------------------------------------------------------------------------------------------
+    +--------------------+------+-----------+--------------------+--------------------+---------+--------+-------------+-------------+--------------+
+    |       Prefix       |  ID  |   Route   |    Route Owner     |       Active       | Origin  | Metric |    Pref     |  Next-hop   |   Next-hop   |
+    |                    |      |   Type    |                    |                    | Network |        |             |   (Type)    |  Interface   |
+    |                    |      |           |                    |                    | Instanc |        |             |             |              |
+    |                    |      |           |                    |                    |    e    |        |             |             |              |
+    +====================+======+===========+====================+====================+=========+========+=============+=============+==============+
+    | 1.1.1.100/32       | 0    | bgp       | bgp_mgr            | True               | ip-     | 0      | 169         | 192.168.1.0 | irb1.1       |
+    |                    |      |           |                    |                    | vrf-1   |        |             | /24 (indire |              |
+    |                    |      |           |                    |                    |         |        |             | ct/local)   |              |
+    | 1.1.1.100/32       | 0    | bgp-evpn  | bgp_evpn_mgr       | False              | ip-     | 0      | 170         | 10.0.1.2/32 |              |
+    |                    |      |           |                    |                    | vrf-1   |        |             | (indirect/v |              |
+    |                    |      |           |                    |                    |         |        |             | xlan)       |              |
+    |                    |      |           |                    |                    |         |        |             | 10.0.1.3/32 |              |
+    |                    |      |           |                    |                    |         |        |             | (indirect/v |              |
+    |                    |      |           |                    |                    |         |        |             | xlan)       |              |
+    | 192.168.1.0/24     | 0    | bgp-evpn  | bgp_evpn_mgr       | False              | ip-     | 0      | 170         | 10.0.1.2/32 |              |
+    |                    |      |           |                    |                    | vrf-1   |        |             | (indirect/v |              |
+    |                    |      |           |                    |                    |         |        |             | xlan)       |              |
+    |                    |      |           |                    |                    |         |        |             | 10.0.1.3/32 |              |
+    |                    |      |           |                    |                    |         |        |             | (indirect/v |              |
+    |                    |      |           |                    |                    |         |        |             | xlan)       |              |
+    | 192.168.1.0/24     | 8    | local     | net_inst_mgr       | True               | ip-     | 0      | 0           | 192.168.1.1 | irb1.1       |
+    |                    |      |           |                    |                    | vrf-1   |        |             | (direct)    |              |
+    | 192.168.1.1/32     | 8    | host      | net_inst_mgr       | True               | ip-     | 0      | 0           | None        | None         |
+    |                    |      |           |                    |                    | vrf-1   |        |             | (extract)   |              |
+    | 192.168.1.11/32    | 8    | arp-nd    | arp_nd_mgr         | True               | ip-     | 0      | 1           | 192.168.1.1 | irb1.1       |
+    |                    |      |           |                    |                    | vrf-1   |        |             | 1 (direct)  |              |
+    | 192.168.1.12/32    | 0    | bgp-evpn  | bgp_evpn_mgr       | True               | ip-     | 0      | 170         | 10.0.1.2/32 |              |
+    |                    |      |           |                    |                    | vrf-1   |        |             | (indirect/v |              |
+    |                    |      |           |                    |                    |         |        |             | xlan)       |              |
+    | 192.168.1.13/32    | 0    | bgp-evpn  | bgp_evpn_mgr       | True               | ip-     | 0      | 170         | 10.0.1.3/32 |              |
+    |                    |      |           |                    |                    | vrf-1   |        |             | (indirect/v |              |
+    |                    |      |           |                    |                    |         |        |             | xlan)       |              |
+    | 192.168.1.255/32   | 8    | host      | net_inst_mgr       | True               | ip-     | 0      | 0           | None        |              |
+    |                    |      |           |                    |                    | vrf-1   |        |             | (broadcast) |              |
+    | 192.168.2.0/24     | 0    | bgp-evpn  | bgp_evpn_mgr       | False              | ip-     | 0      | 170         | 10.0.1.2/32 |              |
+    |                    |      |           |                    |                    | vrf-1   |        |             | (indirect/v |              |
+    |                    |      |           |                    |                    |         |        |             | xlan)       |              |
+    |                    |      |           |                    |                    |         |        |             | 10.0.1.3/32 |              |
+    |                    |      |           |                    |                    |         |        |             | (indirect/v |              |
+    |                    |      |           |                    |                    |         |        |             | xlan)       |              |
+    |                    |      |           |                    |                    |         |        |             | 10.0.1.4/32 |              |
+    |                    |      |           |                    |                    |         |        |             | (indirect/v |              |
+    |                    |      |           |                    |                    |         |        |             | xlan)       |              |
+    | 192.168.2.0/24     | 9    | local     | net_inst_mgr       | True               | ip-     | 0      | 0           | 192.168.2.1 | irb1.2       |
+    |                    |      |           |                    |                    | vrf-1   |        |             | (direct)    |              |
+    | 192.168.2.1/32     | 9    | host      | net_inst_mgr       | True               | ip-     | 0      | 0           | None        | None         |
+    |                    |      |           |                    |                    | vrf-1   |        |             | (extract)   |              |
+    | 192.168.2.255/32   | 9    | host      | net_inst_mgr       | True               | ip-     | 0      | 0           | None        |              |
+    |                    |      |           |                    |                    | vrf-1   |        |             | (broadcast) |              |
+    +--------------------+------+-----------+--------------------+--------------------+---------+--------+-------------+-------------+--------------+
+    ------------------------------------------------------------------------------------------------------------------------------------------------------
     IPv4 routes total                    : 13
     IPv4 prefixes with active routes     : 10
     IPv4 prefixes with active ECMP routes: 3
-    -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    ------------------------------------------------------------------------------------------------------------------------------------------------------
 
     ```
 
@@ -946,8 +963,8 @@ Want to see a quick summary of the steps? Here you go:
 
 ```bash title="quick summary"
 git clone https://github.com/srl-labs/srl-k8s-anycast-lab && cd srl-k8s-anycast-lab
-sudo clab deploy --topo srl-k8s-lab.clab.yml
 minikube start --nodes 3 -p cluster1
+sudo clab deploy --topo srl-k8s-lab.clab.yml
 minikube addons enable metallb -p cluster1
 kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/main/config/manifests/metallb-frr.yaml
 kubectl apply -f metal-lb-hello-cluster1.yaml
