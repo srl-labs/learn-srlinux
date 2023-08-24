@@ -39,7 +39,7 @@ With [Minikube](https://minikube.sigs.k8s.io/) we will deploy a personal virtual
 | **Lab components**        | Nokia SR Linux, Kubernetes, MetalLB                                                                                                                                                             |
 | **Resource requirements** | :fontawesome-solid-microchip: 6 vCPU <br/>:fontawesome-solid-memory: 16 GB                                                                                                                      |
 | **Lab**                   | [srl-labs/srl-k8s-anycast-lab][lab]                                                                                                                                                             |
-| **Version information**   | [`containerlab:0.44.1`](https://containerlab.dev/install/), [`srlinux:23.7.1`](https://github.com/nokia/srlinux-container-image),[`minikube v1.30.1`](https://minikube.sigs.k8s.io/docs/start/) |
+| **Version information**   | [`containerlab:0.44.3`](https://containerlab.dev/install/), [`srlinux:23.7.1`](https://github.com/nokia/srlinux-container-image),[`minikube v1.30.1`](https://minikube.sigs.k8s.io/docs/start/) |
 | **Authors**               | Míchel Redondo [:material-linkedin:][mr-linkedin]                                                                                                                                               |
 
 At the end of this blog post you can find a [quick summary](#tldr-version) of the steps performed to deploy the lab and configure the use cases.
