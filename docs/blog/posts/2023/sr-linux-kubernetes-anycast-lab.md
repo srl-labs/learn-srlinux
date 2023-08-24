@@ -80,7 +80,7 @@ With simulated clients, we will verify how traffic is distributed among the diff
 
 ### Underlay Networking
 
-The [eBGP unnumbered peering](https://documentation.nokia.com/srlinux/23-3/books/routing-protocols/bgp.html#bgp-unnumbered-peer) makes the core of our IP fabric. Each leaf switch is configured with a unique ASN, whereas all spines share the same ASN, which is a common practice in Leaf/Spine fabrics:
+The [eBGP unnumbered peering](https://documentation.nokia.com/srlinux/23-7/books/routing-protocols/bgp.html#bgp-unnumbered-peer) makes the core of our IP fabric. Each leaf switch is configured with a unique ASN, whereas all spines share the same ASN, which is a common practice in Leaf/Spine fabrics:
 
 <figure markdown>
   <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":0,"zoom":1.7,"highlight":"#0000ff","nav":true,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/srl-labs/srl-k8s-anycast-lab/main/images/fabric_ebgp.drawio"}'></div>
