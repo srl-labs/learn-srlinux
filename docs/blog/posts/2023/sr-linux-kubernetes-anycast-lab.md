@@ -119,9 +119,9 @@ Kubernetes nodes, thanks to MetalLB, will establish BGP sessions to these anycas
 
 ## Containerlab topology file
 
-The whole lab topology,  is declared in the Containerlab [`srl-k8s-lab.clab.yml`][clab-topo] file.
+The whole lab topology is declared in the Containerlab [`srl-k8s-lab.clab.yml`][clab-topo] file.
 
-Let's review the different components of our definition file:
+Let's review the different components of our topology definition file:
 
 ### Images
 
@@ -138,47 +138,45 @@ topology:
   # -- snip --
 ```
 
-We will use the latest [SR linux image](https://github.com/nokia/srlinux-container-image) as of today, that can be pulled as easily as `docker pull ghcr.io/nokia/srlinux:23.7.1`.
+We will use the [SR linux image v23.7.1](https://github.com/nokia/srlinux-container-image) that can be pulled as easily as `docker pull ghcr.io/nokia/srlinux:23.7.1`.
 
-[network-multitool](https://github.com/users/hellt/packages/container/package/network-multitool) versatile Linux image for the client.
+Our emulated clients will be deployed from the [network-multitool](https://github.com/users/hellt/packages/container/package/network-multitool) versatile Linux image.
 
 Kubernetes container images and container creation are directly managed by Minikube.
 
 ### Nodes
 
-And let's also review the definition of our Lab components: Leaf/Spine switches, K8s nodes and Linux clients:
+The central stage of the Lab is taken by the Leaf/Spine switches, K8s nodes and Linux clients. Let's see how we define them:
 
-```yaml title="node definition"
+```yaml title="Defining nodes"
 topology:
   # -- snip --
   nodes:
     leaf1:
       kind: srl
       startup-config: configs/leaf1.conf
- 
-    cluster1: 
-      kind: ext-container # (1)
+
+    cluster1:
+      kind: ext-container #(1)!
       exec:
         - ip address add 192.168.1.11/24 dev eth1
         - ip route add 192.168.0.0/16 via 192.168.1.1
-  
+
     client1:
      kind: linux
      binds:
         - configs/client-config.sh:/client-config.sh
      exec:
-        - bash /client-config.sh 192.168.2.11 # (2)
+        - bash /client-config.sh 192.168.2.11 #(2)!
 # -- snip --
 ```
 
-1. Minikube will name k8s container nodes with the  name `minikube` by default. If the minikube option `profile` is used, it will use the profile name. Here, we use the profile name `cluster1`. First node is named `cluster1`, second `cluster1-m02`...
-2. `client-config.sh` is a script that configures client IP addresses and routes. It also updates the shell with the name of the container, so it's easier to see where we are connected when we attach to the client containers.
+1. Minikube will name k8s container nodes as `minikube` by default. We set minikube's `profile` option to `cluster1` that sets cluster's first node name to `cluster1`, second `cluster1-m02` and `cluster-m03` for the third node.
+2. `client-config.sh` is a script that configures client IP addresses and routes. It also updates the shell prompt with the name of the container, so it's easier to see which client we are connected to when we attach to the container's shell.
 
-Containerlab will configure the Leaf/Spine fabric at boot time. You can check the configurations in the [config][clab-configs] folder.
+Containerlab will configure the Leaf/Spine nodes during the lab deployment by applying configuration commands stored in the [config][clab-configs] folder of the lab repository.
 
-Minikube nodes are referenced by using the `kind: ext-container` option. This option instructs Containerlab to interact with containers with the name declared (`cluster1` in the example). Clab will take care of creating the interface (`192.168.1.11/24 dev eth1`) and default route. Take note that Minikube node creation it's not managed by Containerlab, is directly managed by the Minikube client.
-
-Later in the blog post we will carefully explain the process to fully boot up the Lab.
+Minikube nodes are referenced in the topology using the `ext-container` kind. Nodes of `ext-container` kind are not deployed by containerlab, but belong to a topology and therefore can be "wired" with other nodes in the links section. Additionally, containerlab configures the cluster nodes with IP and routing information defined in the `exec` section.
 
 !!!tip
     Consult with [containerlab](https://containerlab.dev/manual/kinds/ext-container/) documentation to learn more about the `ext-container` kind.
@@ -192,7 +190,7 @@ topology:
 # -- snip --
 
   links:
-  ### #### fabric ### ####
+    ### #### fabric ### ####
     - endpoints: ["spine1:e1-1", "leaf1:e1-49"]
     - endpoints: ["spine1:e1-2", "leaf2:e1-49"]
     - endpoints: ["spine1:e1-3", "leaf3:e1-49"]
@@ -218,7 +216,7 @@ topology:
 This is the full definition of all the connections required. As you can see, we use the first port (`e1-1`) of every leaf switch to connect the k8s node and second port (`e1-2`) to connect a client for tests.
 
 !!! note
-    `eth0`minikube node interfaces are connected to the docker bridge of the host running the topology. `eth1` interfaces, connected to Leaf switches, will be the ones used by MetalLB to establish the BGP the sessions. As reachability is signaled through this interface, clients will also reach k8s cluster services though `eth1`.
+    minikube nodes `eth0` interfaces are connected to the docker bridge of the host running the topology. `eth1` interfaces, connected to Leaf switches, will be the ones used by MetalLB to establish the BGP sessions. As reachability is signaled through this interface, clients will also reach k8s cluster services through `eth1` interface.
 
 ## Lab deployment
 
