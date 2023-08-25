@@ -512,13 +512,15 @@ Summary:
 
 ## K8s service deployment
 
+The final touch is to deploy a test service in our k8s cluster and create a loadbalancer service for it. We will use the [Nginx Echo Server](https://hub.docker.com/r/nginxdemos/hello/) that responses with some pod information.
+
 ```yaml title="Deployment: HTTP echo service deployment"
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: nginxhello
 spec:
-  replicas: 3 # (1)
+  replicas: 3 # (1)!
   selector:
     matchLabels:
       app: nginxhello
@@ -529,7 +531,7 @@ spec:
     spec:
       containers:
       - name: nginxhello
-        image: nginxdemos/hello:plain-text # (2)
+        image: nginxdemos/hello:plain-text # (2)!
         ports:
         - name: http
           containerPort: 80
@@ -537,6 +539,8 @@ spec:
 
 1. Three pods will be deployed in our cluster
 2. The Nginx hello image echoes back the name and IP address of the pod
+
+We also create a k8s service of type LoadBalancer selecting the pods with the label `app: nginxhello` and exposing the service on port 80:
 
 ```yaml title="Service: exposing our nginxhello application"
 apiVersion: v1
@@ -546,34 +550,34 @@ metadata:
 spec:
   ports:
   - name: http
-    port: 80 # (1)
+    port: 80 # (1)!
     protocol: TCP
-    targetPort: 80 # (2)
+    targetPort: 80 # (2)!
   selector:
     app: nginxhello
   type: LoadBalancer
-  externalTrafficPolicy: Cluster # (3)
+  externalTrafficPolicy: Cluster # (3)!
 ```
 
 1. **port** exposes the Kubernetes service on the specified port within the cluster. Other pods within the cluster can communicate with this server on the specified port
 2. **targetPort** is the port on which the service will send requests to, that your pod will be listening on
 3. Two possible configurations: **Local** or **Cluster**
 
-    **Local** means that when the packet arrives to a node, kube-proxy will only distribute the load within the same node
-  
-    **Cluster** means that when the packet arrives to a node, kube-proxy will distribute the load to all the nodes present in the service
+    **Local** means that when the packet reaches a node, kube-proxy will only distribute the load within the same node
 
-Finally, it's time to deploy our service. As you can see in the Resource definition file [metal-lb-hello-cluster1.yaml][metal-lb-hello-cluster1], these resources are grouped together in the same file (separated by --- in YAML).
+    **Cluster** means that when the packet reaches a node, kube-proxy will distribute the load to all the nodes comprising the service
 
-To deploy the service:
+Let's deploy it:
 
 ```bash
-kubectl apply -f metal-lb-hello-cluster1.yaml
+kubectl apply -f nginx.yaml
 ```
 
-That's it!! We have the fabric running and the service configured. Let's do some checks.
+That's it! Now we have the IP fabric running and the service configured to be available outside of the cluster. Let's see how it all works.
 
-## Kubernetes verification
+## Verifications
+
+### Service
 
 We can check the status of our k8s cluster and the service we have just deployed:
 
@@ -638,7 +642,7 @@ We can check the status of our k8s cluster and the service we have just deployed
     ```
     As expected, FRR daemon is announcing the VIP.
 
-## Fabric Overlay verification
+### Fabric overlay
 
 We have already verified the underlay Fabric and Kubernetes Cluster in the previous steps, now that we have the Echo service ready, the BGP sessions between Leaf switches and k8s nodes should be established:
 
