@@ -577,12 +577,12 @@ That's it! Now we have the IP fabric running and the service configured to be av
 
 ## Verifications
 
-### Service
+### k8s resources
 
-We can check the status of our k8s cluster and the service we have just deployed:
+Before jumping into the details of control- and data-plane operation let's verify that it is good from the k8s standpoint.
 
-=== "k8s nodes"
-    We check that our three node cluster is ready:
+=== "nodes"
+    Checking that our three node cluster is doing great:
     ```
     # kubectl get nodes
     NAME           STATUS   ROLES           AGE   VERSION
@@ -590,41 +590,51 @@ We can check the status of our k8s cluster and the service we have just deployed
     cluster1-m02   Ready    <none>          78m   v1.26.3
     cluster1-m03   Ready    <none>          78m   v1.26.3
     ```
-    looks good!
 
-=== "k8s pods"
-    We check that end service consisting of three Nginx echo pods are ready too:
+=== "pods"
+    Checking that our replicated deployment of Nginx Echo Server is running and distributed across the cluster:
     ```
-    # kk get pods -o wide
+    # kubectl get pods -o wide
     NAME                          READY   STATUS    RESTARTS   AGE   IP           NODE           NOMINATED NODE   READINESS GATES
     nginxhello-6b97fd8857-4vp6z   1/1     Running   0          81m   10.244.0.3   cluster1       <none>           <none>
     nginxhello-6b97fd8857-b2vf8   1/1     Running   0          81m   10.244.2.3   cluster1-m03   <none>           <none>
     nginxhello-6b97fd8857-f2ggp   1/1     Running   0          81m   10.244.1.3   cluster1-m02   <none>           <none>
     ```
-    Nginx pods running, and we can see that the Kubernetes scheduler has placed one Nginx pod at each k8s node.
 
-=== "k8s service"
-    We check that the service exposure is correct:
+=== "service"
+    Checking that our LoadBalancer service is running and has an external IP address from the assigned range:
     ```
     # kubectl get svc
     NAME         TYPE           CLUSTER-IP       EXTERNAL-IP   PORT(S)        AGE
     kubernetes   ClusterIP      10.96.0.1        <none>        443/TCP        85m
     nginxhello   LoadBalancer   10.107.153.252   1.1.1.100     80:30608/TCP   51m
     ```
-    nginxhello service configured!
 
-=== "k8s MetalLB speaker pods"
-    At every node, MetalLB deploys a pod that runs the FRR daemon. We can check it:
+    We can make sure that the ClusterIP service that LoadBalancer is based on works, by running the following command a few times and see that the request is loadbalanced between the pods:
+
+    ```
+    # kubectl exec nginxhello-7d95548fc-7q44k -- curl -s 10.102.93.1
+    Server address: 10.244.2.3:80
+    Server name: nginxhello-7d95548fc-rhfth
+    Date: 25/Aug/2023:15:01:28 +0000
+    URI: /
+    Request ID: 70183d16865d3fdae08165f00ede6d85
+    ```
+
+=== "MetalLB speaker pods"
+    At every node, MetalLB deploys a pod that runs the FRR to speak BGP to our leaves:
     ```
     # kubectl get pods -A | grep speaker
     metallb-system   speaker-4gcj8                      4/4     Running   0             56m
     metallb-system   speaker-bs2mq                      4/4     Running   0             56m
     metallb-system   speaker-cpdnj                      4/4     Running   0             55m
     ```
-    pods running!
-=== "k8s MetalLB pod speaker FRR "
-    We can connect to speakers with the command `kubectl exec -it speaker-4gcj8 --namespace=metallb-system  -- vtysh`. Once connected, we can use different commands to verify status, including `show run` to display configuration:
-    ```
+
+=== "MetalLB pod speaker FRR"
+    We can connect to speakers FRR shell using `kubectl exec -it speaker-<pod-rand-name> --namespace=metallb-system -- vtysh`. Once connected, we can use FRR vtysh commands to verify FRR configuration.
+
+    Below we are checking that FRR is announcing the VIP prefix its peer - leaf switch:
+    ```bash
     cluster1# sh ip bgp neighbors 192.168.1.1 advertised-routes
     BGP table version is 1, local router ID is 192.168.49.2, vrf id 0
     Default local pref 100, local AS 65535
@@ -638,9 +648,7 @@ We can check the status of our k8s cluster and the service we have just deployed
     *> 1.1.1.100/32     0.0.0.0                  0    100  32768 i
 
     Total number of prefixes 1
-    cluster1#
     ```
-    As expected, FRR daemon is announcing the VIP.
 
 ### Fabric overlay
 
