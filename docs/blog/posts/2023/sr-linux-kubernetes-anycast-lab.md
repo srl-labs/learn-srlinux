@@ -158,17 +158,14 @@ topology:
     client1:
      kind: linux
      binds:
-        - configs/hostname.sh:/hostname.sh
-        - configs/client1-config.sh:/client1-config.sh
+        - configs/client-config.sh:/client-config.sh
      exec:
-        - bash /hostname.sh # (2)
-        - bash /client1-config.sh # (3)
+        - bash /client-config.sh 192.168.2.11 # (2)
 # -- snip --
 ```
 
 1. Minikube will name k8s container nodes with the  name `minikube` by default. If the minikube option `profile` is used, it will use the profile name. Here, we use the profile name `cluster1`. First node is named `cluster1`, second `cluster1-m02`...
-2. `bash /hostname.sh` is just a hacky script that updates the shell with the name of the container, so it's easier to see where we are connected when we attach to the client containers.
-3. Client IP addresses and routes are configured through this script.
+2. `client-config.sh` is a script that configures client IP addresses and routes. It also updates the shell with the name of the container, so it's easier to see where we are connected when we attach to the client containers.
 
 Containerlab will configure the Leaf/Spine fabric at boot time. You can check the configurations in the [config][clab-configs] folder.
 
