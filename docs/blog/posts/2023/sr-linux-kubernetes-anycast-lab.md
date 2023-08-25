@@ -275,15 +275,15 @@ At the end of the deployment process, you will see the summary table with detail
 
 These simple steps conclude the lab deployment. At this point, we have a fully functional Leaf/Spine fabric and a bare three-node k8s cluster. In the next sections we will configure k8s networking and deploy a test service.
 
-## Minikube MetalLB installation
+## MetalLB installation
 
-As are using MetalLB, first we need to enable it in the Minikube cluster:
+A key component of our lab use case is the [MetalLB](https://metallb.universe.tf/) load balancer that is used to announce services IP addresses to the IP fabric. MetalLB is not installed by default in Minikube, so we need to enable it:
 
 ```bash
 minikube addons enable metallb -p cluster1
 ```
 
-MetalLB has two [modes of operation](https://metallb.universe.tf/concepts/): Layer2 and BGP. For this Lab we will use BGP.
+MetalLB has two [operation modes](https://metallb.universe.tf/concepts/): Layer2 and BGP. We will use the BGP mode.
 
 MetalLB also provides two different [BGP implementations](https://metallb.universe.tf/concepts/bgp/):
 
@@ -296,54 +296,56 @@ We will use the *FRR* implementation. We install it with the following command:
 kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/main/config/manifests/metallb-frr.yaml
 ```
 
-## Leaf/Spine fabric verification
+## Fabric verification
 
-By this step, the DC Fabric is deployed and configured and k8s cluster is also ready.
+Coming to this step we have a configured IP Fabric and a ready k8s cluster.
 
-Our k8s test service (Nginx Echo Server) is not yet deployed so our MetalLB BGP sessions between Leaf and kubernetes nodes are not established yet, but the underlay DC Fabric BGP/EVPN sessions between Leaf and Spines switches should be working by now. We can verify that it's working properly:
+The k8s test service (Nginx Echo Server) is not yet deployed, so our MetalLB BGP sessions between Leaves and kubernetes nodes are not established yet, but the BGP/EVPN sessions between Leaf and Spine switches should be working by now. We can verify that by checking the BGP related information on leaves and spines:
 
-=== "Spine1"
-    BGP underlay sessions are configured with [unnumbered peering](https://documentation.nokia.com/srlinux/23-3/books/routing-protocols/bgp.html#bgp-unnumbered-peer).
+=== "Spine1 BGP Neighbors"
+    BGP underlay sessions are configured with [unnumbered peering](https://documentation.nokia.com/srlinux/23-7/books/routing-protocols/bgp.html#bgp-unnumbered-peer) and 4 dynamic peers are seen from spine1 perspective.
 
-    BGP EVPN sessions are established between system IP interfaces.
-    ```
-      A:spine1# show network-instance default protocols bgp neighbor
-      -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-      BGP neighbor summary for network-instance "default"
-      Flags: S static, D dynamic, L discovered by LLDP, B BFD enabled, - disabled, * slow
-      -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-      -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-      +--------------------+-----------------------------+--------------------+-------+-----------+----------------+----------------+--------------+-----------------------------+
-      |      Net-Inst      |            Peer             |       Group        | Flags |  Peer-AS  |     State      |     Uptime     |   AFI/SAFI   |       [Rx/Active/Tx]        |
-      +====================+=============================+====================+=======+===========+================+================+==============+=============================+
-      | default            | 10.0.1.1                    | overlay            | S     | 64321     | established    | 0d:0h:0m:56s   | evpn         | [12/0/29]                   |
-      | default            | 10.0.1.2                    | overlay            | S     | 64321     | established    | 0d:0h:0m:56s   | evpn         | [12/0/29]                   |
-      | default            | 10.0.1.3                    | overlay            | S     | 64321     | established    | 0d:0h:0m:55s   | evpn         | [12/0/29]                   |
-      | default            | 10.0.1.4                    | overlay            | S     | 64321     | established    | 0d:0h:0m:57s   | evpn         | [5/0/36]                    |
-      | default            | fe80::1849:9ff:feff:31%ethe | leafs              | D     | 65003     | established    | 0d:0h:1m:2s    | ipv4-unicast | [2/1/4]                     |
-      |                    | rnet-1/3.0                  |                    |       |           |                |                | ipv6-unicast | [2/1/4]                     |
-      | default            | fe80::189b:aff:feff:31%ethe | leafs              | D     | 65004     | established    | 0d:0h:1m:3s    | ipv4-unicast | [2/1/4]                     |
-      |                    | rnet-1/4.0                  |                    |       |           |                |                | ipv6-unicast | [2/1/4]                     |
-      | default            | fe80::18a2:8ff:feff:31%ethe | leafs              | D     | 65002     | established    | 0d:0h:1m:2s    | ipv4-unicast | [2/1/4]                     |
-      |                    | rnet-1/2.0                  |                    |       |           |                |                | ipv6-unicast | [2/1/4]                     |
-      | default            | fe80::18aa:7ff:feff:31%ethe | leafs              | D     | 65001     | established    | 0d:0h:1m:2s    | ipv4-unicast | [2/1/4]                     |
-      |                    | rnet-1/1.0                  |                    |       |           |                |                | ipv6-unicast | [2/1/4]                     |
-      +--------------------+-----------------------------+--------------------+-------+-----------+----------------+----------------+--------------+-----------------------------+
-      -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-      Summary:
-      4 configured neighbors, 4 configured sessions are established,0 disabled peers
-      4 dynamic peers
-    ```
-    Great! All sessions established and exchanging prefixes.
-=== "Leaf1"
-    We can also have a look at BGP sessions  from the perspective of the leaf switch:
-    ```
-    A:leaf1# show network-instance default protocols bgp neighbor
-    -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    iBGP EVPN sessions are established between system IP interfaces forming 4 configured iBGP neighbors.
+    ```srl
+    A:spine1# show network-instance default protocols bgp neighbor
+    ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     BGP neighbor summary for network-instance "default"
     Flags: S static, D dynamic, L discovered by LLDP, B BFD enabled, - disabled, * slow
-    -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    +--------------------+-----------------------------+--------------------+-------+-----------+----------------+----------------+--------------+-----------------------------+
+    |      Net-Inst      |            Peer             |       Group        | Flags |  Peer-AS  |     State      |     Uptime     |   AFI/SAFI   |       [Rx/Active/Tx]        |
+    +====================+=============================+====================+=======+===========+================+================+==============+=============================+
+    | default            | 10.0.1.1                    | overlay            | S     | 64321     | established    | 0d:0h:0m:56s   | evpn         | [12/0/29]                   |
+    | default            | 10.0.1.2                    | overlay            | S     | 64321     | established    | 0d:0h:0m:56s   | evpn         | [12/0/29]                   |
+    | default            | 10.0.1.3                    | overlay            | S     | 64321     | established    | 0d:0h:0m:55s   | evpn         | [12/0/29]                   |
+    | default            | 10.0.1.4                    | overlay            | S     | 64321     | established    | 0d:0h:0m:57s   | evpn         | [5/0/36]                    |
+    | default            | fe80::1849:9ff:feff:31%ethe | leafs              | D     | 65003     | established    | 0d:0h:1m:2s    | ipv4-unicast | [2/1/4]                     |
+    |                    | rnet-1/3.0                  |                    |       |           |                |                | ipv6-unicast | [2/1/4]                     |
+    | default            | fe80::189b:aff:feff:31%ethe | leafs              | D     | 65004     | established    | 0d:0h:1m:3s    | ipv4-unicast | [2/1/4]                     |
+    |                    | rnet-1/4.0                  |                    |       |           |                |                | ipv6-unicast | [2/1/4]                     |
+    | default            | fe80::18a2:8ff:feff:31%ethe | leafs              | D     | 65002     | established    | 0d:0h:1m:2s    | ipv4-unicast | [2/1/4]                     |
+    |                    | rnet-1/2.0                  |                    |       |           |                |                | ipv6-unicast | [2/1/4]                     |
+    | default            | fe80::18aa:7ff:feff:31%ethe | leafs              | D     | 65001     | established    | 0d:0h:1m:2s    | ipv4-unicast | [2/1/4]                     |
+    |                    | rnet-1/1.0                  |                    |       |           |                |                | ipv6-unicast | [2/1/4]                     |
+    +--------------------+-----------------------------+--------------------+-------+-----------+----------------+----------------+--------------+-----------------------------+
+    ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    Summary:
+    4 configured neighbors, 4 configured sessions are established,0 disabled peers
+    4 dynamic peers
+    ```
+    Great! All sessions are established and prefixes are exchanged.
+
+=== "Leaf1 BGP Neighbors"
+    We can also have a look at BGP sessions from the perspective of the leaf switch:
+
+    ```srl
+    A:leaf1# show network-instance default protocols bgp neighbor
+    ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    BGP neighbor summary for network-instance "default"
+    Flags: S static, D dynamic, L discovered by LLDP, B BFD enabled, - disabled, * slow
+    ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     +--------------------+-----------------------------+--------------------+-------+-----------+----------------+----------------+--------------+-----------------------------+
     |      Net-Inst      |            Peer             |       Group        | Flags |  Peer-AS  |     State      |     Uptime     |   AFI/SAFI   |       [Rx/Active/Tx]        |
     +====================+=============================+====================+=======+===========+================+================+==============+=============================+
@@ -354,16 +356,16 @@ Our k8s test service (Nginx Echo Server) is not yet deployed so our MetalLB BGP 
     | default            | fe80::1866:bff:feff:1%ether | spines             | D     | 64601     | established    | 0d:0h:11m:55s  | ipv4-unicast | [4/4/2]                     |
     |                    | net-1/49.0                  |                    |       |           |                |                | ipv6-unicast | [4/4/2]                     |
     +--------------------+-----------------------------+--------------------+-------+-----------+----------------+----------------+--------------+-----------------------------+
-    -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     Summary:
     2 configured neighbors, 2 configured sessions are established,0 disabled peers
     2 dynamic peers
     ```
     All looking good too.
 
-=== "Leaf1 vrf1 Route Table"
-    K8s Cluster and clients are connected to the `ip-vrf-1` route table. We can check that routes are present:
-    ```
+=== "Leaf1 ip-vrf Route Table"
+    K8s Cluster nodes and clients are connected to the `ip-vrf-1` network instance via respective mac-vrfs. Let's have a look at the routing table of this vrf:
+    ```srl
       A:leaf1# show network-instance ip-vrf-1 route-table
       -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
       IPv4 unicast route table of network instance ip-vrf-1
@@ -404,53 +406,57 @@ Our k8s test service (Nginx Echo Server) is not yet deployed so our MetalLB BGP 
       IPv4 prefixes with active ECMP routes: 2
       -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     ```
-    Subnet `192.168.1.0/24`, where Cluster nodes are conected is present, and subnet `192.168.2.0/24`, where clients are connectted is present too.
+    Subnet `192.168.1.0/24`, where cluster nodes are connected is present as well as `192.168.2.0/24` subnet to which clients are connected. It was containerlab who connected both clients and cluster nodes with links to the leaves and configured IP addresses for those interfaces. Now we see these interfaces/subnets exchanged over EVPN and populated in the `ip-vrf-1` routing table.
 
-=== "Leaf1 vrf1 MetalLB BGP session"
-    We can also check the MetalLB BGP session between the Leaf1 switch and the k8s Node1:
-    ```
+=== "Leaf1 MetalLB BGP session"
+    Let's have a look at the BGP session status between leaf1 and node1. This BGP session set up in the ip-vrf-1 network instance is used to receive k8s services prefixes from MetalLB Load Balancer.
+
+    ```srl
     A:leaf1# show network-instance ip-vrf-1 protocols bgp neighbor
-    -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     BGP neighbor summary for network-instance "ip-vrf-1"
     Flags: S static, D dynamic, L discovered by LLDP, B BFD enabled, - disabled, * slow
-    -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     +--------------------+-----------------------------+--------------------+-------+-----------+----------------+----------------+--------------+-----------------------------+
     |      Net-Inst      |            Peer             |       Group        | Flags |  Peer-AS  |     State      |     Uptime     |   AFI/SAFI   |       [Rx/Active/Tx]        |
     +====================+=============================+====================+=======+===========+================+================+==============+=============================+
     | ip-vrf-1           | 192.168.1.11                | metal              | S     | 65535     | active         | -              |              |                             |
     +--------------------+-----------------------------+--------------------+-------+-----------+----------------+----------------+--------------+-----------------------------+
-    -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     Summary:
     1 configured neighbors, 0 configured sessions are established,0 disabled peers
     0 dynamic peers
     ```
-    As expected, the session is not yet established. We first have to deploy the Kubernetes service.
 
-## Kubernetes service deployment
+    As expected, the session is not yet established because MetalLB is not yet configured.
 
-After we have verified that the DC Fabric is properly configured, it's time to deploy the end service, represented in the k8s Resource definition file [metal-lb-hello-cluster1.yaml][metal-lb-hello-cluster1]
+## MetalLB configuration
 
-Let's first review the different parameters that define it:
+After we have verified that the IP Fabric is properly configured, it's time to configure MetalLB loadbalancer by creating a couple of resources from [metallb.yaml][metallb-cfg] file.
+
+Let's look at those resources applicable to MetalLB:
+
+### IP Address Pool
+
+With [IPAddressPool resource](https://metallb.universe.tf/configuration/#defining-the-ips-to-assign-to-the-load-balancer-services) we instruct MetalLB which range of IP addresses we want to use when exposing k8s services to the fabric. In our case, we assign 100 IPv4 addresses
 
 ```yaml title="IPAddressPool: defines VIP address range used by MetalLB"
 apiVersion: metallb.io/v1beta1
 kind: IPAddressPool
 metadata:
-  name: poolone
+  name: vip-pool
   namespace: metallb-system
 spec:
   addresses:
   - 1.1.1.100-1.1.1.200
 ```
 
-```yaml title="BGPAdvertisement: instructs MetalLB to use the BGP mode"
-apiVersion: metallb.io/v1beta1
-kind: BGPAdvertisement
-metadata:
-  name: bgpadv
-  namespace: metallb-system
-```
+### BGP Peer
+
+Another mandatory custom resource (CR) MetalLB requires is `BGPPeer`. With `BGPPeer` CR we configure the BGP speaker part of the loadbalancer. Namely we set up the ASN numbers and peer address.
+
+Leaf switches are configured with a distributed L3 EVPN service where the same anycast-gw IP address (192.168.1.1/24 for K8s nodes subnet and 192.168.2.1/24 for clients subnet) is used.
 
 ```yaml title="BGPPeer: BGP peer definition"
 apiVersion: metallb.io/v1beta2
@@ -461,10 +467,50 @@ metadata:
 spec:
   myASN: 65535
   peerASN: 65535
-  peerAddress: 192.168.1.1 # (1)
+  peerAddress: 192.168.1.1
 ```
 
-1. Leaf switches are configured with a distributed L3 evpn service where every switch is configured with the same gw IP address (192.168.1.1/24 for K8s nodes subnet and 192.168.2.1/24 for clients subnet)
+### BGP Advertisement
+
+Finally, we need to instruct MetalLB to use the BGP mode. We do it with the `BGPAdvertisement` CR.
+
+```yaml title="BGPAdvertisement: instructs MetalLB to use the BGP mode"
+apiVersion: metallb.io/v1beta1
+kind: BGPAdvertisement
+metadata:
+  name: bgpadv
+  namespace: metallb-system
+```
+
+And now deploy them all with:
+
+```bash
+kubectl apply -f metallb.yaml
+```
+
+And finally we can see that the BGP session between MetalLB and our leaves is established:
+
+```srl title="Leaf1 MetalLB BGP session status"
+A:leaf1# show network-instance ip-vrf-1 protocols bgp neighbor * 
+-------------------------------------------------------------------------------------------------------------------------------------------
+BGP neighbor summary for network-instance "ip-vrf-1"
+Flags: S static, D dynamic, L discovered by LLDP, B BFD enabled, - disabled, * slow
+-------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------------
++---------------+----------------------+---------------+------+--------+-------------+-------------+-----------+----------------------+
+|   Net-Inst    |         Peer         |     Group     | Flag | Peer-  |    State    |   Uptime    | AFI/SAFI  |    [Rx/Active/Tx]    |
+|               |                      |               |  s   |   AS   |             |             |           |                      |
++===============+======================+===============+======+========+=============+=============+===========+======================+
+| ip-vrf-1      | 192.168.1.11         | metal         | S    | 65535  | established | 0d:0h:0m:25 | ipv4-unic | [0/0/5]              |
+|               |                      |               |      |        |             | s           | ast       |                      |
++---------------+----------------------+---------------+------+--------+-------------+-------------+-----------+----------------------+
+-------------------------------------------------------------------------------------------------------------------------------------------
+Summary:
+1 configured neighbors, 1 configured sessions are established,0 disabled peers
+0 dynamic peers
+```
+
+## K8s service deployment
 
 ```yaml title="Deployment: HTTP echo service deployment"
 apiVersion: apps/v1
@@ -996,6 +1042,6 @@ To delete this lab:
 [lab]: https://github.com/srl-labs/srl-k8s-anycast-lab
 [clab-topo]: https://github.com/srl-labs/srl-k8s-anycast-lab/blob/main/srl-k8s-lab.clab.yml
 [clab-configs]: https://github.com/srl-labs/srl-k8s-anycast-lab/tree/main/configs
-[metal-lb-hello-cluster1]: https://github.com/srl-labs/srl-k8s-anycast-lab/blob/main/metal-lb-hello-cluster1.yaml
+[metallb-cfg]: https://github.com/srl-labs/srl-k8s-anycast-lab/blob/main/metallb.yaml
 
 <script type="text/javascript" src="https://viewer.diagrams.net/js/viewer-static.min.js" async></script>
