@@ -74,7 +74,7 @@ Courtesy of MetalLB, Kubernetes nodes establish BGP sessions with Leaf switches.
 
 ### Kubernetes Service
 
-To illustrate the integration between the workloads running in the k8s cluster and the IP fabric, we will deploy a simple NGINX server replicated across the three k8s nodes. A kubernetes ClusterIP service will be created to expose the NGINX server inside the cluster and a MetalLB loadBalancer service will be created to expose the NGINX server to the outside world.
+To illustrate the integration between the workloads running in the k8s cluster and the IP fabric, we will deploy a simple NGINX server replicated across the three k8s nodes. A MetalLB-based [LoadBalancer](https://tkng.io/services/loadbalancer/) service is created to expose the NGINX instances to the fabric and the outside world.
 
 With simulated clients, we will verify how traffic is distributed among the different nodes/pods using `curl` and reaching over to the exposed service IP address.
 
@@ -96,7 +96,7 @@ Through eBGP the loopback/system IP addresses are exchanged between the leaves, 
 
 ### Overlay Networking
 
-Clients and k8s nodes are conected to a dedicated L3 EVPN network-instance `ip-vrf1`. This network instance is present in every leaf switch. Traffic between switches is encapsulated in VXLAN and transported by Spines. Two subnets are configured under this `ip-vrf1`:
+Clients and k8s nodes are connected to a dedicated L3 EVPN network-instance `ip-vrf1`. This network instance is present in every leaf switch. Traffic between switches is encapsulated in VXLAN and transported by Spines. Two subnets are configured under this `ip-vrf1`:
 
 * k8s nodes subnet: 192.168.1.0/24
 * clients subnet: 192.168.2.0/24
