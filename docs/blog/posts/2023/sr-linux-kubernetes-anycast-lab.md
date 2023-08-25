@@ -220,50 +220,60 @@ This is the full definition of all the connections required. As you can see, we 
 
 ## Lab deployment
 
-First, clone the lab:
+In this section we go over the steps required to deploy the lab from scratch.
+
+If not already done, clone the lab repository:
 
 ```bash
 https://github.com/srl-labs/srl-k8s-anycast-lab.git && cd srl-k8s-anycast-lab
 ```
 
-Start Minikube cluster:
+Deploy k8s 3-node cluster using minikube:
 
-```bash title="Minikube node deployment"
+```bash title="k8s cluster deployment"
 minikube start --nodes 3 -p cluster1
 ```
 
-With this command, Minikube has started three k8s nodes (`cluster1`, `cluster1-m02` and `cluster1-m03`) under the profile `cluster`.
+With this command, Minikube starts three k8s nodes (`cluster1`, `cluster1-m02` and `cluster1-m03`) and configures `kubectl` to use this cluster. We can verify that the nodes are up and running:
 
-Once Minikube has finished, deploy Containerlab topology:
-
-```bash title="Containerlab topology deployment"
-clab deploy --topo srl-k8s-lab.clab.yml
+```bash
+❯ kubectl get nodes
+NAME           STATUS   ROLES           AGE   VERSION
+cluster1       Ready    control-plane   59s   v1.27.3
+cluster1-m02   Ready    <none>          39s   v1.27.3
+cluster1-m03   Ready    <none>          23s   v1.27.3
 ```
 
-At the end of the deployment process, you will see the summary table with details about deployed nodes:
+After k8s cluster is started, deploy Containerlab topology:
+
+```bash title="Containerlab topology deployment"
+sudo clab deploy
+```
+
+At the end of the deployment process, you will see the summary table with details about the deployed nodes:
 
 ```text
-INFO[0000] Containerlab v0.44.1 started
 --snip--
 +----+--------------+--------------+-------------------------------------------------------------------------------------------------------------+---------------+---------+-----------------+----------------------+
 | #  |     Name     | Container ID |                                                    Image                                                    |     Kind      |  State  |  IPv4 Address   |     IPv6 Address     |
 +----+--------------+--------------+-------------------------------------------------------------------------------------------------------------+---------------+---------+-----------------+----------------------+
-|  1 | cluster1     | 9fa3a758bb4b | gcr.io/k8s-minikube/kicbase:v0.0.39@sha256:bf2d9f1e9d837d8deea073611d2605405b6be904647d97ebd9b12045ddfe1106 | ext-container | running | 192.168.49.2/24 | N/A                  |
-|  2 | cluster1-m02 | 376501089ecc | gcr.io/k8s-minikube/kicbase:v0.0.39@sha256:bf2d9f1e9d837d8deea073611d2605405b6be904647d97ebd9b12045ddfe1106 | ext-container | running | 192.168.49.3/24 | N/A                  |
-|  3 | cluster1-m03 | 64a4e8bbdd73 | gcr.io/k8s-minikube/kicbase:v0.0.39@sha256:bf2d9f1e9d837d8deea073611d2605405b6be904647d97ebd9b12045ddfe1106 | ext-container | running | 192.168.49.4/24 | N/A                  |
-|  4 | client1      | 592e09690912 | ghcr.io/hellt/network-multitool                                                                             | linux         | running | 172.20.20.8/24  | 2001:172:20:20::8/64 |
-|  5 | client2      | 95220f94b6f0 | ghcr.io/hellt/network-multitool                                                                             | linux         | running | 172.20.20.10/24 | 2001:172:20:20::a/64 |
-|  6 | client3      | 7572185a5ca4 | ghcr.io/hellt/network-multitool                                                                             | linux         | running | 172.20.20.9/24  | 2001:172:20:20::9/64 |
-|  7 | client4      | d97d63b2204b | ghcr.io/hellt/network-multitool                                                                             | linux         | running | 172.20.20.4/24  | 2001:172:20:20::4/64 |
-|  8 | leaf1        | f409d3e950a3 | ghcr.io/nokia/srlinux:23.7.1                                                                                | srl           | running | 172.20.20.7/24  | 2001:172:20:20::7/64 |
-|  9 | leaf2        | bf9c6d3e327f | ghcr.io/nokia/srlinux:23.7.1                                                                                | srl           | running | 172.20.20.2/24  | 2001:172:20:20::2/64 |
-| 10 | leaf3        | c76005991d80 | ghcr.io/nokia/srlinux:23.7.1                                                                                | srl           | running | 172.20.20.11/24 | 2001:172:20:20::b/64 |
-| 11 | leaf4        | ccfd9ddc66f2 | ghcr.io/nokia/srlinux:23.7.1                                                                                | srl           | running | 172.20.20.6/24  | 2001:172:20:20::6/64 |
-| 12 | spine1       | c34f4f75a29f | ghcr.io/nokia/srlinux:23.7.1                                                                                | srl           | running | 172.20.20.3/24  | 2001:172:20:20::3/64 |
-| 13 | spine2       | c2ebfe43499e | ghcr.io/nokia/srlinux:23.7.1                                                                                | srl           | running | 172.20.20.5/24  | 2001:172:20:20::5/64 |
+|  1 | cluster1     | d38f1b9d3b06 | gcr.io/k8s-minikube/kicbase:v0.0.40@sha256:8cadf23777709e43eca447c47a45f5a4635615129267ce025193040ec92a1631 | ext-container | running | 192.168.49.2/24 | N/A                  |
+|  2 | cluster1-m02 | 14ce21a95c0f | gcr.io/k8s-minikube/kicbase:v0.0.40@sha256:8cadf23777709e43eca447c47a45f5a4635615129267ce025193040ec92a1631 | ext-container | running | 192.168.49.3/24 | N/A                  |
+|  3 | cluster1-m03 | 9b889be40278 | gcr.io/k8s-minikube/kicbase:v0.0.40@sha256:8cadf23777709e43eca447c47a45f5a4635615129267ce025193040ec92a1631 | ext-container | running | 192.168.49.4/24 | N/A                  |
+|  4 | client1      | 1907d66ceded | ghcr.io/hellt/network-multitool                                                                             | linux         | running | 172.20.20.10/24 | 2001:172:20:20::a/64 |
+|  5 | client2      | 9a5130920578 | ghcr.io/hellt/network-multitool                                                                             | linux         | running | 172.20.20.5/24  | 2001:172:20:20::5/64 |
+|  6 | client3      | de5ff1fb4956 | ghcr.io/hellt/network-multitool                                                                             | linux         | running | 172.20.20.3/24  | 2001:172:20:20::3/64 |
+|  7 | client4      | 49002bc56914 | ghcr.io/hellt/network-multitool                                                                             | linux         | running | 172.20.20.8/24  | 2001:172:20:20::8/64 |
+|  8 | leaf1        | 0f6e63225b6c | ghcr.io/nokia/srlinux:23.7.1                                                                                | srl           | running | 172.20.20.11/24 | 2001:172:20:20::b/64 |
+|  9 | leaf2        | ab15530f4542 | ghcr.io/nokia/srlinux:23.7.1                                                                                | srl           | running | 172.20.20.9/24  | 2001:172:20:20::9/64 |
+| 10 | leaf3        | 3c20b7404aa4 | ghcr.io/nokia/srlinux:23.7.1                                                                                | srl           | running | 172.20.20.4/24  | 2001:172:20:20::4/64 |
+| 11 | leaf4        | 9ebc55bc2bae | ghcr.io/nokia/srlinux:23.7.1                                                                                | srl           | running | 172.20.20.6/24  | 2001:172:20:20::6/64 |
+| 12 | spine1       | 89de7d80fa3d | ghcr.io/nokia/srlinux:23.7.1                                                                                | srl           | running | 172.20.20.7/24  | 2001:172:20:20::7/64 |
+| 13 | spine2       | 19b8121babd5 | ghcr.io/nokia/srlinux:23.7.1                                                                                | srl           | running | 172.20.20.12/24 | 2001:172:20:20::c/64 |
 +----+--------------+--------------+-------------------------------------------------------------------------------------------------------------+---------------+---------+-----------------+----------------------+
-
 ```
+
+These simple steps conclude the lab deployment. At this point, we have a fully functional Leaf/Spine fabric and a bare three-node k8s cluster. In the next sections we will configure k8s networking and deploy a test service.
 
 ## Minikube MetalLB installation
 
