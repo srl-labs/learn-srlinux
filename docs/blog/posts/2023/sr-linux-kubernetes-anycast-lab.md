@@ -96,19 +96,26 @@ Through eBGP the loopback/system IP addresses are exchanged between the leaves, 
 
 ### Overlay Networking
 
-Clients and k8s nodes are connected to a dedicated L3 EVPN network-instance `ip-vrf1`. This network instance is present in every leaf switch. Traffic between switches is encapsulated in VXLAN and transported by Spines. Two subnets are configured under this `ip-vrf1`:
+To enable network connectivity between the nodes of the k8s cluster we create a routed network - `ip-vrf-1` - implemented as a distributed L3 EVPN service running on the leaf switches. Two subnets are configured for this network to interconnect k8s nodes and emulated clients:
 
 * k8s nodes subnet: 192.168.1.0/24
 * clients subnet: 192.168.2.0/24
-
-In an distributed EVPN L3 scenario, all IRB interfaces facing the hosts must have the same IP address and MAC (.1 IP address in our case); that is, an [anycast-GW](https://documentation.nokia.com/srlinux/23-3/books/evpn-vxlan/evpn-vxlan-tunnels-layer-3.html#evpn-l3-multi-hom-anycast-gateways) configuration. This avoids inefficiencies for all-active multi-homing and speeds up convergence for host mobility.
-
-Kubernetes nodes, thanks to MetalLB, will establish BGP sessions to these anycast-GW IP addresses. These peering sessions are used to advertise the IP addresses of the exposed services.
 
 <figure markdown>
   <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":0,"zoom":1.7,"highlight":"#0000ff","nav":true,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/srl-labs/srl-k8s-anycast-lab/main/images/logical.drawio"}'></div>
   <figcaption>Logical network topology</figcaption>
 </figure>
+
+Subnets are configured with Integrated Routing and Bridging (IRB) interfaces serving as default gateways for the k8s nodes and clients. The IRB interfaces are configured with the same IP address and MAC address across all leaf switches. This configuration is known as [Anycast Gateway](https://documentation.nokia.com/srlinux/23-7/books/evpn-vxlan/evpn-vxlan-tunnels-layer-3.html#anycast-gateways) that avoids inefficiencies for all-active multi-homing and speeds up convergence for host mobility.
+
+From the SR Linux configuration perspective, each leaf would have the following network instances created jointly implementing the L3 EVPN service:
+
+<figure markdown>
+  <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":1,"zoom":1.7,"highlight":"#0000ff","nav":true,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/srl-labs/srl-k8s-anycast-lab/main/images/logical.drawio"}'></div>
+  <figcaption>Network instances composition</figcaption>
+</figure>
+
+Kubernetes nodes, thanks to MetalLB, will establish BGP sessions to these anycast-GW IP addresses and advertise the IP addresses of the exposed k8s services.
 
 ## Containerlab topology file
 
