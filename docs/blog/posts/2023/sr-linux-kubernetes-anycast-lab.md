@@ -87,7 +87,7 @@ The [eBGP unnumbered peering](https://documentation.nokia.com/srlinux/23-7/books
   <figcaption>Underlay IPv6 Link Local eBGP sessions</figcaption>
 </figure>
 
-Through eBGP the loopback/system IP addresses are exchanged between the leaves, making it possible to setup iBGP sessions for the overlay services that support the k8s cluster:
+Through eBGP the loopback/system IP addresses are exchanged between the leaves, making it possible to setup iBGP sessions for the overlay EVPN services that are consumed by the k8s nodes and clients:
 
 <figure markdown>
   <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":0,"zoom":1.7,"highlight":"#0000ff","nav":true,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/srl-labs/srl-k8s-anycast-lab/main/images/fabric_ibgp.drawio"}'></div>
