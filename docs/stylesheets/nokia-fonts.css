@@ -1,14 +1,14 @@
 @font-face {
   font-family: 'NokiaPureHeadlineLight';
-  src: url('https://www.nokia.com/themes/custom/onenokia_reskin/fonts/nokia/nokiapureheadline_light.eot');
+  src: url('https://cdn.jsdelivr.net/gh/hellt/fonts/nokia/NokiaPureHeadline_Lt.eot');
   /* IE9 Compat Modes */
-  src: url('https://www.nokia.com/themes/custom/onenokia_reskin/fonts/nokia/nokiapureheadline_light.woff2') format('woff2'),
+  src: url('https://cdn.jsdelivr.net/gh/hellt/fonts/nokia/NokiaPureHeadline_Lt.woff2') format('woff2'),
     /* Super Modern Browsers */
-    url('https://www.nokia.com/themes/custom/onenokia_reskin/fonts/nokia/nokiapureheadline_light.woff') format('woff'),
+    url('https://cdn.jsdelivr.net/gh/hellt/fonts/nokia/NokiaPureHeadline_Lt.woff') format('woff'),
     /* Pretty Modern Browsers */
-    url('https://www.nokia.com/themes/custom/onenokia_reskin/fonts/nokia/nokiapureheadline_light.ttf') format('truetype'),
+    url('https://cdn.jsdelivr.net/gh/hellt/fonts/nokia/NokiaPureHeadline_Lt.ttf') format('truetype'),
     /* Safari, Android, iOS */
-    url('https://www.nokia.com/themes/custom/onenokia_reskin/fonts/nokia/nokiapureheadline_light.svg#svgFontName') format('svg');
+    url('https://cdn.jsdelivr.net/gh/hellt/fonts/nokia/NokiaPureHeadline_Lt.svg#svgFontName') format('svg');
   /* Legacy iOS */
   font-weight: normal;
   font-style: normal;
@@ -17,15 +17,15 @@
 
 @font-face {
   font-family: 'NokiaPureHeadlineUltralight';
-  src: url('https://www.nokia.com/themes/custom/onenokia_reskin/fonts/nokia/nokiapureheadline_ultralight.eot');
+  src: url('https://cdn.jsdelivr.net/gh/hellt/fonts/nokia/NokiaPureHeadline_ULt.eot');
   /* IE9 Compat Modes */
-  src: url('https://www.nokia.com/themes/custom/onenokia_reskin/fonts/nokia/nokiapureheadline_ultralight.woff2') format('woff2'),
+  src: url('https://cdn.jsdelivr.net/gh/hellt/fonts/nokia/NokiaPureHeadline_ULt.woff2') format('woff2'),
     /* Super Modern Browsers */
-    url('https://www.nokia.com/themes/custom/onenokia_reskin/fonts/nokia/nokiapureheadline_ultralight.woff') format('woff'),
+    url('https://cdn.jsdelivr.net/gh/hellt/fonts/nokia/NokiaPureHeadline_ULt.woff') format('woff'),
     /* Pretty Modern Browsers */
-    url('https://www.nokia.com/themes/custom/onenokia_reskin/fonts/nokia/nokiapureheadline_ultralight.ttf') format('truetype'),
+    url('https://cdn.jsdelivr.net/gh/hellt/fonts/nokia/NokiaPureHeadline_ULt.ttf') format('truetype'),
     /* Safari, Android, iOS */
-    url('https://www.nokia.com/themes/custom/onenokia_reskin/fonts/nokia/nokiapureheadline_ultralight.svg#svgFontName') format('svg');
+    url('https://cdn.jsdelivr.net/gh/hellt/fonts/nokia/NokiaPureHeadline_ULt.svg#svgFontName') format('svg');
   /* Legacy iOS */
   font-weight: normal;
   font-style: normal;
@@ -34,15 +34,15 @@
 
 @font-face {
   font-family: 'NokiaPureText';
-  src: url('https://gitlab.com/rdodin/pics/-/wikis/uploads/acef2a48e59c1673c46ae574e2fcd98e/npt_Rg.eot');
+  src: url('https://cdn.jsdelivr.net/gh/hellt/fonts/nokia/NokiaPureText_Lt.eot');
   /* IE9 Compat Modes */
-  src: url('https://gitlab.com/rdodin/pics/-/wikis/uploads/acef2a48e59c1673c46ae574e2fcd98e/npt_Rg.woff2') format('woff2'),
+  src: url('https://cdn.jsdelivr.net/gh/hellt/fonts/nokia/NokiaPureText_Lt.woff2') format('woff2'),
     /* Super Modern Browsers */
-    url('https://gitlab.com/rdodin/pics/-/wikis/uploads/acef2a48e59c1673c46ae574e2fcd98e/npt_Rg.woff') format('woff'),
+    url('https://cdn.jsdelivr.net/gh/hellt/fonts/nokia/NokiaPureText_Lt.woff') format('woff'),
     /* Pretty Modern Browsers */
-    url('https://gitlab.com/rdodin/pics/-/wikis/uploads/acef2a48e59c1673c46ae574e2fcd98e/npt_Rg.ttf') format('truetype'),
+    url('https://cdn.jsdelivr.net/gh/hellt/fonts/nokia/NokiaPureText_Lt.ttf') format('truetype'),
     /* Safari, Android, iOS */
-    url('https://gitlab.com/rdodin/pics/-/wikis/uploads/acef2a48e59c1673c46ae574e2fcd98e/npt_Rg.svg#svgFontName') format('svg');
+    url('https://cdn.jsdelivr.net/gh/hellt/fonts/nokia/NokiaPureText_Lt.svg#svgFontName') format('svg');
   /* Legacy iOS */
   font-weight: normal;
   font-style: normal;
@@ -52,15 +52,15 @@
 
 @font-face {
   font-family: 'NokiaPureText';
-  src: url('https://gitlab.com/rdodin/pics/-/wikis/uploads/acef2a48e59c1673c46ae574e2fcd98e/npt_Bd.eot');
+  src: url('https://cdn.jsdelivr.net/gh/hellt/fonts/nokia/NokiaPureText_Bd.eot');
   /* IE9 Compat Modes */
-  src: url('https://gitlab.com/rdodin/pics/-/wikis/uploads/acef2a48e59c1673c46ae574e2fcd98e/npt_Bd.woff2') format('woff2'),
+  src: url('https://cdn.jsdelivr.net/gh/hellt/fonts/nokia/NokiaPureText_Bd.woff2') format('woff2'),
     /* Super Modern Browsers */
-    url('https://gitlab.com/rdodin/pics/-/wikis/uploads/acef2a48e59c1673c46ae574e2fcd98e/npt_Bd.woff') format('woff'),
+    url('https://cdn.jsdelivr.net/gh/hellt/fonts/nokia/NokiaPureText_Bd.woff') format('woff'),
     /* Pretty Modern Browsers */
-    url('https://gitlab.com/rdodin/pics/-/wikis/uploads/acef2a48e59c1673c46ae574e2fcd98e/npt_Bd.ttf') format('truetype'),
+    url('https://cdn.jsdelivr.net/gh/hellt/fonts/nokia/NokiaPureText_Bd.ttf') format('truetype'),
     /* Safari, Android, iOS */
-    url('https://gitlab.com/rdodin/pics/-/wikis/uploads/acef2a48e59c1673c46ae574e2fcd98e/npt_Bd.svg#svgFontName') format('svg');
+    url('https://cdn.jsdelivr.net/gh/hellt/fonts/nokia/NokiaPureText_Bd.svg#svgFontName') format('svg');
   /* Legacy iOS */
   font-weight: 700;
   font-style: normal;
