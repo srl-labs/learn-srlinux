@@ -470,6 +470,47 @@ spec:
   peerAddress: 192.168.1.1
 ```
 
+As you can see, MetalLB configuration is static for all speakers, this is due to the anycast-gw peer address that is the same on all leaf switches.
+
+Here is how the iBGP PE-CE session is configured on the leaves switch:
+
+```srl
+network-instance ip-vrf-1 {
+    protocols {
+        bgp {
+            admin-state enable
+            autonomous-system 65535
+            router-id 192.168.1.1
+            afi-safi ipv4-unicast {
+                admin-state enable
+            }
+            preference { #(2)!
+                ibgp 169
+            }
+            group metal {
+                admin-state enable
+                export-policy metal-export
+                import-policy metal-import
+                peer-as 65535
+                afi-safi ipv4-unicast {
+                    admin-state enable
+                }
+                local-as {
+                    as-number 65535
+                }
+            }
+            neighbor 192.168.1.11 { #(1)!
+                admin-state enable
+                peer-group metal
+            }
+        }
+    }
+}
+```
+
+1. neighbor address is different on leaf switches
+2. see [fabric overlay verification](#fabric-overlay) for more details on the role of this preference
+
 ### BGP Advertisement
 
 Finally, we need to instruct MetalLB to use the BGP mode. We do it with the `BGPAdvertisement` CR.
@@ -487,6 +528,12 @@ And now deploy them all with:
 ```bash
 kubectl apply -f metallb.yaml
 ```
+
+At the end of the day, the session is established between ip-vrf on leaves and MetalLB speakers on the nodes:
+
+<figure markdown>
+  <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":2,"zoom":2.4,"highlight":"#0000ff","nav":true,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/srl-labs/srl-k8s-anycast-lab/main/images/logical.drawio"}'></div>
+</figure>
 
 And finally we can see that the BGP session between MetalLB and our leaves is established:
 
@@ -595,10 +642,10 @@ Before jumping into the details of control- and data-plane operation let's verif
     Checking that our replicated deployment of Nginx Echo Server is running and distributed across the cluster:
     ```
     # kubectl get pods -o wide
-    NAME                          READY   STATUS    RESTARTS   AGE   IP           NODE           NOMINATED NODE   READINESS GATES
-    nginxhello-6b97fd8857-4vp6z   1/1     Running   0          81m   10.244.0.3   cluster1       <none>           <none>
-    nginxhello-6b97fd8857-b2vf8   1/1     Running   0          81m   10.244.2.3   cluster1-m03   <none>           <none>
-    nginxhello-6b97fd8857-f2ggp   1/1     Running   0          81m   10.244.1.3   cluster1-m02   <none>           <none>
+    NAME                         READY   STATUS    RESTARTS   AGE   IP           NODE           NOMINATED NODE   READINESS GATES
+    nginxhello-7d95548fc-7q44k   1/1     Running   0          18h   10.244.0.3   cluster1       <none>           <none>
+    nginxhello-7d95548fc-lthz6   1/1     Running   0          18h   10.244.1.3   cluster1-m02   <none>           <none>
+    nginxhello-7d95548fc-rhfth   1/1     Running   0          18h   10.244.2.3   cluster1-m03   <none>           <none>
     ```
 
 === "service"
@@ -613,13 +660,16 @@ Before jumping into the details of control- and data-plane operation let's verif
     We can make sure that the ClusterIP service that LoadBalancer is based on works, by running the following command a few times and see that the request is loadbalanced between the pods:
 
     ```
-    # kubectl exec nginxhello-7d95548fc-7q44k -- curl -s 10.102.93.1
+    # kubectl exec nginxhello-7d95548fc-7q44k -- curl -s 1.1.1.100
     Server address: 10.244.2.3:80
     Server name: nginxhello-7d95548fc-rhfth
     Date: 25/Aug/2023:15:01:28 +0000
     URI: /
     Request ID: 70183d16865d3fdae08165f00ede6d85
     ```
+
+    !!!note
+        Traffic internal to k8s cluster uses egress-based load-balancing and resolves the destination node IP address using the ClusterIP service. Given that our minikube cluster nodes have `eth0` interfaces connected to a docker network, traffic internal to cluster uses this network. Contrary to that, traffic external to the cluster uses the IP fabric.
 
 === "MetalLB speaker pods"
     At every node, MetalLB deploys a pod that runs the FRR to speak BGP to our leaves:
@@ -652,11 +702,10 @@ Before jumping into the details of control- and data-plane operation let's verif
 
 ### Fabric overlay
 
-We have already verified the underlay Fabric and Kubernetes Cluster in the previous steps, now that we have the Echo service ready, the BGP sessions between Leaf switches and k8s nodes should be established:
+We have [already verified](#bgp-advertisement) that once MetalLB is configured, leaf switches successfully establish BGP peering with MetalLB speakers. But now when the service is deployed we can see that leaves receive the VIP prefix from MetalLB:
 
-=== "Leaf1 vrf1 MetalLB BGP session"
-    We check the MetalLB BGP session between the Leaf1 switch and the k8s Node1:
-    ```
+=== "Leaf1 BGP peering with MetalLB"
+    ```srl
     A:leaf1# show network-instance ip-vrf-1 protocols bgp neighbor
     -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     BGP neighbor summary for network-instance "ip-vrf-1"
@@ -673,55 +722,9 @@ We have already verified the underlay Fabric and Kubernetes Cluster in the previ
     1 configured neighbors, 1 configured sessions are established,0 disabled peers
     0 dynamic peers
     ```
-    As expected, the session is now established and k8s node1 is announcing one prefix
 
-=== "Leaf2 vrf1 MetalLB BGP session"
-    We check the MetalLB BGP session between the Leaf2 switch and the k8s Node2:
-    ```
-    A:leaf2# show network-instance ip-vrf-1 protocols bgp neighbor
-    -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    BGP neighbor summary for network-instance "ip-vrf-1"
-    Flags: S static, D dynamic, L discovered by LLDP, B BFD enabled, - disabled, * slow
-    -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    +--------------------+-----------------------------+--------------------+-------+-----------+----------------+----------------+--------------+-----------------------------+
-    |      Net-Inst      |            Peer             |       Group        | Flags |  Peer-AS  |     State      |     Uptime     |   AFI/SAFI   |       [Rx/Active/Tx]        |
-    +====================+=============================+====================+=======+===========+================+================+==============+=============================+
-    | ip-vrf-1           | 192.168.1.12                | metal              | S     | 65535     | established    | 0d:0h:3m:50s   | ipv4-unicast | [1/1/5]                     |
-    +--------------------+-----------------------------+--------------------+-------+-----------+----------------+----------------+--------------+-----------------------------+
-    -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    Summary:
-    1 configured neighbors, 1 configured sessions are established,0 disabled peers
-    0 dynamic peers
-
-    ```
-    As expected, the session is now established and k8s node2 is announcing one prefix
-
-=== "Leaf3 vrf1 MetalLB BGP session"
-    We check the MetalLB BGP session between the Leaf3 switch and the k8s Node3:
-    ```
-    A:leaf3# show network-instance ip-vrf-1 protocols bgp neighbor
-    -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    BGP neighbor summary for network-instance "ip-vrf-1"
-    Flags: S static, D dynamic, L discovered by LLDP, B BFD enabled, - disabled, * slow
-    -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    +--------------------+-----------------------------+--------------------+-------+-----------+----------------+----------------+--------------+-----------------------------+
-    |      Net-Inst      |            Peer             |       Group        | Flags |  Peer-AS  |     State      |     Uptime     |   AFI/SAFI   |       [Rx/Active/Tx]        |
-    +====================+=============================+====================+=======+===========+================+================+==============+=============================+
-    | ip-vrf-1           | 192.168.1.13                | metal              | S     | 65535     | established    | 0d:0h:5m:34s   | ipv4-unicast | [1/1/5]                     |
-    +--------------------+-----------------------------+--------------------+-------+-----------+----------------+----------------+--------------+-----------------------------+
-    -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    Summary:
-    1 configured neighbors, 1 configured sessions are established,0 disabled peers
-    0 dynamic peers
-    ```
-    As expected, the session is now established and k8s node3 is announcing one prefix
-
-We have reviewed that MetalLB sessions are established. Now we can check the contents of the route tables and MetalLB BGP sessions:
-
-=== "Leaf1 vrf1 MetalLB BGP prefix"
-    We can see k8s node1 sends Leaf1 the `1.1.1.100` prefix. We can also expect the same output in leaf2 and leaf3.
+=== "Leaf1 vrf1 BGP received routes"
+    We can see k8s node1 sends Leaf1 the `1.1.1.100` prefix. We can also expect the same output on leaf2 and leaf3.
     ```
 
     A:leaf1# show network-instance ip-vrf-1 protocols bgp neighbor 192.168.1.11 received-routes ipv4
@@ -741,17 +744,24 @@ We have reviewed that MetalLB sessions are established. Now we can check the con
     -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     1 received BGP routes : 1 used 1 valid
     -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
     ```
+
+Let's have a look how leaves install the VIP prefix in the `ip-vrf-1` routing table:
 
 === "Leaf1 vrf1 route table"
-    We can see that VIP `1.1.1.100` is installed in our route table, with the next-hop of the direcly connected k8s node1 eth1 interface.
+    The route table below shows that the VIP `1.1.1.100` has been learned from two sources:
 
-    We can also see that in Leaf1 we receive 1.1.1.100 prefixes from leaf2 and leaf3. These routes are not installed because we prefer locally received bgp prefixes over over bgp-evpn ones. We force this behavior by lowering the preference of local BGP session to 169 (170 is the default preference). 
+    - from MetalLB via iBGP session in the `ip-vrf-1` network instance with the next-hop of the MetalLB BGP speaker.
+    - from iBGP/EVPN neighbors - leaf2 and leaf3 - with next-hop corresponding to a remote leaf using VXLAN tunneling.
 
-    The same result is expected if leaf2 and leaf3. Locally learned MetalLB prefix is installed.
-    ```
-    
+    Since both VIP prefixes have the same Preference and Metric, we influence the route selection by decreasing Preference for routes learned from MetalLB peer by [setting it to 169](https://github.com/srl-labs/srl-k8s-anycast-lab/blob/e2a9c2c7e773750a8c94a05c68cb964518b79845/configs/leaf1.conf#L235). That way the route learned from MetalLB peer will be preferred over the same route learned from EVPN peers. Consequently, the incoming traffic on a particular leaf will be forwarded to the local Pod instead of sending it over the network.
+
+    !!!note
+        In future SR Linux releases it will be possible to ECMP between PE-CE and EVPN routes, so that the traffic will be loadbalanced between the local and remote Pods.
+
+    The same logic and route selection is applied to leaf2 and leaf3.
+
+    ```srl
     A:leaf1# show network-instance ip-vrf-1 route-table
     ------------------------------------------------------------------------------------------------------------------------------------------------------
     IPv4 unicast route table of network instance ip-vrf-1
@@ -771,40 +781,7 @@ We have reviewed that MetalLB sessions are established. Now we can check the con
     |                    |      |           |                    |                    |         |        |             | 10.0.1.3/32 |              |
     |                    |      |           |                    |                    |         |        |             | (indirect/v |              |
     |                    |      |           |                    |                    |         |        |             | xlan)       |              |
-    | 192.168.1.0/24     | 0    | bgp-evpn  | bgp_evpn_mgr       | False              | ip-     | 0      | 170         | 10.0.1.2/32 |              |
-    |                    |      |           |                    |                    | vrf-1   |        |             | (indirect/v |              |
-    |                    |      |           |                    |                    |         |        |             | xlan)       |              |
-    |                    |      |           |                    |                    |         |        |             | 10.0.1.3/32 |              |
-    |                    |      |           |                    |                    |         |        |             | (indirect/v |              |
-    |                    |      |           |                    |                    |         |        |             | xlan)       |              |
-    | 192.168.1.0/24     | 8    | local     | net_inst_mgr       | True               | ip-     | 0      | 0           | 192.168.1.1 | irb1.1       |
-    |                    |      |           |                    |                    | vrf-1   |        |             | (direct)    |              |
-    | 192.168.1.1/32     | 8    | host      | net_inst_mgr       | True               | ip-     | 0      | 0           | None        | None         |
-    |                    |      |           |                    |                    | vrf-1   |        |             | (extract)   |              |
-    | 192.168.1.11/32    | 8    | arp-nd    | arp_nd_mgr         | True               | ip-     | 0      | 1           | 192.168.1.1 | irb1.1       |
-    |                    |      |           |                    |                    | vrf-1   |        |             | 1 (direct)  |              |
-    | 192.168.1.12/32    | 0    | bgp-evpn  | bgp_evpn_mgr       | True               | ip-     | 0      | 170         | 10.0.1.2/32 |              |
-    |                    |      |           |                    |                    | vrf-1   |        |             | (indirect/v |              |
-    |                    |      |           |                    |                    |         |        |             | xlan)       |              |
-    | 192.168.1.13/32    | 0    | bgp-evpn  | bgp_evpn_mgr       | True               | ip-     | 0      | 170         | 10.0.1.3/32 |              |
-    |                    |      |           |                    |                    | vrf-1   |        |             | (indirect/v |              |
-    |                    |      |           |                    |                    |         |        |             | xlan)       |              |
-    | 192.168.1.255/32   | 8    | host      | net_inst_mgr       | True               | ip-     | 0      | 0           | None        |              |
-    |                    |      |           |                    |                    | vrf-1   |        |             | (broadcast) |              |
-    | 192.168.2.0/24     | 0    | bgp-evpn  | bgp_evpn_mgr       | False              | ip-     | 0      | 170         | 10.0.1.2/32 |              |
-    |                    |      |           |                    |                    | vrf-1   |        |             | (indirect/v |              |
-    |                    |      |           |                    |                    |         |        |             | xlan)       |              |
-    |                    |      |           |                    |                    |         |        |             | 10.0.1.3/32 |              |
-    |                    |      |           |                    |                    |         |        |             | (indirect/v |              |
-    |                    |      |           |                    |                    |         |        |             | xlan)       |              |
-    |                    |      |           |                    |                    |         |        |             | 10.0.1.4/32 |              |
-    |                    |      |           |                    |                    |         |        |             | (indirect/v |              |
-    |                    |      |           |                    |                    |         |        |             | xlan)       |              |
-    | 192.168.2.0/24     | 9    | local     | net_inst_mgr       | True               | ip-     | 0      | 0           | 192.168.2.1 | irb1.2       |
-    |                    |      |           |                    |                    | vrf-1   |        |             | (direct)    |              |
-    | 192.168.2.1/32     | 9    | host      | net_inst_mgr       | True               | ip-     | 0      | 0           | None        | None         |
-    |                    |      |           |                    |                    | vrf-1   |        |             | (extract)   |              |
-    | 192.168.2.255/32   | 9    | host      | net_inst_mgr       | True               | ip-     | 0      | 0           | None        |              |
+    # ... truncated
     |                    |      |           |                    |                    | vrf-1   |        |             | (broadcast) |              |
     +--------------------+------+-----------+--------------------+--------------------+---------+--------+-------------+-------------+--------------+
     ------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -812,12 +789,40 @@ We have reviewed that MetalLB sessions are established. Now we can check the con
     IPv4 prefixes with active routes     : 10
     IPv4 prefixes with active ECMP routes: 3
     ------------------------------------------------------------------------------------------------------------------------------------------------------
+    ```
 
+=== "Leaf1 VIP prefix details"
+
+    Using the below command we can see the details for a prefix installed in the Route Table. There we can confirm that the next-hop belongs to the MetalLB speaker pod and it is resolved via `irb1.1` interface.
+
+    ```srl
+    A:leaf1# show  network-instance ip-vrf-1 route-table ipv4-unicast prefix 1.1.1.100/32 detail
+    -------------------------------------------------------------------------------------------
+    IPv4 unicast route table of network instance ip-vrf-1
+    -------------------------------------------------------------------------------------------
+    Destination            : 1.1.1.100/32
+    ID                     : 0
+    Route Type             : bgp
+    Route Owner            : bgp_mgr
+    Origin Network Instance: ip-vrf-1
+    Metric                 : 0
+    Preference             : 169
+    Active                 : true
+    Last change            : 2023-08-25T14:28:54.782Z
+    Resilient hash         : false
+    -------------------------------------------------------------------------------------------
+    Next hops: 1 entries
+    192.168.1.11 (indirect) resolved by route to 192.168.1.0/24 (local)
+    via 192.168.1.1 (direct) via [irb1.1]
+    # truncated
     ```
 
 === "Leaf4 vrf1 route table"
-    We can see that VIP `1.1.1.100` is installed in leaf4 route table as an ECMP prefix with three possible next-hops: leaf1, leaf2 and leaf3
-    ```
+    While leaves 1,2 and 3 have similar service configuration and hence the same routing table, leaf4 is different. Leaf4 doesn't have k8s node connected to it and hence it doesn't have local peering with MetalLB loadbalancer.
+
+    Still, thanks to leaf4 participation in the EVPN service the VIP `1.1.1.100` is installed in leaf4 route table as an ECMP prefix with three possible next-hops: leaf1, leaf2 and leaf3
+
+    ```srl
     A:leaf4# show network-instance ip-vrf-1 route-table
     -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     IPv4 unicast route table of network instance ip-vrf-1
@@ -833,45 +838,23 @@ We have reviewed that MetalLB sessions are established. Now we can check the con
     |                             |       |            |                      |                      |          |         |                  | (indirect/vxlan) |                       |
     |                             |       |            |                      |                      |          |         |                  | 10.0.1.3/32      |                       |
     |                             |       |            |                      |                      |          |         |                  | (indirect/vxlan) |                       |
-    | 192.168.1.0/24              | 0     | bgp-evpn   | bgp_evpn_mgr         | True                 | ip-vrf-1 | 0       | 170              | 10.0.1.1/32      |                       |
-    |                             |       |            |                      |                      |          |         |                  | (indirect/vxlan) |                       |
-    |                             |       |            |                      |                      |          |         |                  | 10.0.1.2/32      |                       |
-    |                             |       |            |                      |                      |          |         |                  | (indirect/vxlan) |                       |
-    |                             |       |            |                      |                      |          |         |                  | 10.0.1.3/32      |                       |
-    |                             |       |            |                      |                      |          |         |                  | (indirect/vxlan) |                       |
-    | 192.168.1.11/32             | 0     | bgp-evpn   | bgp_evpn_mgr         | True                 | ip-vrf-1 | 0       | 170              | 10.0.1.1/32      |                       |
-    |                             |       |            |                      |                      |          |         |                  | (indirect/vxlan) |                       |
-    | 192.168.1.12/32             | 0     | bgp-evpn   | bgp_evpn_mgr         | True                 | ip-vrf-1 | 0       | 170              | 10.0.1.2/32      |                       |
-    |                             |       |            |                      |                      |          |         |                  | (indirect/vxlan) |                       |
-    | 192.168.1.13/32             | 0     | bgp-evpn   | bgp_evpn_mgr         | True                 | ip-vrf-1 | 0       | 170              | 10.0.1.3/32      |                       |
-    |                             |       |            |                      |                      |          |         |                  | (indirect/vxlan) |                       |
-    | 192.168.2.0/24              | 0     | bgp-evpn   | bgp_evpn_mgr         | False                | ip-vrf-1 | 0       | 170              | 10.0.1.1/32      |                       |
-    |                             |       |            |                      |                      |          |         |                  | (indirect/vxlan) |                       |
-    |                             |       |            |                      |                      |          |         |                  | 10.0.1.2/32      |                       |
-    |                             |       |            |                      |                      |          |         |                  | (indirect/vxlan) |                       |
-    |                             |       |            |                      |                      |          |         |                  | 10.0.1.3/32      |                       |
-    |                             |       |            |                      |                      |          |         |                  | (indirect/vxlan) |                       |
-    | 192.168.2.0/24              | 6     | local      | net_inst_mgr         | True                 | ip-vrf-1 | 0       | 0                | 192.168.2.1      | irb1.2                |
-    |                             |       |            |                      |                      |          |         |                  | (direct)         |                       |
-    | 192.168.2.1/32              | 6     | host       | net_inst_mgr         | True                 | ip-vrf-1 | 0       | 0                | None (extract)   | None                  |
-    | 192.168.2.255/32            | 6     | host       | net_inst_mgr         | True                 | ip-vrf-1 | 0       | 0                | None (broadcast) |                       |
+    # truncated
     +-----------------------------+-------+------------+----------------------+----------------------+----------+---------+------------------+------------------+-----------------------+
     -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     IPv4 routes total                    : 9
     IPv4 prefixes with active routes     : 8
     IPv4 prefixes with active ECMP routes: 3
     -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
     ```
 
-The summary from these route table verifications is that:
+What we conclude from the verifications done so far is that:
 
 * leaf1/leaf2/leaf3 install the route to the VIP `1.1.1.100` with the next-hop of the locally connected k8s node.
 * leaf4, which is not connected to a kubernetes node, only to a client, installs the route to `1.1.1.100` pointing to the three switches where k8s nodes are connected. Traffic will be encapsulated in VXLAN, forwarded to any of the three VTEPs and finally delivered to the k8s node.
 
 With this setup, it is expected that the traffic to `1.1.1.100` from clients connected to leaf1/leaf2/leaf3 will be delivered to the local k8s node.
 
-In the case of clients connected to leaf4, the switch will load-balance traffic between the three k8s nodes.  
+In the case of clients connected to leaf4, the switch will load-balance traffic between the three k8s nodes.
 
 ## HTTP Echo end service Verification
 
