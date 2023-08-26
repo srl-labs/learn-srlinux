@@ -10,6 +10,7 @@ tags:
   - evpn
 authors:
   - michelredondo
+  - rdodin
 ---
 
 # SR Linux Kubernetes Anycast Lab
