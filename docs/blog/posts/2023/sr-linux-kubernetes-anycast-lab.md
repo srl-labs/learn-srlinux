@@ -857,9 +857,9 @@ With this setup, it is expected that the traffic to `1.1.1.100` from clients con
 
 In the case of clients connected to leaf4, the switch will load-balance traffic between the three k8s nodes.
 
-## HTTP Echo end service Verification
+## Using LoadBalancer service
 
-Now that we have verified that VIP `1.1.1.100` is learned in our network, we can check if clients can access that service.
+And now we reached a point where we can try out our LoadBalancer service by issuing HTTP requests from external clients to the NGINX Echo service Pods.
 
 We use the following command to connect to our clients: `client1`, `client2`, `client3` and `client4`:
 
@@ -867,118 +867,108 @@ We use the following command to connect to our clients: `client1`, `client2`, `c
 docker exec -it client1 bash
 ```
 
-=== "k8s pods placement"
-    First let's review again where nginx pods are located:
-    ```
-    # kk get pods -o wide
-    NAME                          READY   STATUS    RESTARTS   AGE   IP           NODE           NOMINATED NODE   READINESS GATES
-    nginxhello-6b97fd8857-4vp6z   1/1     Running   0          81m   10.244.0.3   cluster1       <none>           <none>
-    nginxhello-6b97fd8857-b2vf8   1/1     Running   0          81m   10.244.2.3   cluster1-m03   <none>           <none>
-    nginxhello-6b97fd8857-f2ggp   1/1     Running   0          81m   10.244.1.3   cluster1-m02   <none>           <none>
-    ```
-    In the curl responses we can see the IP address of the pod that served the request. This will help us understand how traffic was load balanced.
+First let's review again where nginx pods are located so that we identify which pod will serve requests from clients:
+
+```
+# kubectl get pods -o wide
+NAME                         READY   STATUS    RESTARTS   AGE   IP           NODE           NOMINATED NODE   READINESS GATES
+nginxhello-7d95548fc-7q44k   1/1     Running   0          31h   10.244.0.3   cluster1       <none>           <none>
+nginxhello-7d95548fc-lthz6   1/1     Running   0          31h   10.244.1.3   cluster1-m02   <none>           <none>
+nginxhello-7d95548fc-rhfth   1/1     Running   0          31h   10.244.2.3   cluster1-m03   <none>           <none>
+```
+
+Then let's issue a curl request from our clients to the VIP and see which pod responds. Sometimes it takes a few requests to see the load-balancing in action.
 
 === "client1"
     From client1, connected to leaf1, we try to reach the VIP:
     ```
-    root@client1:/ $ curl 1.1.1.100
     Server address: 10.244.0.3:80
-    Server name: nginxhello-6b97fd8857-4vp6z
-    Date: 09/Aug/2023:10:27:55 +0000
+    Server name: nginxhello-7d95548fc-7q44k
+    Date: 26/Aug/2023:22:28:39 +0000
     URI: /
-    Request ID: 15c8f5967a98e1455e0c3d7c8bed5018
+    Request ID: 96d2a109b8a615e30c0b7f63b866ff84
+
     root@client1:/ $ curl 1.1.1.100
     Server address: 10.244.1.3:80
-    Server name: nginxhello-6b97fd8857-f2ggp
-    Date: 09/Aug/2023:10:27:58 +0000
+    Server name: nginxhello-7d95548fc-lthz6
+    Date: 26/Aug/2023:22:28:33 +0000
     URI: /
-    Request ID: b39222e042f977438b427c8c71abd0c0
-    root@client1:/ $
+    Request ID: 0abd422ff9d0ad625fa9cfe328a83c22
     ```
-    we can see our traffic has been load balanced to `pod1` and `pod2`
+    we can see our traffic has been load balanced to pods on nodes `cluster1` and `cluster1-m02`.
 
 === "client2"
     From client2, connected to leaf2, we try to reach the VIP:
     ```
     root@client2:/ $ curl 1.1.1.100
-    Server address: 10.244.0.3:80
-    Server name: nginxhello-6b97fd8857-4vp6z
-    Date: 09/Aug/2023:10:56:41 +0000
+    Server address: 10.244.1.3:80
+    Server name: nginxhello-7d95548fc-lthz6
+    Date: 26/Aug/2023:22:30:13 +0000
     URI: /
-    Request ID: 22eee500ff00fdf1a15947c4cc8790d6
+    Request ID: 72b5009ff2262fb33e4c4c6387d8a558
+
     root@client2:/ $ curl 1.1.1.100
     Server address: 10.244.1.3:80
-    Server name: nginxhello-6b97fd8857-f2ggp
-    Date: 09/Aug/2023:10:56:45 +0000
+    Server name: nginxhello-7d95548fc-lthz6
+    Date: 26/Aug/2023:22:30:16 +0000
     URI: /
-    Request ID: c8530bfa2d44a05c80b22eb2783d0b9a
-    root@client2:/ $
-    ```
-    we can see our traffic has been load balanced to `pod1` and `pod2`
+    Request ID: b3edeb76da1cf6769c5e1ed378b74a99
 
-=== "client3"
-    From client3, connected to leaf3, we try to reach the VIP:
-    ```
-    root@client3:/ $ curl 1.1.1.100
-    Server address: 10.244.2.3:80
-    Server name: nginxhello-6b97fd8857-b2vf8
-    Date: 09/Aug/2023:10:58:02 +0000
+    root@client2:/ $ curl 1.1.1.100
+    Server address: 10.244.0.3:80
+    Server name: nginxhello-7d95548fc-7q44k
+    Date: 26/Aug/2023:22:30:17 +0000
     URI: /
-    Request ID: c90cf6e835d68365467a0f0e246d6990
-    root@client3:/ $ curl 1.1.1.100
-    Server address: 10.244.1.3:80
-    Server name: nginxhello-6b97fd8857-f2ggp
-    Date: 09/Aug/2023:10:58:07 +0000
-    URI: /
-    Request ID: 88eceb46b29ac8bab585cf9d60c8a043
-    root@client3:/ $
+    Request ID: b90bf4f35d2faf08db6724c6d837da21
     ```
-    we can see our traffic has been load balanced to `pod3` and `pod2`
+    It took 3 requests to see a different pod serving our request, anyhow we again see cluster1 and cluster1-m02 nodes serving our requests. Issuing more requests eventually show that all three pods are serving our requests.
 
 === "client4"
-    From client4, connected to leaf4, we try to reach the VIP:
+    From client4, connected to leaf4, we also reach the VIP and can see our traffic load balanced to node2 and node3
     ```
     root@client4:/ $ curl 1.1.1.100
     Server address: 10.244.2.3:80
-    Server name: nginxhello-6b97fd8857-b2vf8
-    Date: 09/Aug/2023:12:47:55 +0000
+    Server name: nginxhello-7d95548fc-rhfth
+    Date: 26/Aug/2023:22:32:24 +0000
     URI: /
-    Request ID: ae64530197cee8dcf906cd4cd1521178
-    root@client4:/ $ curl 1.1.1.100
-    Server address: 10.244.1.3:80
-    Server name: nginxhello-6b97fd8857-f2ggp
-    Date: 09/Aug/2023:12:47:57 +0000
-    URI: /
-    Request ID: 7cc312436a0ee5fe0774203648ce5651
-    ```
-    we can see our traffic has been load balanced to `pod3` and `pod2`
+    Request ID: 84b148dc1463c581aa9d3a68f66ee16d
 
-## Kubernetes Cluster Load Balancing
+    root@client4:/ $ curl 1.1.1.100
+    Server address: 10.244.0.3:80
+    Server name: nginxhello-7d95548fc-7q44k
+    Date: 26/Aug/2023:22:32:27 +0000
+    URI: /
+    Request ID: fd9ed8cacd1c3146c1ddad4aefc7dc99
+    ```
+
+Great, we have verified that our service is working as expected. External clients can reach the exposed service and it is load balanced across our fabric and served by a scaled-out application.
+
+## K8s Cluster Load Balancing
 
 From the previous tests we can confirm that, independently where requests are coming from, all connections from clients are spread over the three pods.
 
-We can easily explain how traffic from `client4` is load balanced over the three nodes: ECMP in leaf4 distributes the traffic.
+We can easily explain how traffic from `client4` is load balanced over the three nodes: leaf4 has three possible next-hops to reach the VIP prefix, so it will ECMP the traffic between the three nodes.
 
-But how is it possible that traffic from `client1`, `client2` and `client3` is also load balanced, when previously we confirmed that it will be routed locally to the kubernetes node?
+But how is it possible that traffic from `client1`, `client2` and `client3` is also load balanced, when we [specifically set preference](#__tabbed_4_1) for locally learned prefix to be preferred and therefore the requests coming to leafX should only be served by nodeX?
 
-The explanation is simple, we have already seen it in the Kubernetes service definition. **kube-proxy**, thanks to the `externalTrafficPolicy: Cluster` configuration, will load balance the traffic between the available nodes:
+The explanation is simple, we have already seen it in the Kubernetes service definition. **kube-proxy**, thanks to the [`externalTrafficPolicy: Cluster`](https://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#preserving-the-client-source-ip) configuration (default value), will load balance the traffic between the service endpoints:
 
 <figure markdown>
   <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":0,"zoom":1.7,"highlight":"#0000ff","nav":true,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/srl-labs/srl-k8s-anycast-lab/main/images/cluster-load-balancing-Cluster.drawio"}'></div>
 </figure>
 
-Notice how **kube-proxy** in this case uses source and destination NAT to distribute this traffic.
+Notice how kube-proxy in this case uses source and destination NAT to distribute this traffic.
 
 If we had configured `externalTrafficPolicy: Local`,  then `client1`, `client2` and `client3` traffic to VIP would only reach its locally connected cluster node:
 
 <figure markdown>
-  <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":0,"zoom":1.7,"highlight":"#0000ff","nav":true,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/srl-labs/srl-k8s-anycast-lab/main/images/cluster-load-balancing-Local.drawio"}'></div>
+  <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":1,"zoom":1.7,"highlight":"#0000ff","nav":true,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/srl-labs/srl-k8s-anycast-lab/main/images/cluster-load-balancing-Cluster.drawio"}'></div>
 </figure>
 
-With the `Local` policy, **kube-proxy** is not modifying the source IP address.
+With the `Local` policy, kube-proxy is not modifying the source IP address.
 
 !!!tip
-    Kubernetes uses iptables rules to perform these src/dst NAT policies. You can  check this in kubernetes nodes with the command `iptables -vnL -t nat`
+    Minikube-flavored default Kubernetes installation uses iptables rules to perform these src/dst NAT policies. You can check this in kubernetes nodes with `iptables -vnL -t nat` command.
 
 ## ECMP hash calculation
 
