@@ -1021,7 +1021,8 @@ minikube start --nodes 3 -p cluster1
 sudo clab deploy --topo srl-k8s-lab.clab.yml
 minikube addons enable metallb -p cluster1
 kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/main/config/manifests/metallb-frr.yaml
-kubectl apply -f metal-lb-hello-cluster1.yaml
+kubectl apply -f metallb.yaml
+kubectl apply -f nginx.yaml
 docker exec -it client4 curl 1.1.1.100
 ```
 
