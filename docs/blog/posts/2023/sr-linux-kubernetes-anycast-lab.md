@@ -957,7 +957,7 @@ The explanation is simple, we have already seen it in the Kubernetes service def
   <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":0,"zoom":1.7,"highlight":"#0000ff","nav":true,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/srl-labs/srl-k8s-anycast-lab/main/images/cluster-load-balancing-Cluster.drawio"}'></div>
 </figure>
 
-Notice how kube-proxy in this case uses source and destination NAT to distribute this traffic.
+Notice how kube-proxy now uses source and destination NAT to distribute this traffic.
 
 If we had configured `externalTrafficPolicy: Local`,  then `client1`, `client2` and `client3` traffic to VIP would only reach its locally connected cluster node:
 
@@ -965,58 +965,75 @@ If we had configured `externalTrafficPolicy: Local`,  then `client1`, `client2` 
   <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":1,"zoom":1.7,"highlight":"#0000ff","nav":true,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/srl-labs/srl-k8s-anycast-lab/main/images/cluster-load-balancing-Cluster.drawio"}'></div>
 </figure>
 
-With the `Local` policy, kube-proxy is not modifying the source IP address.
+With the `Local` policy, kube-proxy does not modify the source IP address.
 
 !!!tip
     Minikube-flavored default Kubernetes installation uses iptables rules to perform these src/dst NAT policies. You can check this in kubernetes nodes with `iptables -vnL -t nat` command.
 
-## ECMP hash calculation
+## Network Load Balancing
 
-We have just seen how Kubernetes manages load balancing internally. In the case of switches, the key ingredient is ECMP (Equal-Cost Multipath). ECMP refers to the distribution of packets over two or more outgoing links that share the same routing cost.
+We have just seen how Kubernetes manages load balancing for external traffic hitting its LoadBalancer service. When it comes to the network switches, the key ingredient for load balancing is ECMP (Equal-Cost Multipath). ECMP allows a router to distribute traffic across multiple paths with equal routing costs, improving network efficiency and fault tolerance.
 
-SR Linux load-balances traffic over multiple equal-cost links/next-hops with a hashing algorithm that uses header fields from incoming packets to calculate which link/next-hop to use.
+SR Linux load-balances egressing VXLAN traffic over multiple equal-cost links/next-hops with a hashing algorithm that uses header fields in tenant packets to calculate which link/next-hop to use.
 
-The goal of the hash computation is to keep packets in the same flow on the same network path, while distributing traffic proportionally across the ECMP next-hops, so that each of the N ECMP next-hops carries approximately 1/Nth of the load.
+The goal of the hash computation is to keep packets in the same flow on the same network path while distributing traffic proportionally across the ECMP next-hops so that each of the N ECMP next-hops carries approximately 1/Nth of the load.
 
-What happens if the number of possible next-hops changes? In our current kubernetes example, what happens when the number of cluster node changes?
-
-If for example one of the cluster nodes fails, the hashing will change so it's possible that the switch will select a different next-hop:
+Classic ECMP hashing is susceptible to changes in the ECMP set; if, for example, one of the cluster nodes fails, the hashing will change and the switch may select a different next-hop for the same destination. Consider the case when client4 is sending traffic to the VIP prefix consuming the service. Leaf4 will ECMP the traffic between the three nodes. If one of the nodes fails, the hashing will change and the switch may select a different next-hop for the same destination. This may lead to traffic switchover and the client will have to re-establish the connection.
 
 <figure markdown>
   <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":0,"zoom":1.7,"highlight":"#0000ff","nav":true,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/srl-labs/srl-k8s-anycast-lab/main/images/ecmp_hash.drawio"}'></div>
+  <figcaption>Hash recalculation may lead to traffic switchover</figcaption>
 </figure>
 
 SR Linux provides a way to minimize the number of flows that are moved when the size of the ECMP set changes. This feature is called **Resilient Hashing**. When a next-hop is removed only flows that were previously hashed to that next-hop are moved.
 
-To configure it you have to provide the prefix and two parameters:
+To configure resilient hashing, you have to provide the prefix and two parameters:
 
-* hash-buckets-per-path: the number of times each next-hop is repeated in the hash-bucket fill pattern
-* max-paths: the maximum number of ECMP next-hops per route associated with the resilient-hash prefix
+* `hash-buckets-per-path`: the number of times each next-hop is repeated in the hash-bucket fill pattern
+* `max-paths`: the maximum number of ECMP next-hops per route associated with the resilient-hash prefix
 
-The idea behind **Resilient Hashing** is that we pre-calculate the hashes in buckets so in case the ECMP set changes, we don't redistribute the flows.
+The idea behind **Resilient Hashing** is that we pre-calculate the hashes in buckets so that in case the ECMP set changes, we don't redistribute the flows.
 
-```bash title="Resilient Hashing configuration"
+```srl title="Resilient Hashing configuration"
 set network-instance ip-vrf-1 ip-load-balancing resilient-hash-prefix 1.1.1.100 max-paths 6 hash-buckets-per-path 4
 ```
 
 We can apply and remove this configuration to leaf4 and see how it affects traffic flow distribution to traffic generated from `client4`.
 
-## TL;DR version <a name="tldr"></a>
+## Unleash automation
 
-Want to see a quick summary of the steps? Here you go:
+While going through the steps of this lab, you may have noticed that there is a lot of manual configuration involved both in the IP fabric and in the k8s cluster. We did it swiftly in a lab environment, but in a production environment, separate teams usually perform configuration of the network and the application infrastructure.
+
+An experienced operations engineer could smell potential misalignments between the two teams and the possibility of human errors. A BGP peering might not be established, a route might not be installed, a FIB might be exhausted. The list of things that can go wrong is long and typically it is because network doesn't know about applications it supports.
+
+The solution to this problem is to make network aware of the application infrastructure it serves. This is where [SR Linux NDK](../../../ndk/index.md) comes into play. NDK allows you to write applications that can be deployed on SR Linux nodes and that can interact with SR Linux itself as well as with any external system.
+
+A good demonstration of NDK capabilities in the context of k8s applications is the [kButler application](../../../ndk/apps/kbutler.md) that provides enhanced visibility and correlation between k8s services and NOS internal state. It is a good example of how to use NDK to automate the configuration of the network infrastructure based on the application requirements.
+
+## Summary
+
+What a journey it has been! We've seen how to deploy a local virtual k8s cluster with minikube and connect it with an IP fabric deployed with containerlab.
+
+With both container orchestration and network infrastructure in place, we deployed a simple Nginx echo service in a distributed fashion. We learned how to expose that service to external clients using a LoadBalancer service and announce it to external BGP peers using MetalLB.
+
+We witnessed the simplification of the network configuration thanks to the use of EVPN with Anycast-GW and BGP unnumbered. Finally, we verified that traffic from external clients performs load balancing across the cluster nodes both when clients are connected to the same leaf as the k8s node and when they are connected to a different leaf.
+
+As a bonus we also saw how to configure resilient hashing to minimize the number of flows that are moved when the size of the ECMP set changes.
+
+## TL;DR
+
+Here is a quick summary of the steps to reproduce this lab from start to finish:
 
 ```bash title="quick summary"
 git clone https://github.com/srl-labs/srl-k8s-anycast-lab && cd srl-k8s-anycast-lab
 minikube start --nodes 3 -p cluster1
-sudo clab deploy --topo srl-k8s-lab.clab.yml
+sudo clab deploy
 minikube addons enable metallb -p cluster1
 kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/main/config/manifests/metallb-frr.yaml
 kubectl apply -f metallb.yaml
 kubectl apply -f nginx.yaml
 docker exec -it client4 curl 1.1.1.100
 ```
-
-We have built a lab that deploys a Leaf/Spine Fabric connected to a kubernetes cluster. We deployed a simple Nginx echo service in **Anycast** mode, in which we publish that service from multiple locations. And finally, we have verified that traffic is distributed to the different nodes of the cluster.
 
 ## Lab lifecycle
 
