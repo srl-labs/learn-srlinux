@@ -43,11 +43,11 @@ With [Minikube](https://minikube.sigs.k8s.io/) we will deploy a personal virtual
 | **Version information**   | [`containerlab:0.44.3`](https://containerlab.dev/install/), [`srlinux:23.7.1`](https://github.com/nokia/srlinux-container-image),[`minikube v1.30.1`](https://minikube.sigs.k8s.io/docs/start/) |
 | **Authors**               | Míchel Redondo [:material-linkedin:][mr-linkedin]                                                                                                                                               |
 
-At the end of this blog post you can find a [quick summary](#tldr-version) of the steps performed to deploy the lab and configure the use cases.
+At the end of this blog post you can find a [quick summary](#tldr) of the steps performed to deploy the lab and configure the use cases.
 
 ## Prerequisites
 
-The following tools are required to be installed to run the lab on any Linux host. The links will get you to the installation instructions.
+The following tools are required to run the lab on any Linux host. The links will get you to the installation instructions.
 
 * The lab leverages [Containerlab](https://containerlab.dev/install/) to spin up a Leaf/Spine Fabric coupled with [Minikube](https://minikube.sigs.k8s.io/docs/start/) to deploy the Kubernetes cluster.
 * [Docker engine](https://docs.docker.com/engine/install/) to power containerlab.
@@ -57,7 +57,7 @@ The following tools are required to be installed to run the lab on any Linux hos
 
 ### Topology
 
-The goal of this lab is to provide users with an environment to test the network integration of a Kubernetes cluster with a Leaf/Spine SR Linux fabric.
+This lab aims to provide users with an environment to test the network integration of a Kubernetes cluster with a Leaf/Spine SR Linux fabric.
 
 <figure markdown>
   <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":0,"zoom":1.7,"highlight":"#0000ff","nav":true,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/srl-labs/srl-k8s-anycast-lab/main/images/topology.drawio"}'></div>
@@ -71,7 +71,7 @@ The setup consists of:
 * Kubernetes service deployed on top of Cluster
 * Linux clients to simulate connections to k8s service (4 clients)
 
-Courtesy of MetalLB, Kubernetes nodes establish BGP sessions with Leaf switches. Through the BGP sessions the IP addresses of the exposed services (loadBalancerIPs, commonly known as Virtual IPs or VIPs for short) are announced to the IP fabric.
+Courtesy of MetalLB, Kubernetes nodes establish BGP sessions with Leaf switches. The IP addresses of the exposed services (loadBalancerIPs, commonly known as Virtual IPs or VIPs for short) are announced to the IP fabric through the BGP sessions.
 
 ### Kubernetes Service
 
@@ -107,7 +107,7 @@ To enable network connectivity between the nodes of the k8s cluster we create a 
   <figcaption>Logical network topology</figcaption>
 </figure>
 
-Subnets are configured with Integrated Routing and Bridging (IRB) interfaces serving as default gateways for the k8s nodes and clients. The IRB interfaces are configured with the same IP address and MAC address across all leaf switches. This configuration is known as [Anycast Gateway](https://documentation.nokia.com/srlinux/23-7/books/evpn-vxlan/evpn-vxlan-tunnels-layer-3.html#anycast-gateways) that avoids inefficiencies for all-active multi-homing and speeds up convergence for host mobility.
+Subnets are configured with Integrated Routing and Bridging (IRB) interfaces serving as default gateways for the k8s nodes and clients. The IRB interfaces are configured with the same IP address and MAC address across all leaf switches. This configuration is known as [Anycast Gateway](https://documentation.nokia.com/srlinux/23-7/books/evpn-vxlan/evpn-vxlan-tunnels-layer-3.html#anycast-gateways) which avoids inefficiencies for all-active multi-homing and speeds up convergence for host mobility.
 
 From the SR Linux configuration perspective, each leaf would have the following network instances created jointly implementing the L3 EVPN service:
 
@@ -139,11 +139,11 @@ topology:
   # -- snip --
 ```
 
-We will use the [SR linux image v23.7.1](https://github.com/nokia/srlinux-container-image) that can be pulled as easily as `docker pull ghcr.io/nokia/srlinux:23.7.1`.
+We will use the [SR Linux image v23.7.1](https://github.com/nokia/srlinux-container-image) that can be pulled as easily as `docker pull ghcr.io/nokia/srlinux:23.7.1`.
 
 Our emulated clients will be deployed from the [network-multitool](https://github.com/users/hellt/packages/container/package/network-multitool) versatile Linux image.
 
-Kubernetes container images and container creation are directly managed by Minikube.
+Minikube directly manages Kubernetes container images and container creation.
 
 ### Nodes
 
@@ -172,7 +172,7 @@ topology:
 # -- snip --
 ```
 
-1. Minikube will name k8s container nodes as `minikube` by default. We set minikube's `profile` option to `cluster1` that sets cluster's first node name to `cluster1`, second `cluster1-m02` and `cluster-m03` for the third node.
+1. Minikube will name k8s container nodes as `minikube` by default. With minikube's `profile` option we set cluster's node names to `cluster1`, `cluster1-m02` and `cluster-m03`.
 2. `client-config.sh` is a script that configures client IP addresses and routes. It also updates the shell prompt with the name of the container, so it's easier to see which client we are connected to when we attach to the container's shell.
 
 Containerlab will configure the Leaf/Spine nodes during the lab deployment by applying configuration commands stored in the [config][clab-configs] folder of the lab repository.
@@ -410,7 +410,7 @@ The k8s test service (Nginx Echo Server) is not yet deployed, so our MetalLB BGP
     Subnet `192.168.1.0/24`, where cluster nodes are connected is present as well as `192.168.2.0/24` subnet to which clients are connected. It was containerlab who connected both clients and cluster nodes with links to the leaves and configured IP addresses for those interfaces. Now we see these interfaces/subnets exchanged over EVPN and populated in the `ip-vrf-1` routing table.
 
 === "Leaf1 MetalLB BGP session"
-    Let's have a look at the BGP session status between leaf1 and node1. This BGP session set up in the ip-vrf-1 network instance is used to receive k8s services prefixes from MetalLB Load Balancer.
+    Let's have a look at the BGP session status between leaf1 and node1. This BGP session set up in the `ip-vrf-1` network instance is used to receive k8s services prefixes from MetalLB Load Balancer.
 
     ```srl
     A:leaf1# show network-instance ip-vrf-1 protocols bgp neighbor
@@ -434,7 +434,7 @@ The k8s test service (Nginx Echo Server) is not yet deployed, so our MetalLB BGP
 
 ## MetalLB configuration
 
-After we have verified that the IP Fabric is properly configured, it's time to configure MetalLB loadbalancer by creating a couple of resources from [metallb.yaml][metallb-cfg] file.
+After we have verified that the IP Fabric is properly configured, it's time to configure MetalLB load balancer by creating a couple of resources from [metallb.yaml][metallb-cfg] file.
 
 Let's look at those resources applicable to MetalLB:
 
@@ -455,7 +455,7 @@ spec:
 
 ### BGP Peer
 
-Another mandatory custom resource (CR) MetalLB requires is `BGPPeer`. With `BGPPeer` CR we configure the BGP speaker part of the loadbalancer. Namely we set up the ASN numbers and peer address.
+Another mandatory custom resource (CR) MetalLB requires is `BGPPeer`. With `BGPPeer` CR we configure the BGP speaker part of the load balancer. Namely, we set up the ASN numbers and peer address.
 
 Leaf switches are configured with a distributed L3 EVPN service where the same anycast-gw IP address (192.168.1.1/24 for K8s nodes subnet and 192.168.2.1/24 for clients subnet) is used.
 
@@ -560,7 +560,7 @@ Summary:
 
 ## K8s service deployment
 
-The final touch is to deploy a test service in our k8s cluster and create a loadbalancer service for it. We will use the [Nginx Echo Server](https://hub.docker.com/r/nginxdemos/hello/) that responses with some pod information.
+The final touch is to deploy a test service in our k8s cluster and create a load balancer service for it. We will use the [Nginx Echo Server](https://hub.docker.com/r/nginxdemos/hello/) that responds with some pod information.
 
 ```yaml title="Deployment: HTTP echo service deployment"
 apiVersion: apps/v1
@@ -608,7 +608,7 @@ spec:
 ```
 
 1. **port** exposes the Kubernetes service on the specified port within the cluster. Other pods within the cluster can communicate with this server on the specified port
-2. **targetPort** is the port on which the service will send requests to, that your pod will be listening on
+2. **targetPort** is the port on which the service will send requests, that your pod will be listening on
 3. Two possible configurations: **Local** or **Cluster**
 
     **Local** means that when the packet reaches a node, kube-proxy will only distribute the load within the same node
@@ -819,7 +819,7 @@ Let's have a look how leaves install the VIP prefix in the `ip-vrf-1` routing ta
     ```
 
 === "Leaf4 vrf1 route table"
-    While leaves 1,2 and 3 have similar service configuration and hence the same routing table, leaf4 is different. Leaf4 doesn't have k8s node connected to it and hence it doesn't have local peering with MetalLB loadbalancer.
+    While leaves 1,2 and 3 have similar service configuration and hence the same routing table, leaf4 is different. Leaf4 doesn't have k8s node connected to it and hence it doesn't have local peering with MetalLB load balancer.
 
     Still, thanks to leaf4 participation in the EVPN service the VIP `1.1.1.100` is installed in leaf4 route table as an ECMP prefix with three possible next-hops: leaf1, leaf2 and leaf3
 
@@ -859,7 +859,7 @@ In the case of clients connected to leaf4, the switch will load-balance traffic 
 
 ## Using LoadBalancer service
 
-And now we reached a point where we can try out our LoadBalancer service by issuing HTTP requests from external clients to the NGINX Echo service Pods.
+And now we reach a point where we can try out our LoadBalancer service by issuing HTTP requests from external clients to the NGINX Echo service Pods.
 
 We use the following command to connect to our clients: `client1`, `client2`, `client3` and `client4`:
 
@@ -921,7 +921,7 @@ Then let's issue a curl request from our clients to the VIP and see which pod re
     URI: /
     Request ID: b90bf4f35d2faf08db6724c6d837da21
     ```
-    It took 3 requests to see a different pod serving our request, anyhow we again see cluster1 and cluster1-m02 nodes serving our requests. Issuing more requests eventually show that all three pods are serving our requests.
+    It took 3 requests to see a different pod serving our request, anyhow we again see cluster1 and cluster1-m02 nodes serving our requests. Issuing more requests eventually shows that all three pods are serving our requests.
 
 === "client4"
     From client4, connected to leaf4, we also reach the VIP and can see our traffic load balanced to node2 and node3
