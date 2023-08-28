@@ -13,7 +13,7 @@ authors:
   - rdodin
 ---
 
-# SR Linux Kubernetes Anycast Lab
+# Exposing Kubernetes Services to SR Linux-based IP Fabric with Anycast Gateway and MetalLB
 
 In the era of applications, it is easy to forget about the underlying infrastructure that interconnects them. However, the network is still the foundation of any application as it provides the connectivity and services that applications rely on.
 
@@ -26,9 +26,11 @@ The most popular container orchestration system - Kubernetes - is no exception t
 
 Getting familiar with all these features is vital for any network engineer working with a fabric supporting a k8s cluster. Wouldn't it be great to have a way to get into all of this without the need of a physical lab?
 
-In this blog post we will dive into a lab topology that serves as a virtual environment to test the integration of a Kubernetes cluster with an IP fabric. The emulated fabric topology consists of a Leaf/Spine [SR Linux](https://learn.srlinux.dev/) nodes with the Kubernetes Cluster nodes connected to it. The k8s Cluster features a [MetalLB](https://metallb.universe.tf/) load-balancer that unlocks the capability of having anycast services deployed in our fabric.
+In this blog post we will dive into a lab topology that serves as a virtual environment to test the integration of a Kubernetes cluster with an IP fabric. The emulated fabric topology consists of a Clos [SR Linux-based](https://learn.srlinux.dev/) fabric with the Kubernetes cluster nodes connected to it. The k8s cluster features a [MetalLB](https://metallb.universe.tf/) load-balancer that unlocks the capability of announcing deployed services to the IP fabric.
 
-With [Minikube](https://minikube.sigs.k8s.io/) we will deploy a personal virtual k8s cluster and [Containerlab](https://containerlab.dev/) will handle the IP fabric emulation and the connection between both environments.
+Throughout the lab, we will explore the way k8s services are announced to the IP fabric, and how L3 EVPN service with Anycast Gateway can be leveraged to create a simple and efficient overlay network for external users of the k8s services.
+
+As for the tooling used to bring up the lab we will use [Minikube](https://minikube.sigs.k8s.io/) to deploy a personal virtual k8s cluster and [Containerlab](https://containerlab.dev/) will handle the IP fabric emulation and the connection between both environments.
 
 <!-- more -->
 
