@@ -90,7 +90,7 @@ The [eBGP unnumbered peering](https://documentation.nokia.com/srlinux/23-7/books
   <figcaption>Underlay IPv6 Link Local eBGP sessions</figcaption>
 </figure>
 
-With eBGP unnumbered peers feature it is easy to setup BGP-based underlay connectivity between the leaf and spine switches while leveraging BGP's high scalability and proven resiliency.
+With eBGP unnumbered peers feature it is easy to setup BGP-based underlay connectivity between the leaf and spine switches while leveraging BGP's high scalability and proven resiliency[^1].
 
 !!!tip inline end
     Configuration applied to the fabric nodes can be found in [config directory](https://github.com/srl-labs/srl-k8s-anycast-lab/tree/main/configs) of a lab repo.
@@ -996,7 +996,7 @@ Classic ECMP hashing is susceptible to changes in the ECMP set; if, for example,
   <figcaption>Hash recalculation may lead to traffic switchover</figcaption>
 </figure>
 
-SR Linux provides a way to minimize the number of flows that are moved when the size of the ECMP set changes. This feature is called **Resilient Hashing**. When a next-hop is removed only flows that were previously hashed to that next-hop are moved.
+SR Linux provides a way to minimize the number of flows that are moved when the size of the ECMP set changes. This feature is called **Resilient Hashing**[^2]. When a next-hop is removed only flows that were previously hashed to that next-hop are moved.
 
 To configure resilient hashing, you have to provide the prefix and two parameters:
 
@@ -1058,5 +1058,8 @@ To delete this lab:
 [clab-topo]: https://github.com/srl-labs/srl-k8s-anycast-lab/blob/main/srl-k8s-lab.clab.yml
 [clab-configs]: https://github.com/srl-labs/srl-k8s-anycast-lab/tree/main/configs
 [metallb-cfg]: https://github.com/srl-labs/srl-k8s-anycast-lab/blob/main/metallb.yaml
+
+[^1]: See https://datatracker.ietf.org/doc/html/rfc7938
+[^2]: Also known as [consistent hashing](https://datatracker.ietf.org/doc/html/rfc7938#section-6.4).
 
 <script type="text/javascript" src="https://viewer.diagrams.net/js/viewer-static.min.js" async></script>
