@@ -40,7 +40,7 @@ As for the tooling used to bring up the lab we will use [Minikube](https://minik
 | ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Lab name**              | SR Linux Kubernetes Anycast Lab                                                                                                                                                                 |
 | **Lab components**        | Nokia SR Linux, Kubernetes, MetalLB                                                                                                                                                             |
-| **Resource requirements** | :fontawesome-solid-microchip: 6 vCPU <br/>:fontawesome-solid-memory: 16 GB                                                                                                                      |
+| **Resource requirements** | :fontawesome-solid-microchip: 6 vCPU <br/>:fontawesome-solid-memory: 12 GB                                                                                                                      |
 | **Lab**                   | [srl-labs/srl-k8s-anycast-lab][lab]                                                                                                                                                             |
 | **Version information**   | [`containerlab:0.44.3`](https://containerlab.dev/install/), [`srlinux:23.7.1`](https://github.com/nokia/srlinux-container-image),[`minikube v1.30.1`](https://minikube.sigs.k8s.io/docs/start/) |
 | **Authors**               | Míchel Redondo [:material-linkedin:][mr-linkedin]                                                                                                                                               |
@@ -66,18 +66,18 @@ This lab aims to provide users with an environment to test the network integrati
   <figcaption>Topology</figcaption>
 </figure>
 
-The setup consists of:
+The topology consists of:
 
-* A Leaf/Spine Fabric: 2xSpines, 4xLeaf switches
+* A Leaf/Spine Clos Fabric: 2xSpines, 4xLeaf switches
 * Minikube kubernetes cluster with MetalLB load balancing implementation (3 nodes)
-* Kubernetes service deployed on top of Cluster
 * Linux clients to simulate connections to k8s service (4 clients)
-
-Courtesy of MetalLB, Kubernetes nodes establish BGP sessions with Leaf switches. The IP addresses of the exposed services (loadBalancerIPs, commonly known as Virtual IPs or VIPs for short) are announced to the IP fabric through the BGP sessions.
 
 ### Kubernetes Service
 
-To illustrate the integration between the workloads running in the k8s cluster and the IP fabric, we will deploy a simple NGINX server replicated across the three k8s nodes. A MetalLB-based [LoadBalancer](https://tkng.io/services/loadbalancer/) service is created to expose the NGINX instances to the fabric and the outside world.
+To illustrate the integration between the workloads running in the k8s cluster and the IP fabric, we will deploy a simple NGINX Echo service replicated across the three k8s nodes. A [MetalLB](https://metallb.universe.tf/)-based [LoadBalancer](https://tkng.io/services/loadbalancer/) service is created to expose the NGINX Echo instances to the fabric and the outside world by establishing BGP sessions with Leaf switches to announce the IP addresses of the exposed services to the IP fabric.
+
+!!!note
+    The external IP address that a Load Balancer associates with the service is often called a "virtual IP address" or "VIP".
 
 With simulated clients, we will verify how traffic is distributed among the different nodes/pods using `curl` and reaching over to the exposed service IP address.
 
@@ -90,16 +90,25 @@ The [eBGP unnumbered peering](https://documentation.nokia.com/srlinux/23-7/books
   <figcaption>Underlay IPv6 Link Local eBGP sessions</figcaption>
 </figure>
 
+With eBGP unnumbered peers feature it is easy to setup BGP-based underlay connectivity between the leaf and spine switches while leveraging BGP's high scalability and proven resiliency.
+
+!!!tip inline end
+    Configuration applied to the fabric nodes can be found in [config directory](https://github.com/srl-labs/srl-k8s-anycast-lab/tree/main/configs) of a lab repo.
+
 Through eBGP the loopback/system IP addresses are exchanged between the leaves, making it possible to setup iBGP sessions for the overlay EVPN services that are consumed by the k8s nodes and clients:
+
+### Overlay Networking
+
+To deploy EVPN services on top of the IP fabric we need to peer all leaves in our datacenter/pod with each other. Due to the potential scale of the network, it is not practical to establish full mesh iBGP sessions between all leaves. Instead, we will use the Spine switches running in a Route Reflector mode to reduce the number of iBGP sessions required to establish full connectivity between all leaves.
+
+With this configuration, each leaf switch will establish an iBGP session with each spine switch and the spine switches will exchange the routes learned from the leaves with each other. This way, all leaves will learn the routes from all other leaves without the need to establish iBGP sessions with each other.
 
 <figure markdown>
   <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":0,"zoom":1.7,"highlight":"#0000ff","nav":true,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/srl-labs/srl-k8s-anycast-lab/main/images/fabric_ibgp.drawio"}'></div>
   <figcaption>Overlay iBGP EVPN sessions</figcaption>
 </figure>
 
-### Overlay Networking
-
-To enable network connectivity between the nodes of the k8s cluster we create a routed network - `ip-vrf-1` - implemented as a distributed L3 EVPN service running on the leaf switches. Two subnets are configured for this network to interconnect k8s nodes and emulated clients:
+To connect k8s nodes and external clients with the IP fabric we create a routed network - `ip-vrf-1` - implemented as a distributed L3 EVPN service running on the leaf switches. Two subnets are configured for this network to interconnect k8s nodes and emulated clients:
 
 * k8s nodes subnet: 192.168.1.0/24
 * clients subnet: 192.168.2.0/24
@@ -118,7 +127,7 @@ From the SR Linux configuration perspective, each leaf would have the following 
   <figcaption>Network instances composition</figcaption>
 </figure>
 
-Kubernetes nodes, thanks to MetalLB, will establish BGP sessions to these anycast-GW IP addresses and advertise the IP addresses of the exposed k8s services.
+MetalLB Load Balancer pods will establish BGP sessions to these anycast-GW IP addresses and advertise the IP addresses of the exposed k8s services.
 
 ## Containerlab topology file
 
