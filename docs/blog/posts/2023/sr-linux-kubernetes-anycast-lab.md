@@ -26,7 +26,7 @@ The most popular container orchestration system - Kubernetes - is no exception t
 
 Getting familiar with all these features is vital for any network engineer working with a fabric supporting a k8s cluster. Wouldn't it be great to have a way to get into all of this without the need of a physical lab?
 
-In this blog post we will dive into a lab topology that serves as a virtual environment to test the integration of a Kubernetes cluster with an IP fabric. The emulated fabric topology consists of a Clos [SR Linux-based](https://learn.srlinux.dev/) fabric with the Kubernetes cluster nodes connected to it. The k8s cluster features a [MetalLB](https://metallb.universe.tf/) load-balancer that unlocks the capability of announcing deployed services to the IP fabric.
+In this blog post we will dive into a lab topology that serves as a virtual environment to test the integration of a Kubernetes cluster with an IP fabric. The emulated fabric topology consists of a [SR Linux-based](https://learn.srlinux.dev/) Clos fabric with the Kubernetes cluster nodes connected to it. The k8s cluster features a [MetalLB](https://metallb.universe.tf/) load-balancer that unlocks the capability of announcing deployed services to the IP fabric.
 
 Throughout the lab, we will explore the way k8s services are announced to the IP fabric, and how L3 EVPN service with Anycast Gateway can be leveraged to create a simple and efficient overlay network for external users of the k8s services.
 
