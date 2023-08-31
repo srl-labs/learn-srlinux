@@ -7,7 +7,7 @@ tags:
     - ndk
 ---
 
-# :material-podcast: Develop Custom Network Apps With Nokia’s SR Linux NDK
+# Develop Custom Network Apps With Nokia’s SR Linux NDK
 
 <small>:material-podcast: [Packet Pushers](https://packetpushers.net/podcast/tech-bytes-develop-custom-network-apps-with-nokias-sr-linux-ndk-sponsored/)</small>
 

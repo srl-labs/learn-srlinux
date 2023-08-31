@@ -7,7 +7,7 @@ tags:
     - event handler
 ---
 
-# :material-podcast: Event-Driven Automation With Nokia’s SR Linux Event Handler Framework
+# Event-Driven Automation With Nokia’s SR Linux Event Handler Framework
 
 <small>:material-podcast: [Packet Pushers](https://packetpushers.net/podcast/tech-bytes-event-driven-automation-with-nokias-sr-linux-event-handler-framework-sponsored/)</small>
 
