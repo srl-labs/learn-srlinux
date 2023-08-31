@@ -7,7 +7,7 @@ tags:
     - presentation
 ---
 
-# :material-youtube: DevOps Approaches for Enhanced NetOps with Nokia Data Center Fabric Solution
+# DevOps Approaches for Enhanced NetOps with Nokia Data Center Fabric Solution
 
 <small>:material-youtube: [NFD 29](https://techfieldday.com/video/devops-approaches-for-enhanced-netops-with-nokia-data-center-fabric-solution/)</small>
 
