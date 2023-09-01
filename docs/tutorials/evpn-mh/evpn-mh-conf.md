@@ -153,7 +153,7 @@ The single homed ce1 has multiple interfaces to a single PE (leaf3). Those inter
 This is primarily to get better enthropy for load-balancing so that you can observe ce1 sends packets to both PEs and ECMP on the remote leaf balance traffic between leaf1 and leaf2 as depicted below.
 
 <figure markdown>
-  <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":4,"zoom":2,"highlight":"#0000ff","nav":true,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/srl-labs/learn-srlinux/diagrams/evpn-mh01.drawio"}'></div>
+  <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":4,"zoom":2,"highlight":"#0000ff","nav":true,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/srl-labs/srl-evpn-mh-lab/evpn-mh.drawio"}'></div>
   <figcaption>CE connections to mac-vrf-1 network instance</figcaption>
 </figure>
 
