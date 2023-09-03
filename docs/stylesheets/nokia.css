@@ -83,9 +83,9 @@ th {
 }
 
 /* make announce link color always white */
-.md-banner__inner a {
+/* .md-banner__inner a {
   color: #ffffff
-}
+} */
 
 /* shadow effect for images and divs for video */
 .img-shadow {
