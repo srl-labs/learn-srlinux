@@ -99,7 +99,7 @@ Through eBGP the loopback/system IP addresses are exchanged between the leaves, 
 
 ### Overlay Networking
 
-To deploy EVPN services on top of the IP fabric we need to peer all leaves in our datacenter/pod with each other. Due to the potential scale of the network, it is not practical to establish full mesh iBGP sessions between all leaves. Instead, we will use the Spine switches running in a Route Reflector mode to reduce the number of iBGP sessions required to establish full connectivity between all leaves.
+To deploy EVPN services on top of the IP fabric we need to peer all leaves in our datacenter/pod with each other. Due to the potential scale of the network, it is not practical to establish full mesh iBGP sessions between all leaves. Instead, we will use the Spine switches running in a Route Reflector mode to reduce the number of iBGP sessions required to establish full connectivity between all leaves.[^3]
 
 With this configuration, each leaf switch will establish an iBGP session with each spine switch and the spine switches will exchange the routes learned from the leaves with each other. This way, all leaves will learn the routes from all other leaves without the need to establish iBGP sessions with each other.
 
@@ -1061,5 +1061,6 @@ To delete this lab:
 
 [^1]: See https://datatracker.ietf.org/doc/html/rfc7938
 [^2]: Also known as [consistent hashing](https://datatracker.ietf.org/doc/html/rfc7938#section-6.4).
+[^3]: As of SR Linux 23.7.1, support of EVPN over BGP unnumbered overlay is in a preview state.
 
 <script type="text/javascript" src="https://viewer.diagrams.net/js/viewer-static.min.js" async></script>
