@@ -24,8 +24,6 @@ docker pull ghcr.io/nokia/srlinux
 
 When image is referenced without a tag, the latest container image version will be pulled. To obtain a specific version of a containerized SR Linux, refer to the [list of tags](https://github.com/orgs/nokia/packages/container/srlinux/versions) the `nokia/srlinux` image has and change the `docker pull` command accordingly.
 
-###
-
 ### Running SR Linux
 
 When the image is pulled to a local image store, you can start exploring SR Linux by either running a full-fledged lab topology, or by starting a single container to explore SR Linux CLI and its management interfaces.
