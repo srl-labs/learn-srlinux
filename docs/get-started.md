@@ -54,7 +54,7 @@ docker run -t -d --rm --privileged \
 1. By default container starts with a factory config, if you want to start with a custom config, mount it to `/etc/opt/srlinux/config.json` path.  
     In this example, [config](https://gist.github.com/hellt/3f695394d705ed2bf016f7919ba90018) created by [containerlab](https://containerlab.dev) is mounted to the container.
 
-The above command will start the container named `srlinux` emulating D3L^4 hardware on the host system with a single management interface attached to the default docker network.
+The above command will start the container named `srlinux` emulating D3L[^4] hardware on the host system with a single management interface attached to the default docker network.
 
 To connect to the CLI of the container you can either use `docker exec -it srlinux sr_cli` or SSH to the container over the network:
 
