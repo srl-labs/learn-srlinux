@@ -68,7 +68,7 @@ As we mentioned before, there are multiple versions of the protobuf definitions 
 
 The UI is rendered from the JSON files generated with the help of [`protoc-gen-doc`][protoc-gen-doc] open source tool that we bundled with a bunch of common proto files and published at [`protoc-container`](https://github.com/srl-labs/protoc-container).
 
-The generation is launched by the bash runner script - [`run.sh`](https://github.com/srl-labs/gnxi-browser/blob/main/run.sh) - and the generated JSON files are stored in the [`src/lib/intefaces`](https://github.com/srl-labs/gnxi-browser/tree/main/src/lib/interfaces) folder.
+The generation is launched by the bash runner script - [`run.sh`](https://github.com/srl-labs/gnxi-browser/blob/main/run.sh) - and the generated JSON files are stored in the [`static/intefaces`](https://github.com/srl-labs/gnxi-browser/tree/main/static/interfaces) folder.
 
 If you see that some version is missing, you can use the scripts to generate the JSON files and submit a merge request to the [gnxi-browser](https://github.com/srl-labs/gnxi-browser) repo.
 

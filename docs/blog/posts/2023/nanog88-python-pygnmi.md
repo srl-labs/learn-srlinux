@@ -25,7 +25,9 @@ In this blog post we are going to dive into the details of the script, discoveri
 <!-- more -->
 
 ## Setup
+
 This script installs and starts Docker, a containerization platform, on a Linux machine using the dnf package manager. Then, it installs containerlab, a tool used for creating and managing container-based network labs
+
 ```bash
 # Install docker
 sudo dnf -y install docker
@@ -82,7 +84,7 @@ Now, if you have a typo in the EVI number, then the script will show you that:
 
 ## How to use it
 
-To use the python class, you'll need to install some modules, including tabulate and pygnmi. 
+To use the python class, you'll need to install some modules, including tabulate and pygnmi.
 Use this [requirements.txt](https://github.com/cloud-native-everything/pygnmi-srl-nanog88/blob/main/py-scripts/requirements.txt) file in the repo.
 
 ```python
@@ -116,5 +118,5 @@ Finally, you can print the table by using this snippet:
 ```
 
 This will highlight any typos – in our case, it will flag any errors in the EVI.
-You can see the full presentation in a previous post [right here](https://learn-srlinux.pages.dev/blog/2023/material-youtube-nanog88-gnmi-and-chatgpt-to-troubleshoot-evpn-datacenter-fabrics/).
+You can see the presentation in a previous post [right here](nanog88-srlinux-pygnmi-gnmic-chatgpt.md).
 Catch you next time.

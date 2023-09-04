@@ -7,7 +7,7 @@ tags:
     - fss
 ---
 
-# :material-podcast: Design, Deploy, And Operate With Nokia Data Center Fabric Solution
+# Design, Deploy, And Operate With Nokia Data Center Fabric Solution
 
 <small>:material-podcast: [Packet Pushers](https://packetpushers.net/podcast/heavy-networking-653-design-deploy-and-operate-with-nokia-data-center-fabric-solution-sponsored/)</small>
 

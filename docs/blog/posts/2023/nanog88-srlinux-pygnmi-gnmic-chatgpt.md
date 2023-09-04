@@ -11,7 +11,7 @@ authors:
   - mau
 ---
 
-# :material-youtube: NANOG88: gNMI and ChatGPT To Troubleshoot EVPN Datacenter Fabrics
+# NANOG88: gNMI and ChatGPT To Troubleshoot EVPN Datacenter Fabrics
 
 <small>:material-youtube: [NANOG88](https://youtu.be/dyY4PUFV2nw)</small>
 
