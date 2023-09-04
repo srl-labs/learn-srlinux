@@ -399,4 +399,10 @@ Total Eth-cfm Macs             :    0 Total    0 Active
 
 With that, we verified a working L2 EVPN multi-homing on a SR Linux fabric. 
 
+To delete this lab, from the lab path:
+
+```bash
+containerlab destroy -t evpn-mh.clab.yml
+```
+
 <script type="text/javascript" src="https://viewer.diagrams.net/js/viewer-static.min.js" async></script>

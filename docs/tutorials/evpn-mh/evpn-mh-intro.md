@@ -10,21 +10,22 @@ tags:
 | ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Tutorial name**              | EVPN L2 Multi-homing with SR Linux                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | **Lab components**             | 4 SR Linux nodes, 2 Alpine Linux                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
-| **Resource requirements**      | :fontawesome-solid-microchip: 3vCPU <br/>:fontawesome-solid-memory: 6 GB                                                                                                                                                                                                                                                                                                                                                                                                                    |
-| **Containerlab topology file** | [evpn-mh01.clab.yml][topofile]                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
-| **Lab name**                   | evpn-mh01                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| **Resource requirements**      | :fontawesome-solid-microchip: 3vCPU <br/>:fontawesome-solid-memory: 6 GB                                                                                                                                                                                                                                                                                                                                                                                                                    |                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| **Lab**                        |   [srl-labs/srl-k8s-anycast-lab][lab]                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 | **Main ref documents**         | [RFC 7432 - BGP MPLS-Based Ethernet VPN](https://datatracker.ietf.org/doc/html/rfc7432)<br/>[RFC 8365 - A Network Virtualization Overlay Solution Using Ethernet VPN (EVPN)](https://datatracker.ietf.org/doc/html/rfc8365)<br/>[Nokia 7220 SR Linux Advanced Solutions Guide](https://documentation.nokia.com/srlinux/23-3/books/advanced-solutions)<br/>[Nokia 7220 SR Linux EVPN-VXLAN Guide](https://documentation.nokia.com/srlinux/23-7/title/evpn_vxlan.html) |
-| **Version information**[^1]    | [`containerlab:0.44.0`][clab-install], [`srlinux:23.3.2`][srlinux-container], [`docker-ce:23.0.3`][docker-install]                                                                                                                                                                                                                                                                                                                                                                        |
+| **Version information**        | [`containerlab:0.44.0`][clab-install], [`srlinux:23.3.2`][srlinux-container], [`docker-ce:23.0.3`][docker-install]                                                                                                                                                                                                  
+
+
 One of the many advantages of EVPN is its built-in multi-homing (MH) capability, which is standards-based and defined by RFCs 7432, 8365. 
 
 This tutorial will help you learn about L2 multi-homing with EVPN and guide you on how to configure it in an EVPN-based SR Linux fabric.
 
 EVPN provides multi-homing with the Ethernet Segments (ES), which may be a new concept to some readers. Therefore, the terminology will also be discussed in the following chapters.
 
-The lab comprises a spine, three leaf(PEs) routers, and two Alpine Linux hosts(CEs). A multi-homed CE is connected to leaf1, while another is linked to leaf3 for testing purposes.
+The lab comprises a spine, three leaf(PEs) routers, and two Alpine Linux hosts(CEs). A multi-homed CE is connected to 'leaf1', while another is linked to 'leaf3' for testing purposes.
 
 <figure markdown>
-  <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":0,"zoom":2,"highlight":"#0000ff","nav":true,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/srl-labs/srl-evpn-mh-lab/evpn-mh.drawio"}'></div>
+  <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":0,"zoom":2,"highlight":"#0000ff","nav":true,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/srl-labs/srl-evpn-mh-lab/main/images/main/images/evpn-mh.drawio"}'></div>
   <figcaption>EVPN multi-homing lab topology</figcaption>
 </figure>
 
@@ -32,35 +33,35 @@ The lab comprises a spine, three leaf(PEs) routers, and two Alpine Linux hosts(C
 
 As usual, this lab is powered by containerlab and can be deployed on any Linux VM with enough resources mentioned in the table at the beginning.
 
-This lab comes with pre-configurations that are explained in [L2 EVPN tutorial](https://learn.srlinux.dev/tutorials/l2evpn/evpn/#mac-vrf), which is highly recommended if you haven't played with SR Linux or EVPN yet.
+The lab comes with pre-configurations that are explained in [L2 EVPN tutorial](https://learn.srlinux.dev/tutorials/l2evpn/evpn/#mac-vrf), which is highly recommended if you haven't played with SR Linux or EVPN yet.
 
 The topology and pre-configurations are defined in the containerlab topology file.
 
-The SR Linux configurations are referred to as [config files][configs] (.cfg), and Alpine Linux configurations are defined in the [topology file][topofile] to be directly executed at the deployment.
+The SR Linux and Alpine Linux(ce) interface [configurations][configs] are referred in the [topology file][topofile]. SR Linux configuration files are set as startup configs while linux interface configurations are made by a script during the containerlab post deployment.
 
 ```yaml
---8<-- "labs/evpn-mh/evpn-mh01.clab.yml"
+--8<-- "https://raw.githubusercontent.com/srl-labs/srl-evpn-mh-lab/main/evpn-mh.clab.yml"
 ```
 
 The SR Linux configurations are 
 === "leaf1"
     ```yaml
-    --8<-- "labs/evpn-mh/leaf1.cfg"
+    --8<-- "https://raw.githubusercontent.com/srl-labs/srl-evpn-mh-lab/main/configs/leaf1.cfg"
     ```
 === "leaf2"
     ```yaml
-    --8<-- "labs/evpn-mh/leaf2.cfg"
+    --8<-- "https://raw.githubusercontent.com/srl-labs/srl-evpn-mh-lab/main/configs/leaf2.cfg"
     ```
 === "leaf3"
     ```yaml
-    --8<-- "labs/evpn-mh/leaf3.cfg"
+    --8<-- "https://raw.githubusercontent.com/srl-labs/srl-evpn-mh-lab/main/configs/leaf3.cfg"
     ```
 === "spine1"
     ```yaml
-    --8<-- "labs/evpn-mh/spine1.cfg"
+    --8<-- "https://raw.githubusercontent.com/srl-labs/srl-evpn-mh-lab/main/configs/spine1.cfg"
     ```
 
-Save [these][path-evpn-mh] to your Linux machine and deploy:
+Clone [the lab][path-evpn-mh] to your Linux machine and deploy:
 
 ```
 # containerlab deploy -t evpn-mh01.clab.yml
@@ -127,22 +128,22 @@ INFO[0026] Executed command "ip addr add 192.168.0.23/24 dev eth3" on the node "
 +---+-----------------------+--------------+------------------------------+-------+---------+----------------+----------------------+
 ```
 
-A few seconds later containerlab finishes the deployment with providing a summary table that outlines connection details of the deployed nodes. In the "Name" column we have the names of the deployed containers and those names can be used to reach the nodes, for example to connect to the SSH of `leaf1`:
+When containerlab finishes the deployment with providing a summary table that outlines connection details of the deployed nodes. In the "Name" column we have the names of the deployed containers and those names can be used to reach the nodes, for example to connect to the SSH of `leaf1`:
 
 ```bash
 # default credentials admin:NokiaSrl1!
-ssh admin@clab-evpn01-leaf1
+ssh admin@clab-evpn-mh-leaf1
 ```
 
 To connect Alpine Linux (CEs):
 
 === "srv1"
     ```
-    docker exec -it clab-evpn-mh01-ce1 bash
+    docker exec -it clab-evpn-mh-ce1 bash
     ```
 === "srv2"
     ```
-    docker exec -it clab-evpn-mh01-ce1 bash
+    docker exec -it clab-evpn-mh-ce1 bash
     ```
 
 ## EVPN Multi-homing Terminology
@@ -152,14 +153,14 @@ Before diving into the hands-on, let's see some terms that would help us better 
 + **Ethernet Segment (ES):** Defines the CE links connected to multiple PEs. An ES is configured in all PEs that a CE is connected and has a unique identifier (ESI) advertised via EVPN.
 
 <figure markdown>
-  <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":1,"zoom":2,"highlight":"#0000ff","nav":true,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/srl-labs/srl-evpn-mh-lab/evpn-mh.drawio"}'></div>
+  <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":1,"zoom":2,"highlight":"#0000ff","nav":true,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/srl-labs/srl-evpn-mh-lab/main/images/evpn-mh.drawio"}'></div>
   <figcaption>Ethernet segments</figcaption>
 </figure>
 
 + **Multi-homing Modes:** The standard defines two modes: single-active and all-active. Single-active mode has only one active link, while all-active mode uses all links and provides load balancing. This tutorial covers an example of all-active multi-homing.
 
 <figure markdown>
-  <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":2,"zoom":2,"highlight":"#0000ff","nav":true,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/srl-labs/srl-evpn-mh-lab/evpn-mh.drawio"}'></div>
+  <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":2,"zoom":2,"highlight":"#0000ff","nav":true,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/srl-labs/srl-evpn-mh-lab/main/images/evpn-mh.drawio"}'></div>
   <figcaption>EVPN multi-homing modes</figcaption>
 </figure>
 
@@ -177,11 +178,12 @@ EVPN route types 1 and 4 are used to implement the multi-homing procedures. You 
 
 Now, let's move on to the configuration part.
 
-[topology]: https://github.com/srl-labs/learn-srlinux/blob/main/docs/tutorials/evpn-mh/
+[lab]: https://github.com/srl-labs/srl-evpn-mh-lab
+[topology]: https://github.com/srl-labs/srl-evpn-mh-lab/blob/main/evpn-mh.clab.yml
 [clab-install]: https://containerlab.srlinux.dev/install/
 [srlinux-container]: https://github.com/orgs/nokia/packages/container/package/srlinux
 [docker-install]: https://docs.docker.com/engine/install/
-[configs]: https://github.com/srl-labs/learn-srlinux/blob/main/docs/tutorials/evpn-mh/leaf1.cfg
-[path-evpn-mh]: https://github.com/srl-labs/learn-srlinux/blob/main/docs/tutorials/evpn-mh
+[configs]: https://github.com/srl-labs/srl-evpn-mh-lab/tree/main/configs
+[path-evpn-mh]: https://github.com/srl-labs/srl-evpn-mh-lab.git
 
 <script type="text/javascript" src="https://viewer.diagrams.net/js/viewer-static.min.js" async></script>

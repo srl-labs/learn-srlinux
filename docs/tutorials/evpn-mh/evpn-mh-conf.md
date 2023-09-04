@@ -5,7 +5,7 @@ tags:
   - ethernet-segments
 ---
 
-In this part, we focus on the configurations. The target is to get the SR Linux fabric configured with the necessary configuration items for a multi-homed CE.
+In this part, we'll focus on the configurations. The target is to get the SR Linux fabric configured with the necessary configuration items for a multi-homed CE.
 
 The following items must be configured in all ES peers(PEs) that the "ce1" is connected. It's leaf1 and leaf2 in this tutorial.
 
@@ -13,7 +13,7 @@ The following items must be configured in all ES peers(PEs) that the "ce1" is co
 + Ethernet segment
 + MAC-VRF interface association
 
-Remember that the lab is pre-configured with [fabric underlay][fabric-underlay], [EVPN][evpn], and a [MAC-VRF][mac-vrf] for CE-to-CE L2 communication.
+Remember that the lab is pre-configured with [fabric underlay][fabric-underlay], [EVPN][evpn], and a [MAC-VRF][mac-vrf] for CE-to-CE L2 reachability.
 
 ### LAG Configuration
 
@@ -28,7 +28,7 @@ In this example, a LAG is created for an all-active multi-homing mode. The targe
 
 
 The configuration snippet below shows a LAG with a subinterface and its LACP settings. 
->The same configurations can be copied to both leaf1 and leaf2.
+>The same configuration applies for both leaf1 and leaf2.
 
 ```
 enter candidate
@@ -81,7 +81,7 @@ All PEs that offer a multi-homing to a CE must be configured similarly with the 
 ### Ethernet Segment Configuration
 
 In SR Linux, the `ethernet-segments` are configured under [ system network-instance protocols evpn ] context.
->The same configuration can be copied to both leaf1 and leaf2.
+>The same configuration applies for both leaf1 and leaf2.
 ```
 enter candidate
 /system network-instance protocols 
@@ -112,7 +112,7 @@ Besides the ethernet segments, the `bgp-vpn` with `bgp-instance 1` is configured
 ### MAC-VRF Interface Configuration
 
 Typically, an L2 multi-homed LAG subinterface needs to be associated with a MAC-VRF.
->The same configuration can be copied to both leaf1 and leaf2.
+>The same configuration applies for both leaf1 and leaf2.
 
 ```
 enter candidate
@@ -149,16 +149,25 @@ Let's see the configuration example on the CE side.
 
 The ce1 has multi-homed bond0 with slave interfaces eth1 and eth2. Similar to SR Linux part, it's configured with LACP (802.3ad). 
 
-The single homed ce1 has multiple interfaces to a single PE (leaf3). Those interfaces are placed in different VRFs so that ce2 can simulate multiple remote endpoints.
-This is primarily to get better enthropy for load-balancing so that you can observe ce1 sends packets to both PEs and ECMP on the remote leaf balance traffic between leaf1 and leaf2 as depicted below.
+The single homed ce2 has multiple interfaces to a single PE (leaf3). Those interfaces are placed in different VRFs so that ce2 can simulate multiple remote endpoints.
+
+=== "ce1"
+    ```yaml
+    --8<-- "https://raw.githubusercontent.com/srl-labs/srl-evpn-mh-lab/main/configs/ce1-config.sh"
+    ```
+=== "ce2"
+    ```yaml
+    --8<-- "https://raw.githubusercontent.com/srl-labs/srl-evpn-mh-lab/main/configs/ce2-config.sh"
+    ```
+
+This is primarily to get better enthropy for load-balancing so that you can observe ce1 sends/receives packets to/from both PEs as depicted below.
 
 <figure markdown>
-  <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":4,"zoom":2,"highlight":"#0000ff","nav":true,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/srl-labs/srl-evpn-mh-lab/evpn-mh.drawio"}'></div>
+  <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":4,"zoom":2,"highlight":"#0000ff","nav":true,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/srl-labs/srl-evpn-mh-lab/main/images/evpn-mh.drawio"}'></div>
   <figcaption>CE connections to mac-vrf-1 network instance</figcaption>
 </figure>
 
-
-> See the containerlab topology file for the CE configurations.
+Verify the configurations with the next chapter!
 
 [fabric-underlay]: https://learn.srlinux.dev/tutorials/l2evpn/fabric/
 [evpn]: https://learn.srlinux.dev/tutorials/l2evpn/evpn/
