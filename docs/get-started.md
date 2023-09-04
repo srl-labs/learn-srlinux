@@ -43,40 +43,27 @@ Let's explore the different ways you can launch SR Linux container.
 
 `docker` CLI offers a quick way to run a standalone SR Linux container:
 
-=== "Docker run"
-    Note the presence of topology file mount in the `docker run` command, it is used to drive a selection of the emulated chassis type.
-    ```shell
-    docker run -t -d --rm --privileged \
-      -v $(pwd)/topology.yml:/tmp/topology.yml \
-      -u $(id -u):$(id -g) \
-      --name srlinux ghcr.io/nokia/srlinux \
-      sudo bash /opt/srlinux/bin/sr_linux
-    ```
-=== "Topology file"
-    The following topology file is for IXR-D3L chassis.
+```shell
+docker run -t -d --rm --privileged \
+  -u $(id -u):$(id -g) \
+  -v srl23-7-1.json:/etc/opt/srlinux/config.json \ #(1)!
+  --name srlinux ghcr.io/nokia/srlinux:23.7.1 \
+  sudo bash /opt/srlinux/bin/sr_linux
+```
 
-    ```yaml
-    chassis_configuration:
-      "chassis_type": 72
-      "base_mac": "1a:b0:00:00:00:00"
-      "cpm_card_type": 187
+1. By default container starts with a factory config, if you want to start with a custom config, mount it to `/etc/opt/srlinux/config.json` path.  
+    In this example, [config](https://gist.github.com/hellt/3f695394d705ed2bf016f7919ba90018) created by [containerlab](https://containerlab.dev) is mounted to the container.
 
-    slot_configuration:
-      1:
-        "card_type": 187
-        "mda_type": 200
-    ```
+The above command will start the container named `srlinux` emulating D3L[^4] hardware on the host system with a single management interface attached to the default docker network.
 
-The above command will start the container named `srlinux` on the host system with a single management interface attached to the default docker network.
+To connect to the CLI of the container you can either use `docker exec -it srlinux sr_cli` or SSH to the container over the network:
 
-!!!warning T
-    To get SSH access for a deployed container, make sure to disable TX Offload on a default docker bridge, otherwise, CRC checksums will be fake and SR Linux will discard those packets.
+```shell
+# default password is NokiaSrl1!
+ssh admin@$(docker inspect -f '{{.NetworkSettings.IPAddress}}' srlinux)
+```
 
-    ```bash
-    sudo ethtool --offload docker0 tx off
-    ```
-
-This approach is viable when all you need is to run a standalone container to explore SR Linux CLI or to interrogate its management interfaces. But it is not particularly suitable to run multiple SR Linux containers with links between them, as this requires some extra work.
+Using docker CLI is a viable approach when all you need is to run a standalone container to explore SR Linux CLI or to use its management interfaces. However, it is not particularly suitable to run multiple SR Linux containers with links between them, as this requires some extra work.
 
 For multi-node SR Linux deployments containerlab[^3] offers a better way.
 
@@ -214,3 +201,4 @@ supported models:
 [^1]: Centos 7.3+ has a 3.x kernel and won't be able to run SR Linux container images newer than v22.11.
 [^2]: for example [gnmic](https://gnmic.openconfig.net)
 [^3]: The labs referenced on this site are deployed with containerlab unless stated otherwise
+[^4]: Prior to SR Linux v23.3 users had to mount a topology file for a container to start.
