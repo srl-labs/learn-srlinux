@@ -893,6 +893,7 @@ Then let's issue a curl request from our clients to the VIP and see which pod re
 === "client1"
     From client1, connected to leaf1, we try to reach the VIP:
     ```
+    root@client1:/ $ curl 1.1.1.100
     Server address: 10.244.0.3:80
     Server name: nginxhello-7d95548fc-7q44k
     Date: 26/Aug/2023:22:28:39 +0000
