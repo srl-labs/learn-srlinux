@@ -20,7 +20,7 @@ But on SR Linux you don't have to choose between a range and a wildcard, you can
 
 ## Wildcards
 
-Wildcards allow CLI users to specify a pattern that matches all possible values for a parameter using `*` character. For example, if you want to show all subinterfaces of `ethernet-1/1` interface, you can use the following command:
+Wildcards allow CLI users to specify a pattern that matches all existing values for a parameter using the `*` character. For example, if you want to show all subinterfaces of `ethernet-1/1` interface, you can use the following command:
 
 ```srl
 --{ * candidate shared default }--[  ]--
@@ -41,7 +41,7 @@ A:srl# info /interface ethernet-1/1 subinterface *
     }
 ```
 
-You can also substitute multiple parameters with a wildcard; For example, to show `active` status for all ipv4 unicast bgp routes in the default network instance:
+You can also substitute multiple parameters with a wildcard; For example, to show `active` status for all ipv4 unicast bgp routes in the default network instance route table:
 
 ```srl
 A:leaf1# info from state network-instance default route-table ipv4-unicast route * id * route-type bgp route-owner * origin-network-instance * active
@@ -68,8 +68,198 @@ A:leaf1# info from state network-instance default route-table ipv4-unicast route
     }
 ```
 
-Wildcards are not limited to data retrieval commands, you can also use them in configuration commands. For example, to enable `lldp` on all interfaces in the system:
+Wildcards are not limited to info command, you can simplify your configuration workflows by using wildcards as well. For example, to add `subinterface 0` for every interface in the system we can do:
+
+=== "config"
+    ```srl
+    --{ + candidate shared default }--[  ]--
+    A:srl# /interface * subinterface 0 description "created with a wildcard"
+    ```
+=== "verification"
+    ```diff
+    --{ +* candidate shared default }--[  ]--
+    A:srl# diff
+        interface ethernet-1/1 {
+    +         subinterface 0 {
+    +             description "created with a wildcard"
+    +         }
+        }
+        interface ethernet-1/3 {
+    +         subinterface 0 {
+    +             description "created with a wildcard"
+    +         }
+        }
+        interface ethernet-1/4 {
+    +         subinterface 0 {
+    +             description "created with a wildcard"
+    +         }
+        }
+        interface ethernet-1/5 {
+    +         subinterface 0 {
+    +             description "created with a wildcard"
+    +         }
+        }
+        interface ethernet-1/8 {
+    +         subinterface 0 {
+    +             description "created with a wildcard"
+    +         }
+        }
+        interface mgmt0 {
+            subinterface 0 {
+    +             description "created with a wildcard"
+            }
+        }
+    ```
+
+### Interfaces
+
+Technically, wildcards work on YANG's list keys, with the notable exception of interface names. The interface name is a key itself, but given how the name is composed of a linecard and port combination (e.g. `ethernet-1/1`), wildcards can be used on these components of the interface name individually. For example, to expand all interfaces on linecard 1:
 
 ```srl
-
+--{ + candidate shared default }--[  ]--
+A:srl# info interface ethernet-1/* admin-state
+    interface ethernet-1/1 {
+        admin-state enable
+    }
+    interface ethernet-1/3 {
+        admin-state enable
+    }
+    interface ethernet-1/4 {
+        admin-state enable
+    }
+    interface ethernet-1/5 {
+        admin-state enable
+    }
+    interface ethernet-1/8 {
+        admin-state enable
+    }
 ```
+
+### Context
+
+A cool feature that both wildcards and ranges share is being able to enter in the context while using them. Say, you want to analyze state of the configured interfaces interactively. You can do so by entering in the context of all your interfaces in one go:
+
+```srl
+--{ + running }--[  ]--
+#(1)!
+A:srl# enter state
+
+--{ + state }--[  ]--
+#(2)!
+A:srl# interface *
+
+--{ + state }--[ interface * ]--
+#(3)!
+```
+
+1. SR Linux employs a `state` datastore that is a read-only datastore that combines both configuration and state elements. Users can enter the `state` datastore to browse it.
+2. Note, how the CLI engine's prompt reflects the datastore you're in.
+3. When we used `interface *` context switching command, the prompt reflects that we are in the _wildcarded_ context of all interfaces in the system.
+
+Now that we entered the wildcarded context we can use any command as we would normally do, but the command will be executed for all interfaces in the system. For example, to show all interfaces with their admin state:
+
+```srl
+--{ + state }--[ interface * ]--
+A:srl# info statistics in-unicast-packets
+    interface ethernet-1/1 {
+        statistics {
+            in-unicast-packets 0
+        }
+    }
+    interface ethernet-1/3 {
+        statistics {
+            in-unicast-packets 0
+        }
+    }
+    # snip
+    interface mgmt0 {
+        statistics {
+            in-unicast-packets 919
+        }
+    }
+```
+
+And of course wildcards can be used in the context mode for configration task as well. Let's now make our subinterface vlan-tagged for all `subinterface 0` we added in one of the examples before:
+
+```srl
+# switching to candidate datastore
+--{ + state }--[ interface * ]--
+A:srl# enter candidate
+
+# entering the wildcarded context
+# of subinterface 0 of all interfaces
+--{ + candidate shared default }--[  ]--
+A:srl# interface * subinterface 0
+
+# adding vlan tagging on all of them
+--{ + candidate shared default }--[ interface * subinterface 0 ]--
+A:srl# A:srl# vlan encap single-tagged vlan-id any
+```
+
+As a result, all subinterfaces get vlan tagging configuration:
+
+```diff
+--{ +* candidate shared default }--[ interface * subinterface 0 ]--
+A:srl# diff
+      interface ethernet-1/1 {
+          subinterface 0 {
+              vlan {
+                  encap {
++                     single-tagged {
++                         vlan-id any
++                     }
+                  }
+              }
+          }
+      }
+      interface ethernet-1/3 {
+          subinterface 0 {
+              vlan {
+                  encap {
++                     single-tagged {
++                         vlan-id any
++                     }
+                  }
+              }
+          }
+      }
+# snip
+```
+
+### Existing objects and scoping
+
+It is important to keep in mind, that wildcards expand to existing objects only. If, say, your candidate or running datastore has only two interfaces `ethernet-1/1` and `ethernet-1/5`, then the wildcard `ethernet-1/*` will only match these two interfaces and will not crate other possible interfaces.
+
+Another subtle characteristic of wildcards is that the existing list keys that wildcards can expand to must belong to the context where a wildcard is used.
+
+Consider the following example where a user has five interfaces configured for which they want to enable lldp. First they check that the interfaces exist in the running datastore:
+
+```srl
+--{ + candidate shared default }--[  ]--
+A:srl# info from running interface ethernet-1/* admin-state
+    interface ethernet-1/1 {
+        admin-state enable
+    }
+    interface ethernet-1/3 {
+        admin-state enable
+    }
+    interface ethernet-1/4 {
+        admin-state enable
+    }
+    interface ethernet-1/5 {
+        admin-state enable
+    }
+    interface ethernet-1/8 {
+        admin-state enable
+    }
+```
+
+So they proceed with enabling lldp on all interfaces:
+
+```srl
+--{ + candidate shared default }--[  ]--
+A:srl# system lldp interface ethernet-1/* admin-state enable
+Error: Path '.system.lldp.interface{.name==ethernet-1/*}' does not specify any existing objects
+```
+
+The reason this configuration command failed is that the `/system/lldp/interface` list while referencing the global interfaces configured in the system, does not have these interfaces created in its own context.
