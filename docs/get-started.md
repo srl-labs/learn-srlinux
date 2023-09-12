@@ -2,7 +2,7 @@
 hide: navigation
 ---
 
-SR Linux packs a lot of unique features that the data center networking teams can leverage.
+SR Linux packs a lot of unique features that the IP and data center networking teams can leverage.
 Some of the features are truly new to the networking domain.
 The goal of this portal is to introduce SR Linux to visitors through interactive tutorials centered around SR Linux services and capabilities.
 
