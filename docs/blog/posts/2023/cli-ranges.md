@@ -8,15 +8,15 @@ authors:
 
 # SR Linux CLI: Wildcards and Ranges
 
-SR Linux CLI is likely one of the most advanced and user-friendly CLIs I have ever worked with. It shakes off the "industry standard" label and introduces a number of new concepts that make it easier for engineers to work with the configuration and state datastores of the system. One of these concepts is the ability to use wildcards and ranges in the CLI commands, and this is what we focus on in this post.
+The SR Linux Command Line Interface (CLI) stands out as one of the most advanced and user-friendly CLI systems I've encountered. It breaks away from the conventional "industry standard" and introduces several innovative concepts that greatly enhance the ease of configuring and managing the network operating system. Among these innovations are "CLI wildcards and ranges," which, once mastered, can significantly improve your overall experience and efficiency.
 
-The notion of wildcards and ranges is not new; a few CLI engines already offer support for ranges and/or wildcards. However, SR Linux'es implementation of ranges and wildcards notches it up a level, and in this post we will see in what way.
+The idea of using wildcards and ranges is not novel, as some CLI systems already include support for them. Nevertheless, SR Linux takes the concept of ranges and wildcards one step further, and in this post, we will explore how to harness their power effectively.
 
 <!-- more -->
 
-Conceptually, the wildcards/ranges idea is simple: instead of specifying a single value for a parameter, you can specify a range of values or a wildcard. For example, instead of specifying a single interface name, you can specify a range of interfaces, or you can specify a wildcard that matches multiple interfaces. The CLI engine should then expand the range or wildcard into a list of values and execute the command for each value in the list.
+In essence, the concept behind wildcards and ranges is straightforward: rather than defining a single value for a parameter, you have the flexibility to define a range of values or use a wildcard. For instance, rather than designating a single interface name, you can define a range of interfaces, or you can employ a wildcard that matches multiple interfaces. The CLI engine will then automatically expand the specified range or wildcard into a list of individual values and execute the command for each value in that list.
 
-But on SR Linux you don't have to choose between a range and a wildcard, you can mix and match them to one-up your CLI game.
+And on SR Linux you don't have to choose between a range and a wildcard, you can mix and match them to one-up your CLI game.
 
 ## Wildcards
 
@@ -193,7 +193,7 @@ A:srl# interface * subinterface 0
 
 # adding vlan tagging on all of them
 --{ + candidate shared default }--[ interface * subinterface 0 ]--
-A:srl# A:srl# vlan encap single-tagged vlan-id any
+A:srl# vlan encap single-tagged vlan-id any
 ```
 
 As a result, all subinterfaces get vlan tagging configuration:
