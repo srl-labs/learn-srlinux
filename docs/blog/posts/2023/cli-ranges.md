@@ -529,7 +529,7 @@ Operators dealing with large scale deployments where named objects usually encod
 
 ## Summary
 
-Command Line Interface has been under assualt lately when many of us chanted "CLI is dead, long live API". But seasoned network professionals understand its enduring value in the realm of troubleshooting.  
+Command Line Interface has been under assault lately when many of us chanted "CLI is dead, long live API". But seasoned network professionals understand its enduring value in the realm of troubleshooting.  
 When it comes to diagnosing and resolving network issues swiftly and effectively, the CLI's simplicity and precision shine through. So, while graphical interfaces and automation have evolved, the CLI retains its throne as the trusted companion of network experts, proving that it's far from obsolete.
 
 This means CLI deserves to get quality of life improvements and features that match the workflows of today. We believe SR Linux CLI is one of these interfaces that offers modern management paradigms with wildcards and ranges being good examples.
