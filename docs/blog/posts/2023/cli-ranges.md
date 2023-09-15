@@ -68,7 +68,7 @@ A:leaf1# info from state network-instance default route-table ipv4-unicast route
     }
 ```
 
-Wildcards aren't just for the `info` command; they are can streamline your configuration tasks too. Take this for example: if you want to add `subinterface 0` for every configured interface in the system, it's exactly as you'd thought it'd be:
+Wildcards aren't just for the `info` command; they can streamline your configuration tasks too. Take this for example: if you want to add `subinterface 0` for every configured interface in the system, it's exactly as you'd thought it'd be:
 
 === "config"
     ```srl
@@ -113,9 +113,7 @@ Wildcards aren't just for the `info` command; they are can streamline your confi
 
 ### Interfaces
 
-Technically, wildcards work on YANG's list keys, with the notable exception of interface names. The interface name is a key itself, but given how its name is composed of a linecard and port parts (e.g. `ethernet-1/1`), wildcards can be used on these parts individually. For example, to expand all interfaces on the linecard 1:
-
-Technically, wildcards do their magic on YANG's list keys, although there's a noteworthy exception for interface names. The interface name itself is a key, but here's the cool part: you can use wildcards on its individual components, like the linecard and port parts. So, if you want to expand all interfaces on linecard 1, it's intuitive:
+Technically, wildcards work on YANG's list keys, although there's a noteworthy exception for interface names. The interface name itself is a key, but here's the cool part: you can use wildcards on its individual components, like the linecard and port parts. So, if you want to expand all interfaces on linecard 1, it's intuitive:
 
 ```srl
 --{ + candidate shared default }--[  ]--
