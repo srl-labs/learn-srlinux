@@ -20,7 +20,7 @@ And on SR Linux you don't have to choose between a range and a wildcard, you can
 
 ## Wildcards
 
-Wildcards allow CLI users to specify a pattern that matches all existing values for a parameter using the `*` character. For example, if you want to show all subinterfaces of `ethernet-1/1` interface, you can use the following command:
+Wildcards enable CLI users to define a pattern that encompasses all existing values for a parameter by using the * character. For instance, if you wish to display all subinterfaces of the ethernet-1/1 interface, you can thrown in a `*` in your info command:
 
 ```srl
 --{ * candidate shared default }--[  ]--
@@ -41,7 +41,7 @@ A:srl# info /interface ethernet-1/1 subinterface *
     }
 ```
 
-You can also substitute multiple parameters with a wildcard; For example, to show `active` status for all ipv4 unicast bgp routes in the default network instance route table:
+You can also substitute multiple parameters with a wildcard; For instance, if you want to check the active status for all IPv4 unicast BGP routes in the default network instance route table, just do this:
 
 ```srl
 A:leaf1# info from state network-instance default route-table ipv4-unicast route * id * route-type bgp route-owner * origin-network-instance * active
@@ -68,7 +68,7 @@ A:leaf1# info from state network-instance default route-table ipv4-unicast route
     }
 ```
 
-Wildcards are not limited to info command, you can simplify your configuration workflows by using wildcards as well. For example, to add `subinterface 0` for every configured interface in the system we can do:
+Wildcards aren't just for the `info` command; they are can streamline your configuration tasks too. Take this for example: if you want to add `subinterface 0` for every configured interface in the system, it's exactly as you'd thought it'd be:
 
 === "config"
     ```srl
@@ -113,7 +113,9 @@ Wildcards are not limited to info command, you can simplify your configuration w
 
 ### Interfaces
 
-Technically, wildcards work on YANG's list keys, with the notable exception of interface names. The interface name is a key itself, but given how the name is composed of a linecard and port parts (e.g. `ethernet-1/1`), wildcards can be used on these parts individually. For example, to expand all interfaces on linecard 1:
+Technically, wildcards work on YANG's list keys, with the notable exception of interface names. The interface name is a key itself, but given how its name is composed of a linecard and port parts (e.g. `ethernet-1/1`), wildcards can be used on these parts individually. For example, to expand all interfaces on the linecard 1:
+
+Technically, wildcards do their magic on YANG's list keys, although there's a noteworthy exception for interface names. The interface name itself is a key, but here's the cool part: you can use wildcards on its individual components, like the linecard and port parts. So, if you want to expand all interfaces on linecard 1, it's intuitive:
 
 ```srl
 --{ + candidate shared default }--[  ]--
@@ -135,9 +137,11 @@ A:srl# info interface ethernet-1/* admin-state
     }
 ```
 
+Sure is, you can put an asterisk to the linecard number place and list certain ports on all line cards.
+
 ### Context
 
-A cool feature that both wildcards and ranges share is being able to enter the expanded context. Imagine that you want to analyze the state of the configured interfaces interactively. You can do so by entering the context of all your interfaces in one go:
+A cool feature that both wildcards and ranges share is the ability to enter into the expanded context. Imagine that you want to analyze the state of the configured interfaces interactively. Well, you can do just that by entering the context of all your interfaces all at once:
 
 ```srl
 --{ + running }--[  ]--
@@ -156,7 +160,7 @@ A:srl# interface *
 2. Note, how the CLI engine's prompt reflects the datastore you're in.
 3. When we used `interface *` context switching command, the prompt reflects that we are in the _wildcarded_ context of all interfaces in the system.
 
-Now that we entered the wildcarded context, we can use commands available in this context; the commands will be applied for all interfaces in the system as dictated by the wildcard. For example, checking the number of incoming unicast packets on all interfaces is as simple as:
+Having entered the wildcarded context, we gain access to a range of commands applicable within this context. These commands will be executed across all interfaces in the system, as specified by the wildcard. For example, listing the number of incoming unicast packets on all interfaces becomes a straightforward task:
 
 ```srl
 --{ + state }--[ interface * ]--
@@ -179,7 +183,7 @@ A:srl# info statistics in-unicast-packets
     }
 ```
 
-Wildcards can be used in the context mode for configuration tasks. Here is how to add vlan tagging for `subinterface 0` on all interfaces:
+As expected, wildcards can be used in the context mode for configuration tasks also. Here is how to add vlan tagging for `subinterface 0` on all interfaces:
 
 ```srl
 # switching to candidate datastore
@@ -226,11 +230,13 @@ A:srl# diff
 # snip
 ```
 
+I am a big fan of the context-based configuration workflows where wildcards and ranges eliminate copy pasting by "broadcasting" the configuration commmands to all applicable elements.
+
 ### Existing objects and scoping
 
-It is important to keep in mind, that wildcards expand to existing objects only. If, say, your candidate or running datastore has only two interfaces `ethernet-1/1` and `ethernet-1/5`, then the wildcard `ethernet-1/*` will only match these two existing interfaces.
+It is important to keep in mind, that wildcards expand to existing objects only. If, say, your candidate or running datastore has only two interfaces `ethernet-1/1` and `ethernet-1/5`, then the wildcard `ethernet-1/*` will only match these particular existing interfaces.
 
-Another subtle wildcard's characteristic is that the existing list keys that wildcards can expand to must belong to the context where a wildcard is used.  
+Another subtle characteristic of wildcards is that the list keys they expand to must pertain to the context in which the wildcard is employed.  
 Consider the following example where a user has five interfaces configured for which they want to enable LLDP. First, they ensure that the interfaces exist:
 
 ```srl
@@ -253,7 +259,7 @@ A:srl# info from running interface ethernet-1/* admin-state
     }
 ```
 
-But when trying to enable LLDP on all interfaces using a wildcard, it suddenly fails:
+But when trying to enable LLDP on all interfaces using a wildcard, the operation fails:
 
 ```srl
 --{ + candidate shared default }--[  ]--
@@ -261,15 +267,15 @@ A:srl# system lldp interface ethernet-1/* admin-state enable
 Error: Path '.system.lldp.interface{.name==ethernet-1/*}' does not specify any existing objects
 ```
 
-The reason it errored is that the `/system/lldp/interface` list itself does not have these interfaces available in its own context. The interfaces are available in the `/interface` list, and referenced by `/system/lldp/interface`, which does not make them eligible for wildcard expansion.  
+The reason for the error is that the `/system/lldp/interface` list does not contain these interfaces within its own context. These interfaces are instead available within the `/interface` list and are referenced by `/system/lldp/interface`. This referencing structure does not make them eligible for wildcard expansion in this context.
 
-Later in this post, you will see how [ranges](#objects-and-scoping) can solve this by creating objects that do not exist yet.
+Later in this post, we will see how [ranges](#objects-and-scoping) can solve this by creating objects that do not exist yet.
 
 ### Wildcards and strings
 
 It might not be obvious, but wildcards can be used with string-based keys. Pretty much as you'd expect, you can add a wildcard `*` character anywhere in the string key and it will match any number of characters in that position.
 
-For example, on a system that has several VRFs that start with `red` we can match all of them like that:
+For example, on a system that has several VRFs with names beginning with `red` we can match all of them like that:
 
 ```srl
 --{ +* candidate shared default }--[  ]--
@@ -294,13 +300,15 @@ A:srl# info network-instance red*
     }
 ```
 
-As you can see `red*` expands to `red`, `red-a`, `red-b`, `red-c`, `red1`, and `red2` keys. Using wildcard expansion with string keys is a great way to filter out objects that match a particular pattern, like a customer name or location code.
+As you can see `red*` expands to `red`, `red-a`, `red-b`, `red-c`, `red1`, and `red2` keys. Leveraging wildcard expansion with string keys is a great way to filter out objects that match a particular pattern, like a customer name or location code.
 
 ## Ranges
 
 Wildcards are great for bulk operations on all existing objects, but what if you want to operate on a subset of objects some of which may not exist yet? This is where ranges come in handy.
 
-Ranges allow CLI users to specify a range of values for a given list key. The syntax is simple: you specify the range as a comma-separated list of values where a value may be a scalar value or a consecutive range of values separated by `..` delimiter, or a mix of both!
+Ranges provide CLI users with a convenient way to define a series of values for a particular list key. The syntax is straightforward: you express the range as a list of values separated by commas. Each value can be a single scalar value or a continuous range of values indicated by the `..` delimiter. You can also mix both formats within the same range specification.
+
+Here is a short cheat sheet showing the syntax of the range pattern and how it translates to the list of elements:
 
 | Syntax       | Result       |
 | ------------ | ------------ |
@@ -308,7 +316,9 @@ Ranges allow CLI users to specify a range of values for a given list key. The sy
 | `{2..5}`     | 2, 3, 4, 5   |
 | `{1,3..5,8}` | 1, 3, 4, 5,8 |
 
-Here are a few examples to illustrate the concept:
+To illustrate the ranges concept let's have a look at a couple of examples:
+
+In its basic form, a range accepts a comma-separated list of elements. For instance, in the example below, we can display the admin state of interfaces 1, 3, and 5 using just one command: 
 
 ```srl title="show admin status of interfaces 1,3,5"
 --{ + running }--[  ]--
@@ -324,11 +334,14 @@ A:srl# info interface ethernet-1/{1,3,5} admin-state
     }
 ```
 
-With `..` notation you can create consecutive integer ranges, for instance:
+A little bit more elaborated range expression uses `..` notation to create a consecutive range of integer values. Using the same task as above, we can employ `ethernet-1/{2..4}` range to list all interfaces in the range between 2 and 4[^1].
 
 ```srl title="consecutive range of interfaces"
 --{ + running }--[  ]--
 A:srl# info interface ethernet-1/{2..4} admin-state
+    interface ethernet-1/2 {
+        admin-state enable
+    }
     interface ethernet-1/3 {
         admin-state enable
     }
@@ -337,12 +350,15 @@ A:srl# info interface ethernet-1/{2..4} admin-state
     }
 ```
 
-And as promised, you can mix the two approaches for greater flexibility:
+And you can mix the two range patterns for even greater flexibility:
 
 ```srl title="mixing ranges and scalars"
 --{ + running }--[  ]--
 A:srl# info interface ethernet-1/{1,3..5,8} admin-state
     interface ethernet-1/1 {
+        admin-state enable
+    }
+    interface ethernet-1/2 {
         admin-state enable
     }
     interface ethernet-1/3 {
@@ -361,11 +377,11 @@ A:srl# info interface ethernet-1/{1,3..5,8} admin-state
 
 ### Objects and scoping
 
-Ranges differ from wildcards in that they do not have to expand to existing objects. Ranges can be used to create new objects in the system, giving you a lot of flexibility in bulk creation of objects.
+Ranges have a distinct quality over wildcards in that they are not limited to existing objects. Ranges can be used to generate new objects within the system, which comes in super handy for bulk object creation.
 
-Having said that, if an object that range expands to already exists, it will be overwritten in the case of a configuration command. And vice versa, if in the `info` command, a range expands to a non-existing object, it will be skipped.
+However, it's worth noting that if a range expands to an object that already exists, a configuration command will overwrite that object. Conversely, in the case of an info command, if a range expands to a non-existing object, it will be skipped.
 
-Let's see how it works in practice. Starting with a freshly deployed system, we can see that there are no `ethernet-1/*` interfaces configured:
+To demonstrate this in practice, let's begin with a freshly deployed system, where no `ethernet-1/*` interfaces are configured:
 
 ```srl
 --{ + running }--[  ]--
@@ -374,7 +390,7 @@ A:srl# info interface ethernet-1/*
 A:srl#
 ```
 
-If at this stage we wanted to create a bunch of interfaces, we couldn't use wildcards, as they would not expand to anything. But we can use ranges:
+At this point, if we aim to create a set of interfaces, wildcards won't be of any use since they wouldn't expand to anything. Here come ranges:
 
 ```srl title="creating new objects with ranges"
 --{ + running }--[  ]--
@@ -384,7 +400,7 @@ A:srl# enter candidate
 A:srl# interface ethernet-1/{1..4} admin-state enable
 ```
 
-As a result, we have four interfaces created:
+By using ranges in the candidate mode we created four new interfaces on the system with a single command:
 
 ```diff
 --{ +* candidate shared default }--[  ]--
@@ -414,7 +430,7 @@ A:srl# system lldp interface ethernet-1/{1,2} admin-state enable
 
 <small>First available in 23.10 version</small>
 
-An attentive reader may have noticed that all the examples above use integer keys. Either interface numbers or VLAN IDs. But what about string-based keys? For example, creating multiple named VRFs, or ACLs?
+An observant reader may have noticed that all the examples provided thus far have used integer keys, such as interface numbers or VLAN IDs. But what about scenarios involving string-based keys, such as creating multiple named VRFs or ACLs?
 
 In release 23.10 we are adding support for string/literal-based ranges expansion that opens the door to even more powerful CLI workflows.
 
@@ -424,23 +440,30 @@ In release 23.10 we are adding support for string/literal-based ranges expansion
 | `{red{1..2}}`  | "red1", "red2"            |
 | `{red-{a..c}}` | "red-a", "red-b", "red-c" |
 
-Now you can create multiple VRFs in one go:
+With this enhanced range syntax you now you can create multiple VRFs in one go:
 
-=== "List of strings"
-    ```srl
-    --{ +* candidate shared default }--[  ]--
-    A:srl# network-instance {red,blue} admin-state enable
-    ```
-    ```diff
-    --{ +* candidate shared default }--[  ]--
-    A:srl# diff
-    +     network-instance blue {
-    +         admin-state enable
-    +     }
-    +     network-instance red {
-    +         admin-state enable
-    +     }
-    ```
+
+In its simplest form, string-based ranges operate on comma-separated list of strings. Like in the example below where we provide two strings `red` and `blue` to the command to create network-instance.
+```srl
+--{ +* candidate shared default }--[  ]--
+A:srl# network-instance {red,blue} admin-state enable
+```
+
+The range expands to a list of two elements and as a result we get two VRFs created:
+
+```diff
+--{ +* candidate shared default }--[  ]--
+A:srl# diff
++     network-instance blue {
++         admin-state enable
++     }
++     network-instance red {
++         admin-state enable
++     }
+```
+
+And we didn't stop here. For those who love programming in Jinja we added advanced templation syntax that involves nested ranges and a combination of both integer and string values:
+
 === "Nested ranges"
     ```srl
     --{ +* candidate shared default }--[  ]--
@@ -481,9 +504,9 @@ Now you can create multiple VRFs in one go:
     +     }
     ```
 
-As you can see, string-based ranges allow the creation of multiple named objects in a single sweep and by nesting them you can create even more complex structures.
+String-based ranges offer efficient creation of multiple named objects in one go, and by nesting them, you can construct even more intricate structures.
 
-As expected, `info` command can benefit from string-based ranges as well. We can now show all ACLs that are named following a certain pattern:
+As expected, the `info` command can also take advantage of string-based ranges. This enables us to display all ACLs that adhere to a specific naming pattern:
 
 ```srl
 --{ +* candidate shared default }--[  ]--
@@ -505,3 +528,14 @@ A:srl# info acl ipv4-filter {cust1-*,cust2-*} description
 ```
 
 Operators dealing with large scale deployments where named objects usually encode some customer/facility information can smell the quality of life improvements that string-based ranges bring to the table.
+
+## Summary
+
+Command Line Interface has been under assualt lately when many of us chanted "CLI is dead, long live API". But seasoned network professionals understand its enduring value in the realm of troubleshooting.  
+When it comes to diagnosing and resolving network issues swiftly and effectively, the CLI's simplicity and precision shine through. So, while graphical interfaces and automation have evolved, the CLI retains its throne as the trusted companion of network experts, proving that it's far from obsolete.
+
+This means CLI deserves to get quality of life improvements and features that match the workflows of today. We believe SR Linux CLI is one of these interfaces that offers modern management paradigms with wildcards and ranges being good examples.
+
+I hope you'll get a chance to try these CLI nuggets yourself, but I must warn you, once you get a taster there is no turning back.
+
+[^1]: the range boundaries are included.
