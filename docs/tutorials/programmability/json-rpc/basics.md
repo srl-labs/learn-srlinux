@@ -1295,7 +1295,7 @@ All of the examples have been using plain HTTP schema. As was explained in the b
 To use the secured transport any request can be changed to https schema and skipped certificate verification:
 
 ```bash
-curl -sk https://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc -d @- <<EOF | jq
+curl -sk 'https://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc' -d @- <<EOF | jq
 {
     "jsonrpc": "2.0",
     "id": 0,
@@ -1315,7 +1315,7 @@ EOF
 If you want to verify the self-signed certificate that containerlab generates at startup use the CA certificate that containerlab keeps in the lab directory:
 
 ```bash
-curl -s --cacert ./clab-srl01/ca/root/root-ca.pem https://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc -d @- <<EOF | jq
+curl -s --cacert ./clab-srl01/ca/root/root-ca.pem 'https://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc' -d @- <<EOF | jq
 {
     "jsonrpc": "2.0",
     "id": 0,
