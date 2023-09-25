@@ -13,7 +13,7 @@ tags:
 | **Resource requirements**      | :fontawesome-solid-microchip: 3vCPU <br/>:fontawesome-solid-memory: 6 GB                                                                                                                                                                                                                                                                                                                                                                                                                    |                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 | **Lab**                        |   [srl-labs/srl-evpn-mh-lab][lab]                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 | **Main ref documents**         | [RFC 7432 - BGP MPLS-Based Ethernet VPN](https://datatracker.ietf.org/doc/html/rfc7432)<br/>[RFC 8365 - A Network Virtualization Overlay Solution Using Ethernet VPN (EVPN)](https://datatracker.ietf.org/doc/html/rfc8365)<br/>[Nokia 7220 SR Linux Advanced Solutions Guide](https://documentation.nokia.com/srlinux/23-3/books/advanced-solutions)<br/>[Nokia 7220 SR Linux EVPN-VXLAN Guide](https://documentation.nokia.com/srlinux/23-7/title/evpn_vxlan.html) |
-| **Version information**        | [`containerlab:0.44.0`][clab-install], [`srlinux:23.3.2`][srlinux-container], [`docker-ce:23.0.3`][docker-install]                                                                                                                                                                                                  
+| **Version information**        | [`containerlab:0.44.0`][clab-install], [`srlinux:23.7.1`][srlinux-container], [`docker-ce:23.0.3`][docker-install]                                                                                                                                                                                                  
 
 
 One of the many advantages of EVPN is its built-in multi-homing (MH) capability, which is standards-based and defined by RFCs 7432, 8365. 
@@ -121,10 +121,10 @@ INFO[0026] Executed command "ip addr add 192.168.0.23/24 dev eth3" on the node "
 +---+-----------------------+--------------+------------------------------+-------+---------+----------------+----------------------+
 | 1 | clab-evpn-mh01-ce1    | 11d8ad808671 | akpinar/alpine:latest        | linux | running | 172.20.20.2/24 | 2001:172:20:20::2/64 |
 | 2 | clab-evpn-mh01-ce2    | f563402d339f | akpinar/alpine:latest        | linux | running | 172.20.20.7/24 | 2001:172:20:20::7/64 |
-| 3 | clab-evpn-mh01-leaf1  | dfcf20665a6a | ghcr.io/nokia/srlinux:23.3.1 | srl   | running | 172.20.20.4/24 | 2001:172:20:20::4/64 |
-| 4 | clab-evpn-mh01-leaf2  | fee169425f04 | ghcr.io/nokia/srlinux:23.3.1 | srl   | running | 172.20.20.6/24 | 2001:172:20:20::6/64 |
-| 5 | clab-evpn-mh01-leaf3  | 115bbac271c9 | ghcr.io/nokia/srlinux:23.3.1 | srl   | running | 172.20.20.5/24 | 2001:172:20:20::5/64 |
-| 6 | clab-evpn-mh01-spine1 | d825b06fe483 | ghcr.io/nokia/srlinux:23.3.1 | srl   | running | 172.20.20.3/24 | 2001:172:20:20::3/64 |
+| 3 | clab-evpn-mh01-leaf1  | dfcf20665a6a | ghcr.io/nokia/srlinux:23.7.1 | srl   | running | 172.20.20.4/24 | 2001:172:20:20::4/64 |
+| 4 | clab-evpn-mh01-leaf2  | fee169425f04 | ghcr.io/nokia/srlinux:23.7.1 | srl   | running | 172.20.20.6/24 | 2001:172:20:20::6/64 |
+| 5 | clab-evpn-mh01-leaf3  | 115bbac271c9 | ghcr.io/nokia/srlinux:23.7.1 | srl   | running | 172.20.20.5/24 | 2001:172:20:20::5/64 |
+| 6 | clab-evpn-mh01-spine1 | d825b06fe483 | ghcr.io/nokia/srlinux:23.7.1 | srl   | running | 172.20.20.3/24 | 2001:172:20:20::3/64 |
 +---+-----------------------+--------------+------------------------------+-------+---------+----------------+----------------------+
 ```
 
