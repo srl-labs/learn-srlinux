@@ -14,6 +14,7 @@ In Fig. 1, custom NDK applications `app-1` and `app-2` interact with other SR Li
 In addition to the traditional tasks of reading and writing configuration, NDK-based applications gain low-level access to the SR Linux system. For example, these apps can install FIB routes or listen to LLDP events.
 
 ## gRPC & Protocol buffers
+
 NDK uses gRPC - a high-performance, open-source framework for remote procedure calls.
 
 gRPC framework by default uses [Protocol buffers](https://developers.google.com/protocol-buffers) as its Interface Definition Language as well as the underlying message exchange format.
@@ -37,6 +38,7 @@ Leveraging gRPC and protobufs provides some substantial benefits for NDK users:
 3. Backwards API compatibility: a protobuf design property of using IDs for data fields makes it possible to evolve API over time without ever breaking backward compatibility. Old clients will still be able to consume data stored in the original fields, whereas new clients will benefit from accessing data stored in the new fields.
 
 ## NDK Service
+
 NDK provides a collection of [gRPC](https://grpc.io/) services, each of which enables custom applications to interact with a particular subsystem on an SR Linux OS, delivering a high level of integration and extensibility.
 
 With this architecture, NDK agents act as gRPC clients that execute remote procedure calls (RPC) on a system that implements a gRPC server.
@@ -51,16 +53,21 @@ On SR Linux, `ndk_mgr` is the application that runs the NDK gRPC server. Fig 3. 
 As a result, custom applications are able to communicate with the native SR Linux apps as if they were shipped with SR Linux OS.
 
 ### Proto files
+
 NDK services, underlying RPCs, and messages are defined in `.proto` files. These files are used to generate language bindings essential for the NDK apps development process and serve as the data modeling language for the NDK itself.
 
 The source `.proto` files for NDK are open and published in [`nokia/srlinux-ndk-protobufs`](https://github.com/nokia/srlinux-ndk-protobufs) repository. Anyone can clone this repository and explore the NDK gRPC services or build language bindings for the programming language of their choice.
 
+Additionally users can find the NDK proto files on SR Linux filesystem by the `/opt/srlinux/protos/ndk` path[^3].
+
 ### Documentation
+
 Although the proto files are human-readable, it is easier to browse the NDK services using the generated documentation that we keep in the same [`nokia/srlinux-ndk-protobufs`](https://github.com/nokia/srlinux-ndk-protobufs) repo. The HTML document is provided in the readme file that appears when a user selects a tag that matches the NDK release version[^1].
 
 The generated documentation provides the developers with a human-readable reference of all the services, messages, and types that comprise the NDK service.
 
 ### Operations flow
+
 Regardless of the language in which the agents are written, at a high level, the following flow of operations applies to all agents when interacting with the NDK service:
 
 <figure>
@@ -79,6 +86,7 @@ Regardless of the language in which the agents are written, at a high level, the
 To better understand the steps each agent undergoes, we will explain them in a language-neutral manner. For language-specific implementations, read the "Developing with NDK" chapter.
 
 #### gRPC Channel and NDK Manager Client
+
 NDK agents communicate with gRPC based NDK service by invoking RPCs and handling responses. An RPC generally takes in a client request message and returns a response message from the server.
 
 A gRPC channel must be established before communicating with the NDK manager application running on SR Linux[^2]. NDK server runs on port `50053`; agents which are installed on SR Linux OS use `localhost:50053` socket to establish the gRPC channel.
@@ -86,11 +94,13 @@ A gRPC channel must be established before communicating with the NDK manager app
 Once the gRPC channel is set up, a gRPC client (often called _stub_) needs to be created to perform RPCs. Each gRPC service needs to have its own client. In NDK, the [`SdkMgrService`][sdk_mgr_svc_doc] service is the first service that agents interact with, therefore, users first need to create the NDK Manager Client (Mgr Client on diagram) that will be able to call RPCs defined for [`SdkMgrService`][sdk_mgr_svc_doc].
 
 #### Agent registration
+
 Agent must be first registered with SRLinux NDK by calling [`AgentRegister`](https://github.com/nokia/srlinux-ndk-protobufs/blob/protos/ndk/sdk_service.proto#L32) RPC of [`SdkMgrService`][sdk_mgr_svc_doc]. Initial agent state is created during the registration process.
 
 An `AgentRegistrationResponse` is returned (omitted in Fig. 4) with the status of the registration process.
 
 #### Registering notifications
+
 Agents interact with other services like Network Instance, Config, LLDP, BFD by subscribing to notification updates from these services.
 
 Before subscribing to a notification stream of a certain service the subscription stream needs to be created. To create it, a client of [`SdkMgrService`][sdk_mgr_svc_doc] calls [`NotificationRegister`][sdk_mgr_svc_doc] RPC with [`NotificationRegistrationRequest`][notif_reg_req_doc] field `Op` set to `Create` and other fields absent.
@@ -114,6 +124,7 @@ To subscribe to a certain service notification updates another call of [`Notific
 [`NotificationRegisterResponse`][notif_reg_resp_doc] message follows the request and contains the same `stream_id` but now also the `sub_id` field - subscription identifier. At this point agent successfully indicated its desire to receive notifications from certain services, but the notification streams haven't been started yet.
 
 #### Streaming notifications
+
 Requesting applications to send notifications is done by interfacing with [`SdkNotificationService`][sdk_notif_svc_doc]. As this is another gRPC service, it requires its own client - Notification client.
 
 To initiate streaming of updates based on the agent subscriptions the Notification Client executes [`NotificationStream`][sdk_notif_svc_doc] RPC which has [`NotificationStreamRequest`][notif_stream_req_doc] message with `stream_id` field set to the ID of a stream to be used. This RPC returns a stream of [`NotificationStreamResponse`][notif_stream_resp_doc], which makes this RPC of type "server streaming RPC".
@@ -126,11 +137,13 @@ To initiate streaming of updates based on the agent subscriptions the Notificati
 In our example, we sent `ConfigSubscriptionRequest` inside the `NotificationRegisterRequest`, hence the notifications that we will get back for that `stream_id` will contain [`ConfigNotification`][cfg_notif_doc] messages inside `Notification` of a `NotificationStreamResponse`.
 
 #### Handling notifications
+
 The agent handles the stream of notifications by analyzing which concrete type of notification was read from the stream. The Server streaming RPC will provide notifications till the last available one; the agent then reads out the incoming notifications and handles the messages contained within them.
 
 The handling of notifications is done when the last notification is sent by the server. At this point, the agent may perform some work on the received data and, if needed, update the agent's state if it has one.
 
 #### Updating agent's state data
+
 Each agent may keep state and configuration data modeled in YANG. When an agent needs to set/update its own state data (for example, when it made some calculations based on received notifications), it needs to use [`SdkMgrTelemetryService`][sdk_mgr_telem_svc_doc] and a corresponding client.
 
 <figure>
@@ -143,6 +156,7 @@ The state that an agent intends to have will be available for gNMI telemetry, CL
 Updating or initializing agent's state with data is done with [`TelemetryAddOrUpdate`][sdk_mgr_telem_svc_doc] RPC that has a request of type [`TelemetryUpdateRequest`][telem_upd_req_doc] that encloses a list of [`TelemetryInfo`][telem_info_doc] messages. Each `TelemetryInfo` message contains a `key` field that points to a subtree of agent's YANG model that needs to be updated with the JSON data contained within `data` field.
 
 #### Exiting gracefully
+
 When an agent needs to stop its operation and be removed from the SR Linux system, it needs to be unregistered by invoking `AgentUnRegister` RPC of the `SdkMgrService`. The gRPC connection to the NDK server needs to be closed.
 
 When unregistered, the agent's state data will be removed from SR Linux system and will no longer be accessible to any of the management interfaces.
@@ -165,3 +179,4 @@ When unregistered, the agent's state data will be removed from SR Linux system a
 
 [^1]: For example, [here](https://github.com/nokia/srlinux-ndk-protobufs/tree/v0.1.0) you will find the auto-generated documentation for the latest NDK version at the moment of this writing.
 [^2]: `sdk_mgr` is the name of the application that implements NDK gRPC server and runs on SR Linux OS.
+[^3]: starting from 23.7.1 release.

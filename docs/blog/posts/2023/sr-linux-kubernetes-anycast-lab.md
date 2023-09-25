@@ -893,6 +893,7 @@ Then let's issue a curl request from our clients to the VIP and see which pod re
 === "client1"
     From client1, connected to leaf1, we try to reach the VIP:
     ```
+    root@client1:/ $ curl 1.1.1.100
     Server address: 10.244.0.3:80
     Server name: nginxhello-7d95548fc-7q44k
     Date: 26/Aug/2023:22:28:39 +0000
@@ -1006,7 +1007,7 @@ To configure resilient hashing, you have to provide the prefix and two parameter
 The idea behind **Resilient Hashing** is that we pre-calculate the hashes in buckets so that in case the ECMP set changes, we don't redistribute the flows.
 
 ```srl title="Resilient Hashing configuration"
-set network-instance ip-vrf-1 ip-load-balancing resilient-hash-prefix 1.1.1.100 max-paths 6 hash-buckets-per-path 4
+set network-instance ip-vrf-1 ip-load-balancing resilient-hash-prefix 1.1.1.100/32 max-paths 6 hash-buckets-per-path 4
 ```
 
 We can apply and remove this configuration to leaf4 and see how it affects traffic flow distribution to traffic generated from `client4`.
