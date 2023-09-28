@@ -15,14 +15,13 @@ tags:
 | **Main ref documents**         | [RFC 7432 - BGP MPLS-Based Ethernet VPN](https://datatracker.ietf.org/doc/html/rfc7432)<br/>[RFC 8365 - A Network Virtualization Overlay Solution Using Ethernet VPN (EVPN)](https://datatracker.ietf.org/doc/html/rfc8365)<br/>[Nokia 7220 SR Linux Advanced Solutions Guide](https://documentation.nokia.com/srlinux/23-3/books/advanced-solutions)<br/>[Nokia 7220 SR Linux EVPN-VXLAN Guide](https://documentation.nokia.com/srlinux/23-7/title/evpn_vxlan.html) |
 | **Version information**        | [`containerlab:0.44.0`][clab-install], [`srlinux:23.7.1`][srlinux-container], [`docker-ce:23.0.3`][docker-install]                                                                                                                                                                                                  
 
+One of the many advantages of EVPN is its built-in multi-homing (MH) capability, which is standards-based and defined by RFCs 7432, 8365.
 
-One of the many advantages of EVPN is its built-in multi-homing (MH) capability, which is standards-based and defined by RFCs 7432, 8365. 
+In this tutorial, you will learn about L2 multihoming with EVPN and how to configure it in an EVPN-based SR Linux fabric.
 
-This tutorial will help you learn about L2 multi-homing with EVPN and guide you on how to configure it in an EVPN-based SR Linux fabric.
+EVPN provides multi-homing with the ethernet segments (ES), which might be a new concept for some readers. Therefore, the terminology is also discussed in the following chapters.
 
-EVPN provides multi-homing with the Ethernet Segments (ES), which may be a new concept to some readers. Therefore, the terminology will also be discussed in the following chapters.
-
-The lab comprises a spine, three leaf(PEs) routers, and two Alpine Linux hosts(CEs). A multi-homed CE is connected to 'leaf1', while another is linked to 'leaf3' for testing purposes.
+The lab consists of one Spine, three Leaf (PEs) routers, and two Alpine Linux hosts (CEs). One multi-homed CE is connected to 'leaf1', while another is connected to 'leaf3' for testing purposes.
 
 <figure markdown>
   <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":0,"zoom":2,"highlight":"#0000ff","nav":true,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/srl-labs/srl-evpn-mh-lab/main/images/main/images/evpn-mh.drawio"}'></div>
@@ -31,13 +30,13 @@ The lab comprises a spine, three leaf(PEs) routers, and two Alpine Linux hosts(C
 
 ## Lab deployment
 
-As usual, this lab is powered by containerlab and can be deployed on any Linux VM with enough resources mentioned in the table at the beginning.
+As usual, this lab is deployed by containerlab and can be used on any Linux VM with the resources listed in the table at the beginning.
 
-The lab comes with pre-configurations that are explained in [L2 EVPN tutorial](https://learn.srlinux.dev/tutorials/l2evpn/evpn/#mac-vrf), which is highly recommended if you haven't played with SR Linux or EVPN yet.
+The lab comes with preconfigurations explained in [L2 EVPN tutorial] (https://learn.srlinux.dev/tutorials/l2evpn/evpn/#mac-vrf). This is highly recommended if you have not yet played with SR Linux or EVPN yet.
 
-The topology and pre-configurations are defined in the containerlab topology file.
+The topology and preconfigurations are defined in the containerlab topology file.
 
-The SR Linux and Alpine Linux(ce) interface [configurations][configs] are referred in the [topology file][topofile]. SR Linux configuration files are set as startup configs while linux interface configurations are made by a script during the containerlab post deployment.
+The SR Linux and Alpine Linux(ce) interface [configurations][configs] are referred to in the [topology file][topofile]. SR Linux configuration files are set as startup configurations, while the Linux interface configurations are done by a script during containerlab post-deployment.
 
 ```yaml
 --8<-- "https://raw.githubusercontent.com/srl-labs/srl-evpn-mh-lab/main/evpn-mh.clab.yml"
@@ -128,7 +127,7 @@ INFO[0026] Executed command "ip addr add 192.168.0.23/24 dev eth3" on the node "
 +---+-----------------------+--------------+------------------------------+-------+---------+----------------+----------------------+
 ```
 
-When containerlab finishes the deployment with providing a summary table that outlines connection details of the deployed nodes. In the "Name" column we have the names of the deployed containers and those names can be used to reach the nodes, for example to connect to the SSH of `leaf1`:
+When containerlab completes the deployment, you get a summary table with the connection details of the deployed nodes. In the "Name" column, you will find the names of the deployed containers. You can use these names to reach the nodes, e.g. to connect to the SSH of `leaf1`:
 
 ```bash
 # default credentials admin:NokiaSrl1!
@@ -148,35 +147,37 @@ To connect Alpine Linux (CEs):
 
 ## EVPN Multi-homing Terminology
 
-Before diving into the hands-on, let's see some terms that would help us better understand the configurations.
+Before we dive into the practicalities, let's look at some terms that will help us better understand the configurations.
 
-+ **Ethernet Segment (ES):** Defines the CE links connected to multiple PEs. An ES is configured in all PEs that a CE is connected and has a unique identifier (ESI) advertised via EVPN.
++ **Ethernet Segment (ES):** Defines the CE links associated with multiple PEs. A ES is configured in all PEs that a CE is connected to and has a unique identifier (ESI) that is advertised via EVPN.
 
 <figure markdown>
   <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":1,"zoom":2,"highlight":"#0000ff","nav":true,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/srl-labs/srl-evpn-mh-lab/main/images/evpn-mh.drawio"}'></div>
   <figcaption>Ethernet segments</figcaption>
 </figure>
 
-+ **Multi-homing Modes:** The standard defines two modes: single-active and all-active. Single-active mode has only one active link, while all-active mode uses all links and provides load balancing. This tutorial covers an example of all-active multi-homing.
-
++ **Multi-homing Modes:** TThe standard defines two modes: single-active and all-active. In single-active mode, there is only one active link, while in all-active mode, all links are used, and load balancing occurs. This tutorial covers an example of all-active multi-homing.
+  
 <figure markdown>
   <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":2,"zoom":2,"highlight":"#0000ff","nav":true,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/srl-labs/srl-evpn-mh-lab/main/images/evpn-mh.drawio"}'></div>
   <figcaption>EVPN multi-homing modes</figcaption>
 </figure>
 
-+ **Link Aggregation Group (LAG):** A LAG is required for all-active but optional for single-active multi-homing.
++ **Link Aggregation Group (LAG):** A LAG is required for all-active but optional for single-active multihoming.
 
-+ **MAC-VRF:** It is the L2 network-instance, basically a broadcast domain in SR Linux. Interface(s) or LAG must be attached to a MAC-VRF for L2 multi-homing.
++ **MAC-VRF:** This is the L2 network instance, basically a broadcast domain in SR Linux. Interface(s) or LAG must be connected to a MAC-VRF for L2 multihoming.
 
-The following procedures are essential to EVPN multi-homing but they're not one of the typical configuration items;
+The following procedures are essential for EVPN multihoming, but aren't typical configuration items;
 
 + **Designated Forwarder (DF):** The leaf that is elected to forward BUM traffic. The election is based on the route-type 4 (RT4) exchange, known as the ES routes of EVPN.
-+ **Split-horizon (Local bias):** A mechanism to avoid looping the BUM traffic received from the CE back to itself by a peer PE. Local bias is used for all-active and based on RT4 exchange. 
-+ **Aliasing:** For remote PEs that are not part of ES to load-balance traffic to the multi-homed CE. RT1 (Auto-discovery) is advertised for aliasing.
++ **Split-horizon (Local bias):** A mechanism to prevent BUM traffic received by CE from being looped back to itself by a peer PE. Local bias is used for all-active and is based on RT4 exchange. 
++ **Aliasing:** For remote PEs that are not part of ES to balance traffic to the multi-homed CE. RT1 (Auto-discovery) is advertised for aliasing.
 
-EVPN route types 1 and 4 are used to implement the multi-homing procedures. You can check [this](https://documentation.nokia.com/srlinux/23-3/books/evpn-vxlan/evpn-vxlan-tunnels-layer-2.html?hl=designated%2Cforwarder#evpn-l2-multi-hom-procedures) out for more about EVPN multi-homing procedures and route-types.
+EVPN route types 1 and 4 are used to implement the multi-homing procedures. 
 
-Now, let's move on to the configuration part.
+For more information about EVPN multi-homing procedures and route-types, see [this](https://documentation.nokia.com/srlinux/23-3/books/evpn-vxlan/evpn-vxlan-tunnels-layer-2.html?hl=designated%2Cforwarder#evpn-l2-multi-hom-procedures).
+
+Let's now move on to the configuration part.
 
 [lab]: https://github.com/srl-labs/srl-evpn-mh-lab
 [topology]: https://github.com/srl-labs/srl-evpn-mh-lab/blob/main/evpn-mh.clab.yml
