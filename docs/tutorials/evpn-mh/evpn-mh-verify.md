@@ -7,9 +7,9 @@ tags:
   - ethernet-segments
 ---
 
-Here we verify the configurations made in the previous section. 
+Here, we review the configurations made in the previous section.
 
-On the PE side, the lag1 was created in both leaf1 and leaf2. Let's see them with these show commands:
+On the PE side, the lag1 was created in both leaf1 and leaf2. Let's take a look at them with these show commands:
 
 ```
 A:leaf1# show interface lag1
@@ -42,9 +42,9 @@ System Priority: 11
 ------------------------------------------------------------------------------------------------------------------------------------------
 ```
 
-The LAG status, network-instance is seen in the `show interface lag1` output. The `show lag lag1 lacp-state` shows the LACP parameters as well as the member ports' state information. The outputs are expected to be the same in leaf1 and leaf2 except from the 'Partner Port No' which is unique per peer.
+The LAG status and network instance can be seen in the `show interface lag1` output. The `show lag lag1 lacp-state` command shows the LACP parameters as well as the status information of the member ports. The output in leaf1 and leaf2 is expected to be the same, except for `partner port no`, which is unique per peer.
 
-To see the ES details:
+To see the details of ES:
 
 ```
 A:leaf1# show system network-instance ethernet-segments ES-1 detail
@@ -73,13 +73,13 @@ mac-vrf-1              10.0.0.1
 mac-vrf-1              10.0.0.2 (DF)
 ===============================================================================================================
 ```
-> Verify the same in leaf2.
+> Check the same in leaf2.
 
-The configured ES parameters are shown here as well as the ES peers and elected DF.
+The configured ES parameters are displayed here, as well as the ES peers and the selected DF.
 
-At this point, let's send some CE-to-CE traffic to see if multi-homing works. Also for SR Linux fabric to learn some MACs. 
+Let's send some CE to CE traffic at this point to see if multi-homing works. Also for SR Linux fabric to learn some MACs.
 
-Connect to the ce1 and send packets to the remote IP addresses:
+Connect to ce1 and send packets to the remote IP addresses:
 
 === "nmap"
     ```
@@ -149,12 +149,12 @@ Connect to the ce1 and send packets to the remote IP addresses:
     13:58:10.866605 IP 192.168.0.11.49747 > 192.168.0.22.80: Flags [S], seq 2625981132, win 1024, options [mss 1460], length 0
     ```
 
-Check the tcpdump of eth1 and eth1 while sending traffic with nmap and see the traffic is balanced both for incoming and outgoing packets.
-> Outgoing ARP packets may not be balanced since the load balancing is layer2 by default.
+Check the tcpdump of eth1 and eth1 when sending traffic with nmap and see that traffic is balanced for both incoming and outgoing packets.
+> Outgoing ARP packets may not be balanced because load balancing mode of the bond is layer2 by default.
 
-Now, we must have triggered some EVPN routes in the fabric.
+Now we must have triggered some EVPN routes in the fabric.
 
-Remember the route-types mentioned earlier, let's check what leaf1 and leaf2 (ES peers) advertises:
+Remembering the route-types mentioned earlier, let's check what leaf1 and leaf2 (ES peers) advertises:
 
 === "leaf1"
     ```
@@ -254,15 +254,15 @@ Remember the route-types mentioned earlier, let's check what leaf1 and leaf2 (ES
     0 advertised IP Prefix routes
     ---------------------------------------------------------------------------------------------------------------------------------------------------    --
     ```
-RT1, RT3 and RT4 routes are triggered by the configuration (ES and MAC-VRF) while RT2 (MAC-IP Advertisements) routes only appear when a MAC is learnt or statically configured. 
+RT1, RT3 and RT4 routes are triggered by configuration (ES and MAC-VRF), while RT2 routes (MAC-IP) only appear when a MAC is learned or statically configured.
 
-Among those, RT4 is known as ES routes which imported by ES peers for DF election and local biasing (split-horizon). It is only advertised/received by leaf1 and leaf2 here. 
+Among these, RT4 is known as ES routes imported by ES peers for DF election and local biasing (split-horizon). It is advertised/received here only by leaf1 and leaf2.
 
-RT1 advertises ESIs as well, basically for two reasons(that's why two entries per ESI); 
-+ Aliasing to provide load-balancing (0) 
+RT1 also advertises ESIs, mainly for two reasons (hence two entries per ESI);
++ Aliasing for load balancing (0)
 + Mass withdrawal for fast convergence (4294967295)
 
-Let's see what leaf2 and leaf3 gets in their BGP EVPN route table:
+Let's see what leaf2 and leaf3 get in their BGP EVPN route table:
 
 === "leaf2"
     ```
@@ -366,9 +366,9 @@ Let's see what leaf2 and leaf3 gets in their BGP EVPN route table:
     -------------------------------------------------------------------------------------------------------------------------------------------------------------------
     ```
 
-The leaf 2, as an ES peer, gets both RT1 and RT4 in its table while leaf3 only imports RT1 as it's a remote PE.
+Leaf2, as an ES peer, receives both RT1 and RT4 in its table, while leaf3 only imports RT1 since it is a remote PE.
 
-At last, verify the MAC table of the "mac-vrf-1" on Leaf3 which should show the 'esi' instead of an individual destination for the ce1's MAC address.
+Finally, check the MAC table of the "mac-vrf-1" on leaf3, which should show the 'esi' instead of an individual destination for the MAC address of ce1.
 
 ```
 A:leaf3# show network-instance mac-vrf-1 bridge-table mac-table all
