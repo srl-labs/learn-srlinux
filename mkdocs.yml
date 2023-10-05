@@ -50,6 +50,10 @@ nav:
               - Fabric configuration: tutorials/l2evpn/fabric.md
               - EVPN configuration: tutorials/l2evpn/evpn.md
               - Summary: tutorials/l2evpn/summary.md
+          - EVPN Multihoming:
+              - tutorials/evpn-mh/index.md
+              - Configuration: tutorials/evpn-mh/conf.md
+              - Verification: tutorials/evpn-mh/verify.md
       - Infrastructure:
           - KNE:
               - tutorials/infrastructure/kne/index.md
