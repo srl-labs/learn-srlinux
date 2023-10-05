@@ -26,7 +26,6 @@ In this example, a LAG is created with all-active multi-homing mode. The target 
   <figcaption>LAG between PEs and CE</figcaption>
 </figure>
 
-
 The following configuration snippet shows a LAG with a subinterface and its LACP settings.
 >The same configuration applies to both leaf1 and leaf2.
 
@@ -82,6 +81,7 @@ All PEs that provide multi-homing to a CE must be similarly configured with the 
 
 In SR Linux, the `Ethernet segments` are configured under the context [ system network-instance protocols evpn ].
 > The same configuration applies to leaf1 and leaf2.
+
 ```
 enter candidate
 /system network-instance protocols 
