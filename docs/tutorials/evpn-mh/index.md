@@ -43,6 +43,11 @@ The SR Linux and Alpine Linux(ce) interface [configurations][configs] are referr
 ```
 
 The SR Linux configurations are
+
+=== "spine1"
+    ```yaml
+    --8<-- "https://raw.githubusercontent.com/srl-labs/srl-evpn-mh-lab/main/configs/spine1.cfg"
+    ```
 === "leaf1"
     ```yaml
     --8<-- "https://raw.githubusercontent.com/srl-labs/srl-evpn-mh-lab/main/configs/leaf1.cfg"
@@ -54,10 +59,6 @@ The SR Linux configurations are
 === "leaf3"
     ```yaml
     --8<-- "https://raw.githubusercontent.com/srl-labs/srl-evpn-mh-lab/main/configs/leaf3.cfg"
-    ```
-=== "spine1"
-    ```yaml
-    --8<-- "https://raw.githubusercontent.com/srl-labs/srl-evpn-mh-lab/main/configs/spine1.cfg"
     ```
 
 Clone [the lab][path-evpn-mh] to your Linux machine and deploy:
@@ -136,27 +137,27 @@ ssh admin@clab-evpn-mh-leaf1
 
 To connect Alpine Linux (CEs):
 
-=== "srv1"
+=== "ce1"
     ```
     docker exec -it clab-evpn-mh-ce1 bash
     ```
-=== "srv2"
+=== "ce2"
     ```
-    docker exec -it clab-evpn-mh-ce1 bash
+    docker exec -it clab-evpn-mh-ce2 bash
     ```
 
 ## EVPN Multi-homing Terminology
 
 Before we dive into the practicalities, let's look at some terms that will help us better understand the configurations.
 
-+ **Ethernet Segment (ES):** Defines the CE links associated with multiple PEs. A ES is configured in all PEs that a CE is connected to and has a unique identifier (ESI) that is advertised via EVPN.
++ **Ethernet Segment (ES):** Defines the CE links associated with multiple PEs(up to 4). A ES is configured in all PEs that a CE is connected to and has a unique identifier (ESI) that is advertised via EVPN.
 
 <figure markdown>
   <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":1,"zoom":2,"highlight":"#0000ff","nav":true,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/srl-labs/srl-evpn-mh-lab/main/images/evpn-mh.drawio"}'></div>
   <figcaption>Ethernet segments</figcaption>
 </figure>
 
-+ **Multi-homing Modes:** TThe standard defines two modes: single-active and all-active. In single-active mode, there is only one active link, while in all-active mode, all links are used, and load balancing occurs. This tutorial covers an example of all-active multi-homing.
++ **Multi-homing Modes:** The standard defines two modes: single-active and all-active. In single-active mode, there is only one active link, while in all-active mode, all links are used, and load balancing occurs. This tutorial covers an example of all-active multi-homing.
   
 <figure markdown>
   <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":2,"zoom":2,"highlight":"#0000ff","nav":true,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/srl-labs/srl-evpn-mh-lab/main/images/evpn-mh.drawio"}'></div>
