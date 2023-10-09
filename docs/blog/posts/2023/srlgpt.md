@@ -31,7 +31,7 @@ Sure! For the same reason we still have a CLI in every single one of the NOSs av
 Will an in-line CLI AI assistant replace show commands, or info commands? No - there is no question that a power user will most certainly get to the information they need more quickly than waiting for the AI assistant to get back to them.  That said there are still cases where even as a power user I've found myself getting a little help from SRL-GPT. Whether it be reminding myself of how something worked, or parsing logs, or summarizing large amounts of state data.  And plus, who doesn't want to learn how to configure OSPF from Yoda?
 
 ```srl
-A:ejtest-leaf-1# askai can you provide a configuration example for configuring an OSPF neighbor, in the voice of Yoda
+A:srl# askai can you provide a configuration example for configuring an OSPF neighbor, in the voice of Yoda
 In the voice of Yoda, I shall provide the configuration example for configuring an OSPF neighbor, hmm.
 
 Hmm, "default" the name of your network instance, it is. Enable the admin state, you must. "ospf-v2", the version should be.
@@ -65,22 +65,64 @@ Cool right?  Anyone starting out with SR Linux should definitely try out the AI 
 
 ## Getting Started
 
-Before we dive in, it's important to note that this release is a proof of concept, not a Nokia-supported product. It's an exciting project we're developing for everyone to use, but it comes with a 'use at your own risk' disclaimer. We plan to continue refining and releasing new versions over time. For instance, the concept of dynamic data (state or logs) is still in its early stages, and we have considerable work ahead to expand more of the state tree and logs.  One more note: if you enable dynamic data (state and logs) which is disabled by default, you will be sharing device configuration, state and logs in the form of embeddings with OpenAI if a question is asked where we need to include the information in the API request to help answer the question.
+Before we dive in, it's important to note that this release is a proof of concept, not a Nokia-supported product. It's an exciting project we're developing for everyone to use, but it comes with a 'use at your own risk' disclaimer. We plan to continue refining and releasing new versions over time. For instance, the concept of dynamic data (state or logs) is still in its early stages, and we have considerable work ahead to expand more of the state tree and logs.
+
+One more note: if you enable dynamic data (state and logs) which is disabled by default, you will be sharing device configuration, state and logs in the form of embeddings with OpenAI if a question is asked where we need to include the information in the API request to help answer the question.
 
 Additionally, in today's release we only support using OpenAI's LLM and you must provide your own OpenAI API key, which means you should be aware there will be costs associated with using the assistant (cost of using OpenAI's API).  As you'll probably see in the configuration tree of the askai-server we've tested with a few other LLMs and will most likely allow the use of your own hosted LLM soon - but until then use at your own risk (and cost)!
 
-OK so load up your favorite containerlab topology, head here <insert Hyperlink> and download the SRL-GPT application.
+### Installing SRL-GPT NDK Application
 
-SCP the application to your SRL Device or Container
+OK so load up your favorite containerlab topology, download the SRL-GPT application and `scp` it to your SR Linux device.
+
+=== "Install RPM"
+    Up until release 23.10 SR Linux used to run Centos-based Linux OS with RPM package manager.
+
+    ```bash
+    curl -L https://gitlab.com/rdodin/pics/-/wikis/uploads/9ef87ed0ee48d07c0de10598f478dec0/chatsrl_1.0.90_release_linux_amd64.rpm \
+    -o /tmp/srlgpt.rpm && scp /tmp/srlgpt.rpm clab-srl-srl: #(1)!
+    ```
+
+    1. In the example the SR Linux container is named `clab-srl-srl`, replace with your own container name.
+
+=== "Install DEB"
+    Starting from 23.10 version, SR Linux uses Debian-based Linux OS with DEB package manager.
+
+    ```bash
+    curl -L https://gitlab.com/rdodin/pics/-/wikis/uploads/5ae2fe090ff7c2d01e61e8bebd1db91b/chatsrl_1.0.90_release_linux_amd64.deb \
+    -o /tmp/srlgpt.deb && scp /tmp/srlgpt.deb clab-srl-srl: #(1)!
+    ```
+
+    1. In the example the SR Linux container is named `clab-srl-srl`, replace with your own container name.
+
+Now install the copied package by opening a bash shell and running the relevant command for the package manager used in your SR Linux version.
+
+```bash
+docker exec -it clab-srl-srl bash
+```
+
+```bash
+[admin@srl ~]$ sudo rpm -i srlgpt.rpm #(1)!
+```
+
+1. Replace with `sudo dpkg -i srlgpt.deb` if you're using DEB package manager.
+
+Now enter SR Linux CLI and reload `app_mgr` so that it can read the new application YANG models:
 
 ```
-scp chatsrl_1.0.88_release_linux_amd64.rpm admin@clab-clos01-leaf:
+[root@srl /]# sr_cli
+Using configuration file(s): []
+Welcome to the srlinux CLI.
+Type 'help' (and press <ENTER>) if you need any help using this.
+--{ running }--[  ]--
+A:srl# tools system app-management application app_mgr reload
 ```
 
-Log into your device/container and drop into bash
+We need to get into a new CLI session to pickup on the newly installed CLI plugin and configuration tree. So close the existing session and open a new one:
 
-```
-erwanj@ej2$ ssh admin@clab-clos01-leaf1
+```srl
+❯ ssh admin@clab-srl-srl
+Warning: Permanently added 'clab-srl-srl' (ED25519) to the list of known hosts.
 ................................................................
 :                  Welcome to Nokia SR Linux!                  :
 :              Open Network OS for the NetOps era.             :
@@ -97,83 +139,42 @@ erwanj@ej2$ ssh admin@clab-clos01-leaf1
 : Contact:     https://go.srlinux.dev/contact-sales            :
 ................................................................
 
-Last login: Fri Oct  6 19:11:44 2023 from 2001:172:20:20::1
+Last login: Mon Oct  9 21:24:47 2023 from 2001:172:20:20::1
 Using configuration file(s): []
 Welcome to the srlinux CLI.
 Type 'help' (and press <ENTER>) if you need any help using this.
+--{ running }--[  ]--
+A:srl#
+```
+
+### Configuring SRL-GPT App
+
+Alright we're almost there! Configure your OpenAI key, let the app know if you want to use GPT3.5 or GPT4 - and if you want to start playing around with dynamic data (state and logs).
+
+```srl
 --{ + running }--[  ]--
-A:ejtest-leaf-1# bash
-[admin@ejtest-leaf-1 ~]$
-```
-
-Simply install the RPM and head back to `sr_cli`:
-
-```
-[admin@ejtest-leaf-1 ~]$ sudo rpm -i chatsrl_1.0.88_release_linux_amd64.rpm
-[admin@ejtest-leaf-1 ~]$ exit
-```
-
-Reload app_mgr so that it can read the new application YANG models
-
-```
-A:ejtest-leaf-1# tools system app-management application app_mgr reload
-```
-
-We need to get into a new CLI session to pickup on the newly installed CLI plugin and configuration tree
-
-```
-Connection to clab-clos01-leaf1 closed.
-erwanj@ej2:~/srlgpt$ ssh admin@clab-clos01-leaf1
-................................................................
-:                  Welcome to Nokia SR Linux!                  :
-:              Open Network OS for the NetOps era.             :
-:                                                              :
-:    This is a freely distributed official container image.    :
-:                      Use it - Share it                       :
-:                                                              :
-: Get started: https://learn.srlinux.dev                       :
-: Container:   https://go.srlinux.dev/container-image          :
-: Docs:        https://doc.srlinux.dev/23-7                    :
-: Rel. notes:  https://doc.srlinux.dev/rn23-7-1                :
-: YANG:        https://yang.srlinux.dev/v23.7.1                :
-: Discord:     https://go.srlinux.dev/discord                  :
-: Contact:     https://go.srlinux.dev/contact-sales            :
-................................................................
-
-Last login: Fri Oct  6 19:38:26 2023 from 2001:172:20:20::1
-Using configuration file(s): []
-Welcome to the srlinux CLI.
-Type 'help' (and press <ENTER>) if you need any help using this.
---{ + running }--[  ]--
-A:ejtest-leaf-1# askai
-```
-
-Alright we're almost there!  Configure your OpenAI key, let the app know if you want to use GPT3.5 or GPT4 - and if you want to start playing around with dynamic data (state and logs).
-
-```
---{ + running }--[  ]--
-A:ejtest-leaf-1# enter candidate
+A:srl# enter candidate
 --{ +* candidate shared default }--[  ]--
-A:ejtest-leaf-1# askai-server openai-key <key>
-A:ejtest-leaf-1# askai-server gpt-version gpt4
-A:ejtest-leaf-1# commit stay
+A:srl# askai-server openai-key <key>
+A:srl# askai-server gpt-version gpt4
+A:srl# commit stay
 ```
 
 And you're off the races!  Use the askai prompt to ask your first question - when asking your very first question you will be prompted to accept the terms and conditions (Big co legal team requirement), once accepted you won't be prompted again!
 
-```
+```srl
 --{ + candidate shared default }--[  ]--
-A:ejtest-leaf-1# askai what are you?
+A:srl# askai what are you?
 I am SRLinux, a Network Operating System from Nokia.
 ```
 
-```
+```srl
 --{ + candidate shared default }--[  ]--
-A:ejtest-leaf-1# askai how many interfaces are up?
+A:srl# askai how many interfaces are up?
 There are 4 interfaces that are up.
 
 --{ + candidate shared default }--[  ]--
-A:ejtest-leaf-1# askai what are they?
+A:srl# askai what are they?
 The interfaces that are up are:
 
 1. ethernet-1/1
@@ -182,7 +183,7 @@ The interfaces that are up are:
 4. system0
 
 --{ + candidate shared default }--[  ]--
-A:ejtest-leaf-1#
+A:srl#
 ```
 
 ## Summary
