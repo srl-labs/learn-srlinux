@@ -32,7 +32,7 @@ The lab consists of one Spine, three Leaf (PEs) routers, and two Alpine Linux ho
 
 As usual, this lab is deployed by containerlab and can be used on any Linux VM with the resources listed in the table at the beginning.
 
-The lab comes with preconfigurations explained in [L2 EVPN tutorial] (https://learn.srlinux.dev/tutorials/l2evpn/evpn/#mac-vrf). This is highly recommended if you have not yet played with SR Linux or EVPN yet.
+The lab comes with preconfigurations explained in [L2 EVPN tutorial](https://learn.srlinux.dev/tutorials/l2evpn/evpn/#mac-vrf). This is highly recommended if you have not yet played with SR Linux or EVPN yet.
 
 The topology and preconfigurations are defined in the containerlab topology file.
 
@@ -61,11 +61,10 @@ The SR Linux configurations are
     --8<-- "https://raw.githubusercontent.com/srl-labs/srl-evpn-mh-lab/main/configs/leaf3.cfg"
     ```
 
-Clone [the lab][path-evpn-mh] to your Linux machine and deploy:
+Clone [the lab][path-evpn-mh] to your Linux machine and deploy with:
 
 ```
-# containerlab deploy -t evpn-mh01.clab.yml
-[root@clab-vm1 evpn-mh01]# containerlab deploy
+$ containerlab deploy -t evpn-mh01.clab.yml
 INFO[0000] Containerlab v0.44.0 started
 INFO[0000] Parsing & checking topology file: evpn-mh01.clab.yml
 INFO[0000] Creating docker network: Name="clab", IPv4Subnet="172.20.20.0/24", IPv6Subnet="2001:172:20:20::/64", MTU="1500"
@@ -150,7 +149,7 @@ To connect Alpine Linux (CEs):
 
 Before we dive into the practicalities, let's look at some terms that will help us better understand the configurations.
 
-+ **Ethernet Segment (ES):** Defines the CE links associated with multiple PEs(up to 4). A ES is configured in all PEs that a CE is connected to and has a unique identifier (ESI) that is advertised via EVPN.
++ **Ethernet Segment (ES):** Defines the CE links associated with multiple PEs(up to 4). An ES is configured in all PEs that the multihomed CE is connected to and has a unique identifier (ESI) that is advertised via EVPN.
 
 <figure markdown>
   <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":1,"zoom":2,"highlight":"#0000ff","nav":true,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/srl-labs/srl-evpn-mh-lab/main/images/evpn-mh.drawio"}'></div>
@@ -181,7 +180,7 @@ For more information about EVPN multi-homing procedures and route-types, see [th
 Let's now move on to the configuration part.
 
 [lab]: https://github.com/srl-labs/srl-evpn-mh-lab
-[topology]: https://github.com/srl-labs/srl-evpn-mh-lab/blob/main/evpn-mh.clab.yml
+[topofile]: https://github.com/srl-labs/srl-evpn-mh-lab/blob/main/evpn-mh.clab.yml
 [clab-install]: https://containerlab.srlinux.dev/install/
 [srlinux-container]: https://github.com/orgs/nokia/packages/container/package/srlinux
 [docker-install]: https://docs.docker.com/engine/install/

@@ -9,7 +9,7 @@ tags:
 
 Here, we review the configurations made in the previous section.
 
-On the PE side, the lag1 was created in both leaf1 and leaf2. Let's take a look at them with these show commands:
+On the PE side, the `lag1` was created in both `leaf1` and `leaf2`. Let's take a look at them with these show commands:
 
 ```
 A:leaf1# show interface lag1
@@ -258,7 +258,8 @@ RT1, RT3 and RT4 routes are triggered by configuration (ES and MAC-VRF), while R
 
 Among these, RT4 is known as ES routes imported by ES peers for DF election and local biasing (split-horizon). It is advertised/received here only by leaf1 and leaf2.
 
-RT1 also advertises ESIs, mainly for two reasons (hence two entries per ESI);
+RT1 also advertises ESIs, mainly for two reasons (hence two entries per ESI):
+
 + Aliasing for load balancing (0)
 + Mass withdrawal for fast convergence (4294967295)
 
@@ -368,7 +369,7 @@ Let's see what leaf2 and leaf3 get in their BGP EVPN route table:
 
 Leaf2, as an ES peer, receives both RT1 and RT4 in its table, while leaf3 only imports RT1 since it is a remote PE.
 
-Finally, check the MAC table of the "mac-vrf-1" on leaf3, which should show the 'esi' instead of an individual destination for the MAC address of ce1.
+Finally, check the MAC table of the `mac-vrf-1` on leaf3, which should show the `esi` instead of an individual destination for the MAC address of ce1.
 
 ```
 A:leaf3# show network-instance mac-vrf-1 bridge-table mac-table all

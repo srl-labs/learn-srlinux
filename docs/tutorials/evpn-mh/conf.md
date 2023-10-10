@@ -7,7 +7,7 @@ tags:
 
 In this part, we will focus on configurations. The goal is to configure the SR Linux fabric with the necessary configuration items for a multi-homed CE.
 
-The following elements need to be configured in all ES peers (PEs) that "ce1" is connected to. In this tutorial, these are leaf1 and leaf2.
+The following items need to be configured in all ES peers, which are the PEs that has links to the multihomed `ce1`. In this tutorial, these are `leaf1` and `leaf2`.
 
 + A LAG and member interfaces
 + Ethernet segment
@@ -58,7 +58,7 @@ enter candidate
 commit now
 ```
 
-The 'lag1' was created with `vlan-tagging` enabled, so this LAG can have multiple subinterfaces with different VLAN tags. This way each subinterface can be connected to a different MAC-VRF. Subinterface 0 is created here with `untagged` (tag0) encapsulation.
+The `lag1` was created with `vlan-tagging` enabled, so this LAG can have multiple subinterfaces with different VLAN tags. This way each subinterface can be connected to a different MAC-VRF. Subinterface 0 is created here with `untagged` (tag0) encapsulation.
 
 The `lag type` can be LACP or static. Here it is configured as LACP, so its parameters must match in all nodes, in this example in leaf1 and leaf2.
 
@@ -79,7 +79,7 @@ All PEs that provide multi-homing to a CE must be similarly configured with the 
 
 ### Ethernet Segment Configuration
 
-In SR Linux, the `Ethernet segments` are configured under the context [ system network-instance protocols evpn ].
+In SR Linux, the `ethernet segments` are configured under the context [ system network-instance protocols evpn ].
 > The same configuration applies to leaf1 and leaf2.
 
 ```
@@ -105,9 +105,9 @@ enter candidate
 commit now
 ```
 
-An `ethernet-segment` is created with a name (ES-1) under BGP-instance 1. The ES identifier (`esi`) and `multi-homing-mode` must match in all leaf routers. At last, we assign the interface `lag1` to ES-1.
+An `ethernet-segment` is created with a name ES-1 under `bgp-instance 1`. The `esi` and `multi-homing-mode` must match in all leaf routers. At last, we assign the interface `lag1` to ES-1.
 
-Besides the ethernet segments, `bgp-vpn` is also configured with `bgp-instance 1` to get the BGP information of the ES routes (RT /RD).
+Besides the ethernet segments, `bgp-vpn` is also configured with `bgp-instance 1` to use the BGP information (RT /RD) for the ES routes.
 
 ### MAC-VRF Interface Configuration
 
@@ -141,13 +141,11 @@ commit now
 
 The entire MAC-VRF with VXLAN configuration is covered [here](https://learn.srlinux.dev/tutorials/l2evpn/evpn/#mac-vrf).
 
-This completes an all-active EVPN-MH configuration.
-
-Now let's look at the configuration example on the CE page.
+This completes an all-active EVPN-MH configuration. Now let's look at the configuration example on the CE front.
 
 ## CE (Alpine Linux) Configuration
 
-The ce1 has a multi-homed bond0 with slave interfaces eth1 and eth2. Similar to the SR Linux part, it is configured with LACP (802.3ad).
+The ce1 has a multi-homed `bond0` with slave interfaces `eth1` and `eth2`. Similar to the SR Linux part, it is configured with LACP (802.3ad).
 
 The single-homed ce2 has multiple interfaces to a single PE (leaf3). These interfaces are placed in different VRFs so that ce2 can simulate multiple remote endpoints.
 
