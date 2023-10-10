@@ -42,9 +42,11 @@ System Priority: 11
 ------------------------------------------------------------------------------------------------------------------------------------------
 ```
 
-The LAG status and network instance can be seen in the `show interface lag1` output. The `show lag lag1 lacp-state` command shows the LACP parameters as well as the status information of the member ports. The output in leaf1 and leaf2 is expected to be the same, except for `partner port no`, which is unique per peer.
+The LAG status and network instance can be seen in the `show interface lag1` output, and `show lag lag1 lacp-state` command shows the LACP parameters as well as the status information of the member ports. 
 
-To see the details of ES:
+The output in leaf1 and leaf2 is expected to be the same, except for `partner port no`, which is unique per peer.
+
+To see the details of ES-1:
 
 ```
 A:leaf1# show system network-instance ethernet-segments ES-1 detail
@@ -79,7 +81,7 @@ The configured ES parameters are displayed here, as well as the ES peers and the
 
 Let's send some CE to CE traffic at this point to see if multi-homing works. Also for SR Linux fabric to learn some MACs.
 
-Connect to ce1 and send packets to the remote IP addresses:
+Connect to `ce1` and send packets to the remote IP addresses:
 
 === "nmap"
     ```
@@ -149,7 +151,7 @@ Connect to ce1 and send packets to the remote IP addresses:
     13:58:10.866605 IP 192.168.0.11.49747 > 192.168.0.22.80: Flags [S], seq 2625981132, win 1024, options [mss 1460], length 0
     ```
 
-Check the tcpdump of eth1 and eth1 when sending traffic with nmap and see that traffic is balanced for both incoming and outgoing packets.
+Check the tcpdump of `eth1` and `eth2` when sending traffic with nmap and see that traffic is balanced for both incoming and outgoing packets.
 > Outgoing ARP packets may not be balanced because load balancing mode of the bond is layer2 by default.
 
 Now we must have triggered some EVPN routes in the fabric.
@@ -367,7 +369,7 @@ Let's see what leaf2 and leaf3 get in their BGP EVPN route table:
     -------------------------------------------------------------------------------------------------------------------------------------------------------------------
     ```
 
-Leaf2, as an ES peer, receives both RT1 and RT4 in its table, while leaf3 only imports RT1 since it is a remote PE.
+As an ES peer, leaf2 receives both RT1 and RT4 in its table, while leaf3 only imports RT1 since it is a remote PE.
 
 Finally, check the MAC table of the `mac-vrf-1` on leaf3, which should show the `esi` instead of an individual destination for the MAC address of ce1.
 

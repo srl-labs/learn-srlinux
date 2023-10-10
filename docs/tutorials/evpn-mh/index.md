@@ -21,7 +21,7 @@ In this tutorial, you will learn about L2 multihoming with EVPN and how to confi
 
 EVPN provides multi-homing with the ethernet segments (ES), which might be a new concept for some readers. Therefore, the terminology is also discussed in the following chapters.
 
-The lab consists of one Spine, three Leaf (PEs) routers, and two Alpine Linux hosts (CEs). One multi-homed CE is connected to 'leaf1', while another is connected to 'leaf3' for testing purposes.
+The lab consists of one Spine, three Leaf (PEs) routers, and two Alpine Linux hosts (CEs). One multi-homed CE is connected to `leaf1` and `leaf2`, while another is connected to `leaf3` for testing purposes.
 
 <figure markdown>
   <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":0,"zoom":2,"highlight":"#0000ff","nav":true,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/srl-labs/srl-evpn-mh-lab/main/images/evpn-mh.drawio"}'></div>
@@ -36,13 +36,14 @@ The lab comes with preconfigurations explained in [L2 EVPN tutorial](https://lea
 
 The topology and preconfigurations are defined in the containerlab topology file.
 
-The SR Linux and Alpine Linux(ce) interface [configurations][configs] are referred to in the [topology file][topofile]. SR Linux configuration files are set as startup configurations, while the Linux interface configurations are done by a script during containerlab post-deployment.
+The SR Linux and Alpine Linux(ce) interface [configurations][configs] are referred to in the [topology file][topofile]. 
+SR Linux configuration files are set as startup configurations, while the Linux interface configurations are done by a script during containerlab post-deployment.
 
 ```yaml
 --8<-- "https://raw.githubusercontent.com/srl-labs/srl-evpn-mh-lab/main/evpn-mh.clab.yml"
 ```
 
-The SR Linux configurations are
+The SR Linux configurations:
 
 === "spine1"
     ```yaml

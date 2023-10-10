@@ -105,7 +105,7 @@ enter candidate
 commit now
 ```
 
-An `ethernet-segment` is created with a name ES-1 under `bgp-instance 1`. The `esi` and `multi-homing-mode` must match in all leaf routers. At last, we assign the interface `lag1` to ES-1.
+An `ethernet-segment` is created with a name ES-1 under `bgp-instance 1`. The `esi` and `multi-homing-mode` must match in all ES peers. At last, we assign the interface `lag1` to ES-1.
 
 Besides the ethernet segments, `bgp-vpn` is also configured with `bgp-instance 1` to use the BGP information (RT /RD) for the ES routes.
 
@@ -147,7 +147,7 @@ This completes an all-active EVPN-MH configuration. Now let's look at the config
 
 The ce1 has a multi-homed `bond0` with slave interfaces `eth1` and `eth2`. Similar to the SR Linux part, it is configured with LACP (802.3ad).
 
-The single-homed ce2 has multiple interfaces to a single PE (leaf3). These interfaces are placed in different VRFs so that ce2 can simulate multiple remote endpoints.
+The single-homed ce2 has multiple interfaces to leaf3. These interfaces are placed in different VRFs so that ce2 can simulate multiple remote endpoints.
 
 === "ce1"
     ```yaml
