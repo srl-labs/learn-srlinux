@@ -75,6 +75,9 @@ Additionally, in today's release we only support using OpenAI's LLM and you must
 
 OK so load up your favorite containerlab topology, download the SRL-GPT application and `scp` it to your SR Linux device.
 
+!!!note
+    SRL-GPT uses some advanced CLI capabilities that we added in 23.7.1, therefore you need to be running 23.7.1 or later.
+
 === "Install RPM"
     Up until release 23.10 SR Linux used to run Centos-based Linux OS with RPM package manager.
 
