@@ -14,6 +14,7 @@ tags:
 | **Lab**                   | [srl-labs/srl-evpn-mh-lab][lab]                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
 | **Main ref documents**    | [RFC 7432 - BGP MPLS-Based Ethernet VPN](https://datatracker.ietf.org/doc/html/rfc7432)<br/>[RFC 8365 - A Network Virtualization Overlay Solution Using Ethernet VPN (EVPN)](https://datatracker.ietf.org/doc/html/rfc8365)<br/>[Nokia 7220 SR Linux Advanced Solutions Guide](https://documentation.nokia.com/srlinux/23-7/books/advanced-solutions/evpn-vxlan-layer-2-multi-hom.html)<br/>[Nokia 7220 SR Linux EVPN-VXLAN Guide](https://documentation.nokia.com/srlinux/23-7/books/evpn-vxlan/evpn-vxlan-tunnels-layer-2.html#evpn-l2-multi-hom) |
 | **Version information**   | [`containerlab:0.44.0`][clab-install], [`srlinux:23.7.1`][srlinux-container], [`docker-ce:23.0.3`][docker-install]                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| **Authors**               | Alperen Akpinar [:material-linkedin:][aakpinar-linkedin]                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 
 One of the many advantages of EVPN is its built-in multi-homing (MH) capability, which is standards-based and defined by RFCs [7432](https://datatracker.ietf.org/doc/html/rfc7432), [8365](https://datatracker.ietf.org/doc/html/rfc8365).
 
@@ -184,6 +185,7 @@ Let's now move on to the configuration part.
 [docker-install]: https://docs.docker.com/engine/install/
 [configs]: https://github.com/srl-labs/srl-evpn-mh-lab/tree/main/configs
 [path-evpn-mh]: https://github.com/srl-labs/srl-evpn-mh-lab.git
+[aakpinar-linkedin]: https://www.linkedin.com/in/alperenakpinar/
 
 <script type="text/javascript" src="https://viewer.diagrams.net/js/viewer-static.min.js" async></script>
 
