@@ -45,7 +45,7 @@ nav:
       # - SR Linux tutorials: tutorials/about.md
       - tutorials/index.md
       - EVPN:
-          - Layer 2 EVPN:
+          - Layer 2 EVPN Basics:
               - Introduction: tutorials/l2evpn/intro.md
               - Fabric configuration: tutorials/l2evpn/fabric.md
               - EVPN configuration: tutorials/l2evpn/evpn.md
