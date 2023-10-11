@@ -15,7 +15,7 @@ tags:
 | **Main ref documents**    | [RFC 7432 - BGP MPLS-Based Ethernet VPN](https://datatracker.ietf.org/doc/html/rfc7432)<br/>[RFC 8365 - A Network Virtualization Overlay Solution Using Ethernet VPN (EVPN)](https://datatracker.ietf.org/doc/html/rfc8365)<br/>[Nokia 7220 SR Linux Advanced Solutions Guide](https://documentation.nokia.com/srlinux/23-7/books/advanced-solutions/evpn-vxlan-layer-2-multi-hom.html)<br/>[Nokia 7220 SR Linux EVPN-VXLAN Guide](https://documentation.nokia.com/srlinux/23-7/books/evpn-vxlan/evpn-vxlan-tunnels-layer-2.html#evpn-l2-multi-hom) |
 | **Version information**   | [`containerlab:0.44.0`][clab-install], [`srlinux:23.7.1`][srlinux-container], [`docker-ce:23.0.3`][docker-install]                                                                                                                                                                                                                                                                                                                                                                                                                                  |
 
-One of the many advantages of EVPN is its built-in multi-homing (MH) capability, which is standards-based and defined by RFCs [7432]((https://datatracker.ietf.org/doc/html/rfc7432)), [8365](https://datatracker.ietf.org/doc/html/rfc8365).
+One of the many advantages of EVPN is its built-in multi-homing (MH) capability, which is standards-based and defined by RFCs [7432](https://datatracker.ietf.org/doc/html/rfc7432), [8365](https://datatracker.ietf.org/doc/html/rfc8365).
 
 In this tutorial, you will learn about L2 multihoming with EVPN and how to configure it in an EVPN-based SR Linux fabric.
 
