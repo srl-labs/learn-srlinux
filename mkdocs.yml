@@ -88,6 +88,9 @@ nav:
                   - Project structure: tutorials/programmability/ansible/intent-based-management/project-structure.md
                   - Configuring the fabric: tutorials/programmability/ansible/intent-based-management/config.md
                   - Summary: tutorials/programmability/ansible/intent-based-management/summary.md
+      - Troubleshooting:
+          - tutorials/tshoot/index.md
+          - Chassis and Environment: tutorials/tshoot/chassis-and-env/chassis-and-env.md
   - Community: community.md
   - Blog:
       - blog/index.md
