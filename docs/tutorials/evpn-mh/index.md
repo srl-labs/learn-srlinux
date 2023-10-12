@@ -141,7 +141,7 @@ Before we dive into the practicalities, let's look at some terms specific to EVP
 
 ### Ethernet Segment (ES)
 
-Defines the CE links associated with multiple PEs (up to 4). An ES is configured in all PEs that the multihomed CE is connected to and has a unique Ethernet Segment Identifier (ESI) that is advertised via EVPN.
+Defines the CE links associated with multiple PEs (up to 4). An ES is configured in all PEs that the multi-homed CE is connected to and has a unique Ethernet Segment Identifier (ESI) that is advertised via EVPN.
 
 <figure markdown>
   <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":1,"zoom":2,"highlight":"#0000ff","nav":true,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/srl-labs/srl-evpn-mh-lab/main/images/evpn-mh.drawio"}'></div>

@@ -7,7 +7,7 @@ tags:
 
 In this part, we will focus on configurations. The goal is to configure the SR Linux fabric with the necessary configuration items for a multiomed CE.
 
-The following items need to be configured in all ES peers, which are the PEs that has links to the multihomed `ce1`. In this tutorial, these are `leaf1` and `leaf2`.
+The following items need to be configured in all ES peers, which are the PEs that has links to the multi-homed `ce1`. In this tutorial, these are `leaf1` and `leaf2`.
 
 + A LAG and member interfaces
 + Ethernet segment
