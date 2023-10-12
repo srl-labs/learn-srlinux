@@ -145,7 +145,7 @@ enter candidate
 commit now
 ```
 
-The entire MAC-VRF with VXLAN configuration is covered [here](../l2evpn/evpn.md#mac-vrf).
+The entire MAC-VRF with VXLAN configuration is covered [here](../../l2evpn/evpn.md#mac-vrf).
 
 This completes an all-active EVPN-MH configuration. Now let's have a look at the multihomed CE1 host and its configuration.
 

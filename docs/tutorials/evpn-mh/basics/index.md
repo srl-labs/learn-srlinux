@@ -19,7 +19,7 @@ tags:
 Multihoming is a common networking feature that allows a customer edge (CE) device to be connected to two or more provider edge (PE) devices in a network. This provides redundant connectivity, efficient link utilization and allows the network to continue providing services even if one of the PE devices or links fails.
 
 In the pre-EVPN era multihoming was enabled by Multi-chassis LAG (MC-LAG) or Virtual Port Channel (vPC) technologies. These technologies are still used in many networks, but they have some limitations and started to show their age.  
-For example, MC-LAG and vPC are proprietary technologies and are not standardized, that makes it hard to build DC fabrics on a multivendor gear. They are also not quite suitable for large-scale deployments and have more limitations that we covered in the [**:material-book: Single Tier Datacenters - Evolving Away From Multi-chassis LAG**](../../blog/posts/2023/single-tier-dc.md) blog post.
+For example, MC-LAG and vPC are proprietary technologies and are not standardized, that makes it hard to build DC fabrics on a multivendor gear. They are also not quite suitable for large-scale deployments and have more limitations that we covered in the [**:material-book: Single Tier Datacenters - Evolving Away From Multi-chassis LAG**](../../../blog/posts/2023/single-tier-dc.md) blog post.
 
 EVPN has built-in multihoming (MH) capability, which is defined by RFCs [7432](https://datatracker.ietf.org/doc/html/rfc7432), [8365](https://datatracker.ietf.org/doc/html/rfc8365). EVPN MH can be used to improve the reliability, performance, and manageability of networks. It is particularly well-suited for data center networks, where high availability and performance are critical.
 

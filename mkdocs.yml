@@ -51,9 +51,10 @@ nav:
               - EVPN configuration: tutorials/l2evpn/evpn.md
               - Summary: tutorials/l2evpn/summary.md
           - EVPN Multihoming:
-              - tutorials/evpn-mh/index.md
-              - Configuration: tutorials/evpn-mh/conf.md
-              - Verification: tutorials/evpn-mh/verify.md
+              - Basics:
+                  - tutorials/evpn-mh/basics/index.md
+                  - Configuration: tutorials/evpn-mh/basics/conf.md
+                  - Verification: tutorials/evpn-mh/basics/verify.md
       - Infrastructure:
           - KNE:
               - tutorials/infrastructure/kne/index.md
