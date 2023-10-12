@@ -3,7 +3,7 @@ comments: true
 tags:
   - evpn
   - route-types
-  - multi-homing
+  - multioming
   - ethernet-segments
 ---
 
@@ -79,7 +79,7 @@ mac-vrf-1              10.0.0.2 (DF)
 
 The configured ES parameters are displayed here, as well as the ES peers and the selected DF.
 
-Let's send some CE to CE traffic at this point to see if multi-homing works. Also for SR Linux fabric to learn some MACs.
+Let's send some CE to CE traffic at this point to see if multioming works. Also for SR Linux fabric to learn some MACs.
 
 Connect to `ce1` and send packets to the remote IP addresses:
 
@@ -400,7 +400,7 @@ Total Eth-cfm Macs             :    0 Total    0 Active
 --{ running }--[  ]--
 ```
 
-With that, we verified a working L2 EVPN multi-homing on a SR Linux fabric. 
+With that, we verified a working L2 EVPN multioming on a SR Linux fabric. 
 
 To delete this lab, from the lab path:
 
