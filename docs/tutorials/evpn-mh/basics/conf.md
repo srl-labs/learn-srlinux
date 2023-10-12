@@ -155,6 +155,11 @@ To create a multihomed connection, our CE1 emulated host has a `bond0` interface
 
 The single-homed CE2 has multiple interfaces to a single leaf3 switch. These interfaces are placed in different VRFs so that CE2 can simulate multiple remote endpoints.
 
+<figure markdown>
+  <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":5,"zoom":2.5,"highlight":"#0000ff","nav":true,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/srl-labs/srl-evpn-mh-lab/main/images/evpn-mh.drawio"}'></div>
+  <figcaption>Multiple IP hosts in CE2</figcaption>
+</figure>
+
 === "ce1"
     ```yaml
     --8<-- "https://raw.githubusercontent.com/srl-labs/srl-evpn-mh-lab/main/configs/ce1-config.sh"
