@@ -1,7 +1,7 @@
 ---
 comments: true
 tags:
-  - multioming
+  - multihoming
   - ethernet-segments
 ---
 
@@ -19,7 +19,7 @@ Remember that the lab is pre-configured with [fabric underlay][fabric-underlay],
 
 LAG is required for all-active mode but can be skipped in single-active mode.
 
-In this example, a LAG is created with all-active multioming mode. The target connection between a CE with multihoming and PEs is shown below.
+In this example, a LAG is created with all-active multihoming mode. The target connection between a CE with multihoming and PEs is shown below.
 
 <figure markdown>
   <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":3,"zoom":2,"highlight":"#0000ff","nav":true,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/srl-labs/srl-evpn-mh-lab/main/images/evpn-mh.drawio"}'></div>
@@ -75,7 +75,7 @@ enter candidate
 commit now
 ```
 
-All PEs that provide multioming to a CE must be similarly configured with the lag and interface configurations.
+All PEs that provide multihoming to a CE must be similarly configured with the lag and interface configurations.
 
 ### Ethernet Segment Configuration
 

@@ -3,7 +3,7 @@ comments: true
 tags:
   - evpn
   - route-types
-  - multioming
+  - multihoming
   - ethernet-segments
 ---
 
@@ -42,7 +42,7 @@ System Priority: 11
 ------------------------------------------------------------------------------------------------------------------------------------------
 ```
 
-The LAG status and network instance can be seen in the `show interface lag1` output, and `show lag lag1 lacp-state` command shows the LACP parameters as well as the status information of the member ports. 
+The LAG status and network instance can be seen in the `show interface lag1` output, and `show lag lag1 lacp-state` command shows the LACP parameters as well as the status information of the member ports.
 
 The output in leaf1 and leaf2 is expected to be the same, except for `partner port no`, which is unique per peer.
 
@@ -75,11 +75,12 @@ mac-vrf-1              10.0.0.1
 mac-vrf-1              10.0.0.2 (DF)
 ===============================================================================================================
 ```
+
 > Check the same in leaf2.
 
 The configured ES parameters are displayed here, as well as the ES peers and the selected DF.
 
-Let's send some CE to CE traffic at this point to see if multioming works. Also for SR Linux fabric to learn some MACs.
+Let's send some CE to CE traffic at this point to see if multihoming works. Also for SR Linux fabric to learn some MACs.
 
 Connect to `ce1` and send packets to the remote IP addresses:
 
@@ -91,7 +92,7 @@ Connect to `ce1` and send packets to the remote IP addresses:
     Host is up (0.0027s latency).
     All 1000 scanned ports on 192.168.0.21 are closed
     MAC Address: 00:C1:AB:00:00:21 (Unknown)
-    
+
     Nmap scan report for 192.168.0.22
     Host is up (0.0028s latency).
     All 1000 scanned ports on 192.168.0.22 are closed
@@ -400,7 +401,7 @@ Total Eth-cfm Macs             :    0 Total    0 Active
 --{ running }--[  ]--
 ```
 
-With that, we verified a working L2 EVPN multioming on a SR Linux fabric. 
+With that, we verified a working L2 EVPN multihoming on a SR Linux fabric.
 
 To delete this lab, from the lab path:
 
