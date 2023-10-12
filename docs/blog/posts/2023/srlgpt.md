@@ -150,6 +150,15 @@ Type 'help' (and press <ENTER>) if you need any help using this.
 A:srl#
 ```
 
+!!!note "Configuring DNS servers"
+    For SRL-GPT app to reach out to OpenAI API you need to configure DNS servers on your SR Linux device ensuring that DNS resolution works. It might depend on your infra, but usually configuring public DNS servers works just fine:
+
+    ```srl title="paste this into your CLI"
+    enter candidate
+      system dns network-instance mgmt server-list [ 1.1.1.1 ]
+    commit now
+    ```
+
 ### Configuring SRL-GPT App
 
 Alright we're almost there! Configure your OpenAI key, let the app know if you want to use GPT3.5 or GPT4 - and if you want to start playing around with dynamic data (state and logs).
