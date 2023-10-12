@@ -1,13 +1,14 @@
 ---
 comments: true
-tags:
-  - multihoming
-  - ethernet-segments
 ---
 
-In this part, we will focus on configurations. The goal is to configure the SR Linux fabric with the necessary configuration items for a multiomed CE.
+# EVPN-MH Configuration
 
-The following items need to be configured in all ES peers, which are the PEs that has links to the multi-homed `ce1`. In this tutorial, these are `leaf1` and `leaf2`.
+In this part, we will focus on configuration tasks required to enable multihoming in our fabric.
+
+EVPN-MH configuration touches Ethernet Segment (ES) peers. ES peer is a leaf that has links to a multihomed host. In our case `leaf1` and `leaf2` are ES peers, because CE1 is connected to both of them.
+
+The following items need to be configured on ES Peers:
 
 + A LAG and member interfaces
 + Ethernet segment
@@ -15,21 +16,18 @@ The following items need to be configured in all ES peers, which are the PEs tha
 
 Remember that the lab is pre-configured with [fabric underlay][fabric-underlay], [EVPN][evpn], and a [MAC-VRF][mac-vrf] for CE-to-CE L2 reachability.
 
-### LAG Configuration
+## LAG
 
-LAG is required for all-active mode but can be skipped in single-active mode.
-
-In this example, a LAG is created with all-active multihoming mode. The target connection between a CE with multihoming and PEs is shown below.
+For an all-active multihoming SR Linux nodes need to be configured with a LAG interface facing the CE.
 
 <figure markdown>
-  <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":3,"zoom":2,"highlight":"#0000ff","nav":true,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/srl-labs/srl-evpn-mh-lab/main/images/evpn-mh.drawio"}'></div>
+  <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":3,"zoom":2.5,"highlight":"#0000ff","nav":true,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/srl-labs/srl-evpn-mh-lab/main/images/evpn-mh.drawio"}'></div>
   <figcaption>LAG between PEs and CE</figcaption>
 </figure>
 
-The following configuration snippet shows a LAG with a subinterface and its LACP settings.
->The same configuration applies to both leaf1 and leaf2.
+The following configuration snippet can be pasted in the CLI of `leaf1` and `leaf2` to create a logical LAG interface `lag1` with LACP support.
 
-```
+```srl
 enter candidate
     /interface lag1 {
         admin-state enable
@@ -58,13 +56,14 @@ enter candidate
 commit now
 ```
 
-The `lag1` was created with `vlan-tagging` enabled, so this LAG can have multiple subinterfaces with different VLAN tags. This way each subinterface can be connected to a different MAC-VRF. Subinterface 0 is created here with `untagged` (tag0) encapsulation.
+The `lag1` interface was created with `vlan-tagging` enabled that allows multiple subinterfaces with different VLAN tags to use it. This way each subinterface can be connected to a different MAC-VRF.  
+Subinterface `0` has been added to `lag1` with `untagged` encapsulation.
 
-The `lag type` can be LACP or static. Here it is configured as LACP, so its parameters must match in all nodes, in this example in leaf1 and leaf2.
+The `lag type` can be LACP or static. For this lab we chose to use LACP for our LAG, so LACP parameters must match in all ES-peer nodes - leaf1 and leaf2.
 
-And connect the physical interface(s) to LAG to complete this part.
+And finally, we bind the physical interface(s) to the logical LAG interface to complete the LAG configuration part.
 
-```
+```srl
 enter candidate
     /interface ethernet-1/1 {
         admin-state enable
@@ -75,14 +74,17 @@ enter candidate
 commit now
 ```
 
+As shown in config snippet above, the physical interface `ethernet-1/1` will be part of `lag1` interface on both leaf1 and leaf2 nodes.
+
 All PEs that provide multihoming to a CE must be similarly configured with the lag and interface configurations.
 
-### Ethernet Segment Configuration
+## Ethernet Segment
 
-In SR Linux, the `ethernet segments` are configured under the context [ system network-instance protocols evpn ].
-> The same configuration applies to leaf1 and leaf2.
+When a CE device is connected to one or more PEs via a set of Ethernet links, then this set of Ethernet links constitutes an "Ethernet segment". This is a key concept of EVPN Multihoming.
 
-```
+In SR Linux, the `ethernet segments` are configured under the `system network-instance protocols` context.
+
+```srl title="ES configuration applied on both leaf1 and leaf2"
 enter candidate
 /system network-instance protocols 
     evpn {
@@ -105,16 +107,20 @@ enter candidate
 commit now
 ```
 
-An `ethernet-segment` is created with a name ES-1 under `bgp-instance 1`. The `esi` and `multi-homing-mode` must match in all ES peers. At last, we assign the interface `lag1` to ES-1.
+The `ethernet-segment` is created with a name ES-1 under `bgp-instance 1` with the `all-active` mode.
 
-Besides the ethernet segments, `bgp-vpn` is also configured with `bgp-instance 1` to use the BGP information (RT /RD) for the ES routes.
+For a multihomed site, each Ethernet segment (ES) is identified by a unique non-zero identifier called an Ethernet Segment Identifier (ESI).  
+An ESI is encoded as a 10-octet integer in line format with the most significant octet sent first.
 
-### MAC-VRF Interface Configuration
+The `esi` and `multi-homing-mode` must match in all ES peers. At last, we assign the interface `lag1` to ES-1.
+
+Besides the ethernet segments, `bgp-vpn` is also configured with `bgp-instance 1` to use the BGP information (RT/RD) for the ES routes exchanged in EVPN to enable multihoming.
+
+## MAC-VRF Interface
 
 Typically, an L2 multi-homed LAG subinterface needs to be associated with a MAC-VRF.
->The same configuration applies to both leaf1 and leaf2.
 
-```
+```srl title="MAC-VRF interface configuration applied on both leaf1 and leaf2"
 enter candidate
     /network-instance mac-vrf-1 {
         interface lag1.0 {
@@ -123,31 +129,31 @@ enter candidate
 commit now
 ```
 
-To provide load balancing for all-active multihoming segments, set ecmp to the expected number of leaves (PE) serving the CE, 2 in this example.
-> An Ethernet segment can span up to four provider edge (PE) routers.
+To provide the load-balancing for all-active multihoming segments, set `ecmp` to the expected number of leaves (PE) serving the CE[^1].  
+Since we have two leaves connected to CE1, we set `ecmp 2`.
 
-```
+```srl title="MAC-VRF ECMP configuration applied on both leaf1 and leaf2"
 enter candidate
     /network-instance mac-vrf-1 {
         protocols {
-        bgp-evpn {
-            bgp-instance 1 {
-                ecmp 2
+            bgp-evpn {
+                bgp-instance 1 {
+                    ecmp 2
+                }
             }
-        }
     }
 commit now
 ```
 
-The entire MAC-VRF with VXLAN configuration is covered [here](https://learn.srlinux.dev/tutorials/l2evpn/evpn/#mac-vrf).
+The entire MAC-VRF with VXLAN configuration is covered [here](../l2evpn/evpn.md#mac-vrf).
 
-This completes an all-active EVPN-MH configuration. Now let's look at the configuration example on the CE front.
+This completes an all-active EVPN-MH configuration. Now let's have a look at the multihomed CE1 host and its configuration.
 
-## CE (Alpine Linux) Configuration
+## Customer Edge Device
 
-The ce1 has a multi-homed `bond0` with slave interfaces `eth1` and `eth2`. Similar to the SR Linux part, it is configured with LACP (802.3ad).
+To create a multihomed connection, our CE1 emulated host has a `bond0` interface configured with interfaces `eth1` and `eth2` underneath. Similar to the SR Linux part, it is configured with LACP (802.3ad).
 
-The single-homed ce2 has multiple interfaces to leaf3. These interfaces are placed in different VRFs so that ce2 can simulate multiple remote endpoints.
+The single-homed CE2 has multiple interfaces to a single leaf3 switch. These interfaces are placed in different VRFs so that CE2 can simulate multiple remote endpoints.
 
 === "ce1"
     ```yaml
@@ -158,20 +164,19 @@ The single-homed ce2 has multiple interfaces to leaf3. These interfaces are plac
     --8<-- "https://raw.githubusercontent.com/srl-labs/srl-evpn-mh-lab/main/configs/ce2-config.sh"
     ```
 
-This is primarily to get better entropy for load balancing, so you can observe ce1 sending/receiving packets to/from both PEs, as shown below.
+This is primarily to get better entropy for load balancing, so you can observe CE1 sending/receiving packets to/from both PEs, as shown below.
 
 <figure markdown>
   <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":4,"zoom":2,"highlight":"#0000ff","nav":true,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/srl-labs/srl-evpn-mh-lab/main/images/evpn-mh.drawio"}'></div>
   <figcaption>CE connections to mac-vrf-1 network instance</figcaption>
 </figure>
 
-Now, let's verify the configurations in the next chapter!
+Now, let's see how EVPN-MH control plane works and which commands you can use to verify the configuration.
 
 [fabric-underlay]: https://learn.srlinux.dev/tutorials/l2evpn/fabric/
 [evpn]: https://learn.srlinux.dev/tutorials/l2evpn/evpn/
 [mac-vrf]: https://learn.srlinux.dev/tutorials/l2evpn/evpn/#mac-vrf
-[topology]: https://github.com/srl-labs/learn-srlinux/blob/main/docs/tutorials/evpn-mh/
-[configs]: https://github.com/srl-labs/learn-srlinux/blob/main/docs/tutorials/evpn-mh/leaf1.cfg
-[path-evpn-mh]: https://github.com/srl-labs/learn-srlinux/blob/main/docs/tutorials/evpn-mh
+
+[^1]: An Ethernet segment can span up to four provider edge (PE) routers.
 
 <script type="text/javascript" src="https://viewer.diagrams.net/js/viewer-static.min.js" async></script>

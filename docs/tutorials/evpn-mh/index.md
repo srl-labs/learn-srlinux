@@ -139,6 +139,8 @@ To connect to the Linux hosts (CEs):
     docker exec -it clab-evpn-mh-ce2 bash
     ```
 
+The fabric comes up with L2 EVPN service deployed and operational. You can check the status of the EVPN service using verification commands listed in the [L2 EVPN Basics tutorial](https://learn.srlinux.dev/tutorials/l2evpn/evpn/#verification).
+
 ## EVPN Multihoming Terminology
 
 Before we dive into the practicalities, let's look at some terms specific to EVPN multihoming.
@@ -148,7 +150,7 @@ Before we dive into the practicalities, let's look at some terms specific to EVP
 Defines the CE links associated with multiple PEs (up to 4). An ES is configured in all PEs that the multi-homed CE is connected to and has a unique Ethernet Segment Identifier (ESI) that is advertised via EVPN.
 
 <figure markdown>
-  <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":1,"zoom":2,"highlight":"#0000ff","nav":true,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/srl-labs/srl-evpn-mh-lab/main/images/evpn-mh.drawio"}'></div>
+  <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":1,"zoom":2.5,"highlight":"#0000ff","nav":true,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/srl-labs/srl-evpn-mh-lab/main/images/evpn-mh.drawio"}'></div>
   <figcaption>Ethernet segments</figcaption>
 </figure>
 
