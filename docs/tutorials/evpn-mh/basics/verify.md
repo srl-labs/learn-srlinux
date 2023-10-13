@@ -448,6 +448,7 @@ As an ES peer, leaf2 receives both RT1 and RT4 in its table, while leaf3 only im
 Finally, check the MAC table of the `mac-vrf-1` on leaf3, which should show the `esi` instead of an individual destination for the MAC address of ce1.
 
 ```
+--{ running }--[  ]--
 A:leaf3# show network-instance mac-vrf-1 bridge-table mac-table all
 -----------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -477,9 +478,13 @@ Total Eth-cfm Macs             :    0 Total    0 Active
 
 ```
 
-MAC addresses learned through EVPN typically show the VTEP (PE) router in the destination column, while MAC addresses of multihomed devices are instead assigned the EVPN Segment Identifier (ESI), which can refer to multiple VTEP destinations. The use of ESIs here ensures the load balancing as it refers to multiple VTEPs if ECMP is enabled.
+## ESI-based Load-Balancing
+
+MAC addresses learned through EVPN typically show the VTEP (PE) router in the destination column, while MAC addresses of multihomed devices are instead assigned the EVPN Segment Identifier (ESI), which can refer to multiple VTEP destinations.  
+The use of ESIs here ensures the load balancing as it refers to multiple VTEPs if ECMP is enabled.
 
 ```
+--{ running }--[  ]--
 A:leaf3# show tunnel-interface vxlan1 vxlan-interface 1 bridge-table unicast-destinations destination  
 ---------------------------------------------------------------------------------------------------------------------------------------------------------
 Show report for vxlan-interface vxlan1.1 unicast destinations
@@ -502,6 +507,10 @@ Summary
 --{ + running }--[  ]--
 ```
 
-With that, we verified a working L2 EVPN multihoming on a SR Linux fabric.
+As the output shows, the ESI assigned on both leaves resolves to two VTEPs, which are the two PEs we have in our fabric. This means that the traffic from leaf3 will be load balanced between the two PEs based on the fact that the destination ESI is advertised by both leaf1 and leaf2.
+
+## Summary
+
+In this tutorial we have seen how to configure EVPN Mutlihomin in a fabric where one CE is multihomed to two PEs. EVPN-based Multihoming is the current standard for connecting workloads to multiple leaves in the datacenter fabric. It provides all the benefits of the proprietary MC-LAG solutions, but with the added benefit of being standards-based and interoperable with other vendors.
 
 <script type="text/javascript" src="https://viewer.diagrams.net/js/viewer-static.min.js" async></script>
