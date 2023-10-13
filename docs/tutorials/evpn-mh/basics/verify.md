@@ -207,8 +207,6 @@ For example, the highlighted line in `eth1` output shows the outgoing request `I
 !!!note
     Outgoing ARP packets may not be balanced because load balancing mode of the bond is layer2 by default.
 
-
-
 ## EVPN Routes
 
 When doing the traffic tests we triggered some EVPN routes exchange in the fabric.
