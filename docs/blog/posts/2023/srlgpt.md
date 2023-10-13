@@ -169,6 +169,7 @@ A:srl# enter candidate
 --{ +* candidate shared default }--[  ]--
 A:srl# askai-server openai-key <key>
 A:srl# askai-server gpt-version gpt4
+A:srl# askai-server dynamic-state true
 A:srl# commit stay
 ```
 
