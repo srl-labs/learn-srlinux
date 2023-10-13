@@ -171,13 +171,14 @@ A LAG is logical bundle of individual interfaces/ports and is required for an al
 
 An L2 network instance, essentially a broadcast domain in SR Linux. Interface(s) or LAG must be connected to a MAC-VRF for L2 multihoming.
 
-### Advanced configuration items
+### Advanced Multihoming Procedures
 
 The following procedures are essential for EVPN multihoming, but aren't typical configuration items:
 
 + **Designated Forwarder (DF):** The leaf that is elected to forward BUM traffic. The election is based on the route-type 4 (RT4) exchange, known as the ES routes of EVPN.
-+ **Split-horizon (Local bias):** A mechanism to prevent BUM traffic received by CE from being looped back to itself by a peer PE. Local bias is used for all-active and is based on RT4 exchange.
-+ **Aliasing:** For remote PEs that are not part of ES to balance traffic to the multi-homed CE. RT1 (Auto-discovery) is advertised for aliasing.
++ **Split-horizon (Local bias):** A mechanism to prevent BUM traffic received by CE from being looped back to itself by a peer leaf. Local bias is used for all-active and is based on RT4 exchange.
++ **Aliasing:** Aliasing allows remote leaf to balance traffic across the leaf peers that advertise the same ESI via RT1. 
++ **Fast convergence:** Fast convergence ensures that traffic is quickly rerouted in the event of a failure. With RT1 updates, the remote leaf can quickly remove a failed destination from the ESI, without depending on individual RT2 withdrawals.
 
 EVPN route types 1 and 4 are used to implement the multihoming procedures.
 

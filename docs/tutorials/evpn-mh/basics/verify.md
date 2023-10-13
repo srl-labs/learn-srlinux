@@ -111,7 +111,10 @@ To see the details of Ethernet Segment `ES-1`:
     =============================================================================================
     ```
 
-The configured ES parameters, operational status, as well as the ES peers and the selected Designated Forwarder (DF) are displayed here.
+The configured ES parameters, operational status, as well as the ES peers and the selected Designated Forwarder (DF) are displayed here.1
+
+!note "Designated Forwarders"
+    <A Designated Forwarder (DF) in EVPN multihoming is a Provider Edge (PE) router that is responsible for forwarding broadcast, unknown unicast, and multicast (BUM) traffic to a multihomed Customer Edge (CE) device on a given Ethernet Segment (ES). The DF is elected by the PEs that are connected to the ES, and the election is based on the PEs' router IDs.>
 
 ## Traffic test
 
@@ -203,6 +206,8 @@ For example, the highlighted line in `eth1` output shows the outgoing request `I
 
 !!!note
     Outgoing ARP packets may not be balanced because load balancing mode of the bond is layer2 by default.
+
+
 
 ## EVPN Routes
 
@@ -472,6 +477,31 @@ Total Reserved Macs            :    0 Total    0 Active
 Total Eth-cfm Macs             :    0 Total    0 Active
 --{ running }--[  ]--
 
+```
+
+MAC addresses learned through EVPN typically show the VTEP (PE) router in the destination column, while MAC addresses of multihomed devices are instead assigned the EVPN Segment Identifier (ESI), which can refer to multiple VTEP destinations. The use of ESIs here ensures the load balancing as it refers to multiple VTEPs if ECMP is enabled.
+
+```
+A:leaf3# show tunnel-interface vxlan1 vxlan-interface 1 bridge-table unicast-destinations destination  
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+Show report for vxlan-interface vxlan1.1 unicast destinations
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+Destinations
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+Ethernet Segment Destinations
+---------------------------------------------------------------------------------------------------------------------------------------------------------
++-------------------------------+-------------------+--------------------+-----------------------------+
+|              ESI              | Destination-index |       VTEPs        | Number MACs (Active/Failed) |
++===============================+===================+====================+=============================+
+| 01:11:11:11:11:11:11:00:00:01 | 95631942551       | 10.0.0.1, 10.0.0.2 | 1(1/0)                      |
++-------------------------------+-------------------+--------------------+-----------------------------+
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+Summary
+  1 unicast-destinations, 0 non-es, 1 es
+  1 MAC addresses, 1 active, 0 non-active
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+--{ + running }--[  ]--
 ```
 
 With that, we verified a working L2 EVPN multihoming on a SR Linux fabric.

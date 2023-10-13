@@ -132,7 +132,7 @@ commit now
 To provide the load-balancing for all-active multihoming segments, set `ecmp` to the expected number of leaves (PE) serving the CE[^1].  
 Since we have two leaves connected to CE1, we set `ecmp 2`.
 
-```srl title="MAC-VRF ECMP configuration applied on both leaf1 and leaf2"
+```srl title="MAC-VRF ECMP configuration applied on all, leaf1, leaf2 and leaf3."
 enter candidate
     /network-instance mac-vrf-1 {
         protocols {
@@ -159,6 +159,8 @@ The single-homed CE2 has multiple interfaces to a single leaf3 switch. These int
   <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":5,"zoom":2.5,"highlight":"#0000ff","nav":true,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/srl-labs/srl-evpn-mh-lab/main/images/evpn-mh.drawio"}'></div>
   <figcaption>Multiple IP hosts in CE2</figcaption>
 </figure>
+
+Below are the CE interface configurations that are executed by containerlab during the deployment.
 
 === "ce1"
     ```yaml
