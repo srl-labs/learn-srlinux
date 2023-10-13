@@ -157,3 +157,18 @@ th {
   width: 100%;
   height: 100%;
 }
+
+/* embedded output for code blocks
+  use as
+  ```
+  echo test
+  ```
+  <div class="embed-result">
+  ```
+  test
+  ```
+  </div>
+ */
+.md-typeset .embed-result {
+  margin-top: -1.125em;
+}

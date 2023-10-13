@@ -45,11 +45,16 @@ nav:
       # - SR Linux tutorials: tutorials/about.md
       - tutorials/index.md
       - EVPN:
-          - Layer 2 EVPN:
+          - Layer 2 EVPN Basics:
               - Introduction: tutorials/l2evpn/intro.md
               - Fabric configuration: tutorials/l2evpn/fabric.md
               - EVPN configuration: tutorials/l2evpn/evpn.md
               - Summary: tutorials/l2evpn/summary.md
+          - EVPN Multihoming:
+              - Basics:
+                  - tutorials/evpn-mh/basics/index.md
+                  - Configuration: tutorials/evpn-mh/basics/conf.md
+                  - Verification: tutorials/evpn-mh/basics/verify.md
       - Infrastructure:
           - KNE:
               - tutorials/infrastructure/kne/index.md
