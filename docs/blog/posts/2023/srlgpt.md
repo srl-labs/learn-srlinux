@@ -205,3 +205,7 @@ A:srl#
 The blog post introduces the SR Linux GPT, a generative AI integrated into the SR Linux CLI. It can be used to ask questions about the CLI, provide configuration examples, and even answer questions about the system's state. The integration of the SRL-GPT app was done using the NDK and CLI plugin frameworks, which are also available to all SR Linux users. The post also discusses the role of generative AI in the Network Operating System and how it can be beneficial, especially for new SR Linux users. The release of SRL-GPT is not a supported product by Nokia but a proof of concept. The post also provides a step-by-step guide on how to get started with the AI assistant, including how to load the SRL-GPT application, configure your OpenAI key, and ask your first question.
 
 <video width="100%" controls playsinline><source src="https://gitlab.com/rdodin/pics/-/wikis/uploads/4251cdb6d5818019295b31e9208c2183/blog.mp4" type="video/mp4"></video>
+
+If you're up for a more immersive demo experinece checkout this bootlegged demo video of the SRL-GPT app in action ripped from the Nokia SReXperts North America 2023 event.
+
+<center><blockquote class="twitter-tweet"><p lang="en" dir="ltr">If you remember, we have been working on an AI assistant running on SR Linux in our automation garage.</p>&mdash; Roman Dodin (@ntdvps) <a href="https://twitter.com/ntdvps/status/1704634777666502779">September 21, 2023</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script></center>

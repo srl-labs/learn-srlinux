@@ -32,6 +32,7 @@ nav:
               - EVPN Proxy: ndk/apps/evpn-proxy.md
               - kButler: ndk/apps/kbutler.md
               - Prometheus Telemetry Exporter: ndk/apps/srl-prom-exporter.md
+              - SRL-GPT: ndk/apps/srl-gpt.md
               - Satellite Tracker: ndk/apps/satellite.md
       - Ansible:
           - ansible/index.md
