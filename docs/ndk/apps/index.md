@@ -35,6 +35,13 @@ kButler agent ensures that for every worker node which hosts an application with
 SR Linux Prometheus Exporter agent creates Prometheus scrape-able endpoints on individual switches. This horizontally-scaled telemetry collection model has additional operational enhancements over traditional setups with a central telemetry collector.  
 [:octicons-arrow-right-24: Read more](srl-prom-exporter.md)
 
+### SR Linux GPT Agent a.k.a `askai`
+
+:material-language-go:
+
+An NDK app that leverages OpenAI and context learning with local embeddings to create a Clippy you always wanted to have in your CLI.  
+[:octicons-arrow-right-24: Read more](srl-gpt.md)
+
 ### Satellite Tracker
 
 :material-language-python: · [`KTodts/srl-satellite-tracker`](https://github.com/KTodts/srl-satellite-tracker)
