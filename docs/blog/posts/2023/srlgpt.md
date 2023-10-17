@@ -67,7 +67,8 @@ Cool right?  Anyone starting out with SR Linux should definitely try out the AI 
 
 Before we dive in, it's important to note that this release is a proof of concept, not a Nokia-supported product. It's an exciting project we're developing for everyone to use, but it comes with a 'use at your own risk' disclaimer. We plan to continue refining and releasing new versions over time. For instance, the concept of dynamic data (state or logs) is still in its early stages, and we have considerable work ahead to expand more of the state tree and logs.
 
-One more note: if you enable dynamic data (state and logs) which is disabled by default, you will be sharing device configuration, state and logs in the form of embeddings with OpenAI if a question is asked where we need to include the information in the API request to help answer the question.
+!!!warning
+    If you enable dynamic data (state and logs) in the app's config which is disabled by default, you will be sharing device configuration, state and logs in the form of embeddings with OpenAI if a question is asked where we need to include the information in the API request to help answer the question. Data shared with OpenAI is not obfuscated or anonymized in any way.
 
 Additionally, in today's release we only support using OpenAI's LLM and you must provide your own OpenAI API key, which means you should be aware there will be costs associated with using the assistant (cost of using OpenAI's API).  As you'll probably see in the configuration tree of the askai-server we've tested with a few other LLMs and will most likely allow the use of your own hosted LLM soon - but until then use at your own risk (and cost)!
 
