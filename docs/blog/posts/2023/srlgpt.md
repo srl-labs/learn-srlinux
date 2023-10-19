@@ -209,3 +209,9 @@ The blog post introduces the SR Linux GPT, a generative AI integrated into the S
 If you're up for a more immersive demo experience checkout this bootlegged demo video of the SRL-GPT app in action ripped from the Nokia SReXperts North America 2023 event.
 
 <center><blockquote class="twitter-tweet"><p lang="en" dir="ltr">If you remember, we have been working on an AI assistant running on SR Linux in our automation garage.</p>&mdash; Roman Dodin<a href="https://twitter.com/ntdvps/status/1704634777666502779">September 21, 2023</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script></center>
+
+And for a deep dive into the SRL-GPT app, check out Erwan James' appearance on Packet Pushers Video Bytes:
+
+<div class="iframe-container">
+<iframe width="853" height="480" src="https://www.youtube.com/embed/zxwdecY12-E" title="SRL-GPT" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+</div>
