@@ -10,7 +10,7 @@ authors:
 
 # SR Linux GPT
 
-It's taken much longer than we anticipated and wanted (Big co problems...) but we're finally here, SRL-GPT release day!
+It's taken much longer than we anticipated and wanted (Big co problems...) but we're finally here, SR Linux GPT release day!
 
 ![feat](https://gitlab.com/rdodin/pics/-/wikis/uploads/9c7778134ffc89c322ae5ca8b392f9c6/_5081c81c-f905-4923-9e3e-5ab18ddec6d5__1_.webp){ width=20% align=left}
 
@@ -18,9 +18,9 @@ Given the excitement surrounding generative AI, especially after the public rele
 
 <!-- more -->
 
-SRL-GPT was actually initially developed many....many months ago, it started out as a little weekend project by one of the SR Linux developers - and quite frankly the first working version only took just that, a weekend.  By Monday morning, we had an NDK application with a fully functional 'ChatGPT-like' prompt integrated directly into the SR Linux CLI. We could ask it questions about any aspect of the CLI, request configuration examples, and, to our astonishment, it could even answer questions about the system's state! Was it flawless? No. But it was right more often than not, and it was undeniably fun to interact with.
+SR Linux GPT was actually initially developed many....many months ago, it started out as a little weekend project by one of the SR Linux developers - and quite frankly the first working version only took just that, a weekend.  By Monday morning, we had an NDK application with a fully functional 'ChatGPT-like' prompt integrated directly into the SR Linux CLI. We could ask it questions about any aspect of the CLI, request configuration examples, and, to our astonishment, it could even answer questions about the system's state! Was it flawless? No. But it was right more often than not, and it was undeniably fun to interact with.
 
-The best part? We didn't need to overhaul the entire operating system or drastically modify our CLI. There was no need for a Request For Enhancement (RFE) process. The integration of the SRL-GPT app was achieved using the [NDK](../../../ndk/index.md) and CLI plugin frameworks, which power SR Linux's extensibility. The same frameworks we proudly offer to all SR Linux users.
+The best part? We didn't need to overhaul the entire operating system or drastically modify our CLI. There was no need for a Request For Enhancement (RFE) process. The integration of the SR Linux GPT app was achieved using the [NDK](../../../ndk/index.md) and CLI plugin frameworks, which power SR Linux's extensibility. The same frameworks we proudly offer to all SR Linux users.
 
 ## Generative AI and the Network Operating System
 
@@ -28,7 +28,7 @@ Does Generative AI really play a role in the Network Operating System?
 
 Sure! For the same reason we still have a CLI in every single one of the NOSs available on the market today.  Firstly, ability to use natural language to interact with a network device is simply just another interface into the system, one in which you do not need to be a power user in that specific NOS CLI.  It does also provide some capabilities which a typical CLI doesn't, you can ask the AI assistant to look at different areas of the system and provide summaries which may require multiple standard CLI commands.  It can help come to come conclusions about problems or about a mis-configuration without needing to sift through a plethora of CLI outputs.
 
-Will an in-line CLI AI assistant replace show commands, or info commands? No - there is no question that a power user will most certainly get to the information they need more quickly than waiting for the AI assistant to get back to them.  That said there are still cases where even as a power user I've found myself getting a little help from SRL-GPT. Whether it be reminding myself of how something worked, or parsing logs, or summarizing large amounts of state data.  And plus, who doesn't want to learn how to configure OSPF from Yoda?
+Will an in-line CLI AI assistant replace show commands, or info commands? No - there is no question that a power user will most certainly get to the information they need more quickly than waiting for the AI assistant to get back to them.  That said there are still cases where even as a power user I've found myself getting a little help from SR Linux GPT. Whether it be reminding myself of how something worked, or parsing logs, or summarizing large amounts of state data.  And plus, who doesn't want to learn how to configure OSPF from Yoda?
 
 ```srl
 A:srl# askai can you provide a configuration example for configuring an OSPF neighbor, in the voice of Yoda
@@ -72,12 +72,12 @@ Before we dive in, it's important to note that this release is a proof of concep
 
 Additionally, in today's release we only support using OpenAI's LLM and you must provide your own OpenAI API key, which means you should be aware there will be costs associated with using the assistant (cost of using OpenAI's API).  As you'll probably see in the configuration tree of the askai-server we've tested with a few other LLMs and will most likely allow the use of your own hosted LLM soon - but until then use at your own risk (and cost)!
 
-### Installing SRL-GPT NDK Application
+### Installing SR Linux GPT NDK Application
 
-OK so load up your favorite containerlab topology, download the SRL-GPT application and `scp` it to your SR Linux device.
+OK so load up your favorite containerlab topology, download the SR Linux GPT application and `scp` it to your SR Linux device.
 
 !!!note
-    SRL-GPT uses some advanced CLI capabilities that we added in 23.7.1, therefore you need to be running 23.7.1 or later.
+    SR Linux GPT uses some advanced CLI capabilities that we added in 23.7.1, therefore you need to be running 23.7.1 or later.
 
 === "Install RPM"
     Up until release 23.10 SR Linux used to run Centos-based Linux OS with RPM package manager.
@@ -152,7 +152,7 @@ A:srl#
 ```
 
 !!!note "Configuring DNS servers"
-    For SRL-GPT app to reach out to OpenAI API you need to configure DNS servers on your SR Linux device ensuring that DNS resolution works. It might depend on your infra, but usually configuring public DNS servers works just fine:
+    For SR Linux GPTx GPT app to reach out to OpenAI API you need to configure DNS servers on your SR Linux device ensuring that DNS resolution works. It might depend on your infra, but usually configuring public DNS servers works just fine:
 
     ```srl title="paste this into your CLI"
     enter candidate
@@ -160,7 +160,7 @@ A:srl#
     commit now
     ```
 
-### Configuring SRL-GPT App
+### Configuring SR Linux GPT App
 
 Alright we're almost there! Configure your OpenAI key, let the app know if you want to use GPT3.5 or GPT4 - and if you want to start playing around with dynamic data (state and logs).
 
@@ -202,16 +202,16 @@ A:srl#
 
 ## Summary
 
-The blog post introduces the SR Linux GPT, a generative AI integrated into the SR Linux CLI. It can be used to ask questions about the CLI, provide configuration examples, and even answer questions about the system's state. The integration of the SRL-GPT app was done using the NDK and CLI plugin frameworks, which are also available to all SR Linux users. The post also discusses the role of generative AI in the Network Operating System and how it can be beneficial, especially for new SR Linux users. The release of SRL-GPT is not a supported product by Nokia but a proof of concept. The post also provides a step-by-step guide on how to get started with the AI assistant, including how to load the SRL-GPT application, configure your OpenAI key, and ask your first question.
+The blog post introduces the SR Linux GPT, a generative AI integrated into the SR Linux CLI. It can be used to ask questions about the CLI, provide configuration examples, and even answer questions about the system's state. The integration of the SR Linux GPT app was done using the NDK and CLI plugin frameworks, which are also available to all SR Linux users. The post also discusses the role of generative AI in the Network Operating System and how it can be beneficial, especially for new SR Linux users. The release of SR Linux GPT is not a supported product by Nokia but a proof of concept. The post also provides a step-by-step guide on how to get started with the AI assistant, including how to load the SR Linux GPT application, configure your OpenAI key, and ask your first question.
 
 <video width="100%" controls playsinline><source src="https://gitlab.com/rdodin/pics/-/wikis/uploads/4251cdb6d5818019295b31e9208c2183/blog.mp4" type="video/mp4"></video>
 
-If you're up for a more immersive demo experience checkout this bootlegged demo video of the SRL-GPT app in action ripped from the Nokia SReXperts North America 2023 event.
+If you're up for a more immersive demo experience checkout this bootlegged demo video of the SR Linux GPT app in action ripped from the Nokia SReXperts North America 2023 event.
 
 <center><blockquote class="twitter-tweet"><p lang="en" dir="ltr">If you remember, we have been working on an AI assistant running on SR Linux in our automation garage.</p>&mdash; Roman Dodin<a href="https://twitter.com/ntdvps/status/1704634777666502779">September 21, 2023</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script></center>
 
-And for a deep dive into the SRL-GPT app, check out Erwan James' appearance on Packet Pushers Video Bytes:
+And for a deep dive into the SR Linux GPT app, check out Erwan James' appearance on Packet Pushers Video Bytes:
 
 <div class="iframe-container">
-<iframe width="853" height="480" src="https://www.youtube.com/embed/zxwdecY12-E" title="SRL-GPT" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+<iframe width="853" height="480" src="https://www.youtube.com/embed/zxwdecY12-E" title="SR Linux GPT" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 </div>
