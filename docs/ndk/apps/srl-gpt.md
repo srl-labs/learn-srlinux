@@ -6,6 +6,6 @@ NDK framework is universal and allows you to build apps that don't necessarily h
 
 We've written a blog post about the app with a few cool examples embedded. Check it out here - [SR Linux GPT](../../blog/posts/2023/srlgpt.md).
 
-We have published the application so everyone can try it out and unleash the power of AI on their routers. The app [installation process](../../blog/posts/2023/srlgpt.md#installing-srl-gpt-ndk-application) is provided within the post.
+We have published the application so everyone can try it out and unleash the power of AI on their routers. The app [installation process](../../blog/posts/2023/srlgpt.md#installing-sr-linux-gpt-ndk-application) is provided within the post.
 
 [ndk]: ../index.md
