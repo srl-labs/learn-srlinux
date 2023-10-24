@@ -12,7 +12,7 @@ authors:
 
 It's taken much longer than we anticipated and wanted (Big co problems...) but we're finally here, SR Linux GPT release day!
 
-![feat](https://gitlab.com/rdodin/pics/-/wikis/uploads/9c7778134ffc89c322ae5ca8b392f9c6/_5081c81c-f905-4923-9e3e-5ab18ddec6d5__1_.webp){ width=20% align=left}
+![feat](https://gitlab.com/rdodin/pics/-/wikis/uploads/248c99aa1a3c7d74b346ef048ed514ca/srlinux-gpt-sticker_v1_webp.webp){ width=20% align=left}
 
 Given the excitement surrounding generative AI, especially after the public release of OpenAI's ChatGPT, it's no surprise that everyone has been exploring the potential value of integrating generative AI into their products and applications. We're no exception. It's an ongoing journey for us, and we're thrilled to start unveiling some of our findings!
 
