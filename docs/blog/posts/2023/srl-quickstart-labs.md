@@ -1,5 +1,5 @@
 ---
-date: 2023-10-09
+date: 2023-10-24
 tags:
   - sr linux
   - containerlab
