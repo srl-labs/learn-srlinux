@@ -116,19 +116,23 @@ There are two different package formats that SR Linux uses:
 
 Depending on which version of SR Linux you're running you will need to run the relevant installation command:
 
-=== "APT"
-    ```
+=== "APT (deb)"
+    ```srl
     --{ running }--[  ]--
     A:srl# bash sudo apt install -y srlgpt
     ```
 
-=== "YUM"
-    ```
+=== "YUM (rpm)"
+    To speed things up in YUM/rpm system we will disable all the repos except for the one that contains the `srlgpt` package. That is why the command looks a bit more bulky.
+    You can still opt to use the regular `bash sudo yum install srlgpt` command, but it will take longer to update caches for all repos.
+
+    ```text title="paste this two-line command into your CLI"
     --{ running }--[  ]--
-    A:srl# bash sudo yum install -y srlgpt
+    A:srl# bash "sudo yum makecache --disablerepo=* --enablerepo=srlinux &&
+    sudo yum install -y --disablerepo=* --enablerepo=srlinux srlgpt"
     ```
 
-Wait till the package cache is updated by apt/yum and the app is installed. It is that simple!
+Wait a few seconds for the app to download and install. It is that simple!
 
 ??? "Alternative installation options"
     If you want to install SR Linux GPT app on a hardware device, or a virtual device that is run by a different orchestrator, you can download the SR Linux GPT application package and `scp` it to your SR Linux device.
