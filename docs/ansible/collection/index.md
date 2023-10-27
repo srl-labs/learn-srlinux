@@ -111,6 +111,57 @@ The recommended way to [install][galaxy-install] galaxy collections is via the `
 
 Collection is installed at the collections path. Default location is `~/.ansible/collections/ansible_collections/nokia/slinux`.
 
+### Container image
+
+To simplify the usage of the collection, we provide a container image that contains the collection and all its dependencies. To accommodate for the different Ansible versions, we provide multiple images based on the underlying `ansible-core` and the python version. The full list of available images and their tags can be found in the [Github container registry](https://github.com/orgs/nokia/packages?repo_name=srlinux-ansible-collection).
+
+The easiest way to use the image is to create an alias for the `ansible-playbook` command.
+
+```bash
+alias ansible-playbook="docker run --rm -it \
+  -v $(pwd):/ansible \
+  -v ~/.ssh:/root/.ssh \
+  -v /etc/hosts:/etc/hosts \
+  ghcr.io/nokia/srlinux-ansible-collection/2.15.5/py3.11:v0.3.0 ansible-playbook $@"
+```
+
+???tip "How to test this container?"
+    Let's demonstrate how to use this container image given the alias above.
+
+    First, we deploy a simple SR Linux node using containerlab:
+
+    ```bash
+    curl -sL srlinux.dev/clab-srl | containerlab deploy -c -t -
+    ```
+
+    Once the lab is deployed, let's create a simple `test.yml` playbook that retrieves the SR Linux version:
+
+    ```bash
+    cat <<EOF > test.yml
+    - name: Example playbook
+      hosts: all
+      tasks:
+        - name: Get version
+          nokia.srlinux.get:
+            paths:
+              - path: /system/information/version
+                datastore: state
+          register: output
+
+        - ansible.builtin.debug:
+            msg: 'SR Linux version {{output.result[0]}}'
+    EOF
+    ```
+
+    Finally, let's run the playbook specifying the SR Linux container name `srl` as a single inventory host, the connection plugin to use, and the credentials:
+
+    ```bash
+    ansible-playbook -i srl, \
+      -c ansible.netcommon.httpapi -e "ansible_network_os=nokia.srlinux.srlinux" \
+      -e "ansible_user=admin" -e "ansible_password=NokiaSrl1!" \
+      test.yml
+    ```
+
 ## SR Linux configuration
 
 The factory configuration that SR Linux ships with doesn't have JSON-RPC interface enabled. In order to use the modules of this collection, users should enable and [configure the JSON-RPC server](../../tutorials/programmability/json-rpc/basics.md#configuring-json-rpc).
