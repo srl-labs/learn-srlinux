@@ -85,7 +85,13 @@ If this is not your first tutorial on this site, you rightfully expect to get a 
 
 [lab-file]: https://github.com/srl-labs/jsonrpc-ansible/blob/main/lab.clab.yml
 
-To deploy the lab, clone the [repository][lab] and do `containerlab deploy` from within the repository's directory. Shortly after you should have two SR Linux containers running:
+To deploy the lab, simply run:
+
+```
+sudo containerlab deploy -c -t https://github.com/srl-labs/jsonrpc-ansible
+```
+
+Shortly after you should have two SR Linux containers running:
 
 ```c title="Result of containerlab deploy command"
 +---+----------------+--------------+-------------------------------+------+---------+----------------+----------------------+
@@ -96,11 +102,13 @@ To deploy the lab, clone the [repository][lab] and do `containerlab deploy` from
 +---+----------------+--------------+-------------------------------+------+---------+----------------+----------------------+
 ```
 
+Finally change into the cloned directory -  `cd jsonrpc-ansible` - and we are ready to start.
+
 ## Ansible setup
 
 ### Inventory
 
-The two nodes deployed by containerlab fit nicely in a simple Ansible's [inventory][ansible-inventory]. We use container's names as containerlab reported back to us and construct the inventory in a  YAML format:
+Ansible requires an [inventory][ansible-inventory] file to be present to identify the fleet of hosts it is going to operate on. Create the following `inventory.yml` file in your current working directory:
 
 ```yaml title="inventory.yml file"
 all:
@@ -109,6 +117,7 @@ all:
     ansible_user: admin
     ansible_password: NokiaSrl1!
     ansible_network_os: nokia.srlinux.srlinux
+    ansible_httpapi_use_proxy: false
   hosts:
     clab-2srl-srl1:
       e1_1_ip: 192.168.0.1/24
@@ -124,22 +133,42 @@ We put a variable `e1_1_ip` for each host, as later we would like to use the val
 
 ### Container
 
-Ansible is infamous for breaking things when you least expect it. For that reason, we put [caged](https://github.com/hellt/ansible-docker/pkgs/container/ansible) the beast.  
-We built a container image with Ansible-core v2.13.8 and are going to use it throughout this tutorial via a runner script [`ansible.sh`](https://github.com/srl-labs/jsonrpc-ansible/blob/main/ansible.sh) that calls a `docker run` command with a few args:
+Ansible is infamous for breaking things when you least expect it. For that reason, we [caged](../../../ansible/collection/index.md#container-image) the beast.  
+We [created a pipeline](https://github.com/nokia/srlinux-ansible-collection/blob/main/.github/workflows/container-build.yml) that builds container images for each release of our collection making sure that our users have one worry less during their automation journey.
 
-```bash title="ansible-in-a-container runner script"
-docker run --rm -it \
-  -v $(pwd):/ansible \ #(1)!
-  -v ~/.ssh:/root/.ssh \ #(2)!
-  -v /etc/hosts:/etc/hosts \ #(3)!
-  ghcr.io/hellt/ansible:2.13.8 ansible-playbook -i inventory.yml $@
+Throughout this tutorial we will be using `ghcr.io/nokia/srlinux-ansible-collection/2.15.5/py3.11:v0.3.0` container image that as the url suggests is based on `ansible-core==2.15.5` with `python 3.11` running srlinux collection v0.3.0.
+
+To save some finger energy we will create a handy alias [`ansible-playbook`](https://github.com/srl-labs/jsonrpc-ansible/blob/main/ansible.sh) that runs our container image with the `inventory.yml` created before:
+
+```bash title="ansible-in-a-container alias"
+alias ansible-playbook="docker run --rm -it \
+  -v $(pwd):/ansible \(1)
+  -v ~/.ssh:/root/.ssh \(2)
+  -v /etc/hosts:/etc/hosts \(3)
+  ghcr.io/nokia/srlinux-ansible-collection/2.15.5/py3.11:v0.3.0 \
+  ansible-playbook -i inventory.yml $@"
 ```
 
 1. `/ansible` is a working dir for our container image, so we mount the repo's directory to this path.
 2. although not needed for this lab, we still mount ssh dir of the host to the container, in case we need key-based ssh access
 3. to make sure that Ansible container can reach the nodes deployed by containerlab we mount the `/etc/hosts` file to it. That way ansible inside the container can resolve node names to IP addresses.
 
-!!!note
+Now we can ensure that our alias works, just as if you had Ansible installed locally:
+
+```bash
+❯ ansible-playbook --version
+ansible-playbook [core 2.15.5]
+  config file = None
+  configured module search path = ['/root/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
+  ansible python module location = /usr/local/lib/python3.11/site-packages/ansible
+  ansible collection location = /root/.ansible/collections:/usr/share/ansible/collections
+  executable location = /usr/local/bin/ansible-playbook
+  python version = 3.11.6 (main, Oct 11 2023, 23:23:39) [GCC 12.2.0] (/usr/local/bin/python)
+  jinja version = 3.1.2
+  libyaml = True
+```
+
+???note "setting up `iptables` for container networking"
     With Ansible running in a container connected to the default bridge network and the rest of the nodes running in the `clab` docker network users may experience communication problems between Ansible and network elements.  
     This stems from the default iptables rules Docker maintains preventing container communications between different networks. To overcome this, consider one of the following methods (one of them, not all):
 
@@ -188,7 +217,7 @@ Each path in the `paths` list uses an XPATH-like path notation that points to a 
 To execute the playbook:
 
 ```bash
-./ansible.sh task01/get-state-and-config-data.yml
+ansible-playbook task01/get-state-and-config-data.yml
 ```
 
 The result of the playbook will contain the message string per each lab node with the relevant information:
@@ -239,6 +268,11 @@ Once the whole running datastore is fetched we write (using the [copy module](ht
 
 As a result, running configs of the two nodes are written to the `task02` directory:
 
+```bash
+ansible-playbook task02/cfg-backup.yml
+```
+
+<div class="embed-result">
 ```
 PLAY [Configuration backup] **************************************************************************************
 
@@ -253,7 +287,9 @@ changed: [clab-2srl-srl2]
 PLAY RECAP *******************************************************************************************************
 clab-2srl-srl1             : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
 clab-2srl-srl2             : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+
 ```
+</div>
 
 ```bash
 ❯ ls task02
@@ -361,11 +397,11 @@ Since `/interface` list is a top-level element in our [YANG model](../../../yang
 
 #### Results validation
 
-Run the playbook with `./ansible.sh task03/config.yml`:
+Run the playbook with `ansible-playbook task03/config.yml`:
 
 ???note "Run output"
     ```
-    ❯ ./ansible.sh task03/config.yml
+    ❯ ansible-playbook task03/config.yml
 
     PLAY [Configuration] ************************************************************************************************************************
 
@@ -439,11 +475,11 @@ In [`task04/replace-partial-cfg.yml`](https://github.com/srl-labs/jsonrpc-ansibl
 
 The replace action will delete everything under `/interface[name=ethernet-1/1]` and update it with the value specified in the request. We also remove the binding of the subinterface `ethernet-1/1.0` from the network instance, since the subinterface is going to be removed by the replace operation and we can't have it referenced in the network instance anymore.
 
-Run the playbook with `./ansible.sh task04/replace-partial-cfg.yml`:
+Run the playbook with `ansible-playbook task04/replace-partial-cfg.yml`:
 
 ???note "Run output"
     ```
-    ❯ ./ansible.sh task04/replace-partial-cfg.yml
+    ❯ ansible-playbook task04/replace-partial-cfg.yml
 
     PLAY [Replace operation] ********************************************************************************************************************
 
@@ -496,11 +532,11 @@ In [`task05/replace-entire-cfg.yml`](https://github.com/srl-labs/jsonrpc-ansible
 
 To replace the entire config we set the path to `/` value and provide the entire config in the value field.
 
-Run the playbook with `./ansible.sh task05/replace-entire-cfg.yml`:
+Run the playbook with `ansible-playbook task05/replace-entire-cfg.yml`:
 
 ???note "Run output"
     ```
-    ❯ ./ansible.sh task05/replace-entire-cfg.yml
+    ❯ ansible-playbook task05/replace-entire-cfg.yml
 
     PLAY [Replace operation] ********************************************************************************************************************
 
@@ -561,12 +597,12 @@ To save the results of the executed commands we loop over the results array and 
     index_var: idx
 ```
 
-Run the playbook with `./ansible.sh task06/fetch-show-cmd-output.yml`:
+Run the playbook with `ansible-playbook task06/fetch-show-cmd-output.yml`:
 
 ??? "Run output"
 
     ```
-    ❯ ./ansible.sh task06/fetch-show-cmd-output.yml
+    ❯ ansible-playbook task06/fetch-show-cmd-output.yml
 
     PLAY [Operational commands] *****************************************************************************************************************
 

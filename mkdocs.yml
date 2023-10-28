@@ -215,6 +215,10 @@ extra:
   tags:
     # tags and their identifiers
     media: media # media tag is used to show posts in media.md
+  annotate:
+    bash:
+      - .s1
+      - .s2
 
 # Extensions
 markdown_extensions:
