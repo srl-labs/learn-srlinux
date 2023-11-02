@@ -162,7 +162,8 @@ plugins:
       j2_variable_start_string: "[[["
       j2_variable_end_string: "]]]"
       # include_yaml:
-      #   - macros/data.yml
+      #   - macros/vars.yml
+      include_dir: macros
   - blog:
       blog_dir: blog
       post_url_date_format: yyyy

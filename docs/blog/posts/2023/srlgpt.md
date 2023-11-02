@@ -10,6 +10,9 @@ authors:
 
 # SR Linux GPT
 
+[[[% import 'macros.html' as macros %]]]
+[[[ macros.srl_version('23.7.1') ]]]
+
 It's taken much longer than we anticipated and wanted (Big co problems...) but we're finally here, SR Linux GPT release day!
 
 ![feat](https://gitlab.com/rdodin/pics/-/wikis/uploads/248c99aa1a3c7d74b346ef048ed514ca/srlinux-gpt-sticker_v1_webp.webp){ width=20% align=left}
@@ -123,13 +126,11 @@ Depending on which version of SR Linux you're running you will need to run the r
     ```
 
 === "YUM (rpm)"
-    To speed things up in YUM/rpm system we will disable all the repos except for the one that contains the `srlgpt` package. That is why the command looks a bit more bulky.
-    You can still opt to use the regular `bash sudo yum install srlgpt` command, but it will take longer to update caches for all repos.
+    To speed things up in YUM/rpm system we will disable all the repos except for the one that contains the `srlgpt` package.
 
-    ```text title="paste this two-line command into your CLI"
+    ```srl title="paste this two-line command into your CLI"
     --{ running }--[  ]--
-    A:srl# bash "sudo yum makecache --disablerepo=* --enablerepo=srlinux &&
-    sudo yum install -y --disablerepo=* --enablerepo=srlinux srlgpt"
+    A:srl# bash sudo yum install -y --disablerepo=* --enablerepo=srlinux srlgpt
     ```
 
 Wait a few seconds for the app to download and install. It is that simple!
