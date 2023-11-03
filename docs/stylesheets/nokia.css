@@ -171,8 +171,13 @@ th {
  */
 .md-typeset .embed-result {
   margin-top: -1.125em;
-  margin-left: -0.8rem;
-  margin-right: -0.8rem;
+}
+
+@media screen and (max-width: 44.984375em) {
+  .md-typeset .embed-result {
+    margin-left: -0.8rem;
+    margin-right: -0.8rem;
+  }
 }
 
 /* START mkdocs Badge elements (version) */
