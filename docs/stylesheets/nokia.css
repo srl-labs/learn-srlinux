@@ -173,6 +173,13 @@ th {
   margin-top: -1.125em;
 }
 
+@media screen and (max-width: 44.984375em) {
+  .md-typeset .embed-result {
+    margin-left: -0.8rem;
+    margin-right: -0.8rem;
+  }
+}
+
 /* START mkdocs Badge elements (version) */
 .md-typeset .mdx-badge {
   font-size: 0.85em;
