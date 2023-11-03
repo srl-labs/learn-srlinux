@@ -10,9 +10,6 @@ authors:
 
 # SR Linux GPT
 
-[[[% import 'macros.html' as macros %]]]
-[[[ macros.srl_version('23.7.1') ]]]
-
 It's taken much longer than we anticipated and wanted (Big co problems...) but we're finally here, SR Linux GPT release day!
 
 ![feat](https://gitlab.com/rdodin/pics/-/wikis/uploads/248c99aa1a3c7d74b346ef048ed514ca/srlinux-gpt-sticker_v1_webp.webp){ width=20% align=left}
@@ -76,6 +73,9 @@ Before we dive in, it's important to note that this release is a proof of concep
 Additionally, in today's release we only support using OpenAI's LLM and you must provide your own OpenAI API key, which means you should be aware there will be costs associated with using the assistant (cost of using OpenAI's API).  As you'll probably see in the configuration tree of the askai-server we've tested with a few other LLMs and will most likely allow the use of your own hosted LLM soon - but until then use at your own risk (and cost)!
 
 ### Installing SR Linux GPT NDK Application
+
+[[[% import 'macros.html' as macros %]]]
+[[[ macros.srl_version('23.7.1') ]]]
 
 OK, so to demonstrate SR Linux GPT app we will use Containerlab (min version 0.47.1) and spin up a very simple single node SR Linux topology:
 
