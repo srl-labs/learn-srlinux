@@ -90,7 +90,20 @@ nav:
                   - Summary: tutorials/programmability/ansible/intent-based-management/summary.md
       - Troubleshooting:
           - tutorials/tshoot/index.md
-          - Chassis and Environment: tutorials/tshoot/chassis-and-env/chassis-and-env.md
+          - Chassis and Environment: tutorials/tshoot/chassis-and-env.md
+          - Interface: tutorials/tshoot/interface.md
+          - LAG: tutorials/tshoot/lag.md
+          - Network Instance: tutorials/tshoot/network-instance.md
+          - OSPF: tutorials/tshoot/ospf.md
+          - IS-IS: tutorials/tshoot/is-is.md
+          - BGP: tutorials/tshoot/bgp.md
+          - EVPN: tutorials/tshoot/evpn.md
+          - ACL: tutorials/tshoot/acl.md
+          - CPM Filter: tutorials/tshoot/cpm-filter.md
+          - Mirroring: tutorials/tshoot/mirroring.md
+          - Debug: tutorials/tshoot/debug.md
+          - DHCP Relay: tutorials/tshoot/dhcp-relay.md
+          - TACACS: tutorials/tshoot/tacacs.md
   - Community: community.md
   - Blog:
       - blog/index.md
