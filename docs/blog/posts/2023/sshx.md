@@ -28,6 +28,8 @@ I felt an immediate urge to try it out with SR Linux. And it worked like a charm
 <iframe width="560" height="315" src="https://www.youtube.com/embed/-BByXtL6dNo?si=vkvZUUPsxg7GdF6R" title="Sharing SR Linux Terminal with SSHX" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 </div>
 
+<!-- more -->
+
 It is super easy to bring `sshx` to SR Linux, here is a quick demo environment that you can spin up to try it out:
 
 1. Deploy a single-node SR Linux lab
