@@ -77,12 +77,12 @@ Additionally, in today's release we only support using OpenAI's LLM and you must
 
 [[[% import 'macros.html' as macros %]]]
 [[[ macros.srl_version('23.7.1') ]]]
-[[[ macros.clab_version('0.47.2') ]]]
+[[[ macros.clab_version('0.48.2') ]]]
 
 OK, so to demonstrate SR Linux GPT app we will use Containerlab (min version 0.47.1) and spin up a very simple single node SR Linux topology:
 
 ```bash
-curl -sL srlinux.dev/clab-srl | containerlab deploy -c -t -
+sudo containerlab deploy -c -t srlinux.dev/clab-srl
 ```
 
 Wait ~20 seconds for the lab to deploy and SSH into the node:
@@ -121,108 +121,122 @@ There are two different package formats that SR Linux uses:
 
 Depending on which version of SR Linux you're running you will need to run the relevant installation command:
 
-=== "APT (deb)"
-    ```srl
-    --{ running }--[  ]--
-    A:srl# bash sudo apt install -y srlgpt
-    ```
+/// tab | APT (deb)
 
-=== "YUM (rpm)"
-    To speed things up in YUM/rpm system we will disable all the repos except for the one that contains the `srlgpt` package.
+```srl
+--{ running }--[  ]--
+A:srl# bash sudo apt update && sudo apt install -y srlgpt
+```
 
-    ```srl title="paste this two-line command into your CLI"
-    --{ running }--[  ]--
-    A:srl# bash sudo yum install -y --disablerepo=* --enablerepo=srlinux srlgpt
-    ```
+In case APT index update is taking too long, use the following command to only update the custom repository:
+
+```
+bash sudo apt -o Dir::Etc::sourcelist=sources.list.d/srlinux.list -o Dir::Etc::sourceparts=- -o APT::Get::List-Cleanup=0 update && sudo apt install srlgpt
+```
+
+///
+/// tab | YUM (rpm)
+To speed things up in YUM/rpm system we will disable all the repos except for the one that contains the `srlgpt` package.
+
+```srl title="paste this two-line command into your CLI"
+--{ running }--[  ]--
+A:srl# bash sudo yum install -y --disablerepo=* --enablerepo=srlinux srlgpt
+```
+
+///
 
 Wait a few seconds for the app to download and install. It is that simple!
 
-??? "Alternative installation options"
-    If you want to install SR Linux GPT app on a hardware device, or a virtual device that is run by a different orchestrator, you can download the SR Linux GPT application package and `scp` it to your SR Linux device.
+//// details | Alternative installation options
+If you want to install SR Linux GPT app on a hardware device, or a virtual device that is run by a different orchestrator, you can download the SR Linux GPT application package and `scp` it to your SR Linux device.
 
-    !!!note
-        SR Linux GPT uses some advanced CLI capabilities that we added in 23.7.1, therefore you need to be running 23.7.1 or later.
+!!!note
+    SR Linux GPT uses some advanced CLI capabilities that we added in 23.7.1, therefore you need to be running 23.7.1 or later.
 
-    === "Install RPM"
-        Up until release 23.10 SR Linux used to run Centos-based Linux OS with RPM package manager.
+/// tab | Install RPM
+Up until release 23.10 SR Linux used to run Centos-based Linux OS with RPM package manager.
 
-        ```bash
-        curl -L https://gitlab.com/rdodin/pics/-/wikis/uploads/5b5a3eab3e14229d484a35dcd2f23264/srlgpt_1.0.99_linux_amd64.rpm \
-        -o /tmp/srlgpt.rpm && scp /tmp/srlgpt.rpm clab-srl-srl: #(1)!
-        ```
+```bash
+curl -L https://gitlab.com/rdodin/pics/-/wikis/uploads/5b5a3eab3e14229d484a35dcd2f23264/srlgpt_1.0.99_linux_amd64.rpm \
+-o /tmp/srlgpt.rpm && scp /tmp/srlgpt.rpm clab-srl-srl: #(1)!
+```
 
-        1. In the example the SR Linux node is named `clab-srl-srl`, replace with the name/address you have.
+1. In the example the SR Linux node is named `clab-srl-srl`, replace with the name/address you have.
+///
+/// tab | Install DEB
+Starting from 23.10 version, SR Linux uses Debian-based Linux OS with DEB package manager.
 
-    === "Install DEB"
-        Starting from 23.10 version, SR Linux uses Debian-based Linux OS with DEB package manager.
+```bash
+curl -L https://gitlab.com/rdodin/pics/-/wikis/uploads/19637b56a042c6d6aaa51072e3fefa55/srlgpt_1.0.99_linux_amd64.deb \
+-o /tmp/srlgpt.deb && scp /tmp/srlgpt.deb clab-srl-srl: #(1)!
+```
 
-        ```bash
-        curl -L https://gitlab.com/rdodin/pics/-/wikis/uploads/19637b56a042c6d6aaa51072e3fefa55/srlgpt_1.0.99_linux_amd64.deb \
-        -o /tmp/srlgpt.deb && scp /tmp/srlgpt.deb clab-srl-srl: #(1)!
-        ```
+2. In the example the SR Linux node is named `clab-srl-srl`, replace with the name/address you have.
+///
 
-        2. In the example the SR Linux node is named `clab-srl-srl`, replace with the name/address you have.
+Now install the copied package by opening a bash shell and running the relevant command for the package manager used in your SR Linux version.
 
-    Now install the copied package by opening a bash shell and running the relevant command for the package manager used in your SR Linux version.
+```bash
+docker exec -it clab-srl-srl bash
+```
 
-    ```bash
-    docker exec -it clab-srl-srl bash
-    ```
+```bash
+[admin@srl ~]$ sudo rpm -i srlgpt.rpm #(1)!
+```
 
-    ```bash
-    [admin@srl ~]$ sudo rpm -i srlgpt.rpm #(1)!
-    ```
+1. Replace with `sudo dpkg -i srlgpt.deb` if you're using DEB package manager.
 
-    1. Replace with `sudo dpkg -i srlgpt.deb` if you're using DEB package manager.
+Now enter SR Linux CLI and reload `app_mgr` so that it can read the new application YANG models:
 
-    Now enter SR Linux CLI and reload `app_mgr` so that it can read the new application YANG models:
+```
+[root@srl /]# sr_cli
+Using configuration file(s): []
+Welcome to the srlinux CLI.
+Type 'help' (and press <ENTER>) if you need any help using this.
+--{ running }--[  ]--
+A:srl# tools system app-management application app_mgr reload
+```
 
-    ```
-    [root@srl /]# sr_cli
-    Using configuration file(s): []
-    Welcome to the srlinux CLI.
-    Type 'help' (and press <ENTER>) if you need any help using this.
-    --{ running }--[  ]--
-    A:srl# tools system app-management application app_mgr reload
-    ```
+We need to get into a new CLI session to pickup on the newly installed CLI plugin and configuration tree. So close the existing session and open a new one:
 
-    We need to get into a new CLI session to pickup on the newly installed CLI plugin and configuration tree. So close the existing session and open a new one:
+```srl
+❯ ssh admin@clab-srl-srl
 
-    ```srl
-    ❯ ssh admin@clab-srl-srl
+................................................................
+:                  Welcome to Nokia SR Linux!                  :
+:              Open Network OS for the NetOps era.             :
+:                                                              :
+:    This is a freely distributed official container image.    :
+:                      Use it - Share it                       :
+:                                                              :
+: Get started: https://learn.srlinux.dev                       :
+: Container:   https://go.srlinux.dev/container-image          :
+: Docs:        https://doc.srlinux.dev/23-7                    :
+: Rel. notes:  https://doc.srlinux.dev/rn23-7-1                :
+: YANG:        https://yang.srlinux.dev/v23.7.1                :
+: Discord:     https://go.srlinux.dev/discord                  :
+: Contact:     https://go.srlinux.dev/contact-sales            :
+................................................................
 
-    ................................................................
-    :                  Welcome to Nokia SR Linux!                  :
-    :              Open Network OS for the NetOps era.             :
-    :                                                              :
-    :    This is a freely distributed official container image.    :
-    :                      Use it - Share it                       :
-    :                                                              :
-    : Get started: https://learn.srlinux.dev                       :
-    : Container:   https://go.srlinux.dev/container-image          :
-    : Docs:        https://doc.srlinux.dev/23-7                    :
-    : Rel. notes:  https://doc.srlinux.dev/rn23-7-1                :
-    : YANG:        https://yang.srlinux.dev/v23.7.1                :
-    : Discord:     https://go.srlinux.dev/discord                  :
-    : Contact:     https://go.srlinux.dev/contact-sales            :
-    ................................................................
+Last login: Mon Oct  9 21:24:47 2023 from 2001:172:20:20::1
+Using configuration file(s): []
+Welcome to the srlinux CLI.
+Type 'help' (and press <ENTER>) if you need any help using this.
+--{ running }--[  ]--
+A:srl#
+```
 
-    Last login: Mon Oct  9 21:24:47 2023 from 2001:172:20:20::1
-    Using configuration file(s): []
-    Welcome to the srlinux CLI.
-    Type 'help' (and press <ENTER>) if you need any help using this.
-    --{ running }--[  ]--
-    A:srl#
-    ```
+/// note | Configuring DNS servers
+For SR Linux GPT app to reach out to OpenAI API you need to configure DNS servers on your SR Linux device ensuring that DNS resolution works. Containerlab does that on your behalf, but if you don't use it you have to configure it manually. It might depend on your infra, but usually configuring public DNS servers works just fine:
 
-    !!!note "Configuring DNS servers"
-        For SR Linux GPT app to reach out to OpenAI API you need to configure DNS servers on your SR Linux device ensuring that DNS resolution works. Containerlab does that on your behalf, but if you don't use it you have to configure it manually. It might depend on your infra, but usually configuring public DNS servers works just fine:
+```srl title="paste this into your CLI"
+enter candidate
+  system dns network-instance mgmt server-list [ 1.1.1.1 ]
+commit now
+```
 
-        ```srl title="paste this into your CLI"
-        enter candidate
-          system dns network-instance mgmt server-list [ 1.1.1.1 ]
-        commit now
-        ```
+///
+////
 
 ### Configuring SR Linux GPT App
 
@@ -278,4 +292,9 @@ And for a deep dive into the SR Linux GPT app, check out Erwan James' appearance
 
 <div class="iframe-container">
 <iframe width="853" height="480" src="https://www.youtube.com/embed/zxwdecY12-E" title="SR Linux GPT" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+</div>
+
+and a demo of the SR Linux GPT app in action at NFD33:
+<div class="iframe-container">
+<iframe width="100%" src="https://www.youtube.com/embed/tUjN2VtveCw" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 </div>
