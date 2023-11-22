@@ -30,8 +30,9 @@ The "cost" associated with requiring users to write YANG models for their apps p
 
 And secondly, the YANG modules for custom apps are not that hard to write as their data model is typically relatively small.
 
-!!!note
-    The YANG module is only needed if a developer wants their agent to be configurable via any management interfaces or keep state.
+///note
+The YANG module is only needed if a developer wants their agent to be configurable via any management interfaces or keep state.
+///
 
 YANG files related to an agent are typically located by the `/opt/$agentName/yang` path.
 
@@ -51,88 +52,93 @@ Custom agents must have their config file present by the `/etc/opt/srlinux/appmg
 
 Through the subsequent chapters of the Developers Guide, we will cover the most important options, but here is a complete list of config file parameters:
 
-???info "Complete list of config files parameters"
-    ```yaml
-    # Example configuration file for the applications on sr_linux
-    # All valid options are shown and explained
-    # The name of the application.
-    # This must be unique.
-    application-name:
-        # [Mandatory] The source path where the binary can be found
-        path: /usr/local/bin
-        # [Optional, default='./<application-name>'] The command to launch the application.
-        # Note these replacement rules:
-        #   {slot-num} will be replaced by the slot number the process is running on
-        #   {0}, {1}, ... can be replaced by parameters provided in the launch request (launch-by-request: Yes)
-        launch-command: "VALUE=2 ./binary_name --log-level debug"
-        # [Optional, default='<launch-command>'] The command to search for when checking if the application is running.
-        # This will be executed as a prefix search, so if the application was launched using './app-name -loglevel debug'
-        # a search-command './app-name' would work.
-        # Note: same replacement rules as launch-command
-        search-command: "./binary_name"
-        # [Optional, default=No] Indicates whether the application needs to be launched automatically
-        never-start: No
-        # [Optional, default=No] Indicates whether the application can be restarted automatically when it crashes.
-        # Applies only when never-start is No (if the app is not started by app_mgr it would not be restarted either).
-        # Applications are only restarted when running app_mgr in restart mode (e.g. sr_linux --restart)
-        never-restart: No
-        # [Optional, default=No] Indicates whether the application will be shown in app manager status
-        never-show: No
-        # [Optional, default=No] Indicates whether the launch of the application is delayed
-        # until any configuration is loaded in the application's YANG modules.
-        wait-for-config: No
-        # [Optional] Indicates the application is run as 'user' including 'root'
-        run-as-user: root
-        # [Optional, default=200] Indicates the order in which the application needs to be launched.
-        # The applications with the lowest value are launched first.
-        # Applications with the same value are launched in an undefined order.
-        # By convention, start-order >= 100 require idb.  1 is reserved for device-mgr, which determines chassis type.
-        start-order: 123
-        # [Optional, default=No] Indicates whether this application is launched via an request (idb only at this point).
-        launch-by-request: No
-        # [Optional, default=No] Indicates whether this application is launched in a net namespace (launch-by-request
-        # must be set to Yes).
-        launch-in-net-namespace: No
-        # [Optional, default=3] Indicates the number of restarts within failure-window which will trigger the system restart
-        failure-threshold: 3
-        # [Optional, default=300] Indicates the window in seconds over which to count restarts towards failure-threshold
-        failure-window: 400
-        # [Optional, default=reboot] Indicates the action taken after 'failure-threshold' failures within 'failure-window'
-        failure-action: 'reboot'
-        # [Optional, default=Nokia] Indicates the author of the application
-        author: 'Nokia'
-        # [Optional, default=””] The command for app_mgr to run to read the application version
-        version-command: 'snmpd --version'
-        # [Optional The operations that may not be manually performed on this application
-        restricted-operations: ['start', 'stop', 'restart', 'quit', 'kill']
-        # [Optional, default No] app-mgr will wait for app to acknowledge it via oob channel
-        oob-init: No
-        # [Optional] The list of launch restrictions - if of all of the restrictions of an element in the list are met,
-        # then the application is launched.  The restrictions are separated by a ':'.  Valid restrictions are:
-        #   'sim' - running in sim mode (like in container env.)
-        #   'hw' - running on real h/w
-        #   'chassis' - running on a chassis (cpm and imm are running on different processors)
-        #   'imm' - runs on the imm
-        #   'cpm' - runs on the cpm (default)
-        launch-restrictions: ['hw:cpm', 'hw:chassis:imm']
-        yang-modules:
-            # [Mandatory] The names of the YANG modules to load. This is usually the file-name without '.yang'
-            names: [module-name, other-module-name]
-            # [Optional] List of enabled YANG features. Each needs to be qualified (e.g. srl_nokia-common:foo)
-            enabled-features: ['module-name:foo', 'other-module-name:bar']
-            # [Optional] The names of the YANG validation plugins to load.
-            validation-plugins: [plugin-name, other-plugin-name]
-            # [Mandatory] All the source-directories where we should search for:
-            #    - The YANG modules listed here
-            #    - any YANG module included/imported in these modules
-            source-directories: [/path/one, /path/two]
-            # [Optional] The names of the not owned YANG modules to load for commit confirmation purposes.
-            not-owned-names: [module-name, other-module-name]
-    # [Optional] Multiple applications can be defined in the same YAML file
-    other-application-name:
-        command: "./other-binary"
-        path: /other/path
-    ```
+///details | Complete list of config files parameters
+
+```yaml
+# Example configuration file for the applications on sr_linux
+# All valid options are shown and explained
+# The name of the application.
+# This must be unique.
+application-name:
+    # [Mandatory] The source path where the binary can be found
+    path: /usr/local/bin
+    # [Optional, default='./<application-name>'] The command to launch the application.
+    # Note these replacement rules:
+    #   {slot-num} will be replaced by the slot number the process is running on
+    #   {0}, {1}, ... can be replaced by parameters provided in the launch request (launch-by-request: Yes)
+    launch-command: "VALUE=2 ./binary_name --log-level debug"
+    # [Optional, default='<launch-command>'] The command to search for when checking if the application is running.
+    # This will be executed as a prefix search, so if the application was launched using './app-name -loglevel debug'
+    # a search-command './app-name' would work.
+    # Note: same replacement rules as launch-command
+    search-command: "./binary_name"
+    # [Optional, default=No] Indicates whether the application needs to be launched automatically
+    never-start: No
+    # [Optional, default=No] Indicates whether the application can be restarted automatically when it crashes.
+    # Applies only when never-start is No (if the app is not started by app_mgr it would not be restarted either).
+    # Applications are only restarted when running app_mgr in restart mode (e.g. sr_linux --restart)
+    never-restart: No
+    # [Optional, default=No] Indicates whether the application will be shown in app manager status
+    never-show: No
+    # options are "proto-json", "json", "binary-tlvs" (default is proto-json)
+    config-delivery-format: json
+    # [Optional, default=No] Indicates whether the launch of the application is delayed
+    # until any configuration is loaded in the application's YANG modules.
+    wait-for-config: No
+    # [Optional] Indicates the application is run as 'user' including 'root'
+    run-as-user: root
+    # [Optional, default=200] Indicates the order in which the application needs to be launched.
+    # The applications with the lowest value are launched first.
+    # Applications with the same value are launched in an undefined order.
+    # By convention, start-order >= 100 require idb.  1 is reserved for device-mgr, which determines chassis type.
+    start-order: 123
+    # [Optional, default=No] Indicates whether this application is launched via an request (idb only at this point).
+    launch-by-request: No
+    # [Optional, default=No] Indicates whether this application is launched in a net namespace (launch-by-request
+    # must be set to Yes).
+    launch-in-net-namespace: No
+    # [Optional, default=3] Indicates the number of restarts within failure-window which will trigger the system restart
+    failure-threshold: 3
+    # [Optional, default=300] Indicates the window in seconds over which to count restarts towards failure-threshold
+    failure-window: 400
+    # [Optional, default=reboot] Indicates the action taken after 'failure-threshold' failures within 'failure-window'
+    failure-action: 'reboot'
+    # [Optional, default=Nokia] Indicates the author of the application
+    author: 'Nokia'
+    # [Optional, default=””] The command for app_mgr to run to read the application version
+    version-command: 'snmpd --version'
+    # [Optional The operations that may not be manually performed on this application
+    restricted-operations: ['start', 'stop', 'restart', 'quit', 'kill']
+    # [Optional, default No] app-mgr will wait for app to acknowledge it via oob channel
+    oob-init: No
+    # [Optional] The list of launch restrictions - if of all of the restrictions of an element in the list are met,
+    # then the application is launched.  The restrictions are separated by a ':'.  Valid restrictions are:
+    #   'sim' - running in sim mode (like in container env.)
+    #   'hw' - running on real h/w
+    #   'chassis' - running on a chassis (cpm and imm are running on different processors)
+    #   'imm' - runs on the imm
+    #   'cpm' - runs on the cpm (default)
+    launch-restrictions: ['hw:cpm', 'hw:chassis:imm']
+    yang-modules:
+        # [Mandatory] The names of the YANG modules to load. This is usually the file-name without '.yang'
+        names: [module-name, other-module-name]
+        # [Optional] List of enabled YANG features. Each needs to be qualified (e.g. srl_nokia-common:foo)
+        enabled-features: ['module-name:foo', 'other-module-name:bar']
+        # [Optional] The names of the YANG validation plugins to load.
+        validation-plugins: [plugin-name, other-plugin-name]
+        # [Mandatory] All the source-directories where we should search for:
+        #    - The YANG modules listed here
+        #    - any YANG module included/imported in these modules
+        source-directories: [/path/one, /path/two]
+        # [Optional] The names of the not owned YANG modules to load for commit confirmation purposes.
+        not-owned-names: [module-name, other-module-name]
+# [Optional] Multiple applications can be defined in the same YAML file
+other-application-name:
+    command: "./other-binary"
+    path: /other/path
+```
+
+///
 
 ## Dependency and other files
 
