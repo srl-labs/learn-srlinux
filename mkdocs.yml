@@ -4,6 +4,24 @@ nav:
   - Get Started: get-started.md
   - Management:
       - mgmt/index.md
+      - CLI:
+          - cli/index.md
+          - Show Commands:
+              - cli/show-commands/index.md
+              - Chassis and Environment: cli/show-commands/chassis-and-env.md
+              - Interface: cli/show-commands/interface.md
+              - LAG: cli/show-commands/lag.md
+              - Network Instance: cli/show-commands/network-instance.md
+              - OSPF: cli/show-commands/ospf.md
+              - IS-IS: cli/show-commands/is-is.md
+              - BGP: cli/show-commands/bgp.md
+              - EVPN: cli/show-commands/evpn.md
+              - ACL: cli/show-commands/acl.md
+              - CPM Filter: cli/show-commands/cpm-filter.md
+              - Mirroring: cli/show-commands/mirroring.md
+              - DHCP Relay: cli/show-commands/dhcp-relay.md
+              - TACACS: cli/show-commands/tacacs.md
+
   # - Knowledge Base:
   #     - Hardware types: kb/hwtypes.md
   #     - Management interfaces: kb/mgmt.md
