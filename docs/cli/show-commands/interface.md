@@ -49,12 +49,13 @@ Summary
   4 subinterfaces are up
 ========================================================================================================================
 ```
+
 ///
 /// tab | `show interface brief`
 
 Display summary of all interfaces
 
-```srl
+```{.srl .code-scroll-lg}
 B:ixr-d2# show interface brief                                                               
 +---------------------+-----------------------+-----------------------+-----------------------+-----------------------+
 |        Port         |      Admin State      |      Oper State       |         Speed         |         Type          |
@@ -124,7 +125,7 @@ B:ixr-d2# show interface brief
 ///
 /// tab | `show interface all`
 
-```srl
+```{.srl .code-scroll-lg}
 A:ixr-d2# show interface all
 ========================================================================================================================
 ethernet-1/1 is up, speed 25G, type None
@@ -289,7 +290,7 @@ Summary
 
 ## Interface Details
 
-```srl
+```{.srl .code-scroll-lg}
 A:srl-a# show interface ethernet-1/1 detail
 ========================================================================================================================
 Interface: ethernet-1/1
@@ -486,43 +487,6 @@ mgmt0 is up, speed 1G, type None
 /// tab | Path
 `/interface[name=mgmt0]`
 ///
-
-## Interface Configuration
-
-```srl
-A:srl-a# info interface ethernet-1/1
-    interface ethernet-1/1 {
-        admin-state enable
-        vlan-tagging true
-        subinterface 10 {
-            admin-state enable
-            ipv4 {
-                admin-state enable
-                address 192.168.10.1/30 {
-                }
-            }
-            vlan {
-                encap {
-                    single-tagged {
-                        vlan-id 10
-                    }
-                }
-            }
-        }
-        subinterface 20 {
-            admin-state enable
-            ipv4 {
-                admin-state enable
-                address 192.168.20.1/30 {
-                }
-            }
-            vlan {
-                encap {
-                    single-tagged {
-                        vlan-id 20
-                    }
-                }
-```
 
 ## Optics Light Level
 
