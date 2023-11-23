@@ -5,7 +5,7 @@ title: Troubleshooting BGP
 
 # BGP
 
-## BGP Status
+## Status
 
 /// tab | CLI
 
@@ -56,11 +56,11 @@ EVPN-unicast AFI/SAFI
 `/network-instance[name=*]/protocols/bgp`
 ///
 
-## BGP Neighbor
+## Neighbor
 
 /// tab | CLI
 
-```srl
+```{.srl .code-scroll-lg}
 A:srl-a# show network-instance default protocols bgp neighbor 192.168.10.2 detail
 -------------------------------------------------------------------------------------------------
 Peer : 192.168.10.2, remote AS: 65003, local AS: 65000, peer-type : ebgp
@@ -138,7 +138,7 @@ Evpn-unicast AFI/SAFI
 `/network-instance[name=*]/protocols/bgp/neighbor[peer-address=*]`
 ///
 
-## BGP Routes
+## Routes
 
 /// tab | CLI
 
@@ -174,7 +174,7 @@ Origin codes: i=IGP, e=EGP, ?=incomplete
 `/network-instance[name=*]/bgp-rib/ipv4-unicast/local-rib/routes[prefix=*][neighbor=*][origin-protocol=*][path-id=*]/`
 ///
 
-## BGP Neighbor Received Routes
+## Neighbor Received Routes
 
 /// tab | CLI
 
@@ -208,7 +208,7 @@ Origin codes: i=IGP, e=EGP, ?=incomplete
 `/network-instance[name=*]/bgp-rib/ipv4-unicast/rib-in-out/rib-in-pre/routes[prefix=*][neighbor=*][path-id=*]/prefix`
 ///
 
-## BGP Neighbor Advertised Routes
+## Neighbor Advertised Routes
 
 /// tab | CLI
 
@@ -237,49 +237,3 @@ Origin codes: i=IGP, e=EGP, ?=incomplete
 /// tab | Path
 `/network-instance[name=*]/bgp-rib/ipv4-unicast/rib-in-out/rib-out-post/routes[prefix=*][neighbor=*][path-id=*]/prefix`
 ///
-
-## BGP Configuration
-
-```srl
-A:srl-a# info network-instance default protocols bgp
-    network-instance default {
-        protocols {
-            bgp {
-                admin-state enable
-                autonomous-system 65000
-                router-id 10.10.10.1
-                afi-safi evpn {
-                    admin-state enable
-                }
-                afi-safi ipv4-unicast {
-                    admin-state enable
-                }
-                group eBGP-underlay {
-                    admin-state enable
-                    export-policy export-all
-                    import-policy import-all
-                    next-hop-self true
-                }
-                group iBGP-evpn {
-                    admin-state enable
-                    export-policy export-all
-                    import-policy import-all
-                    peer-as 65000
-                    route-reflector {
-                        client true
-                        cluster-id 1.1.1.1
-                    }
-                }
-                neighbor 10.1.1.2 {
-                    admin-state enable
-                    peer-group iBGP-evpn
-                }
-                neighbor 192.168.10.2 {
-                    admin-state enable
-                    peer-as 65003
-                    peer-group eBGP-underlay
-                }
-            }
-        }
-    }
-```

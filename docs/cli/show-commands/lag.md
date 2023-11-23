@@ -5,25 +5,7 @@ title: Troubleshooting LAGs
 
 # LAG
 
-## LAG Configuration
-
-```srl
-A:srl-a# info interface lag5
-    interface lag5 {
-        subinterface 0 {
-            ipv4 {
-                admin-state enable
-                address 172.16.10.1/30 {
-                }
-            }
-        }
-        lag {
-            member-speed 1G
-        }
-    }
-```
-
-## LAG Status
+## Status
 
 /// tab | CLI
 
@@ -49,7 +31,7 @@ Summary
 `/lag[name=lag5]`
 ///
 
-## LAG Statistics
+## Statistics
 
 /// tab | CLI
 

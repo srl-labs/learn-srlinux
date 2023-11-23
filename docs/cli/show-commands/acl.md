@@ -5,9 +5,9 @@ title: Show commands for ACL
 
 # ACL
 
-## ACL Status
+## Status
 
-```srl
+```{.srl .code-scroll-lg}
 A:srl-a# show acl summary
 --------------------------------------------------------------------------------------
 CPM Filter ACLs
@@ -74,7 +74,7 @@ Entry 100
 --------------------------------------------------------------------------------------
 ```
 
-## ACL Logging
+## Logging
 
 ```srl
 A:srl-a# info system logging file acl-log-1
@@ -98,5 +98,6 @@ A:srl-a# info acl ipv4-filter ip_tcp
                     }
                 }
                 match {
-                    protocol tcp }
+                    protocol tcp
+                }
 ```

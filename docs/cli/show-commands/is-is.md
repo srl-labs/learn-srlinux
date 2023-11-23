@@ -5,11 +5,11 @@ title: Troubleshooting IS-IS
 
 # IS-IS
 
-## ISIS Summary
+## Summary
 
 /// tab | CLI
 
-```srl
+```{.srl .code-scroll-lg}
 A:srl-a# show network-instance default protocols isis summary
 --------------------------------------------------------------------------------------
 Network instance "default", isis instance "isis-1" is enable and up
@@ -76,7 +76,7 @@ PDU Statistics
 `/network-instance[name=*]/protocols/isis`
 ///
 
-## ISIS Adjacency
+## Adjacency
 
 /// tab | CLI
 
@@ -104,7 +104,7 @@ Adjacency Count: 1
 `/network-instance[name=*]/protocols/isis/instance[name=*]/interface[interface-name=*]`
 ///
 
-## ISIS DB
+## Database
 
 /// tab | CLI
 
@@ -130,32 +130,3 @@ LSP Count: 2
 /// tab | Path
 `/network-instance[name=*]/protocols/isis/instance[name=*]/level-database[level-number=*][lsp-id=*]`
 ///
-
-## ISIS Configuration
-
-```srl
-A:srl-a# info network-instance default protocols isis
-    network-instance default {
-        protocols {
-            isis {
-                instance isis-1 {
-                    admin-state enable
-                    level-capability L2
-                    net [
-                        49.0000.0100.1010.0001.00
-                    ]
-                    overload {
-                        on-boot {
-                            timeout 90
-                        }
-                    }
-                    interface ethernet-1/1.10 {
-                        circuit-type point-to-point
-                        ipv4-unicast {
-                            admin-state enable
-                        }
-                        level 2 {
-                        }
-                    }
-                }
-```

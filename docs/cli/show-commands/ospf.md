@@ -5,7 +5,7 @@ title: Troubleshooting OSPF
 
 # OSPF
 
-## OSPF Status
+## Status
 
 /// tab | CLI
 
@@ -60,7 +60,7 @@ Total Exp Routes          : 0
 `/network-instance[name=*]/protocols/ospf`
 ///
 
-## OSPF Neighbor
+## Neighbor
 
 /// tab | CLI
 
@@ -87,7 +87,7 @@ No. of Neighbors: 1
 `/network-instance[name=*]/protocols/ospf/instance[name=*]/area[area-id=*]/interface[interface-name=*]`
 ///
 
-## OSPF Database
+## Database
 
 /// tab | CLI
 
@@ -143,7 +143,7 @@ Total No. of LSAs: 2
 `/network-instance[name=*]/protocols/ospf/instance[name=*]/lsdb`
 ///
 
-## OSPF Statistics
+## Statistics
 
 /// tab | CLI
 
@@ -195,26 +195,3 @@ Failed SPF Attempts: 0
 /// tab | Path
 `/network-instance[name=*]/protocols/ospf/instance[name=*]`
 ///
-
-## OSPF Configuration
-
-```srl
-A:srl-a# info network-instance default protocols ospf
-    network-instance default {
-        protocols {
-            ospf {
-                instance default {
-                    admin-state enable
-                    version ospf-v2
-                    router-id 10.10.10.1
-                    area 0.0.0.0 {
-                        interface ethernet-1/1.20 {
-                            interface-type point-to-point
-                        }
-                        interface lo0.0 {
-                            interface-type point-to-point
-                        }
-                    }
-                }
-            }
-```
