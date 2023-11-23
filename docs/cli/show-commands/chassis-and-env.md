@@ -70,7 +70,7 @@ A:srl-ixr6# show platform environment
 
 /// tab | CLI
 
-```srl
+```{.srl .code-scroll-lg}
 A:srl-ixr6# show platform control A detail
 ====================================================================================================================
   Show report for Controller A
@@ -1013,6 +1013,7 @@ A:srl-ixr6# info from state platform control A disk /dev/sdb
     }
 
 ```
+
 ///
 /// tab | Path
 `/platform/control[slot=A]/disk[name=/dev/sdb]`

@@ -224,3 +224,12 @@ th {
 }
 
 /* END mkdocs Badge elements (version) */
+
+/* scrollable code blocks used in code snippets */
+div.highlight.code-scroll-lg pre>code {
+  max-height: 80vh;
+}
+
+div.highlight.code-scroll-sm pre>code {
+  max-height: 50vh;
+}
