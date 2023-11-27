@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2023-11-26T18:44:44.643Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36" etag="OI1oUGE9j1MUcVESLtaO" version="22.1.4" type="github" pages="5">
+<mxfile host="app.diagrams.net" modified="2023-11-27T16:14:29.708Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36" etag="cNc8eDJVZ3kUuXd7LrLr" version="22.1.4" type="github" pages="5">
   <diagram name="[0] arch" id="ZMCx_UzSzWk1nDmMVq2M">
     <mxGraphModel dx="1296" dy="701" grid="1" gridSize="1" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="#495766" math="0" shadow="0">
       <root>
@@ -383,15 +383,15 @@
     </mxGraphModel>
   </diagram>
   <diagram name="[3] ndk operations" id="1u6snehuieDdXCv78SK4">
-    <mxGraphModel dx="1037" dy="561" grid="0" gridSize="1" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="#495766" math="0" shadow="0">
+    <mxGraphModel dx="513" dy="325" grid="0" gridSize="1" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="#495766" math="0" shadow="0">
       <root>
         <mxCell id="rpC4eVHN4_A3vbLjmgdy-0" />
         <mxCell id="rpC4eVHN4_A3vbLjmgdy-1" parent="rpC4eVHN4_A3vbLjmgdy-0" />
         <mxCell id="rpC4eVHN4_A3vbLjmgdy-8" value="" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=none;fillColor=#EDF3F5;fontFamily=Google Sans;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DGoogle%2BSans;" parent="rpC4eVHN4_A3vbLjmgdy-1" vertex="1">
           <mxGeometry x="259" y="670" width="268" height="106" as="geometry" />
         </mxCell>
-        <mxCell id="rpC4eVHN4_A3vbLjmgdy-16" value="Mgr Client&lt;sup&gt;&lt;font color=&quot;#98a2ae&quot;&gt;1&lt;/font&gt;&lt;/sup&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;fontSize=14;fontFamily=Google Sans;fontStyle=0;fontColor=#FFFFFF;rotation=0;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DGoogle%2BSans;" parent="rpC4eVHN4_A3vbLjmgdy-1" vertex="1">
-          <mxGeometry x="131" y="322" width="89" height="33" as="geometry" />
+        <mxCell id="rpC4eVHN4_A3vbLjmgdy-16" value="NDK&lt;br&gt;Mgr Client&lt;sup&gt;&lt;font color=&quot;#98a2ae&quot;&gt;1&lt;/font&gt;&lt;/sup&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;fontSize=14;fontFamily=Google Sans;fontStyle=0;fontColor=#FFFFFF;rotation=0;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DGoogle%2BSans;" parent="rpC4eVHN4_A3vbLjmgdy-1" vertex="1">
+          <mxGeometry x="132" y="304" width="88" height="49" as="geometry" />
         </mxCell>
         <mxCell id="rpC4eVHN4_A3vbLjmgdy-22" value="" style="endArrow=none;dashed=1;html=1;rounded=0;strokeColor=#EDF3F5;" parent="rpC4eVHN4_A3vbLjmgdy-1" edge="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
@@ -526,7 +526,7 @@
     </mxGraphModel>
   </diagram>
   <diagram name="[4] ndk telemetry" id="-ZSv98kSd2MsTy0nA9-U">
-    <mxGraphModel dx="883" dy="477" grid="1" gridSize="5" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="#495766" math="0" shadow="0">
+    <mxGraphModel dx="437" dy="277" grid="1" gridSize="5" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="#495766" math="0" shadow="0">
       <root>
         <mxCell id="TIKCRUf47VzGktWiAVfS-0" />
         <mxCell id="TIKCRUf47VzGktWiAVfS-1" parent="TIKCRUf47VzGktWiAVfS-0" />
