@@ -37,6 +37,7 @@ nav:
           - ndk/index.md
           - Developers Guide:
               - NDK Architecture: ndk/guide/architecture.md
+              - NDK Operations: ndk/guide/operations.md
               - Agent Structure: ndk/guide/agent.md
               - Agent Installation & Operations: ndk/guide/agent-install-and-ops.md
               - Environment Setup:
@@ -258,8 +259,8 @@ markdown_extensions:
   - pymdownx.critic
   - pymdownx.details
   - pymdownx.emoji:
-      emoji_index: !!python/name:materialx.emoji.twemoji
-      emoji_generator: !!python/name:materialx.emoji.to_svg
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
   - pymdownx.highlight:
       line_spans: __span
       anchor_linenums: true
