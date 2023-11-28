@@ -1,3 +1,6 @@
+---
+comments: true
+---
 <script type="text/javascript" src="https://viewer.diagrams.net/js/viewer-static.min.js" async></script>
 
 SR Linux provides a Software Development Kit (SDK) to assist operators with developing agents that run alongside SR Linux applications. This SDK is named **NetOps Development Kit**, or **NDK** for short.
