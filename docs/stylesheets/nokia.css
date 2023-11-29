@@ -233,3 +233,8 @@ div.highlight.code-scroll-lg pre>code {
 div.highlight.code-scroll-sm pre>code {
   max-height: 50vh;
 }
+
+/* custom twemoji sizes */
+.twemoji-md {
+  --md-icon-size: 2em !important;
+}
