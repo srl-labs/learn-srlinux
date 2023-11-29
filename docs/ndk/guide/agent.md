@@ -225,7 +225,7 @@ Executable file is the main component of an agent as it contains the application
 
 The application logic handles the configuration that may be provided by users via any management interface (CLI, gNMI, etc.) and contains the core business logic of the application that may be triggered by some events from SR Linux service.
 
-In the subsequent sections of the Developers Guide, we will dive into the details of how to write an sample NDK application in [Go](dev/go.md) and [Python](dev/python.md).
+In the subsequent sections of the Developers Guide, we will dive into the details of how to write an sample NDK application in [Go](dev/go/index.md) and [Python](dev/py/index.md).
 
 An executable file can be placed at `/usr/local/bin` directory.
 

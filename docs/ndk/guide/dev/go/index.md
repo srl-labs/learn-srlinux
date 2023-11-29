@@ -68,16 +68,26 @@ This is the project structure used in this tutorial:
 10. Script to orchestrate lab environment and application lifecycle.
 11. Directory with the application YANG modules.
 
+Besides short descriptions, we will cover the purpose of each file and directory in the following sections when we start to peel off the layers of the `greeter` NDK application.
+
 ### NDK language bindings
 
-As explained in the [NDK Architecture](../architecture.md) section, NDK is a gRPC based service. To be able to use gRPC services in a Go program the [language bindings](https://grpc.io/docs/languages/go/quickstart/) have to be generated from the source proto files.
+As covered in the [NDK Architecture](../../architecture.md) section, NDK is a collection of gRPC-based services. To be able to use gRPC services in a Go program the [language bindings](https://grpc.io/docs/languages/go/quickstart/) have to be generated from the [source proto files](../../architecture.md#proto-files).
 
-Nokia not only provides the [proto files](https://github.com/nokia/srlinux-ndk-protobufs) for the SR Linux NDK service but also [NDK Go language bindings](https://github.com/nokia/srlinux-ndk-go).
+Nokia not only provides the [proto files](https://github.com/nokia/srlinux-ndk-protobufs) for the SR Linux NDK service but also offers [NDK Go language bindings](https://github.com/nokia/srlinux-ndk-go) generated for each NDK release.
 
-With the provided Go bindings, the NDK can be imported in a Go project like that:
+With the provided Go bindings, users don't need to generate them themselves. To leverage the bindings, users need to import the `ndk` package in their Go program.
 
 ```go
 import "github.com/nokia/srlinux-ndk-go/ndk"
 ```
+
+We will see how to use the `ndk` package in the following sections.
+
+### Lab environment
+
+When developing NDK applications, it is important to have a lab environment to test the application. The lab environment should be as close as possible to the production environment and also be easy to spin up and tear down.
+
+The [Containerlab](https://containerlab.dev/) tool is a perfect fit for this purpose. Containerlab makes it easy to create a personal lab environment composed of network devices and connected by virtual links. We are going to use Containerlab to create a lab environment for the `greeter` NDK application development down the road.
 
 [greeter-go-repo]: https://github.com/srl-labs/ndk-greeter-go
