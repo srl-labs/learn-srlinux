@@ -1,44 +1,39 @@
-As was explained in the [NDK Architecture](architecture.md) section, an agent[^1] is a custom software that can extend SR Linux capabilities by running alongside SR Linux native applications and performing some user-defined tasks.
+---
+comments: true
+---
+
+# Agent Structure
+
+As was explained in the [NDK Architecture](architecture.md) section, an NDK agent[^10] is a custom software that can extend SR Linux capabilities by running alongside SR Linux's native applications and perform some user-defined work.
 
 To deeply integrate with the rest of the SR Linux architecture, the agents have to be defined like an application that SR Linux's application manager can take control of. The structure of the agents is the main topic of this chapter.
 
+<div class="grid" markdown>
+<div markdown>
 The main three components of an agent:
 
-1. Agent's executable file
-2. YANG module
-3. Agent configuration file
+1. An executable file
+2. A YANG module
+3. Application configuration file
 
-## Executable file
+SR Linux application manager (which is like `systemd`) onboards the NDK application by reading its configuration file and YANG models and then starts the agent's executable file. We will cover the role of each of these components in the subsequent sections of this chapter.
 
-An executable file is called when the agent starts running on SR Linux system. It contains the application logic and is typically an executable binary or a script.
+</div>
 
-The application logic handles the agents' configuration that may be provided via any management interface (CLI, gNMI, etc.) and contains the core logic of interfacing with gRPC based NDK services.
+```mermaid
+flowchart TD
+    APPMGR[Application Manager] --> |Load App YAML| APP[NDK Application]
+    APPMGR[Application Manager] --> |Load App YANG| APP[NDK Application]
+    APP[NDK Application] --> EXEC(Started Executable)
+```
 
-In the subsequent sections of the Developers Guide, we will cover how to write the logic of an agent and interact with various NDK services.
+</div>
 
-An executable file can be placed at `/usr/local/bin` directory.
+## Application manager and Application configuration file
 
-## YANG module
+Recall the decoupled nature of SR Linux's architecture where each application is a separate process. Application manager is the service that is responsible for starting, stopping, and restarting applications, as well as for monitoring their health.
 
-SR Linux is a [fully modeled](../../yang/index.md) Network OS - any native or custom application that can be configured or can have state is required to have a proper YANG model.
-
-The "cost" associated with requiring users to write YANG models for their apps pays off immensely as this
-
-* enables seamless integration of an agent with **all** management interfaces: CLI, gNMI, JSON-RPC.  
-    Any agent's configuration knobs that users expressed in YANG will be immediately available in the SR Linux CLI as if it was part of it from the beginning. Yes, with auto-suggestion of the fields as well.
-* provides out-of-the-box Streaming Telemetry (gNMI) support for any config or state data that the agent maintains
-
-And secondly, the YANG modules for custom apps are not that hard to write as their data model is typically relatively small.
-
-///note
-The YANG module is only needed if a developer wants their agent to be configurable via any management interfaces or keep state.
-///
-
-YANG files related to an agent are typically located by the `/opt/$agentName/yang` path.
-
-## Configuration file
-
-Due to SR Linux modular architecture, each application, be it an internal app like `bgp` or a custom NDK agent, needs to have a configuration file. This file contains application parameters read by the Application Manager service to onboard the application onto the system.
+Both native SR Linux applications (AAA, LLDP, BGP, etc.) and NDK agents are managed by the application manager. Applications that are managed by the application manager should have a configuration file[^30] that describes the application and its lifecycle. For native SR Linux applications the app config files are located by the `/opt/srlinux/appmgr` path, and for NDK agents, the files are located by the `/etc/opt/srlinux/appmgr` path.
 
 With an agent's config file, users define properties of an application, for example:
 
@@ -46,11 +41,40 @@ With an agent's config file, users define properties of an application, for exam
 * location of the executable file
 * YANG modules related to this app
 * lifecycle management policy
-* and others
 
-Custom agents must have their config file present by the `/etc/opt/srlinux/appmgr` directory. It is a good idea to name the agent's config file after the agent's name; if we have the agent called `myCoolAgent`, then its config file can be named `myCoolAgent.yml` and stored by the `/etc/opt/srlinux/appmgr` path.
+NDK agents must have their config file present by the `/etc/opt/srlinux/appmgr` directory. It is a good idea to name the agent's config file after the agent's name; if we have the agent called `greeter`, then its config file can be named `greeter.yml` and stored by the `/etc/opt/srlinux/appmgr/greeter.yml` path.
 
-Through the subsequent chapters of the Developers Guide, we will cover the most important options, but here is a complete list of config file parameters:
+Let's have a look at configuration file for a simple `greeter` NDK written in Go:
+
+```yaml
+greeter:
+  path: /usr/local/bin #(1)!
+  launch-command: greeter #(2)!
+  version-command: greeter --version #(3)!
+  failure-action: wait=10 #(4)!
+  config-delivery-format: json #(5)!
+  yang-modules:
+    names:
+      - "greeter" #(6)!
+    source-directories:
+      - "/opt/greeter/yang"   #(7)!
+```
+
+1. The path to use when searching for the executable file.
+2. The binary app manager will launch. Relative to the `path`.
+3. The command to run to get the version of the application. The version can be seen in the output of `show / system application <app name>`.
+4. An action to carry out when the application fails (non zero exit code). The action can be one of the following:
+    * `reboot` - reboot the system
+    * `wait=<seconds>` - wait for `<seconds>` and then restart the application
+5. The encoding format of the application's configuration when it is delivered to the application by the Notification Service.
+
+    For NDK agents the recommended format is `json`.
+
+6. The names of the YANG modules to load. This is usually the file-name without `.yang` extension.
+
+    The YANG modules are searched for in the directories specified by the `source-directories` property.
+
+7. The source directories where to search for the YANG modules.
 
 ///details | Complete list of config files parameters
 
@@ -140,10 +164,77 @@ other-application-name:
 
 ///
 
-## Dependency and other files
+When Application Manager is started/reloaded, it watches for application configuration files in the `/opt/srlinux/appmgr` and `/etc/opt/srlinux/appmgr` directories and starts managing the applications.
+
+Let us now have a closer look at the main components of an agent and understand their role.
+
+## YANG module
+
+SR Linux is a [fully modeled](../../yang/index.md) Network OS - any native or custom application that can be configured or can have state is required to have a proper YANG model describing the data.
+
+The "cost" associated with requiring application developers to write YANG models for their apps pays off immensely as this
+
+* enables seamless application integration with **all** management interfaces: CLI, gNMI, JSON-RPC, etc.  
+    Any agent's configuration knobs that users expressed in YANG will be immediately available in the SR Linux CLI as if it was part of it from the beginning. Yes, with auto-suggestion of the fields as well.
+* provides out-of-the-box Streaming Telemetry (gNMI) support for any config or state data that the application maintains
+
+And secondly, the YANG modules for custom apps are not that hard to write as their data model is typically relatively small.
+
+///note
+The YANG module is only needed if a developer wants their agent to be configurable via any management interfaces or keep state.
+///
+
+YANG files related to an agent are typically located by the `/opt/$agentName/yang` directory.
+
+Consider the following YANG module for a simple `greeter` agent:
+
+```yang
+module greeter {
+    yang-version 1.1;
+    namespace "example.com/greeter";
+    prefix "srl-labs-greeter";
+
+    description
+        "greeter YANG module";
+
+    revision "2023-11-21" {
+        description
+            "initial release";
+    }
+
+    container greeter {
+        leaf name {
+            type string;
+        }
+
+        leaf greeting {
+            type string;
+            config false;
+        }
+    }
+}
+```
+
+The YANG module defines a container called `greeter` with two leaf nodes: `name` and `greeting`. The `name` leaf is a configuration node, and the `greeting` leaf is a state node.
+
+With this YANG module our application will populate the configuration datastore of SR Linux with `name` leaf and state datastore with `name` and `greeting` leaves.
+
+## Executable file
+
+Executable file is the main component of an agent as it contains the application logic. Depending on the language you choose to write your agent in, the executable file can be a binary or a script[^20].
+
+The application logic handles the configuration that may be provided by users via any management interface (CLI, gNMI, etc.) and contains the core business logic of the application that may be triggered by some events from SR Linux service.
+
+In the subsequent sections of the Developers Guide, we will dive into the details of how to write an sample NDK application in [Go](dev/go.md) and [Python](dev/python.md).
+
+An executable file can be placed at `/usr/local/bin` directory.
+
+## Auxiliary files
 
 Quite often, an agent may require additional files for its operation. It can be a virtual environment for your Python agent or some JSON file that your agent consumes.
 
 All those auxiliary files can be saved by the `/opt/$agentName/` directory.
 
-[^1]: terms NDK agent and NDK app are used interchangeably
+[^10]: terms agent and application are used interchangeably.
+[^20]: Binaries are typically relevant for compiled languages like C, Go, Rust, etc. Scripts are typically relevant for interpreted languages like Python.
+[^30]: Expressed in YAML format.
