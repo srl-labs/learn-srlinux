@@ -38,14 +38,15 @@ nav:
           - Developers Guide:
               - NDK Architecture: ndk/guide/architecture.md
               - NDK Operations: ndk/guide/operations.md
-              - Agent Structure: ndk/guide/agent.md
-              - Agent Installation & Operations: ndk/guide/agent-install-and-ops.md
-              - Environment Setup:
-                  - Go: ndk/guide/env/go.md
-                  - Python: ndk/guide/env/python.md
+              - Agent Components: ndk/guide/agent.md
               - Developing with NDK:
-                  - Go: ndk/guide/dev/go.md
-                  - Python: ndk/guide/dev/python.md
+                  - Go:
+                      - ndk/guide/dev/go/index.md
+                      - Main: ndk/guide/dev/go/go.md
+                  - Python:
+                      - ndk/guide/dev/py/index.md
+                      - Main: ndk/guide/dev/py/python.md
+              - Agent Installation & Operations: ndk/guide/agent-install-and-ops.md
           - App Catalog:
               - ndk/apps/index.md
               - EVPN Proxy: ndk/apps/evpn-proxy.md
