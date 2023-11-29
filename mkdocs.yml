@@ -42,10 +42,10 @@ nav:
               - Developing with NDK:
                   - Go:
                       - ndk/guide/dev/go/index.md
-                      - Main: ndk/guide/dev/go/go.md
+                      - Greeter App: ndk/guide/dev/go/greeter-go.md
                   - Python:
                       - ndk/guide/dev/py/index.md
-                      - Main: ndk/guide/dev/py/python.md
+                      - Greeter App: ndk/guide/dev/py/greeter-py.md
               - Agent Installation & Operations: ndk/guide/agent-install-and-ops.md
           - App Catalog:
               - ndk/apps/index.md

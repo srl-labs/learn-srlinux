@@ -1,19 +1,52 @@
-# Developing agents with NDK in Go
+# Greeter NDK Application in Go
 
-This guide explains how to consume the NDK service when developers write the agents in a Go[^1] programming language.
+This code walkthrough tutorial explains how developers consume the NDK service to develop NDK agents with Go[^1] programming language. Our goal is to provide a step-by-step guide on how to develop a simple NDK agent in Go which introduces the basic concepts of the NDK service and proposes a project structure that can be used as a starting point for developing more complex NDK agents.
 
-!!!note
-    This guide provides code snippets for several operations that a typical agent needs to perform according to the [NDK Service Operations Flow](../architecture.md#operations-flow) chapter.
+## Meet the `greeter`
 
-    Where applicable, the chapters on this page will refer to the NDK Architecture section to provide more context on the operations.
+This tutorial is based on the simple `greeter` NDK app published at [**`srl-labs/ndk-greeter-go`**][greeter-go-repo] GitHub repository. The app is a simple starter kit for developers looking to work with the NDK. It gets a developer through the most common NDK functionality:
 
-In addition to the publicly available [protobuf files][ndk_proto_repo], which define the NDK Service, Nokia also provides generated Go bindings for data access classes of NDK in a [`nokia/srlinux-ndk-go`][ndk_go_bindings] repo.
+* Agent Registration
+* Receiving and handling configuration
+* Performing "the work" based on the received config
+* And finally publishing state
 
-The [`github.com/nokia/srlinux-ndk-go`][go_package_repo] package provided in that repository enables developers of NDK agents to immediately start writing NDK applications without the need to generate the Go package themselves.
+The `greeter` app adds `/greeter` context to SR Linux and allows users to configure `/greeter/name` value. Greeter will greet the user with a message  
+`👋 Hello ${provided name}, SR Linux was last booted at ${last-booted-time}`  
+and publish `/greeter/name` and `/greeter/greeting` values in the state datastore.
 
-[ndk_proto_repo]: https://github.com/nokia/srlinux-ndk-protobufs
-[ndk_go_bindings]: https://github.com/nokia/srlinux-ndk-go
-[go_package_repo]: https://pkg.go.dev/github.com/nokia/srlinux-ndk-go@v0.1.0/ndk
+Maybe a quick demo that shows how to interact with `greeter` and get its state over gNMI and JSON-RPC is worth a thousand words:
+
+<div class="iframe-container">
+<iframe width="100%" src="https://www.youtube.com/embed/CmYML_ttCjA" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
+
+## Deploying `greeter`
+
+Before taking a deep dive into the code, let's deploy the `greeter` app to SR Linux using containerlab and see how it works. It all starts with cloning the `greeter`[greeter-go-repo] repo:
+
+```bash
+git clone https://github.com/srl-labs/ndk-greeter-go.git && \
+cd ndk-greeter-go
+```
+
+/// note
+    attrs: {class: inline end}
+Containerlab v0.48.5 version is used in this tutorial.
+///
+
+And then running the deployment script[^10]:
+
+```bash
+./run.sh deploy-all #(1)!
+```
+
+1. `deploy-all` is a script that builds the `greeter` app, deploys a containerlab topology file, and installs the app on the running SR Linux node.
+
+It won't take you longer than 30 seconds to get the `greeter` app up and running on a freshly deployed lab. Type `ssh greeter` and let's configure our greeter app:
+
+```bash
+```
 
 ## Establish gRPC channel with NDK manager and instantiate an NDK client
 
@@ -232,4 +265,10 @@ The default SR Linux debug messages are found in the messages directory `/var/lo
 
 [Logrus](https://github.com/sirupsen/logrus) is a popular structured logger for Go that can log messages of different levels of importance, but developers are free to choose whatever logging package they see fit.
 
-[^1]: Make sure that you have set up the dev environment as explained on [this page](../env/go.md). Readers are also encouraged to first go through the [gRPC basic tutorial](https://grpc.io/docs/languages/go/basics/) to get familiar with the common gRPC workflows when using Go.
+[ndk_proto_repo]: https://github.com/nokia/srlinux-ndk-protobufs
+[ndk_go_bindings]: https://github.com/nokia/srlinux-ndk-go
+[go_package_repo]: https://pkg.go.dev/github.com/nokia/srlinux-ndk-go@v0.1.0/ndk
+[greeter-go-repo]: https://github.com/srl-labs/ndk-greeter-go
+[cfg_svc_doc]: https://rawcdn.githack.com/nokia/srlinux-ndk-protobufs/v0.2.0/doc/index.html#ndk%2fconfig_service.proto
+
+[^10]: We use [`./run.sh` runner script](https://github.com/srl-labs/ndk-greeter-go/blob/main/run.sh) that is a sane alternative to Makefile. Functions in this file perform actions like building the app, destroying the lab, etc. t with memory safety, garbage collection, structural typing, and CSP-style concurrency.
