@@ -31,4 +31,13 @@ Developers are welcomed to dig into the [NDK Developers Guide](guide/architectur
 
 Browse our [Apps Catalog](apps/index.md) with a growing list of NDK apps that Nokia or 3rd parties published.
 
+## NDK artifacts
+
+A list of links to various NDK artifacts:
+
+* NDK Proto files: [`nokia/srlinux-ndk-protobufs`](https://github.com/nokia/srlinux-ndk-protobufs)
+* [Generated NDK Service documentation](https://rawcdn.githack.com/nokia/srlinux-ndk-protobufs/v0.2.0/doc/index.html)
+* Go bindings for NDK: [`nokia/srlinux-ndk-go`](https://github.com/nokia/srlinux-ndk-go)
+* Python bindings for NDK: [`nokia/srlinux-ndk-py`](https://github.com/nokia/srlinux-ndk-py)
+
 [^1]: This in practice covers all popular programming languages: Python, Go, C#, C, C++, Java, JS, etc.
