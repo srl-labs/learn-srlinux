@@ -42,7 +42,10 @@ nav:
               - Developing with NDK:
                   - Go:
                       - ndk/guide/dev/go/index.md
-                      - Greeter App: ndk/guide/dev/go/greeter-go.md
+                      - Main function: ndk/guide/dev/go/main.md
+                      - App Instance: ndk/guide/dev/go/app-instance.md
+                      - Notification Stream: ndk/guide/dev/go/notif-stream.md
+                      - Logging: ndk/guide/dev/go/logging.md
                   - Python:
                       - ndk/guide/dev/py/index.md
                       - Greeter App: ndk/guide/dev/py/greeter-py.md
