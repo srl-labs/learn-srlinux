@@ -3,7 +3,7 @@
 This guide explains how to consume the NDK service when developers write the agents using Python[^1].
 
 !!!note
-    This guide provides code snippets for several operations that a typical agent needs to perform according to the [NDK Service Operations Flow](../architecture.md#operations-flow) chapter.
+    This guide provides code snippets for several operations that a typical agent needs to perform according to the [NDK Service Operations Flow](../../operations.md) chapter.
 
     Where applicable, the chapters on this page will refer to the NDK Architecture section to provide more context on the operations.
 
@@ -14,7 +14,7 @@ In addition to the publicly available [protobuf files][ndk_proto_repo], which de
 
 ## Establish gRPC channel with NDK manager and instantiate an NDK client
 
-[:octicons-question-24: Additional information](../architecture.md#grpc-channel-and-ndk-manager-client)
+[:octicons-question-24: Additional information](../../operations.md#creating-ndk-manager-client)
 
 To call service methods, a developer first needs to create a gRPC channel to communicate with the NDK manager application running on SR Linux.
 
@@ -38,7 +38,7 @@ sdk_mgr_client = SdkMgrServiceStub(channel)
 
 ## Register the agent with the NDK manager
 
-[:octicons-question-24: Additional information](../architecture.md#agent-registration)
+[:octicons-question-24: Additional information](../../architecture.md#agent-registration)
 
 Agent must be first registered with SR Linux by calling the `AgentRegister` method available on the returned [`SdkMgrService`][SdkMgrService_docs] interface. The initial agent state is created during the registration process.
 
@@ -77,7 +77,7 @@ The [`AgentRegister`][SdkMgrService_docs] method returns a [`AgentRegistrationRe
 
 ## Register notification streams
 
-[:octicons-question-24: Additional information](../architecture.md#registering-notifications)
+[:octicons-question-24: Additional information](../../operations.md#creating-notification-stream)
 
 ### Create subscription stream
 
@@ -139,7 +139,7 @@ else:
 
 ## Streaming notifications
 
-[:octicons-question-24: Additional information](../architecture.md#streaming-notifications)
+[:octicons-question-24: Additional information](../../operations.md#streaming-notifications)
 
 Actual streaming of notifications is a task for another service - [`SdkNotificationService`][SdkNotificationService_docs]. This service requires developers to create its own client, which is done with `SdkNotificationServiceStub` function.
 
@@ -165,7 +165,7 @@ for response in stream_response:
 
 ## Handle the streamed notifications
 
-[:octicons-question-24: Additional information](../architecture.md#handling-notifications)
+[:octicons-question-24: Additional information](../../operations.md#handling-notifications)
 
 Handling notifications starts with reading the incoming notification messages and detecting which type this notification is exactly. When the type is known the client reads the fields of a certain notification. Here is a method that checks for all notification types and delegates handling to helper methods.
 
@@ -218,4 +218,4 @@ To debug an agent, the developers can analyze the log messages that the agent pr
 
 The default SR Linux debug messages are found in the messages directory `/var/log/srlinux/buffer/messages`; check them when something went wrong within the SR Linux system (agent registration failed, IDB server warning messages, etc.).
 
-[^1]: Make sure that you have set up the dev environment as explained on [this page](../env/python.md).
+[^1]: Make sure that you have set up the dev environment as explained on [this page](index.md).
