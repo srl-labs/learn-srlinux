@@ -38,7 +38,7 @@ sdk_mgr_client = SdkMgrServiceStub(channel)
 
 ## Register the agent with the NDK manager
 
-[:octicons-question-24: Additional information](../../architecture.md#agent-registration)
+[:octicons-question-24: Additional information](../../operations.md#agent-registration)
 
 Agent must be first registered with SR Linux by calling the `AgentRegister` method available on the returned [`SdkMgrService`][SdkMgrService_docs] interface. The initial agent state is created during the registration process.
 
