@@ -1,61 +1,44 @@
 # Notification Stream
 
-Recall that our program's entrypoint [finishes](main.md#initializing-the-application) with initializing the app struct and calling the `app.Start(ctx)` function. The `Start` function is a place where we start the application's lifecycle.
+In the previous chapter we looked at `receiveConfigNotifications` function that is responsible for receiving configuration notifications from the NDK. We saw that it starts with creating the notification stream - by calling `a.StartConfigNotificationStream(ctx)` - and then starts receiving notifications from it.
 
-```{.go title="greeter/app.go"}
---8<-- "http://172.17.0.1:49080/greeter/app.go:app-start"
-```
-
-Largely, the `Start` function can be divided in three parts:
-
-1. [Start](#__codelineno-0-2) the Configuration Notification Stream
-2. [Process](#__codelineno-0-6:17) the Configuration Notification Stream responses
-3. [Stop](#__codelineno-0-19) the application when the context is cancelled
-
-The application exit procedure has been covered in the [Exit Handler](main.md#exit-handler) section so here we will focus on the first two parts.
-
-## Configuration Notification Stream
-
-In the NDK Operations section about [Subscribing to Notifications][operations-subscr-to-notif] we explained how NDK plays a somewhat "proxy" role for your application when it needs to receive updates from other SR Linux applications.
-
-And you know what, our greeter app is no different, it needs to receive notificatons from the NDK about, but it only needs to receive a particular notification type - its own configuration updates.  
-Whenever we configure the `/greeter/name` leaf and commit this configuration, our app needs to receive this update and act on it.
-
-Since our app logic is super simple, all the greeter needs to do is:
-
-1. to receive the configured `name` value
-2. query SR Linux state to retrieve the last booted time
-3. create the `greeting` message with the two values above
-
-So it all starts with our app requesting the NDK to stream its own configuration updates. And this is exactly what happens in `a.StartConfigNotificationStream(ctx)`. Let's zoom in.
+Let's see how the notification stream is created and how we receive notifications from it.
 
 ```{.go title="greeter/notification.go"}
---8<-- "http://172.17.0.1:49080/greeter/notification.go:start-cfg-notif-stream"
+--8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/main/greeter/notification.go:start-cfg-notif-stream"
 ```
 
-Let's again break down the function into smaller pieces.
+The `StartConfigNotificationStream` performs three major tasks:
+
+1. Create the notification stream and associated Stream ID
+2. Add the `Config` subscription to the allocated notification stream
+3. Creates the streaming client and starts sending received notifications to the `streamChan` channel
+
+Wouldn't hurt to have a look at each of these tasks in more detail.
 
 ## Creating Notification Stream
 
-First, on [ln 2](#__codelineno-1-2), we create a notification stream as explained in the [Creating Notification Stream][operations-create-notif-stream] section.
+First, on [line 2](#__codelineno-0-2), we create a notification stream as explained in the [Creating Notification Stream][operations-create-notif-stream] section.
 
 ```{.go title="greeter/notification.go"}
---8<-- "http://172.17.0.1:49080/greeter/notification.go:create-notif-stream"
+--8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/main/greeter/notification.go:create-notif-stream"
 ```
 
-The function tries to create a notification stream for the `greeter` application with a retry timeout and returns the allocated Stream ID when it succeeds. The Stream ID is later used to request notification delivery of a specific type, which is in our case the Config Notification.
+The function tries to create a notification stream for the `greeter` application with a retry timeout and returns the allocated Stream ID when it succeeds. The Stream ID is later used to request notification delivery of a specific type, which is in our case the [Config Notification][config_notif_doc].
 
 ## Adding Config Subscription
 
-With the notification stream created, we can now request the NDK to deliver the configuration updates to our app. This is done in the [`a.addConfigSubscription(ctx, streamID)`](#__codelineno-1-8) function.
+With the notification stream created, we now request the NDK to deliver updates of our app's configuration. These are the updates made to the config tree of the greeter app, and it has only one configurable field - `name` leaf.
+
+This is done in the [`a.addConfigSubscription(ctx, streamID)`](#__codelineno-0-8) function.
 
 ```{.go title="greeter/notification.go"}
---8<-- "http://172.17.0.1:49080/greeter/notification.go:add-cfg-sub"
+--8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/main/greeter/notification.go:add-cfg-sub"
 ```
 
-Passing the [`NotificationRegisterRequest`][notif_reg_req_doc] with the `streamID` received after creating the notification stream allows us to specify the stream we want to receive the notifications on.
+To indicate that we want to receive config notifications over the created notification stream we have to craft the [`NotificationRegisterRequest`][notif_reg_req_doc]. We populate it with the `streamID` received after creating the notification stream to specify the stream we want to receive the notifications on.
 
-The `SubscriptionTypes` set to the `&ndk.NotificationRegisterRequest_Config` value indicates that we would like to subscribe to the configuration updates.
+The `SubscriptionTypes` set to the `&ndk.NotificationRegisterRequest_Config` value indicates that we would like to receive updates of this specific type as they convey configuration updates.
 
 And we pass the empty [`ConfigSubscriptionRequest`][cfg_sub_req_doc] request since we don't want to apply any filtering on the notifications we receive.
 
@@ -65,29 +48,31 @@ It is time to start the notification stream.
 
 ## Starting Notification Stream
 
-[The last bits](#__codelineno-1-10:14) in the `StartConfigNotificationStream` function create a Go channel[^10] of type [`NotificationStreamResponse`][notif_stream_resp_doc] and pass it to the `startNotificationStream` function that is started in its own goroutine. Here is the `startNotificationStream` function:
+[The last bits](#__codelineno-0-10:14) in the `StartConfigNotificationStream` function create a Go channel[^10] of type [`NotificationStreamResponse`][notif_stream_resp_doc] and pass it to the `startNotificationStream` function that is started in its own goroutine. Here is the `startNotificationStream` function:
 
-```{.go title="greeter/notification.go"}
---8<-- "http://172.17.0.1:49080/greeter/notification.go:start-notif-stream"
+```{.go title="greeter/notification.go" .code-scroll-lg}
+--8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/main/greeter/notification.go:start-notif-stream"
 ```
+
+Let's have a look at the two major parts of the function - creating the streaming client and receiving notifications.
 
 ### Stream Client
 
-The function [starts](#__codelineno-4-12) with creating a Notification Stream Client with `a.getNotificationStreamClient(ctx, req)` function call. This client is a pure gRPC construct, it is automatically generated from the gRPC service proto file and facilitates the streaming nature of the NDK Notification Service.
+The function [starts](#__codelineno-3-14) with creating a Notification Stream Client with `a.getNotificationStreamClient(ctx, req)` function call. This client is a pure gRPC construct, it is automatically generated from the gRPC service proto file and facilitates the streaming of notifications.
 
 ```{.go title="greeter/notification.go"}
---8<-- "http://172.17.0.1:49080/greeter/notification.go:stream-client"
+--8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/main/greeter/notification.go:stream-client"
 ```
 
 ### Receiving Notifications
 
-Coming back to our `startNotificationStream` function, we can see that it [loops](#__codelineno-6-16:37) over the notifications received from the NDK. The `streamClient.Recv()` function call is a blocking call that waits for the next notification to be streamed from the NDK.
+Coming back to our `startNotificationStream` function, we can see that it [loops](#__codelineno-5-16:37) over the notifications received from the NDK until the parent context is cancelled. The `streamClient.Recv()` function call is a blocking call that waits for the next notification to be streamed from the NDK.
 
 ```{.go title="greeter/notification.go"}
---8<-- "http://172.17.0.1:49080/greeter/notification.go:start-notif-stream"
+--8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/main/greeter/notification.go:start-notif-stream"
 ```
 
-When the notification is received, it is passed to the `streamChan` channel. On the receiving end of this channel is our app's [`Start`](#__codelineno-0-6:17) function that starts the `handleConfigNotifications` for each received notification.
+When the notification is received, it is passed to the `streamChan` channel. On the receiving end of this channel is our app's [`Start`](#__codelineno-0-6:17) function that starts the `aggregateConfigNotifications` function for each received notification.
 
 /// details | Stream Response Type
 
@@ -116,7 +101,8 @@ message Notification
 See the `ConfigNotification` type? This is what we expect to receive in our app.
 ///
 
-[operations-subscr-to-notif]: ../../operations.md#subscribing-to-notifications
+Now our configuration notifications are streamed from the NDK to our app. Let's see how we process them to update the app's configuration.
+
 [operations-create-notif-stream]: ../../operations.md#creating-notification-stream
 [notif_reg_req_doc]: https://rawcdn.githack.com/nokia/srlinux-ndk-protobufs/v0.2.0/doc/index.html#srlinux.sdk.NotificationRegisterRequest
 [cfg_sub_req_doc]: https://rawcdn.githack.com/nokia/srlinux-ndk-protobufs/v0.2.0/doc/index.html#srlinux.sdk.ConfigSubscriptionRequest

@@ -69,6 +69,7 @@ Remember we said that NDK Agents can interact with other native SR Linux apps? T
 
 For example, an NDK app can get information from Network Instance, Config, LLDP, BFD and other applications by requesting subscription to notification updates from these applications:
 
+<!-- --8<-- [start:notif-diagram] -->
 ```mermaid
 sequenceDiagram
     participant App as NDK App
@@ -81,6 +82,7 @@ sequenceDiagram
     IDB-->>NDK: LLDP event
     NDK-->>App: LLDP event
 ```
+<!-- --8<-- [end:notif-diagram] -->
 
 Let's have a closer look at what it takes to subscribe to notifications from other SR Linux applications.
 

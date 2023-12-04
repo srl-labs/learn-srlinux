@@ -37,7 +37,7 @@ This tutorial is based on the simple `greeter` NDK app published at [**`srl-labs
 * And finally publishing state
 
 The `greeter` app adds `/greeter` context to SR Linux and allows users to configure `/greeter/name` value. Greeter will greet the user with a message  
-`👋 Hello ${provided name}, SR Linux was last booted at ${last-booted-time}`  
+`👋 Hi ${provided name}, SR Linux was last booted at ${last-booted-time}`  
 and publish `/greeter/name` and `/greeter/greeting` values in the state datastore.
 
 Maybe a quick demo that shows how to interact with `greeter` and get its state over gNMI and JSON-RPC is worth a thousand words:
@@ -122,7 +122,7 @@ Look at that, the `greeting` value is not there. That's because the `greeting` i
 --{ + candidate shared default }--[ greeter ]--
 A:greeter# info from state
     name "Learn SR Linux Reader"
-    greeting "👋 Hello Learn SR Linux Reader, SR Linux was last booted at 2023-11-29T21:28:53.282Z"
+    greeting "👋 Hi Learn SR Linux Reader, SR Linux was last booted at 2023-11-29T21:28:53.282Z"
 ```
 
 As advertised, the greeter app greets us with a message that includes the `name` value we've set and the last booted time of the SR Linux node. Should you change the `name` value and commit, you will see the new `greeting` message.
@@ -132,7 +132,7 @@ As advertised, the greeter app greets us with a message that includes the `name`
 The project structure is a matter of personal preference. There are no strict rules on how to structure a Go project. However, there are some best practices we can enforce making the NDK project structure more consistent and easier to understand.
 
 This is the project structure used in this tutorial:
-<!-- --8<-- [start:prj-struct] -->
+
 ```bash
 ❯ tree
 .
@@ -167,7 +167,6 @@ This is the project structure used in this tutorial:
 9. [nFPM](https://nfpm.goreleaser.com/) configuration file to build deb/rpm packages locally.
 10. Script to orchestrate lab environment and application lifecycle.
 11. Directory with the application YANG modules.
-<!-- --8<-- [end:prj-struct] -->
 
 Besides short descriptions, we will cover the purpose of each file and directory in the following sections when we start to peel off the layers of the `greeter` NDK application.
 
@@ -181,7 +180,7 @@ The Application Manager uses the application configuration file to onboard the a
 --8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/main/greeter.yml:snip"
 ```
 
-Refer to the [application configuration][app-config] section covered previously to understand better what each field means. Here it is worth mentioning that the Application Manager will look for the `greeter` binary in the `/usr/local/bin/` directory when starting our application.
+Refer to the [application configuration][app-config] section to better understand what each field means. Application Manager will look for the `greeter` binary in the `/usr/local/bin/` directory when starting our application.
 
 [greeter-go-repo]: https://github.com/srl-labs/ndk-greeter-go
 [app-config]: ../../agent.md#application-manager-and-application-configuration-file

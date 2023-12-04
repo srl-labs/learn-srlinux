@@ -44,7 +44,12 @@ nav:
                       - ndk/guide/dev/go/index.md
                       - Main function: ndk/guide/dev/go/main.md
                       - App Instance: ndk/guide/dev/go/app-instance.md
+                      - App Start: ndk/guide/dev/go/app-start.md
+                      - Receiving Configuration: ndk/guide/dev/go/receiving-config.md
                       - Notification Stream: ndk/guide/dev/go/notif-stream.md
+                      - Handling Notifications: ndk/guide/dev/go/handling-notif.md
+                      - Processing Config: ndk/guide/dev/go/processing-config.md
+                      - Updating State: ndk/guide/dev/go/updating-state.md
                       - Logging: ndk/guide/dev/go/logging.md
                   - Python:
                       - ndk/guide/dev/py/index.md

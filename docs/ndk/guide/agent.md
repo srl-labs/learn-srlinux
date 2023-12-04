@@ -188,31 +188,8 @@ YANG files related to an agent are typically located by the `/opt/$agentName/yan
 
 Consider the following YANG module for a simple `greeter` agent:
 
-```yang
-module greeter {
-    yang-version 1.1;
-    namespace "example.com/greeter";
-    prefix "srl-labs-greeter";
-
-    description
-        "greeter YANG module";
-
-    revision "2023-11-21" {
-        description
-            "initial release";
-    }
-
-    container greeter {
-        leaf name {
-            type string;
-        }
-
-        leaf greeting {
-            type string;
-            config false;
-        }
-    }
-}
+```{.yang title="yang/greeter.yang"}
+--8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/main/yang/greeter.yang"
 ```
 
 The YANG module defines a container called `greeter` with two leaf nodes: `name` and `greeting`. The `name` leaf is a configuration node, and the `greeting` leaf is a state node.
