@@ -112,5 +112,3 @@ This is where the application logic starts to kick in. Let's turn the page and s
 [ndk_go_bindings]: https://github.com/nokia/srlinux-ndk-go
 [go_package_repo]: https://pkg.go.dev/github.com/nokia/srlinux-ndk-go@v0.1.0/ndk
 [cfg_svc_doc]: https://rawcdn.githack.com/nokia/srlinux-ndk-protobufs/v0.2.0/doc/index.html#ndk%2fconfig_service.proto
-
-[^10]: We use [`./run.sh` runner script][runsh] that is a sane alternative to Makefile. Functions in this file perform actions like building the app, destroying the lab, etc. t with memory safety, garbage collection, structural typing, and CSP-style concurrency.

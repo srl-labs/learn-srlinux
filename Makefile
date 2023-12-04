@@ -4,7 +4,7 @@ MKDOCS_INS_VER = 9.4.14-insiders-4.46.0-hellt
 
 .PHONY: docs
 docs:
-	docker run --rm -v $$(pwd):/docs --entrypoint mkdocs squidfunk/mkdocs-material:$(MKDOCS_VER) build --clean --strict
+	docker run --rm -v $$(pwd):/docs --entrypoint mkdocs ghcr.io/srl-labs/mkdocs-material-insiders:$(MKDOCS_INS_VER) build --clean --strict
 
 # serve the site locally using mkdocs-material public container
 .PHONY: serve
