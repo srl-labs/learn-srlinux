@@ -117,7 +117,7 @@ We unmarshal the received configuration update to the [`ConfigState`](app-instan
 
 ## Signalling Config Received
 
-As we mentioned earlier, we need to signal the application when the full configuration has been received. We do this by sending a message to the `receivedCh` channel and this is done when we receive a config notification [with the ".commit.end" key](#__codelineno-3-21:29) as part of the message.
+As we mentioned earlier, we need to signal the application when the full configuration has been received. We do this by sending a message to the `receivedCh` channel and this is done when we receive a config notification [with the ".commit.end" key](#__codelineno-3-21:29){ data-proofer-ignore } as part of the message.
 
 This indicates that the full commit set has been streamed and we can start using the configuration.
 
