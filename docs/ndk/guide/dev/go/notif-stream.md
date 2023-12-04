@@ -48,7 +48,7 @@ It is time to start the notification stream.
 
 ## Starting Notification Stream
 
-[The last bits](#__codelineno-0-10:14) in the `StartConfigNotificationStream` function create a Go channel[^10] of type [`NotificationStreamResponse`][notif_stream_resp_doc] and pass it to the `startNotificationStream` function that is started in its own goroutine. Here is the `startNotificationStream` function:
+[The last bits](#__codelineno-0-10:14){ data-proofer-ignore } in the `StartConfigNotificationStream` function create a Go channel[^10] of type [`NotificationStreamResponse`][notif_stream_resp_doc] and pass it to the `startNotificationStream` function that is started in its own goroutine. Here is the `startNotificationStream` function:
 
 ```{.go title="greeter/notification.go" .code-scroll-lg}
 --8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/main/greeter/notification.go:start-notif-stream"
@@ -66,13 +66,13 @@ The function [starts](#__codelineno-3-14) with creating a Notification Stream Cl
 
 ### Receiving Notifications
 
-Coming back to our `startNotificationStream` function, we can see that it [loops](#__codelineno-5-16:37) over the notifications received from the NDK until the parent context is cancelled. The `streamClient.Recv()` function call is a blocking call that waits for the next notification to be streamed from the NDK.
+Coming back to our `startNotificationStream` function, we can see that it [loops](#__codelineno-5-16:37){ data-proofer-ignore } over the notifications received from the NDK until the parent context is cancelled. The `streamClient.Recv()` function call is a blocking call that waits for the next notification to be streamed from the NDK.
 
 ```{.go title="greeter/notification.go"}
 --8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/main/greeter/notification.go:start-notif-stream"
 ```
 
-When the notification is received, it is passed to the `streamChan` channel. On the receiving end of this channel is our app's [`Start`](#__codelineno-0-6:17) function that starts the `aggregateConfigNotifications` function for each received notification.
+When the notification is received, it is passed to the `streamChan` channel. On the receiving end of this channel is our app's [`Start`](#__codelineno-0-6:17){ data-proofer-ignore } function that starts the `aggregateConfigNotifications` function for each received notification.
 
 /// details | Stream Response Type
 

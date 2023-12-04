@@ -17,7 +17,6 @@ IgnoreURLs:
   - https://linkedin.com/in
   - https://www.nokia.com/networks/products/service-router-linux-NOS
   - https://www.nanog.org # responds with 403
-  - "*__codelineno*" # ignore all mkdocs-material intercepted links to code blocks
 
 IgnoreDirectoryMissingTrailingSlash: true
 IgnoreAltMissing: true

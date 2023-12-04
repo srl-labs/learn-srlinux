@@ -10,7 +10,7 @@ In Go, the `main()` function is the entry point of the binary application and is
 
 ## Application version
 
-As you can see, the `main` function is rather simple. First, we [handle the `version`](#__codelineno-0-9:16) CLI flag to make sure our application can return its version when asked.
+As you can see, the `main` function is rather simple. First, we [handle the `version`](#__codelineno-0-9:16){ data-proofer-ignore } CLI flag to make sure our application can return its version when asked.
 
 Application config has a [`version-command`](index.md#__codelineno-7-4) field that indicates which command needs to be executed to get the application version. In our case, the `version` field is set to `greeter --version` and we just went through the handler of this flag.
 
@@ -27,7 +27,7 @@ A:greeter# show system application greeter
 ```
 
 /// details | Why the version is `dev-a6f880b`?
-Attentive readers might have noticed that the version of the `greeter` app is `dev-a6f880b` instead of `v0.0.0-` following the [`version` and `commit` variables](#__codelineno-8-3:6) values in [`main.go`][main-go] file. This is because we setting the values for these variables at build time using the Go linker flags in the [`run.sh`][runsh] script:
+Attentive readers might have noticed that the version of the `greeter` app is `dev-a6f880b` instead of `v0.0.0-` following the [`version` and `commit` variables](#__codelineno-8-3:6){ data-proofer-ignore } values in [`main.go`][main-go] file. This is because we setting the values for these variables at build time using the Go linker flags in the [`run.sh`][runsh] script:
 
 ```bash
 LDFLAGS="-s -w -X main.version=dev -X main.commit=$(git rev-parse --short HEAD)"
@@ -78,7 +78,7 @@ We execute `exitHandler` function passing it the cancel function of the context:
 --8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/main/main.go:exit-handler"
 ```
 
-This function is non-blocking as it spawns a goroutine that waits for the registered signals and then execute the `cancel` function of the context. This will propagate the cancellation signal to all the child contexts and our application [reacts](#__codelineno-6-13:15) to it.
+This function is non-blocking as it spawns a goroutine that waits for the registered signals and then execute the `cancel` function of the context. This will propagate the cancellation signal to all the child contexts and our application [reacts](#__codelineno-6-13:15){ data-proofer-ignore } to it.
 
 ```go linenums="1" hl_lines="19-21" title="greeter/app.go"
 --8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/main/greeter/app.go:app-start"
