@@ -65,7 +65,9 @@ cd ndk-greeter-go
 
 /// note
     attrs: {class: inline end}
-[Containerlab v0.48.6](https://containerlab.dev/install) version and SR Linux 23.10.1 are used in this tutorial.
+[Containerlab v0.48.6](https://containerlab.dev/install) version and SR Linux 23.10.1 are used in this tutorial. Users are advised to use these version to have the same outputs as in this tutorial.
+
+Newer versions of Containerlab and SR Linux should work as well, but the outputs might be slightly different.
 ///
 
 And then running the deployment script[^10]:
