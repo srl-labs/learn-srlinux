@@ -37,14 +37,24 @@ nav:
           - ndk/index.md
           - Developers Guide:
               - NDK Architecture: ndk/guide/architecture.md
-              - Agent Structure: ndk/guide/agent.md
-              - Agent Installation & Operations: ndk/guide/agent-install-and-ops.md
-              - Environment Setup:
-                  - Go: ndk/guide/env/go.md
-                  - Python: ndk/guide/env/python.md
+              - NDK Operations: ndk/guide/operations.md
+              - Agent Components: ndk/guide/agent.md
               - Developing with NDK:
-                  - Go: ndk/guide/dev/go.md
-                  - Python: ndk/guide/dev/python.md
+                  - Go:
+                      - ndk/guide/dev/go/index.md
+                      - Main function: ndk/guide/dev/go/main.md
+                      - App Instance: ndk/guide/dev/go/app-instance.md
+                      - App Start: ndk/guide/dev/go/app-start.md
+                      - Receiving Configuration: ndk/guide/dev/go/receiving-config.md
+                      - Notification Stream: ndk/guide/dev/go/notif-stream.md
+                      - Handling Notifications: ndk/guide/dev/go/handling-notif.md
+                      - Processing Config: ndk/guide/dev/go/processing-config.md
+                      - Updating State: ndk/guide/dev/go/updating-state.md
+                      - Logging: ndk/guide/dev/go/logging.md
+                  - Python:
+                      - ndk/guide/dev/py/index.md
+                      - Greeter App: ndk/guide/dev/py/greeter-py.md
+              - Agent Installation & Operations: ndk/guide/agent-install-and-ops.md
           - App Catalog:
               - ndk/apps/index.md
               - EVPN Proxy: ndk/apps/evpn-proxy.md
@@ -52,6 +62,9 @@ nav:
               - Prometheus Telemetry Exporter: ndk/apps/srl-prom-exporter.md
               - SR Linux GPT: ndk/apps/srl-gpt.md
               - Satellite Tracker: ndk/apps/satellite.md
+          - Releases:
+              - ndk/releases/index.md
+              - 0.2: ndk/releases/0.2.md
       - Ansible:
           - ansible/index.md
           - nokia.srlinux collection:
@@ -188,6 +201,7 @@ plugins:
       archive: false
       categories: false
       post_excerpt_max_authors: 2
+      authors_profiles: true
   - tags:
       tags_file: blog/tags.md
       # media.md is a file that only shows posts with `media` tag
@@ -258,8 +272,8 @@ markdown_extensions:
   - pymdownx.critic
   - pymdownx.details
   - pymdownx.emoji:
-      emoji_index: !!python/name:materialx.emoji.twemoji
-      emoji_generator: !!python/name:materialx.emoji.to_svg
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
   - pymdownx.highlight:
       line_spans: __span
       anchor_linenums: true

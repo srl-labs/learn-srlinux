@@ -71,8 +71,8 @@ h4 {
   background-color: #124191;
 }
 
-th {
-  color: #FFFFFF !important;
+.md-typeset__table th {
+  color: #FFFFFF;
 }
 
 /* Pumping heart */
@@ -232,4 +232,9 @@ div.highlight.code-scroll-lg pre>code {
 
 div.highlight.code-scroll-sm pre>code {
   max-height: 50vh;
+}
+
+/* custom twemoji sizes */
+.twemoji-md {
+  --md-icon-size: 2em !important;
 }

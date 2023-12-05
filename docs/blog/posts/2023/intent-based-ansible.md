@@ -25,11 +25,10 @@ While sounding simple, this approach can become a maintenance nightmare as the n
 
 This is when the second approach comes into play. It requires a deeper understanding of Ansible concepts, but it is more scalable and maintainable in the long run. The idea is to abstract the configuration tasks into reusable Ansible roles and use variables to pass the configuration parameters to the roles. This way, the playbook becomes a list of roles that are applied to the devices in the inventory.  
 
-When roles are designed in a way that make services provisioned on all the devices in the inventory, the playbook becomes an intent-based service provisioning tool[^1]. To provide a practical example of using Ansible to manage the configuration of an SR Linux fabric with the **intent-based approach** leveraging the official [Ansible collection for SR Linux][collection-doc-link] we created a comprehensive tutorial that covers A to Z the steps required to start managing a fabric in that way - **[:material-book: Intent-based management with Ansible][tutorial]** tutorial.
+When roles are designed in a way that make services provisioned on all the devices in the inventory, the playbook becomes an intent-based service provisioning tool. To provide a practical example of using Ansible to manage the configuration of an SR Linux fabric with the **intent-based approach** leveraging the official [Ansible collection for SR Linux][collection-doc-link] we created a comprehensive tutorial that covers A to Z the steps required to start managing a fabric in that way - **[:material-book: Intent-based management with Ansible][tutorial]** tutorial.
 
 We are eager to hear your thoughts on that approach and the tutorial itself. Please drop a comment below or open an issue in the [GitHub repository][intent-based-ansible-lab] if you have any questions or remarks.
 
-[^1]: Granted the roles maintain inter-dependencies between infrastructure configuration resources, e.g. a network instance and its associated interfaces, routes, etc. and the services themselves.
 [collection-doc-link]: ../../../ansible/collection/index.md
 [intent-based-ansible-lab]: https://github.com/srl-labs/intent-based-ansible-lab
 [tutorial]: ../../../tutorials/programmability/ansible/intent-based-management/index.md

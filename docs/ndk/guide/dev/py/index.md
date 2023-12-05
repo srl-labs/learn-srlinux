@@ -1,5 +1,9 @@
 # Python Development Environment
 
+/// warning "Work in progress"
+This tutorial might be outdated. Please check Go tutorial for the latest updates until this version is updated.
+///
+
 Although every developer's environment is different and is subject to a personal preference, we will provide some recommendations for a [Python](https://www.python.org/) toolchain setup suitable for the development of NDK applications.
 
 ## Environment components
@@ -24,7 +28,7 @@ Here is an example project structure that you can use for the NDK agent developm
 
 ## NDK language bindings
 
-As explained in the [NDK Architecture](../architecture.md) section, NDK is a gRPC based service. The [language bindings](https://grpc.io/docs/languages/python/quickstart/) have to be generated from the source proto files to use gRPC services in a Python program.
+As explained in the [NDK Architecture](../../architecture.md) section, NDK is a gRPC based service. The [language bindings](https://grpc.io/docs/languages/python/quickstart/) have to be generated from the source proto files to use gRPC services in a Python program.
 
 Nokia provides both the [proto files](https://github.com/nokia/srlinux-ndk-protobufs) for the SR Linux NDK service and also [NDK Python language bindings](https://github.com/nokia/srlinux-ndk-py).
 

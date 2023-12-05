@@ -1,10 +1,10 @@
-MKDOCS_VER = 9.0.13
+MKDOCS_VER = 9.4.14
 # insiders version/tag https://github.com/srl-labs/mkdocs-material-insiders/pkgs/container/mkdocs-material-insiders
-MKDOCS_INS_VER = 9.2.6-insiders-4.40.2-hellt
+MKDOCS_INS_VER = 9.4.14-insiders-4.46.0-hellt
 
 .PHONY: docs
 docs:
-	docker run --rm -v $$(pwd):/docs --entrypoint mkdocs squidfunk/mkdocs-material:$(MKDOCS_VER) build --clean --strict
+	docker run --rm -v $$(pwd):/docs --entrypoint mkdocs ghcr.io/srl-labs/mkdocs-material-insiders:$(MKDOCS_INS_VER) build --clean --strict
 
 # serve the site locally using mkdocs-material public container
 .PHONY: serve
