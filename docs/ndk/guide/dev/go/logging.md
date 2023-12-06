@@ -84,3 +84,68 @@ The log file location is set to `/var/log/greeter/greeter.log` and log format is
 {"level":"info","time":"2023-12-05T09:37:14Z","message":"Telemetry Request: state:{key:{js_path:\".greeter\"}  data:{json_content:\"{\\\"name\\\":\\\"me\\\",\\\"greeting\\\":\\\"👋 Hi me, SR Linux was last booted at 2023-12-05T09:34:49.769Z\\\"}\"}}"}
 {"level":"info","time":"2023-12-05T09:37:14Z","message":"Telemetry add/update status: kSdkMgrSuccess, error_string: \"\""}
 ```
+
+### Syslog
+
+As mentioned above, syslog is the default way to log messages in SR Linux. NDK app can write messages to syslog with the needed severity/facility/tag and SR Linux will manage those logs via its [logging](https://documentation.nokia.com/srlinux/23-10/books/config-basics/logg.html) subsystem.
+
+To setup syslog logging for the greeter app, we use the `github.com/RackSec/srslog` package in the `setupLogger()` function:
+
+```{.go title="main.go"}
+--8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/main/main.go:syslog-logger"
+```
+
+Our app will write messages to the `local7` facility[^10] with the `ndk-greeter-go` tag. The tag is later used by the logging subsystem to route messages to the correct log file.
+
+Finally, we add our syslog writer to the multiwriter that is used by zerolog logger to write to multiple destinations.
+
+#### SR Linux configuration
+
+Just setting up the syslog writer in the app is not enough to make it work. We also need to configure syslog on SR Linux to accept messages from the app and route them to the correct log file.
+
+First, we need to create a new log filter that will match on the Syslog tag we configured our app to use:
+
+```srl
+set / system logging filter greeter-app tag ndk-greeter-go
+```
+
+Then we need to create a new log destination that will write "filtered by tag" messages from the app to the log file. Starting from the `/system logging` context:
+
+```srl
+--{ + candidate shared default }--[ system logging ]--
+A:greeter# file greeter
+
+--{ + candidate shared default }--[ system logging file greeter ]--
+A:greeter# rotate 3
+
+--{ +* candidate shared default }--[ system logging file greeter ]--
+A:greeter# size 1M
+
+--{ +* candidate shared default }--[ system logging file greeter ]--
+A:greeter# filter [ greeter-app ]
+
+--{ +* candidate shared default }--[ system logging file greeter ]--
+A:greeter# commit now
+All changes have been committed. Leaving candidate mode.
+```
+
+We configure a new `file` destination with the `greeter` name and set the log rotation policy to rotate the log file when it reaches 1MB in size and keep no more than 3 files on disk. Then we set the filter to match on the `greeter-app` tag.
+
+/// note | default file directory
+When `directory` is not set under `/system logging file <name>` context, the default value of `/var/log/srlinux/file` is used.
+///
+
+Finally, we commit the changes and leave the candidate mode.
+
+Now when our app logs anything, besides the `stdout` and manually set up file logs, the messages will be routed to the syslog and via syslog to the `/var/log/srlinux/file/greeter` file. Besides file destination, syslog messages can be routed to the console, remote syslog server, buffer, or any other supported destination.
+
+```bash
+❯ tail -5 logs/srl/file/greeter 
+2023-12-06T20:42:34.826386+00:00 greeter ndk-greeter-go[9185]: {"level":"info","caller":"/root/srl-labs/ndk-greeter-go/greeter/app.go:128","time":"2023-12-06T20:42:34Z","message":"Received full config"}
+2023-12-06T20:42:34.826647+00:00 greeter ndk-greeter-go[9185]: {"level":"info","caller":"/root/srl-labs/ndk-greeter-go/greeter/config.go:123","time":"2023-12-06T20:42:34Z","message":"No name configured, deleting state"}
+2023-12-06T20:42:34.827043+00:00 greeter ndk-greeter-go[9185]: {"level":"info","caller":"/root/srl-labs/ndk-greeter-go/greeter/state.go:32","time":"2023-12-06T20:42:34Z","message":"updating: .greeter: {}"}
+2023-12-06T20:42:34.827978+00:00 greeter ndk-greeter-go[9185]: {"level":"info","caller":"/root/srl-labs/ndk-greeter-go/greeter/state.go:41","time":"2023-12-06T20:42:34Z","message":"Telemetry Request: state:{key:{js_path:\".greeter\"}  data:{json_content:\"{}\"}}"}
+2023-12-06T20:42:34.829257+00:00 greeter ndk-greeter-go[9185]: {"level":"info","caller":"/root/srl-labs/ndk-greeter-go/greeter/state.go:49","time":"2023-12-06T20:42:34Z","message":"Telemetry add/update status: kSdkMgrSuccess, error_string: \"\""}
+```
+
+[^10]: Native SR Linux apps write to `local6` facility
