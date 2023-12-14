@@ -129,39 +129,42 @@ With this configuration in place, users can leverage JSON-RPC immediately after 
 
 The management interface sends requests[^3] to the JSON-RPC server and receives responses. The request/response format is a JSON encoded string and is detailed in the [docs][json-msg-structure]. Let's look at the skeleton of the request/response messages as it will help us getting through practical exercises:
 
-=== "Request"
+/// tab | Request
 
-    ```json title="JSON-RPC request structure"
-    {
-      "jsonrpc": "2.0",
-      "id": 0,
-      "method": "get",
-      "params": {
-        "commands": [],
-        "output-format": "" //(1)!
-      }
-    }
-    ```
+```json title="JSON-RPC request structure"
+{
+  "jsonrpc": "2.0",
+  "id": 0,
+  "method": "get",
+  "params": {
+    "commands": [],
+    "output-format": "" //(1)!
+  }
+}
+```
 
-    1. Only applicable for CLI method.
+1. Only applicable for CLI method.
 
-    where:
+where:
 
-    * `jsonrpc` - selects the version of the management interface and at the moment of this writing should be always set to `2.0`.
-    * `id` - sets the ID of a request which is echoed back in the response to help correlate the message flows[^8].
-    * `method` - sets one of the supported RPC [methods](#json-rpc-methods) used for this request.
-    * `params` - container for RPC commands. We will cover the contents of this container through the practical exercises.
-=== "Response"
+* `jsonrpc` - selects the version of the management interface and at the moment of this writing should be always set to `2.0`.
+* `id` - sets the ID of a request which is echoed back in the response to help correlate the message flows[^8].
+* `method` - sets one of the supported RPC [methods](#json-rpc-methods) used for this request.
+* `params` - container for RPC commands. We will cover the contents of this container through the practical exercises.
+///
 
-    ```json
-    {
-      "result": [],
-      "id": 0,
-      "jsonrpc": "2.0"
-    }
-    ```
+/// tab | Response
 
-    The response object structure provides a `result` list that contains the result of the invoked RPC. Additionally, the response object contains the RPC version and request ID.
+```json
+{
+  "result": [],
+  "id": 0,
+  "jsonrpc": "2.0"
+}
+```
+
+The response object structure provides a `result` list that contains the result of the invoked RPC. Additionally, the response object contains the RPC version and request ID.
+///
 
 [json-msg-structure]: https://documentation.nokia.com/srlinux/23-10/books/system-mgmt/json-interface.html#json-message-structure
 
@@ -187,40 +190,45 @@ Keep the [JSON-RPC Management Guide][json-mgmt-guide] tab open, as additional th
 
 Starting with the basics, let's see how we can query SR Linux configuration and state datastores using `get` method of JSON-RPC. How about we start with a simple management task of getting to know the software version we're running in our lab container?
 
-=== "Request"
-    `curl` by default uses HTTP POST method, thus we don't explicitly specify it. With `-d @- <<EOF` argument we pass the heredoc-styled body of the request in a JSON format of this POST request.
+/// tab | Request
+`curl` by default uses HTTP POST method, thus we don't explicitly specify it. With `-d @- <<EOF` argument we pass the heredoc-styled body of the request in a JSON format of this POST request.
 
-    Our `commands` list contains a single object with `path` and `datastore` values set.
+Our `commands` list contains a single object with `path` and `datastore` values set.
 
-    ```bash
-    curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
-    {
-        "jsonrpc": "2.0",
-        "id": 0,
-        "method": "get",
-        "params": {
-            "commands": [
-                {
-                    "path": "/system/information/version",
-                    "datastore": "state"
-                }
-            ]
-        }
+```bash
+curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
+{
+    "jsonrpc": "2.0",
+    "id": 0,
+    "method": "get",
+    "params": {
+        "commands": [
+            {
+                "path": "/system/information/version",
+                "datastore": "state"
+            }
+        ]
     }
-    EOF
-    ```
-=== "Response"
-    `jq` used in the request command displays the json response in a formatted way.
+}
+EOF
+```
 
-    ```json
-    {
-      "result": [
-          "v23.10.1-218-ga3fc1bea5a"
-      ],
-      "id": 0,
-      "jsonrpc": "2.0"
-    }
-    ```
+///
+
+/// tab | Response
+`jq` used in the request command displays the json response in a formatted way.
+
+```json
+{
+  "result": [
+      "v23.10.1-218-ga3fc1bea5a"
+  ],
+  "id": 0,
+  "jsonrpc": "2.0"
+}
+```
+
+///
 
 There is something to unpack in the message used in this exchange. First, note that in the `params` container we specified the `commands` list. Each element in this list is an object that contains a `path` and `datastore` values.  
 
@@ -258,36 +266,42 @@ Datastore value can be set either per-command as in the example above, or on the
 
 When datastore value is omitted, `running` datastore is assumed. For example, repeating the same request without specifying the datastore will error, as `running` datastore doesn't hold state leaves and thus can't return the `version` leaf under the `/system/information` container.
 
-=== "Request"
-    ```bash
-    curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
-    {
-        "jsonrpc": "2.0",
-        "id": 0,
-        "method": "get",
-        "params": {
-            "commands": [
-                {
-                    "path": "/system/information/version"
-                }
-            ]
-        }
-    }
-    EOF
-    ```
-=== "Response"
-    An error is returned since running datastore holds configuration, not state, and `version` leaf is a state one.
+/// tab | Request
 
-    ```json
-    {
-        "error": {
-            "code": -1,
-            "message": "Path not valid - unknown element 'version'. Options are [contact, location]"
-        },
-        "id": 0,
-        "jsonrpc": "2.0"
+```bash
+curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
+{
+    "jsonrpc": "2.0",
+    "id": 0,
+    "method": "get",
+    "params": {
+        "commands": [
+            {
+                "path": "/system/information/version"
+            }
+        ]
     }
-    ```
+}
+EOF
+```
+
+///
+
+/// tab | Response
+An error is returned since running datastore holds configuration, not state, and `version` leaf is a state one.
+
+```json
+{
+    "error": {
+        "code": -1,
+        "message": "Path not valid - unknown element 'version'. Options are [contact, location]"
+    },
+    "id": 0,
+    "jsonrpc": "2.0"
+}
+```
+
+///
 
 The response object contains the same ID used in the request, as well as the list of results. The number of entries in the `results` list will match the number of `commands` specified in the request.
 
@@ -340,60 +354,65 @@ JSON-RPC allows users to batch commands of the same method in the same request. 
 1. system version
 2. statistics data of the mgmt0 interface
 
-=== "Request"
-    ```bash
-    curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
-    {
-        "jsonrpc": "2.0",
-        "id": 0,
-        "method": "get",
-        "params": {
-            "commands": [
-                {
-                    "path": "/system/information/version",
-                    "datastore": "state"
-                },
-                {
-                    "path": "/interface[name=mgmt0]/statistics",
-                    "datastore": "state"
-                }
-            ]
-        }
-    }
-    EOF
-    ```
-=== "Response"
-    Response message will contain a list of results with results being ordered the same way as the commands in the request.
+/// tab | Request
 
-    ```json
-    {
-        "result": [
-            "v23.10.1-218-ga3fc1bea5a",
+```bash
+curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
+{
+    "jsonrpc": "2.0",
+    "id": 0,
+    "method": "get",
+    "params": {
+        "commands": [
             {
-                "in-octets": "140285",
-                "in-unicast-packets": "1389",
-                "in-broadcast-packets": "0",
-                "in-multicast-packets": "1",
-                "in-discarded-packets": "0",
-                "in-error-packets": "5",
-                "in-fcs-error-packets": "0",
-                "out-octets": "748587",
-                "out-mirror-octets": "0",
-                "out-unicast-packets": "2349",
-                "out-broadcast-packets": "6",
-                "out-multicast-packets": "30",
-                "out-discarded-packets": "0",
-                "out-error-packets": "0",
-                "out-mirror-packets": "0",
-                "carrier-transitions": "1"
+                "path": "/system/information/version",
+                "datastore": "state"
+            },
+            {
+                "path": "/interface[name=mgmt0]/statistics",
+                "datastore": "state"
             }
-        ],
-        "id": 0,
-        "jsonrpc": "2.0"
+        ]
     }
-    ```
+}
+EOF
+```
 
-    Note, that when the path in a request points to a leaf (like `/system/information/version`), then the result entry will be just the value of this leaf. In contrast with that, when the path is pointing to a container, then a JSON object is returned, like in the case of the result for the `/interface[name=mgmt0]/statistics` path.
+///
+
+/// tab | Response
+Response message will contain a list of results with results being ordered the same way as the commands in the request.
+
+```json
+{
+    "result": [
+        "v23.10.1-218-ga3fc1bea5a",
+        {
+            "in-octets": "140285",
+            "in-unicast-packets": "1389",
+            "in-broadcast-packets": "0",
+            "in-multicast-packets": "1",
+            "in-discarded-packets": "0",
+            "in-error-packets": "5",
+            "in-fcs-error-packets": "0",
+            "out-octets": "748587",
+            "out-mirror-octets": "0",
+            "out-unicast-packets": "2349",
+            "out-broadcast-packets": "6",
+            "out-multicast-packets": "30",
+            "out-discarded-packets": "0",
+            "out-error-packets": "0",
+            "out-mirror-packets": "0",
+            "carrier-transitions": "1"
+        }
+    ],
+    "id": 0,
+    "jsonrpc": "2.0"
+}
+```
+
+Note, that when the path in a request points to a leaf (like `/system/information/version`), then the result entry will be just the value of this leaf. In contrast with that, when the path is pointing to a container, then a JSON object is returned, like in the case of the result for the `/interface[name=mgmt0]/statistics` path.
+///
 
 ### Set
 
@@ -405,65 +424,76 @@ When changing configuration with the Set method, the JSON-RPC server creates a p
 
 Switching to the 1st gear, let's just add a description to our `mgmt0` interface.
 
-=== "Request"
-    ```bash
-    curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
-    {
-        "jsonrpc": "2.0",
-        "id": 0,
-        "method": "set",
-        "params": {
-            "commands": [
-                {
-                    "action": "update",
-                    "path": "/interface[name=mgmt0]/description:set-via-json-rpc"
-                }
-            ]
-        }
-    }
-    EOF
-    ```
-=== "Response"
-    ```json
-    {
-        "result": [
-            {}
-        ],
-        "id": 0,
-        "jsonrpc": "2.0"
-    }
-    ```
-=== "Verification"
-    Checking that the interface description has been set successfully.
+/// tab | Request
 
-    ```bash
-    curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
-    {
-        "jsonrpc": "2.0",
-        "id": 0,
-        "method": "get",
-        "params": {
-            "commands": [
-                {
-                    "path": "/interface[name=mgmt0]/description",
-                    "datastore": "state"
-                }
-            ]
-        }
+```bash
+curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
+{
+    "jsonrpc": "2.0",
+    "id": 0,
+    "method": "set",
+    "params": {
+        "commands": [
+            {
+                "action": "update",
+                "path": "/interface[name=mgmt0]/description:set-via-json-rpc"
+            }
+        ]
     }
-    EOF
-    ```
+}
+EOF
+```
 
-    Response:
-    ```json
-    {
-        "result": [
-            "set-via-json-rpc"
-        ],
-        "id": 0,
-        "jsonrpc": "2.0"
+///
+
+/// tab | Response
+
+```json
+{
+    "result": [
+        {}
+    ],
+    "id": 0,
+    "jsonrpc": "2.0"
+}
+```
+
+///
+
+/// tab | Verification
+Checking that the interface description has been set successfully.
+
+```bash
+curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
+{
+    "jsonrpc": "2.0",
+    "id": 0,
+    "method": "get",
+    "params": {
+        "commands": [
+            {
+                "path": "/interface[name=mgmt0]/description",
+                "datastore": "state"
+            }
+        ]
     }
-    ```
+}
+EOF
+```
+
+Response:
+
+```json
+{
+    "result": [
+        "set-via-json-rpc"
+    ],
+    "id": 0,
+    "jsonrpc": "2.0"
+}
+```
+
+///
 
 ##### Action
 
@@ -483,74 +513,84 @@ I bet you noticed the peculiar path value used in the Set request message - `"pa
 
 Alternatively, users can specify the value using the `"value"` field inside the command. This allows to provide structutred values for a certain path. For example, lets set multiple fields under the `/system/information` container:
 
-=== "Request"
-    Set two leaves - `location` and `contact` under the `/system/information` container by using the `value` field of the command.
+/// tab | Request
+Set two leaves - `location` and `contact` under the `/system/information` container by using the `value` field of the command.
 
-    ```bash
-    curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
-    {
-        "jsonrpc": "2.0",
-        "id": 0,
-        "method": "set",
-        "params": {
-            "commands": [
-                {
-                    "action": "update",
-                    "path": "/system/information",
-                    "value": {
-                      "location": "the Netherlands",
-                      "contact": "Roman Dodin"
-                    }
+```bash
+curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
+{
+    "jsonrpc": "2.0",
+    "id": 0,
+    "method": "set",
+    "params": {
+        "commands": [
+            {
+                "action": "update",
+                "path": "/system/information",
+                "value": {
+                  "location": "the Netherlands",
+                  "contact": "Roman Dodin"
                 }
-            ]
-        }
+            }
+        ]
     }
-    EOF
-    ```
-=== "Response"
-    ```json
-    {
-      "result": [
-        {}
-      ],
-      "id": 0,
-      "jsonrpc": "2.0"
-    }
-    ```
-=== "Verification"
-    ```bash
-    curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
-    {
-        "jsonrpc": "2.0",
-        "id": 0,
-        "method": "get",
-        "params": {
-            "datastore": "state",
-            "commands": [
-                {
-                    "path": "/system/information/location"
-                },
-                {
-                    "path": "/system/information/contact"
-                }
-            ]
-        }
-    }
-    EOF
-    ```
+}
+EOF
+```
 
-    Result:
+///
 
-    ```json
-    {
-      "result": [
-        "the Netherlands",
-        "Roman Dodin"
-      ],
-      "id": 0,
-      "jsonrpc": "2.0"
+/// tab | Response
+
+```json
+{
+  "result": [
+    {}
+  ],
+  "id": 0,
+  "jsonrpc": "2.0"
+}
+```
+
+///
+
+/// tab | Verification
+
+```bash
+curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
+{
+    "jsonrpc": "2.0",
+    "id": 0,
+    "method": "get",
+    "params": {
+        "datastore": "state",
+        "commands": [
+            {
+                "path": "/system/information/location"
+            },
+            {
+                "path": "/system/information/contact"
+            }
+        ]
     }
-    ```
+}
+EOF
+```
+
+Result:
+
+```json
+{
+  "result": [
+    "the Netherlands",
+    "Roman Dodin"
+  ],
+  "id": 0,
+  "jsonrpc": "2.0"
+}
+```
+
+///
 
 #### Replace
 
@@ -570,46 +610,57 @@ To demonstrate replace operation in action, we will use the same `/system/inform
 
 Let's replace this conatiner with setting just the contact leaf to "John Doe" value.
 
-=== "Request"
-    ```bash
-    curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
-    {
-        "jsonrpc": "2.0",
-        "id": 0,
-        "method": "set",
-        "params": {
-            "commands": [
-                {
-                    "action": "replace",
-                    "path": "/system/information",
-                    "value": {
-                      "contact": "John Doe"
-                    }
+/// tab | Request
+
+```bash
+curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
+{
+    "jsonrpc": "2.0",
+    "id": 0,
+    "method": "set",
+    "params": {
+        "commands": [
+            {
+                "action": "replace",
+                "path": "/system/information",
+                "value": {
+                  "contact": "John Doe"
                 }
-            ]
-        }
+            }
+        ]
     }
-    EOF
-    ```
-=== "Response"
-    ```json
-    {
-      "result": [
-        {}
-      ],
-      "id": 0,
-      "jsonrpc": "2.0"
+}
+EOF
+```
+
+///
+
+/// tab | Response
+
+```json
+{
+  "result": [
+    {}
+  ],
+  "id": 0,
+  "jsonrpc": "2.0"
+}
+```
+
+///
+
+/// tab | Verification
+
+```bash
+❯ docker exec clab-srl01-srl sr_cli info from running /system information
+system {
+    information {
+        contact "John Doe"
     }
-    ```
-=== "Verification"
-    ```bash
-    ❯ docker exec clab-srl01-srl sr_cli info from running /system information
-    system {
-        information {
-            contact "John Doe"
-        }
-    }
-    ```
+}
+```
+
+///
 
 Notice, how the verification command proves that the whole configuration under `/system/information` has been replaced with a single `contact` leaf value, there is no trace of `location` leaf.
 
@@ -638,55 +689,69 @@ Notice, how the verification command proves that the whole configuration under `
 
 To delete a configuration region for a certain path use `delete` action of the Set method. For example, let's delete everything under the `/system/information` container:
 
-=== "Initial state"
-    We start with `information` container containing `contact` leaf.
+/// tab | Initial state
+We start with `information` container containing `contact` leaf.
 
-    ```bash
-    ❯ docker exec clab-srl01-srl sr_cli info from running /system information 
-        system {
-            information {
-                contact "John Doe"
-            }
-        }
-    ```
-=== "Request"
-    Delete the configuration under the `/system/information` container.
-    ```bash
-    curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
-    {
-        "jsonrpc": "2.0",
-        "id": 0,
-        "method": "set",
-        "params": {
-            "commands": [
-                {
-                    "action": "delete",
-                    "path": "/system/information"
-                }
-            ]
-        }
-    }
-    EOF
-    ```
-=== "Response"
-    ```json
-    {
-      "result": [
-        {}
-      ],
-      "id": 0,
-      "jsonrpc": "2.0"
-    }
-    ```
-=== "Verification"
-    Verify that the container is now empty:
-    ```bash
-    ❯ docker exec clab-srl01-srl sr_cli info from running /system information
+```bash
+❯ docker exec clab-srl01-srl sr_cli info from running /system information 
     system {
         information {
+            contact "John Doe"
         }
     }
-    ```
+```
+
+///
+
+/// tab | Request
+Delete the configuration under the `/system/information` container.
+
+```bash
+curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
+{
+    "jsonrpc": "2.0",
+    "id": 0,
+    "method": "set",
+    "params": {
+        "commands": [
+            {
+                "action": "delete",
+                "path": "/system/information"
+            }
+        ]
+    }
+}
+EOF
+```
+
+///
+
+/// tab | Response
+
+```json
+{
+  "result": [
+    {}
+  ],
+  "id": 0,
+  "jsonrpc": "2.0"
+}
+```
+
+///
+
+/// tab | Verification
+Verify that the container is now empty:
+
+```bash
+❯ docker exec clab-srl01-srl sr_cli info from running /system information
+system {
+    information {
+    }
+}
+```
+
+///
 
 /// note
 Delete operation will not error when trying to delete a valid but non-existing node.
@@ -698,49 +763,55 @@ For advanced configuration management tasks JSON-RPC interface allows to batch d
 
 For example, let's create an RPC that will have all the actions batched together:
 
-=== "Request"
-    In this composite request we replace the description for the management interface, then create a new network-instance `vrf-red` and finally deleteing a login banner. All those actions will be committed together as a single transaction.
+/// tab | Request
+In this composite request we replace the description for the management interface, then create a new network-instance `vrf-red` and finally deleteing a login banner. All those actions will be committed together as a single transaction.
 
-    ```bash
-    curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
-    {
-        "jsonrpc": "2.0",
-        "id": 0,
-        "method": "set",
-        "params": {
-            "commands": [
-                {
-                    "action": "replace",
-                    "path": "/interface[name=mgmt0]/description:set-via-multi-cmd-json-rpc"
-                },
-                {
-                    "action": "update",
-                    "path": "/network-instance[name=vrf-red]",
-                    "value": {
-                        "name": "vrf-red",
-                        "description": "set-via-json-rpc"
-                    }
-                },
-                {
-                    "action": "delete",
-                    "path": "/system/banner/login-banner"
+```bash
+curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
+{
+    "jsonrpc": "2.0",
+    "id": 0,
+    "method": "set",
+    "params": {
+        "commands": [
+            {
+                "action": "replace",
+                "path": "/interface[name=mgmt0]/description:set-via-multi-cmd-json-rpc"
+            },
+            {
+                "action": "update",
+                "path": "/network-instance[name=vrf-red]",
+                "value": {
+                    "name": "vrf-red",
+                    "description": "set-via-json-rpc"
                 }
-            ]
-        }
+            },
+            {
+                "action": "delete",
+                "path": "/system/banner/login-banner"
+            }
+        ]
     }
-    EOF
-    ```
-    This example also shows how to create an element of a list (like a new network instance) - specify the key in the `path` and the content of the list member in the `value`.
-=== "Response"
-    ```json
-    {
-      "result": [
-        {}
-      ],
-      "id": 0,
-      "jsonrpc": "2.0"
-    }
-    ```
+}
+EOF
+```
+
+This example also shows how to create an element of a list (like a new network instance) - specify the key in the `path` and the content of the list member in the `value`.
+///
+
+/// tab | Response
+
+```json
+{
+  "result": [
+    {}
+  ],
+  "id": 0,
+  "jsonrpc": "2.0"
+}
+```
+
+///
 
 #### Tools commands
 
@@ -749,103 +820,125 @@ Set method allows users to invoke operational commands that use a specific `tool
 For example, `/tools interface mgmt0 statistics clear` command when invoked via CLI will clear stats for `mgmt0` interface. The same command can be called out using the Set method, as well as using the CLI method.  
 The difference being that with Set method users should specify the modelled path using gNMI path notations, while with the CLI method users use the syntax of the CLI.
 
-=== "Initial state"
-    Check the amount of incoming octets for mgmt0 interface.
-    ```
-    --{ + running }--[  ]--
-    A:srl# info from state /interface mgmt0 statistics in-octets  
-        interface mgmt0 {
-            statistics {
-                in-octets 383557
-            }
-        }
-    ```
-=== "Request"
-    Clearing statistics of `mgmt0` interface by calling the `/tools` command using the modelled path[^6].
-    ```bash
-    curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
-    {
-        "jsonrpc": "2.0",
-        "id": 0,
-        "method": "set",
-        "params": {
-            "datastore": "tools",
-            "commands": [
-                {
-                    "action": "update",
-                    "path": "/interface[name=mgmt0]/statistics/clear"
-                }
-            ]
+/// tab | Initial state
+Check the amount of incoming octets for mgmt0 interface.
+
+```
+--{ + running }--[  ]--
+A:srl# info from state /interface mgmt0 statistics in-octets  
+    interface mgmt0 {
+        statistics {
+            in-octets 383557
         }
     }
-    EOF
-    ```
-=== "Response"
-    ```json
-    {
-      "result": [
-        {}
-      ],
-      "id": 0,
-      "jsonrpc": "2.0"
-    }
-    ```
-=== "Verification"
-    The following output shows that the stats has been cleared via the tools command executed via JSON-RPC.
-    ```
-    --{ + running }--[  ]--
-    A:srl# info from state /interface mgmt0 statistics in-octets
-        interface mgmt0 {
-            statistics {
-                in-octets 4379
+```
+
+///
+
+/// tab | Request
+Clearing statistics of `mgmt0` interface by calling the `/tools` command using the modelled path[^6].
+
+```bash
+curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
+{
+    "jsonrpc": "2.0",
+    "id": 0,
+    "method": "set",
+    "params": {
+        "datastore": "tools",
+        "commands": [
+            {
+                "action": "update",
+                "path": "/interface[name=mgmt0]/statistics/clear"
             }
+        ]
+    }
+}
+EOF
+```
+
+///
+
+/// tab | Response
+
+```json
+{
+  "result": [
+    {}
+  ],
+  "id": 0,
+  "jsonrpc": "2.0"
+}
+```
+
+///
+
+/// tab | Verification
+The following output shows that the stats has been cleared via the tools command executed via JSON-RPC.
+
+```
+--{ + running }--[  ]--
+A:srl# info from state /interface mgmt0 statistics in-octets
+    interface mgmt0 {
+        statistics {
+            in-octets 4379
         }
-    ```
+    }
+```
+
+///
 
 #### Commit confirmation
 
 Starting from SR Linux version 23.3.2 users can leverage `confirm-timeout` parameter available in the Set method. This parameter allows users to specify the amount of time in seconds that the system will wait for a confirmation from the user before committing the configuration specified in this particular Set request. If the user does not confirm the commit within the specified time, the configuration is rolled back.
 
-=== "Set request"
-    This request sets a description for the management interface and waits for 5 seconds for a confirmation from the user before committing the configuration.
-    ```bash
-    curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
-    {
-        "jsonrpc": "2.0",
-        "id": 0,
-        "method": "set",
-        "params": {
-            "commands": [
-                {
-                    "action": "update",
-                    "path": "/interface[name=mgmt0]/description:set-via-json-rpc"
-                }
-            ],
-            "confirm-timeout": 5
-        }
+/// tab | Set request
+This request sets a description for the management interface and waits for 5 seconds for a confirmation from the user before committing the configuration.
+
+```bash
+curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
+{
+    "jsonrpc": "2.0",
+    "id": 0,
+    "method": "set",
+    "params": {
+        "commands": [
+            {
+                "action": "update",
+                "path": "/interface[name=mgmt0]/description:set-via-json-rpc"
+            }
+        ],
+        "confirm-timeout": 5
     }
-    EOF
-    ```
-=== "Confirmation"
-    Confirmation of the commit is done via `tools` command.
-    ```bash
-    curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
-    {
-        "jsonrpc": "2.0",
-        "id": 0,
-        "method": "set",
-        "params": {
-            "datastore": "tools",
-            "commands": [
-                {
-                    "action": "update",
-                    "path": "/system/configuration/confirmed-accept"
-                }
-            ]
-        }
+}
+EOF
+```
+
+///
+
+/// tab | Confirmation
+Confirmation of the commit is done via `tools` command.
+
+```bash
+curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
+{
+    "jsonrpc": "2.0",
+    "id": 0,
+    "method": "set",
+    "params": {
+        "datastore": "tools",
+        "commands": [
+            {
+                "action": "update",
+                "path": "/system/configuration/confirmed-accept"
+            }
+        ]
     }
-    EOF
-    ```
+}
+EOF
+```
+
+///
 
 ### Diff
 
@@ -855,53 +948,57 @@ JSON-RPC's `diff` method allows users to send a configuration blob and let SR Li
 
 The Diff method is very similar to the Set method, so it is very easy to switch one with another. Let's take a Set request used in the previous exercise and compare it to the Diff request:
 
-=== "Set Request"
+/// tab | Set Request
 
-    ```bash
-    curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
-    {
-        "jsonrpc": "2.0",
-        "id": 0,
-        "method": "set",
-        "params": {
-            "commands": [
-                {
-                    "action": "update",
-                    "path": "/system/information",
-                    "value": {
-                    "location": "the Netherlands",
-                    "contact": "Roman Dodin"
-                    }
+```bash
+curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
+{
+    "jsonrpc": "2.0",
+    "id": 0,
+    "method": "set",
+    "params": {
+        "commands": [
+            {
+                "action": "update",
+                "path": "/system/information",
+                "value": {
+                "location": "the Netherlands",
+                "contact": "Roman Dodin"
                 }
-            ]
-        }
+            }
+        ]
     }
-    EOF
-    ```
+}
+EOF
+```
 
-=== "Diff Request"
+///
 
-    ```bash
-    curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
-    {
-        "jsonrpc": "2.0",
-        "id": 0,
-        "method": "diff",
-        "params": {
-            "commands": [
-                {
-                    "action": "update",
-                    "path": "/system/information",
-                    "value": {
-                    "location": "the Netherlands",
-                    "contact": "Roman Dodin"
-                    }
+/// tab | Diff Request
+
+```bash
+curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
+{
+    "jsonrpc": "2.0",
+    "id": 0,
+    "method": "diff",
+    "params": {
+        "commands": [
+            {
+                "action": "update",
+                "path": "/system/information",
+                "value": {
+                "location": "the Netherlands",
+                "contact": "Roman Dodin"
                 }
-            ]
-        }
+            }
+        ]
     }
-    EOF
-    ```
+}
+EOF
+```
+
+///
 
 ### Validate
 
@@ -915,78 +1012,92 @@ It is important to understand that `commit validate` and the Validate method do 
 
 Validate method works with the same actions as Set method - update, replace and delete. For example, lets take our composite change request from the [last exercise](#multiple-actions) and validate it.
 
-=== "Request"
-    ```bash
-    curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
-    {
-        "jsonrpc": "2.0",
-        "id": 0,
-        "method": "validate",
-        "params": {
-            "commands": [
-                {
-                    "action": "replace",
-                    "path": "/interface[name=mgmt0]/description:set-via-multi-cmd-json-rpc"
-                },
-                {
-                    "action": "update",
-                    "path": "/network-instance[name=vrf-red]",
-                    "value": {
-                        "name": "vrf-red",
-                        "description": "set-via-json-rpc"
-                    }
-                },
-                {
-                    "action": "delete",
-                    "path": "/system/banner/login-banner"
+/// tab | Request
+
+```bash
+curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
+{
+    "jsonrpc": "2.0",
+    "id": 0,
+    "method": "validate",
+    "params": {
+        "commands": [
+            {
+                "action": "replace",
+                "path": "/interface[name=mgmt0]/description:set-via-multi-cmd-json-rpc"
+            },
+            {
+                "action": "update",
+                "path": "/network-instance[name=vrf-red]",
+                "value": {
+                    "name": "vrf-red",
+                    "description": "set-via-json-rpc"
                 }
-            ]
-        }
+            },
+            {
+                "action": "delete",
+                "path": "/system/banner/login-banner"
+            }
+        ]
     }
-    EOF
-    ```
-=== "Response"
-    ```json
-    {
-      "result": [
-        {}
-      ],
-      "id": 0,
-      "jsonrpc": "2.0"
-    }
-    ```
+}
+EOF
+```
+
+///
+
+/// tab | Response
+
+```json
+{
+  "result": [
+    {}
+  ],
+  "id": 0,
+  "jsonrpc": "2.0"
+}
+```
+
+///
 
 The empty result object indicates that changes were successfully validated and no errors were detected. What happens when the changes are not valid? Let's make some errors in our request, for example, let's try setting a description for an invalid interface:
 
-=== "Request"
-    ```bash
-    curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
-    {
-        "jsonrpc": "2.0",
-        "id": 0,
-        "method": "validate",
-        "params": {
-            "commands": [
-                {
-                    "action": "update",
-                    "path": "/interface[name=GigabitEthernet1/0]/description:set-via-json-rpc"
-                }
-            ]
-        }
+/// tab | Request
+
+```bash
+curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
+{
+    "jsonrpc": "2.0",
+    "id": 0,
+    "method": "validate",
+    "params": {
+        "commands": [
+            {
+                "action": "update",
+                "path": "/interface[name=GigabitEthernet1/0]/description:set-via-json-rpc"
+            }
+        ]
     }
-    EOF
-    ```
-=== "Response"
-    ```json
-    {
-      "error": {
-        "code": -1,
-        "message": "Failed to parse value 'GigabitEthernet1/0' for key 'name' (node 'interface') - Invalid value \"GigabitEthernet1/0\": Must match the pattern '(mgmt0|mgmt0-standby|system0|lo(0|1[0-9][0-9]|2([0-4][0-9]|5[0-5])|[1-9][0-9]|[1-9])|lif-.*|vhn-.*|enp(0|1[0-9][0-9]|2([0-4][0-9]|5[0-5])|[1-9][0-9]|[1-9])s(0|[1-9]|[1-2][0-9]|3[0-1])f[0-7]|ethernet-([1-9](\\d){0,1}(/[abcd])?(/[1-9](\\d){0,1})?/(([1-9](\\d){0,1})|(1[0-1]\\d)|(12[0-8])))|irb(0|1[0-9][0-9]|2([0-4][0-9]|5[0-5])|[1-9][0-9]|[1-9])|lag(([1-9](\\d){0,1})|(1[0-1]\\d)|(12[0-8])))'"
-      },
-      "id": 0,
-      "jsonrpc": "2.0"
-    }
-    ```
+}
+EOF
+```
+
+///
+
+/// tab | Response
+
+```json
+{
+  "error": {
+    "code": -1,
+    "message": "Failed to parse value 'GigabitEthernet1/0' for key 'name' (node 'interface') - Invalid value \"GigabitEthernet1/0\": Must match the pattern '(mgmt0|mgmt0-standby|system0|lo(0|1[0-9][0-9]|2([0-4][0-9]|5[0-5])|[1-9][0-9]|[1-9])|lif-.*|vhn-.*|enp(0|1[0-9][0-9]|2([0-4][0-9]|5[0-5])|[1-9][0-9]|[1-9])s(0|[1-9]|[1-2][0-9]|3[0-1])f[0-7]|ethernet-([1-9](\\d){0,1}(/[abcd])?(/[1-9](\\d){0,1})?/(([1-9](\\d){0,1})|(1[0-1]\\d)|(12[0-8])))|irb(0|1[0-9][0-9]|2([0-4][0-9]|5[0-5])|[1-9][0-9]|[1-9])|lag(([1-9](\\d){0,1})|(1[0-1]\\d)|(12[0-8])))'"
+  },
+  "id": 0,
+  "jsonrpc": "2.0"
+}
+```
+
+///
 
 And SR Linux immediately returns an error explaining where exactly the error was.
 
@@ -1002,49 +1113,30 @@ CLI method also allows to call CLI commands that are not modelled, such as alias
 
 Staring with basics, let's see what it takes to execute a simple `show version` command using JSON-RPC?
 
-=== "Request"
-    ```bash
-    curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
-    {
-        "jsonrpc": "2.0",
-        "id": 0,
-        "method": "cli",
-        "params": {
-            "commands": [
-                "show version"
-            ]
-        }
+/// tab | Request
+
+```bash
+curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
+{
+    "jsonrpc": "2.0",
+    "id": 0,
+    "method": "cli",
+    "params": {
+        "commands": [
+            "show version"
+        ]
     }
-    EOF
-    ```
-=== "Response"
-    ```json
-    {
-      "result": [
-        {
-          "basic system info": {
-            "Hostname": "srl",
-            "Chassis Type": "7220 IXR-D3L",
-            "Part Number": "Sim Part No.",
-            "Serial Number": "Sim Serial No.",
-            "System HW MAC Address": "1A:90:00:FF:00:00",
-            "Software Version": "v23.10.1",
-            "Build Number": "218-ga3fc1bea5a",
-            "Architecture": "x86_64",
-            "Last Booted": "2022-12-06T11:38:51.482Z",
-            "Total Memory": "24052875 kB",
-            "Free Memory": "17004746 kB"
-          }
-        }
-      ],
-      "id": 0,
-      "jsonrpc": "2.0"
-    }
-    ```
-=== "Executed in CLI with JSON formatting"
-    ```json
-    --{ + running }--[  ]--
-    A:srl# show version | as json  
+}
+EOF
+```
+
+///
+
+/// tab | Response
+
+```json
+{
+  "result": [
     {
       "basic system info": {
         "Hostname": "srl",
@@ -1057,28 +1149,62 @@ Staring with basics, let's see what it takes to execute a simple `show version` 
         "Architecture": "x86_64",
         "Last Booted": "2022-12-06T11:38:51.482Z",
         "Total Memory": "24052875 kB",
-        "Free Memory": "16858484 kB"
+        "Free Memory": "17004746 kB"
       }
     }
-    ```
-=== "Executed in CLI"
-    ```bash
-    --{ + running }--[  ]--
-    A:srl# show version
-    ---------------------------------------------------
-    Hostname             : srl
-    Chassis Type         : 7220 IXR-D3L
-    Part Number          : Sim Part No.
-    Serial Number        : Sim Serial No.
-    System HW MAC Address: 1A:90:00:FF:00:00
-    Software Version     : v23.10.1
-    Build Number         : 218-ga3fc1bea5a
-    Architecture         : x86_64
-    Last Booted          : 2022-12-06T11:38:51.482Z
-    Total Memory         : 24052875 kB
-    Free Memory          : 16973972 kB
-    ---------------------------------------------------
-    ```
+  ],
+  "id": 0,
+  "jsonrpc": "2.0"
+}
+```
+
+///
+
+/// tab | Executed in CLI with JSON formatting
+
+```json
+--{ + running }--[  ]--
+A:srl# show version | as json  
+{
+  "basic system info": {
+    "Hostname": "srl",
+    "Chassis Type": "7220 IXR-D3L",
+    "Part Number": "Sim Part No.",
+    "Serial Number": "Sim Serial No.",
+    "System HW MAC Address": "1A:90:00:FF:00:00",
+    "Software Version": "v23.10.1",
+    "Build Number": "218-ga3fc1bea5a",
+    "Architecture": "x86_64",
+    "Last Booted": "2022-12-06T11:38:51.482Z",
+    "Total Memory": "24052875 kB",
+    "Free Memory": "16858484 kB"
+  }
+}
+```
+
+///
+
+/// tab | Executed in CLI
+
+```bash
+--{ + running }--[  ]--
+A:srl# show version
+---------------------------------------------------
+Hostname             : srl
+Chassis Type         : 7220 IXR-D3L
+Part Number          : Sim Part No.
+Serial Number        : Sim Serial No.
+System HW MAC Address: 1A:90:00:FF:00:00
+Software Version     : v23.10.1
+Build Number         : 218-ga3fc1bea5a
+Architecture         : x86_64
+Last Booted          : 2022-12-06T11:38:51.482Z
+Total Memory         : 24052875 kB
+Free Memory          : 16973972 kB
+---------------------------------------------------
+```
+
+///
 
 Okay, there is a lot of output here, focus first on the request message. In the request body, we have `cli` method set, and the `commands` list contains a list of strings, where each string is a CLI command as it is seen in the CLI. We have only one command to execute, hence our list has only one element - `show version`.
 
@@ -1100,114 +1226,136 @@ With `output-format` field of the request we can choose the formatting of the re
 * text - textual/ascii output as seen in the CLI
 * table - table view of the returned data
 
-=== "Req with `text`"
-    `jq` arguments used in this command filter out the result element and use the raw processing to render newlines.
-    ```bash
-    curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq -r '.result[]'
-    {
-        "jsonrpc": "2.0",
-        "id": 0,
-        "method": "cli",
-        "params": {
-            "commands": [
-                "show version"
-            ],
-            "output-format": "text"
-        }
+/// tab | Req with `text`
+`jq` arguments used in this command filter out the result element and use the raw processing to render newlines.
+
+```bash
+curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq -r '.result[]'
+{
+    "jsonrpc": "2.0",
+    "id": 0,
+    "method": "cli",
+    "params": {
+        "commands": [
+            "show version"
+        ],
+        "output-format": "text"
     }
-    EOF
-    ```
-=== "Resp with `text`"
-    ```bash
-    -------------------------------------------------------------
-    Hostname             : srl
-    Chassis Type         : 7220 IXR-D3L
-    Part Number          : Sim Part No.
-    Serial Number        : Sim Serial No.
-    System HW MAC Address: 1A:90:00:FF:00:00
-    Software Version     : v23.10.1
-    Build Number         : 218-ga3fc1bea5a
-    Architecture         : x86_64
-    Last Booted          : 2022-12-06T11:38:51.482Z
-    Total Memory         : 24052875 kB
-    Free Memory          : 16414484 kB
-    -------------------------------------------------------------
-    ```
-=== "Req with `table`"
-    ```bash
-    curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq -r '.result[]'
-    {
-        "jsonrpc": "2.0",
-        "id": 0,
-        "method": "cli",
-        "params": {
-            "commands": [
-                "show version"
-            ],
-            "output-format": "table"
-        }
+}
+EOF
+```
+
+///
+
+/// tab | Resp with `text`
+
+```bash
+-------------------------------------------------------------
+Hostname             : srl
+Chassis Type         : 7220 IXR-D3L
+Part Number          : Sim Part No.
+Serial Number        : Sim Serial No.
+System HW MAC Address: 1A:90:00:FF:00:00
+Software Version     : v23.10.1
+Build Number         : 218-ga3fc1bea5a
+Architecture         : x86_64
+Last Booted          : 2022-12-06T11:38:51.482Z
+Total Memory         : 24052875 kB
+Free Memory          : 16414484 kB
+-------------------------------------------------------------
+```
+
+///
+
+/// tab | Req with `table`
+
+```bash
+curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq -r '.result[]'
+{
+    "jsonrpc": "2.0",
+    "id": 0,
+    "method": "cli",
+    "params": {
+        "commands": [
+            "show version"
+        ],
+        "output-format": "table"
     }
-    EOF
-    ```
-=== "Resp with `table`"
-    ```bash
-    +-----------------+-----------------+-----------------+-----------------+-----------------+-----------------+-----------------+-----------------+-----------------+-----------------+-----------------+
-    |    Hostname     |  Chassis Type   |   Part Number   |  Serial Number  |  System HW MAC  |    Software     |  Build Number   |  Architecture   |   Last Booted   |  Total Memory   |   Free Memory   |
-    |                 |                 |                 |                 |     Address     |     Version     |                 |                 |                 |                 |                 |
-    +=================+=================+=================+=================+=================+=================+=================+=================+=================+=================+=================+
-    | srl             | 7220 IXR-D3L    | Sim Part No.    | Sim Serial No.  | 1A:90:00:FF:00: | v23.10.1        | 218-ga3fc1bea5a | x86_64          | 2022-12-06T11:3 | 24052875 kB     | 16466207 kB     |
-    |                 |                 |                 |                 | 00              |                 |                 |                 | 8:51.482Z       |                 |                 |
-    +-----------------+-----------------+-----------------+-----------------+-----------------+-----------------+-----------------+-----------------+-----------------+-----------------+-----------------+
-    ```
+}
+EOF
+```
+
+///
+
+/// tab | Resp with `table`
+
+```bash
++-----------------+-----------------+-----------------+-----------------+-----------------+-----------------+-----------------+-----------------+-----------------+-----------------+-----------------+
+|    Hostname     |  Chassis Type   |   Part Number   |  Serial Number  |  System HW MAC  |    Software     |  Build Number   |  Architecture   |   Last Booted   |  Total Memory   |   Free Memory   |
+|                 |                 |                 |                 |     Address     |     Version     |                 |                 |                 |                 |                 |
++=================+=================+=================+=================+=================+=================+=================+=================+=================+=================+=================+
+| srl             | 7220 IXR-D3L    | Sim Part No.    | Sim Serial No.  | 1A:90:00:FF:00: | v23.10.1        | 218-ga3fc1bea5a | x86_64          | 2022-12-06T11:3 | 24052875 kB     | 16466207 kB     |
+|                 |                 |                 |                 | 00              |                 |                 |                 | 8:51.482Z       |                 |                 |
++-----------------+-----------------+-----------------+-----------------+-----------------+-----------------+-----------------+-----------------+-----------------+-----------------+-----------------+
+```
+
+///
 
 #### Context switching
 
 When using CLI method, the commands entered one after another work exactly the same as when you enter them in the CLI. This means that current working context changes based on the entered commands. For instance, if you first enters to the interface context and then execute the `info` command, it will work out nicely, since the context switch is persistent across commands in the same RPC.  
 The next RPC, as expected, will not maintain the context of a previous RPC; by default running datastore is activated and `/` context is set.
 
-=== "Request"
-    ```bash
-    curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
-    {
-        "jsonrpc": "2.0",
-        "id": 0,
-        "method": "cli",
-        "params": {
-            "commands": [
-                "interface mgmt0",
-                "info"
-            ]
-        }
+/// tab | Request
+
+```bash
+curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
+{
+    "jsonrpc": "2.0",
+    "id": 0,
+    "method": "cli",
+    "params": {
+        "commands": [
+            "interface mgmt0",
+            "info"
+        ]
     }
-    EOF
-    ```
-=== "Response"
-    ```json
+}
+EOF
+```
+
+///
+
+/// tab | Response
+
+```json
+{
+  "result": [
+    {},
     {
-      "result": [
-        {},
+      "name": "mgmt0",
+      "description": "set-via-multi-cmd-json-rpc",
+      "admin-state": "enable",
+      "subinterface": [
         {
-          "name": "mgmt0",
-          "description": "set-via-multi-cmd-json-rpc",
+          "index": 0,
           "admin-state": "enable",
-          "subinterface": [
-            {
-              "index": 0,
-              "admin-state": "enable",
-              "ipv4": {
-                "dhcp-client": {}
-              },
-              "ipv6": {
-                "dhcp-client": {}
-              }
-            }
-          ]
+          "ipv4": {
+            "dhcp-client": {}
+          },
+          "ipv6": {
+            "dhcp-client": {}
+          }
         }
-      ],
-      "id": 0,
-      "jsonrpc": "2.0"
+      ]
     }
-    ```
+  ],
+  "id": 0,
+  "jsonrpc": "2.0"
+}
+```
+
+///
 
 Note, how the `result` list contains two elements matching the number of commands used in the request. The first command - `/interface mgmt0` - doesn't produce any output, as it just enters the context of an interface. The second command though - `info` - produces the output as it dumps the configuration items for the interface, and we get its output with json formatting.
 
@@ -1219,158 +1367,190 @@ You guessed it right, you can also perform configuration tasks with CLI method a
 When using CLI method for configuration tasks explicit entering into the candidate datastore and committing is necessary.
 ///
 
-=== "Contextual commands"
-    One option to use when executing configuration tasks is to use the commands sequence that an operator would have used. This way every other command respects the present working context.
+//// tab | Contextual commands
+One option to use when executing configuration tasks is to use the commands sequence that an operator would have used. This way every other command respects the present working context.
 
-    This method is error-prone, since tracking the context changes is tedious. But, still, this is an option.
-    === "Request"
-        ```bash
-        curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
-        {
-            "jsonrpc": "2.0",
-            "id": 0,
-            "method": "cli",
-            "params": {
-                "commands": [
-                    "enter candidate",
-                    "/interface ethernet-1/1",
-                    "description \"this is a new interface\"",
-                    "admin-state enable",
-                    "commit now"
-                ]
-            }
-        }
-        EOF
-        ```
-    === "Response"
-        ```json
-        {
-          "result": [
-            {},
-            {},
-            {},
-            {},
-            {
-              "text": "All changes have been committed. Leaving candidate mode.\n"
-            }
-          ],
-          "id": 0,
-          "jsonrpc": "2.0"
-        }
-        ```
+This method is error-prone, since tracking the context changes is tedious. But, still, this is an option.
+/// tab | Request
 
-=== "Flattened commands"
-    Flattened commands are levied from the burdens of the contextual commands, as each command starts from the root. This makes configuration snippets longer, but safer to use.
-    === "Request"
-        ```bash
-        curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
-        {
-            "jsonrpc": "2.0",
-            "id": 0,
-            "method": "cli",
-            "params": {
-                "commands": [
-                    "enter candidate",
-                    "/interface ethernet-1/1 description \"this is a new interface\" admin-state enable",
-                    "commit now"
-                ]
-            }
-        }
-        EOF
-        ```
-    === "Response"
-        ```json
-        {
-          "result": [
-            {},
-            {},
-            {
-              "text": "All changes have been committed. Leaving candidate mode.\n"
-            }
-          ],
-          "id": 0,
-          "jsonrpc": "2.0"
-        }
-        ```
-=== "Config dump"
-    Another popular way to use CLI-styled configs is to dump the configuration from the device, template or change a few fields in the text blob and use it for configuration. In the example below we did `info from running /interface ethernet-1/1` and captured the output. We used this output as is in our request body just escaping the quotes.
-    === "Request"
-        ```bash
-        curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
-        {
-            "jsonrpc": "2.0",
-            "id": 0,
-            "method": "cli",
-            "params": {
-                "commands": [
-                    "enter candidate",
-                    "/interface ethernet-1/1 {
-                      description \"this is a new interface\"
-                      admin-state enable
-                  }",
-                    "commit now"
-                ]
-            }
-        }
-        EOF
-        ```
-    === "Response"
-        ```json
-        {
-          "result": [
-            {},
-            {},
-            {
-              "text": "All changes have been committed. Leaving candidate mode.\n"
-            }
-          ],
-          "id": 0,
-          "jsonrpc": "2.0"
-        }
-        ```
-=== "Verification"
-    All of the methods should result in the same configuration added:
-    ```bash
-    ❯ docker exec clab-srl01-srl sr_cli info from running /interface ethernet-1/1
-        interface ethernet-1/1 {
-            description "this is a new interface"
-            admin-state enable
-        }
-    ```
+```bash
+curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
+{
+    "jsonrpc": "2.0",
+    "id": 0,
+    "method": "cli",
+    "params": {
+        "commands": [
+            "enter candidate",
+            "/interface ethernet-1/1",
+            "description \"this is a new interface\"",
+            "admin-state enable",
+            "commit now"
+        ]
+    }
+}
+EOF
+```
+
+///
+/// tab | Response
+
+```json
+{
+    "result": [
+    {},
+    {},
+    {},
+    {},
+    {
+        "text": "All changes have been committed. Leaving candidate mode.\n"
+    }
+    ],
+    "id": 0,
+    "jsonrpc": "2.0"
+}
+```
+
+///
+////
+
+//// tab | Flattened commands
+Flattened commands are levied from the burdens of the contextual commands, as each command starts from the root. This makes configuration snippets longer, but safer to use.
+/// tab | Request
+
+```bash
+curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
+{
+    "jsonrpc": "2.0",
+    "id": 0,
+    "method": "cli",
+    "params": {
+        "commands": [
+            "enter candidate",
+            "/interface ethernet-1/1 description \"this is a new interface\" admin-state enable",
+            "commit now"
+        ]
+    }
+}
+EOF
+```
+
+///
+/// tab | Response
+
+```json
+{
+    "result": [
+    {},
+    {},
+    {
+        "text": "All changes have been committed. Leaving candidate mode.\n"
+    }
+    ],
+    "id": 0,
+    "jsonrpc": "2.0"
+}
+```
+
+///
+////
+
+//// tab | Config dump
+Another popular way to use CLI-styled configs is to dump the configuration from the device, template or change a few fields in the text blob and use it for configuration. In the example below we did `info from running /interface ethernet-1/1` and captured the output. We used this output as is in our request body just escaping the quotes.
+/// tab | Request
+
+```bash
+curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
+{
+    "jsonrpc": "2.0",
+    "id": 0,
+    "method": "cli",
+    "params": {
+        "commands": [
+            "enter candidate",
+            "/interface ethernet-1/1 {
+                description \"this is a new interface\"
+                admin-state enable
+            }",
+            "commit now"
+        ]
+    }
+}
+EOF
+```
+
+///
+/// tab | Response
+
+```json
+{
+    "result": [
+    {},
+    {},
+    {
+        "text": "All changes have been committed. Leaving candidate mode.\n"
+    }
+    ],
+    "id": 0,
+    "jsonrpc": "2.0"
+}
+```
+
+///
+////
+
+/// tab | Verification
+All of the methods should result in the same configuration added:
+
+```bash
+❯ docker exec clab-srl01-srl sr_cli info from running /interface ethernet-1/1
+    interface ethernet-1/1 {
+        description "this is a new interface"
+        admin-state enable
+    }
+```
+
+///
 
 #### Tools commands
 
 Remember how we executed the tools commands within the Set method? We can do the same with CLI method, but in this case we provide the command in the CLI-style. Using the same command to clear statistics counters:
 
-=== "Request"
-    ```bash
-    curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
-    {
-        "jsonrpc": "2.0",
-        "id": 0,
-        "method": "cli",
-        "params": {
-            "commands": [
-                "tools interface mgmt0 statistics clear"
-            ]
-        }
-    }
-    EOF
-    ```
-=== "Response"
-    The result contains the text output of the tools command which confirms that the command worked:
+/// tab | Request
 
-    ```json
-    {
-      "result": [
-        {
-          "text": "/interface[name=mgmt0]:\n    interface mgmt0 statistics cleared\n\n"
-        }
-      ],
-      "id": 0,
-      "jsonrpc": "2.0"
+```bash
+curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
+{
+    "jsonrpc": "2.0",
+    "id": 0,
+    "method": "cli",
+    "params": {
+        "commands": [
+            "tools interface mgmt0 statistics clear"
+        ]
     }
-    ```
+}
+EOF
+```
+
+///
+
+/// tab | Response
+The result contains the text output of the tools command which confirms that the command worked:
+
+```json
+{
+  "result": [
+    {
+      "text": "/interface[name=mgmt0]:\n    interface mgmt0 statistics cleared\n\n"
+    }
+  ],
+  "id": 0,
+  "jsonrpc": "2.0"
+}
+```
+
+///
 
 ## HTTPS
 
@@ -1422,39 +1602,46 @@ When either of the commands specified in the RPC request message fails, the retu
 
 For example, the following request has two commands, where 2nd command uses a wrong path.
 
-=== "Request"
-    ```bash
-    curl -v 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF
-    {
-        "jsonrpc": "2.0",
-        "id": 0,
-        "method": "get",
-        "params": {
-            "commands": [
-                {
-                    "path": "/interface[name=mgmt0]/statistics",
-                    "datastore": "state"
-                },
-                {
-                    "path": "/system/somethingwrong",
-                    "datastore": "state"
-                }
-            ]
-        }
+/// tab | Request
+
+```bash
+curl -v 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF
+{
+    "jsonrpc": "2.0",
+    "id": 0,
+    "method": "get",
+    "params": {
+        "commands": [
+            {
+                "path": "/interface[name=mgmt0]/statistics",
+                "datastore": "state"
+            },
+            {
+                "path": "/system/somethingwrong",
+                "datastore": "state"
+            }
+        ]
     }
-    EOF
-    ```
-=== "Response"
-    ```json
-    {
-      "error": {
-        "code": -1,
-        "message": "Path not valid - unknown element 'somethingwrong'. Options are [features, trace-options, management, configuration, aaa, authentication, warm-reboot, boot, l2cp-transparency, lacp, lldp, mtu, name, dhcp-server, event-handler, ra-guard-policy, gnmi-server, tls, json-rpc-server, bridge-table, license, dns, ntp, clock, ssh-server, ftp-server, snmp, sflow, load-balancing, banner, information, logging, mirroring, network-instance, maintenance, app-management]"
-      },
-      "id": 0,
-      "jsonrpc": "2.0"
-    }
-    ```
+}
+EOF
+```
+
+///
+
+/// tab | Response
+
+```json
+{
+  "error": {
+    "code": -1,
+    "message": "Path not valid - unknown element 'somethingwrong'. Options are [features, trace-options, management, configuration, aaa, authentication, warm-reboot, boot, l2cp-transparency, lacp, lldp, mtu, name, dhcp-server, event-handler, ra-guard-policy, gnmi-server, tls, json-rpc-server, bridge-table, license, dns, ntp, clock, ssh-server, ftp-server, snmp, sflow, load-balancing, banner, information, logging, mirroring, network-instance, maintenance, app-management]"
+  },
+  "id": 0,
+  "jsonrpc": "2.0"
+}
+```
+
+///
 
 The response will contain just an error container, even though technically the first command is correct. Note, that the HTTP response code is still `200 OK`, since JSON-RPC was able to deliver and execute the RPC, it is just that the RPC lead to an error.
 
