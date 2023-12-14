@@ -1074,7 +1074,7 @@ EOF
 
 The `output-format` takes only one value - `text` - to denote that the output should be in the same format as the CLI diff command.
 
-When there is no difference between the provided blob in the diff method and the actual configuration, the diff method returns an empty arrya. To check that, execute the set request provided in the beginning of this section and then execute the diff method again. This is what you should see as the output:
+When there is no difference between the provided blob in the diff method and the actual configuration, the diff method returns an empty array. To check that, execute the set request provided in the beginning of this section and then execute the diff method again. This is what you should see as the output:
 
 ```json
 {
