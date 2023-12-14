@@ -12,23 +12,23 @@ title: JSON-RPC Basics
 | **Tutorial name**           | JSON-RPC Basics                                                                              |
 | **Lab components**          | Single Nokia SR Linux node                                                                   |
 | **Resource requirements**   | :fontawesome-solid-microchip: 2 vCPU <br/>:fontawesome-solid-memory: 4 GB                    |
-| **Lab**                     | [single-srlinux][lab]                                                                        |
+| **Lab**                     | [Instant SR Linux Lab][lab]                                                                  |
 | **Main ref documents**      | [JSON-RPC Configuration][json-cfg-guide], [JSON-RPC Management][json-mgmt-guide]             |
-| **Version information**[^1] | [`srlinux:22.11.1`][srlinux-container], [`containerlab:0.33.0`][clab-install]                |
+| **Version information**[^1] | [`srlinux:23.10.1`][srlinux-container], [`containerlab:0.48.6`][clab-install]                |
 | **Authors**                 | Roman Dodin [:material-twitter:][rd-twitter] [:material-linkedin:][rd-linkedin]              |
 | **Discussions**             | [:material-twitter: Twitter][twitter-share] · [:material-linkedin: LinkedIn][linkedin-share] |
 
 [rd-linkedin]: https://linkedin.com/in/rdodin
 [rd-twitter]: https://twitter.com/ntdvps
-[lab]: https://github.com/srl-labs/containerlab/blob/main/lab-examples/srl01/srl01.clab.yml
-[json-cfg-guide]: https://documentation.nokia.com/srlinux/22-6/SR_Linux_Book_Files/Configuration_Basics_Guide/configb-mgmt_servers.html#ai9ep6mg7n
-[json-mgmt-guide]: https://documentation.nokia.com/srlinux/22-6/SR_Linux_Book_Files/SysMgmt_Guide/json-interface.html
+[lab]: ../../../blog/posts/2023/instant-srl-labs.md#single-node-sr-linux-lab
+[json-cfg-guide]: https://documentation.nokia.com/srlinux/23-10/books/config-basics/management-servers.html#json-rpc-server
+[json-mgmt-guide]: https://documentation.nokia.com/srlinux/23-10/books/system-mgmt/json-interface.html
 [srlinux-container]: https://github.com/nokia/srlinux-container-image
 [clab-install]: https://containerlab.dev/install/
 [twitter-share]: https://twitter.com/ntdvps/status/1600261024719917057
 [linkedin-share]: https://www.linkedin.com/feed/update/urn:li:activity:7006028123045548033/
 
-As of release 22.11.1, Nokia SR Linux Network OS employs three fully modeled management interfaces:
+As of release 23.10.1, Nokia SR Linux Network OS employs three fully modeled management interfaces:
 
 * gNMI
 * JSON-RPC
@@ -57,7 +57,7 @@ To make SR Linux accessible to non-hyperscalers and network teams who have been 
 
 ## JSON-RPC methods
 
-Being a custom management interface, JSON-RPC offers both standard methods like `get` and `set` to work with the state and configuration datastores of srlinux, as well as custom functions like `validate` for validating the config and `cli` to invoke CLI commands on the system.  
+Being a custom management interface, JSON-RPC offers both standard methods like `get` and `set` to work with the state and configuration datastores of SR Linux, as well as custom functions like `validate` for validating the config and `cli` to invoke CLI commands on the system.  
 All of that uses JSON-encoded messages exchanged over HTTP transport.
 
 As the RPC part of the name suggests, users are able to execute certain remote procedures on SR Linux via JSON-RPC interface. We refer to these procedures as methods; the following table summarizes the JSON-RPC provided methods as stated in the [JSON-RPC Management Guide][json-mgmt-guide].
@@ -70,6 +70,23 @@ As the RPC part of the name suggests, users are able to execute certain remote p
 | **CLI**      | Used to run CLI commands. The get and set methods are restricted to accessing data structures via the YANG models, but the cli method can access any commands added to the system via python plugins or aliases. |
 
 We will introduce all of these methods in detail during the practical section of this tutorial.
+
+To continue with the practical part of this tutorial, make sure you have containerlab >=0.48.6 installed and deploy the [Instant SR Linux Lab][lab] to get SR Linux node up and running in a matter of minutes:
+
+```
+SRL_VERSION=23.10.1 sudo -E clab deploy -c -t srlinux.dev/clab-srl
+```
+
+<div class="embed-result">
+```
+INFO[0000] Containerlab v0.48.6 started
++---+------+--------------+-------------------------------+---------------+---------+----------------+----------------------+
+| # | Name | Container ID |             Image             |     Kind      |  State  |  IPv4 Address  |     IPv6 Address     |
++---+------+--------------+-------------------------------+---------------+---------+----------------+----------------------+
+| 1 | srl  | ca09c745ec38 | ghcr.io/nokia/srlinux:23.10.1 | nokia_srlinux | running | 172.20.20.2/24 | 2001:172:20:20::2/64 |
++---+------+--------------+-------------------------------+---------------+---------+----------------+----------------------+
+```
+</div>
 
 ## Configuring JSON-RPC
 
@@ -145,14 +162,14 @@ The management interface sends requests[^3] to the JSON-RPC server and receives 
 
     The response object structure provides a `result` list that contains the result of the invoked RPC. Additionally, the response object contains the RPC version and request ID.
 
-[json-msg-structure]: https://documentation.nokia.com/srlinux/22-6/SR_Linux_Book_Files/SysMgmt_Guide/json-interface.html#ai9ersv4qk
+[json-msg-structure]: https://documentation.nokia.com/srlinux/23-10/books/system-mgmt/json-interface.html#json-message-structure
 
 ## Authentication
 
 JSON-RPC server uses basic authentication for both HTTP and HTTPS transports, which means user information must be provided in a request.
 
 ```bash title="User credentials are passed in a request"
-curl -s -X POST 'http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc'
+curl -s -X POST 'http://admin:NokiaSrl1!@srl/jsonrpc'
 ```
 
 In the example above, the user `admin` with a password `NokiaSrl1!` is used to authenticate with the JSON-RPC API.
@@ -174,7 +191,7 @@ Starting with the basics, let's see how we can query SR Linux configuration and 
     Our `commands` list contains a single object with `path` and `datastore` values set.
 
     ```bash
-    curl -s 'http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc' -d @- <<EOF | jq
+    curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
     {
         "jsonrpc": "2.0",
         "id": 0,
@@ -196,7 +213,7 @@ Starting with the basics, let's see how we can query SR Linux configuration and 
     ```json
     {
       "result": [
-          "v22.11.1-184-g6eeaa254f7"
+          "v23.10.1-218-ga3fc1bea5a"
       ],
       "id": 0,
       "jsonrpc": "2.0"
@@ -227,7 +244,7 @@ By specifying `path=/system/information/version` and `datastore=state` in our re
 A:srl# info from state system information version  
     system {
         information {
-            version v22.11.1-184-g6eeaa254f7
+            version v23.10.1-218-ga3fc1bea5a
         }
     }
 --{ running }--[  ]--
@@ -240,7 +257,7 @@ When datastore value is omitted, `running` datastore is assumed. For example, re
 
 === "Request"
     ```bash
-    curl -s 'http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc' -d @- <<EOF | jq
+    curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
     {
         "jsonrpc": "2.0",
         "id": 0,
@@ -275,7 +292,7 @@ The response object contains the same ID used in the request, as well as the lis
     It is quite easy, actually. Just send the request with the `/` path:
 
     ```bash
-    curl -s 'http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc' -d @- <<EOF | jq
+    curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
     {
         "jsonrpc": "2.0",
         "id": 0,
@@ -296,7 +313,7 @@ The response object contains the same ID used in the request, as well as the lis
     In the same way, to get the full state of the switch, add `state` datastore:
 
     ```bash
-    curl -s 'http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc' -d @- <<EOF | jq '.result[]' > /tmp/test.json
+    curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq '.result[]' > /tmp/test.json
     {
         "jsonrpc": "2.0",
         "id": 0,
@@ -322,7 +339,7 @@ JSON-RPC allows users to batch commands of the same method in the same request. 
 
 === "Request"
     ```bash
-    curl -s 'http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc' -d @- <<EOF | jq
+    curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
     {
         "jsonrpc": "2.0",
         "id": 0,
@@ -348,7 +365,7 @@ JSON-RPC allows users to batch commands of the same method in the same request. 
     ```json
     {
         "result": [
-            "v22.11.1-184-g6eeaa254f7",
+            "v23.10.1-218-ga3fc1bea5a",
             {
                 "in-octets": "140285",
                 "in-unicast-packets": "1389",
@@ -387,7 +404,7 @@ Switching to the 1st gear, let's just add a description to our `mgmt0` interface
 
 === "Request"
     ```bash
-    curl -s 'http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc' -d @- <<EOF | jq
+    curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
     {
         "jsonrpc": "2.0",
         "id": 0,
@@ -417,7 +434,7 @@ Switching to the 1st gear, let's just add a description to our `mgmt0` interface
     Checking that the interface description has been set successfully.
 
     ```bash
-    curl -s 'http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc' -d @- <<EOF | jq
+    curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
     {
         "jsonrpc": "2.0",
         "id": 0,
@@ -467,7 +484,7 @@ Alternatively, users can specify the value using the `"value"` field inside the 
     Set two leaves - `location` and `contact` under the `/system/information` container by using the `value` field of the command.
 
     ```bash
-    curl -s 'http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc' -d @- <<EOF | jq
+    curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
     {
         "jsonrpc": "2.0",
         "id": 0,
@@ -499,7 +516,7 @@ Alternatively, users can specify the value using the `"value"` field inside the 
     ```
 === "Verification"
     ```bash
-    curl -s 'http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc' -d @- <<EOF | jq
+    curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
     {
         "jsonrpc": "2.0",
         "id": 0,
@@ -552,7 +569,7 @@ Let's replace this conatiner with setting just the contact leaf to "John Doe" va
 
 === "Request"
     ```bash
-    curl -s 'http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc' -d @- <<EOF | jq
+    curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
     {
         "jsonrpc": "2.0",
         "id": 0,
@@ -597,7 +614,7 @@ Notice, how the verification command proves that the whole configuration under `
     One of the common management tasks is to replace the entire config with a golden or intended configuration. To do that with JSON-RPC use `/` path and a file with JSON-formatted config:
 
     ```bash
-    curl -s 'http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc' -d @- <<EOF
+    curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF
     {
         "jsonrpc": "2.0",
         "id": 0,
@@ -632,7 +649,7 @@ To delete a configuration region for a certain path use `delete` action of the S
 === "Request"
     Delete the configuration under the `/system/information` container.
     ```bash
-    curl -s 'http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc' -d @- <<EOF | jq
+    curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
     {
         "jsonrpc": "2.0",
         "id": 0,
@@ -681,7 +698,7 @@ For example, let's create an RPC that will have all the actions batched together
     In this composite request we replace the description for the management interface, then create a new network-instance `vrf-red` and finally deleteing a login banner. All those actions will be committed together as a single transaction.
 
     ```bash
-    curl -s 'http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc' -d @- <<EOF | jq
+    curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
     {
         "jsonrpc": "2.0",
         "id": 0,
@@ -742,7 +759,7 @@ The difference being that with Set method users should specify the modelled path
 === "Request"
     Clearing statistics of `mgmt0` interface by calling the `/tools` command using the modelled path[^6].
     ```bash
-    curl -s 'http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc' -d @- <<EOF | jq
+    curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
     {
         "jsonrpc": "2.0",
         "id": 0,
@@ -788,7 +805,7 @@ Starting from SR Linux version 23.3.2 users can leverage `confirm-timeout` param
 === "Set request"
     This request sets a description for the management interface and waits for 5 seconds for a confirmation from the user before committing the configuration.
     ```bash
-    curl -s 'http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc' -d @- <<EOF | jq
+    curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
     {
         "jsonrpc": "2.0",
         "id": 0,
@@ -808,7 +825,7 @@ Starting from SR Linux version 23.3.2 users can leverage `confirm-timeout` param
 === "Confirmation"
     Confirmation of the commit is done via `tools` command.
     ```bash
-    curl -s 'http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc' -d @- <<EOF | jq
+    curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
     {
         "jsonrpc": "2.0",
         "id": 0,
@@ -826,17 +843,79 @@ Starting from SR Linux version 23.3.2 users can leverage `confirm-timeout` param
     EOF
     ```
 
+### Diff
+
+Knowing if the configuration you carefully crafted is going to change the active running configuration is important. It might be a decision factor in whether you want to send the configuration or not.
+
+JSON-RPC's `diff` method allows users to send a configuration blob and let SR Linux perform a diff function between the received configuration blob and the running configuration. The result of the diff function is then sent back to the user.
+
+The Diff method is very similar to the Set method, so it is very easy to switch one with another. Let's take a Set request used in the previous exercise and compare it to the Diff request:
+
+/// tab | Set Request
+
+```bash
+curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
+{
+    "jsonrpc": "2.0",
+    "id": 0,
+    "method": "set",
+    "params": {
+        "commands": [
+            {
+                "action": "update",
+                "path": "/system/information",
+                "value": {
+                  "location": "the Netherlands",
+                  "contact": "Roman Dodin"
+                }
+            }
+        ]
+    }
+}
+EOF
+```
+
+///
+
+/// tab | Diff Request
+
+```bash
+curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
+{
+    "jsonrpc": "2.0",
+    "id": 0,
+    "method": "diff",
+    "params": {
+        "commands": [
+            {
+                "action": "update",
+                "path": "/system/information",
+                "value": {
+                  "location": "the Netherlands",
+                  "contact": "Roman Dodin"
+                }
+            }
+        ]
+    }
+}
+EOF
+///
+
 ### Validate
 
 One of the infamous fallacies that people associate with gNMI is its inability to work with candidate datastores, do confirmed commits and validate configs. While JSON-RPC interface doesn't let you do incremental updates to an opened candidate datastore with the Set method, it allows you to validate a portion of a config using Validate method.
 
 Under the hood, SR Linux executes `commit validate` command on the provided configuration blob, and no configuration changes are made to the system. The goal of Validate method is to give users a way to ensure that the config they are about to push will be accepted.
 
+/// details | validation nuance
+It is important to understand that `commit validate` and the Validate method do not guarantee with 100% certainty that the configuration will be accepted. The reason for that is that the validation method relies on YANG-powered validation, which is not the only validation that SR Linux does. Some applications may perform additional validation checks that are not covered by YANG validation. That is why you might see that `commit validate` succeeds, but the actual commit fails due to application-bound validation check.
+///
+
 Validate method works with the same actions as Set method - update, replace and delete. For example, lets take our composite change request from the [last exercise](#multiple-actions) and validate it.
 
 === "Request"
     ```bash
-    curl -s 'http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc' -d @- <<EOF | jq
+    curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
     {
         "jsonrpc": "2.0",
         "id": 0,
@@ -879,7 +958,7 @@ The empty result object indicates that changes were successfully validated and n
 
 === "Request"
     ```bash
-    curl -s 'http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc' -d @- <<EOF | jq
+    curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
     {
         "jsonrpc": "2.0",
         "id": 0,
@@ -922,7 +1001,7 @@ Staring with basics, let's see what it takes to execute a simple `show version` 
 
 === "Request"
     ```bash
-    curl -s 'http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc' -d @- <<EOF | jq
+    curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
     {
         "jsonrpc": "2.0",
         "id": 0,
@@ -946,8 +1025,8 @@ Staring with basics, let's see what it takes to execute a simple `show version` 
             "Part Number": "Sim Part No.",
             "Serial Number": "Sim Serial No.",
             "System HW MAC Address": "1A:90:00:FF:00:00",
-            "Software Version": "v22.11.1",
-            "Build Number": "184-g6eeaa254f7",
+            "Software Version": "v23.10.1",
+            "Build Number": "218-ga3fc1bea5a",
             "Architecture": "x86_64",
             "Last Booted": "2022-12-06T11:38:51.482Z",
             "Total Memory": "24052875 kB",
@@ -970,8 +1049,8 @@ Staring with basics, let's see what it takes to execute a simple `show version` 
         "Part Number": "Sim Part No.",
         "Serial Number": "Sim Serial No.",
         "System HW MAC Address": "1A:90:00:FF:00:00",
-        "Software Version": "v22.11.1",
-        "Build Number": "184-g6eeaa254f7",
+        "Software Version": "v23.10.1",
+        "Build Number": "218-ga3fc1bea5a",
         "Architecture": "x86_64",
         "Last Booted": "2022-12-06T11:38:51.482Z",
         "Total Memory": "24052875 kB",
@@ -989,8 +1068,8 @@ Staring with basics, let's see what it takes to execute a simple `show version` 
     Part Number          : Sim Part No.
     Serial Number        : Sim Serial No.
     System HW MAC Address: 1A:90:00:FF:00:00
-    Software Version     : v22.11.1
-    Build Number         : 184-g6eeaa254f7
+    Software Version     : v23.10.1
+    Build Number         : 218-ga3fc1bea5a
     Architecture         : x86_64
     Last Booted          : 2022-12-06T11:38:51.482Z
     Total Memory         : 24052875 kB
@@ -1020,7 +1099,7 @@ With `output-format` field of the request we can choose the formatting of the re
 === "Req with `text`"
     `jq` arguments used in this command filter out the result element and use the raw processing to render newlines.
     ```bash
-    curl -s 'http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc' -d @- <<EOF | jq -r '.result[]'
+    curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq -r '.result[]'
     {
         "jsonrpc": "2.0",
         "id": 0,
@@ -1042,8 +1121,8 @@ With `output-format` field of the request we can choose the formatting of the re
     Part Number          : Sim Part No.
     Serial Number        : Sim Serial No.
     System HW MAC Address: 1A:90:00:FF:00:00
-    Software Version     : v22.11.1
-    Build Number         : 184-g6eeaa254f7
+    Software Version     : v23.10.1
+    Build Number         : 218-ga3fc1bea5a
     Architecture         : x86_64
     Last Booted          : 2022-12-06T11:38:51.482Z
     Total Memory         : 24052875 kB
@@ -1052,7 +1131,7 @@ With `output-format` field of the request we can choose the formatting of the re
     ```
 === "Req with `table`"
     ```bash
-    curl -s 'http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc' -d @- <<EOF | jq -r '.result[]'
+    curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq -r '.result[]'
     {
         "jsonrpc": "2.0",
         "id": 0,
@@ -1072,7 +1151,7 @@ With `output-format` field of the request we can choose the formatting of the re
     |    Hostname     |  Chassis Type   |   Part Number   |  Serial Number  |  System HW MAC  |    Software     |  Build Number   |  Architecture   |   Last Booted   |  Total Memory   |   Free Memory   |
     |                 |                 |                 |                 |     Address     |     Version     |                 |                 |                 |                 |                 |
     +=================+=================+=================+=================+=================+=================+=================+=================+=================+=================+=================+
-    | srl             | 7220 IXR-D3L    | Sim Part No.    | Sim Serial No.  | 1A:90:00:FF:00: | v22.11.1        | 184-g6eeaa254f7 | x86_64          | 2022-12-06T11:3 | 24052875 kB     | 16466207 kB     |
+    | srl             | 7220 IXR-D3L    | Sim Part No.    | Sim Serial No.  | 1A:90:00:FF:00: | v23.10.1        | 218-ga3fc1bea5a | x86_64          | 2022-12-06T11:3 | 24052875 kB     | 16466207 kB     |
     |                 |                 |                 |                 | 00              |                 |                 |                 | 8:51.482Z       |                 |                 |
     +-----------------+-----------------+-----------------+-----------------+-----------------+-----------------+-----------------+-----------------+-----------------+-----------------+-----------------+
     ```
@@ -1084,7 +1163,7 @@ The next RPC, as expected, will not maintain the context of a previous RPC; by d
 
 === "Request"
     ```bash
-    curl -s 'http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc' -d @- <<EOF | jq
+    curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
     {
         "jsonrpc": "2.0",
         "id": 0,
@@ -1141,7 +1220,7 @@ You guessed it right, you can also perform configuration tasks with CLI method a
     This method is error-prone, since tracking the context changes is tedious. But, still, this is an option.
     === "Request"
         ```bash
-        curl -s 'http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc' -d @- <<EOF | jq
+        curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
         {
             "jsonrpc": "2.0",
             "id": 0,
@@ -1179,7 +1258,7 @@ You guessed it right, you can also perform configuration tasks with CLI method a
     Flattened commands are levied from the burdens of the contextual commands, as each command starts from the root. This makes configuration snippets longer, but safer to use.
     === "Request"
         ```bash
-        curl -s 'http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc' -d @- <<EOF | jq
+        curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
         {
             "jsonrpc": "2.0",
             "id": 0,
@@ -1212,7 +1291,7 @@ You guessed it right, you can also perform configuration tasks with CLI method a
     Another popular way to use CLI-styled configs is to dump the configuration from the device, template or change a few fields in the text blob and use it for configuration. In the example below we did `info from running /interface ethernet-1/1` and captured the output. We used this output as is in our request body just escaping the quotes.
     === "Request"
         ```bash
-        curl -s 'http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc' -d @- <<EOF | jq
+        curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
         {
             "jsonrpc": "2.0",
             "id": 0,
@@ -1260,7 +1339,7 @@ Remember how we executed the tools commands within the Set method? We can do the
 
 === "Request"
     ```bash
-    curl -s 'http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc' -d @- <<EOF | jq
+    curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
     {
         "jsonrpc": "2.0",
         "id": 0,
@@ -1295,7 +1374,7 @@ All of the examples have been using plain HTTP schema. As was explained in the b
 To use the secured transport any request can be changed to https schema and skipped certificate verification:
 
 ```bash
-curl -sk 'https://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc' -d @- <<EOF | jq
+curl -sk 'https://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
 {
     "jsonrpc": "2.0",
     "id": 0,
@@ -1315,7 +1394,7 @@ EOF
 If you want to verify the self-signed certificate that containerlab generates at startup use the CA certificate that containerlab keeps in the lab directory:
 
 ```bash
-curl -s --cacert ./clab-srl01/ca/root/root-ca.pem 'https://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc' -d @- <<EOF | jq
+curl -s --cacert ./clab-srl01/ca/root/root-ca.pem 'https://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
 {
     "jsonrpc": "2.0",
     "id": 0,
@@ -1340,7 +1419,7 @@ For example, the following request has two commands, where 2nd command uses a wr
 
 === "Request"
     ```bash
-    curl -v 'http://admin:NokiaSrl1!@clab-srl01-srl/jsonrpc' -d @- <<EOF
+    curl -v 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF
     {
         "jsonrpc": "2.0",
         "id": 0,
@@ -1379,6 +1458,6 @@ The response will contain just an error container, even though technically the f
 [^3]: using HTTP POST method.
 [^4]: JSON-RPC, as gNMI, can run in a user-configured network-instance.
 [^5]: https://github.com/openconfig/reference/blob/master/rpc/gnmi/gnmi-path-conventions.md
-[^6]: Tools paths can be viewed in our [tree YANG browser](https://yang.srlinux.dev/release/v22.11.1/tree.html).
+[^6]: Tools paths can be viewed in our [tree YANG browser](https://yang.srlinux.dev/release/v23.10.1/tree.html).
 [^7]: Support for setting configuration with Openconfig schema will be added at a later date. Currently only CLI method allows working with Openconfig schema via `enter oc` command.
 [^8]: SR Linux logs JSON-RPC incoming and outgoing requests to `/var/log/srlinux/debug/sr_json_rpc_server.log` log file.
