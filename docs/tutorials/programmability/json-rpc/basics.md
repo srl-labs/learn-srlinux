@@ -113,14 +113,15 @@ A:srl# info /system json-rpc-server
 
 By default, containerlab enables JSON-RPC management interface in the management network instance[^4] by configuring `json-rpc-server` instance running both in secure/https and plain-text/http modes on ports 80 and 443 accordingly. For https endpoint, containerlab uses the `tls-profile clab-profile` that it generates on lab startup.
 
-!!!note
-    JSON-RPC management interface runs on the `/jsonrpc` HTTP(S) endpoint of the SR Linux, which means that to access this interface, users should use the following URI:
+/// note
+JSON-RPC management interface runs on the `/jsonrpc` HTTP(S) endpoint of the SR Linux, which means that to access this interface, users should use the following URI:
 
-    ```bash
-    http(s)://<srlinux-address>/jsonrpc #(1)!
-    ```
+```bash
+http(s)://<srlinux-address>/jsonrpc #(1)!
+```
 
-    1. where `srlinux-address` is the address of the management interface of SR Linux. The lab used in this tutorial has a deterministic name for the srlinux node - `clab-srl01-srl` - which we will use as the address.
+1. where `srlinux-address` is the address of the management interface of SR Linux. The lab used in this tutorial has a deterministic name for the srlinux node - `clab-srl01-srl` - which we will use as the address.
+///
 
 With this configuration in place, users can leverage JSON-RPC immediately after containerlab finishes deploying the lab.
 
@@ -178,8 +179,9 @@ In the example above, the user `admin` with a password `NokiaSrl1!` is used to a
 
 Enough with the boring theory, let's have some handson fun firing off requests, and learn how JSON-RPC works in real life. To keep things focused on the JSON-RPC itself, we will be using `curl` utility as our HTTP client with `jq` helping format the responses.
 
-!!!tip
-    Keep the [JSON-RPC Management Guide][json-mgmt-guide] tab open, as additional theory is provided there which we won't duplicate in this tutorial.
+/// tip
+Keep the [JSON-RPC Management Guide][json-mgmt-guide] tab open, as additional theory is provided there which we won't duplicate in this tutorial.
+///
 
 ### Get
 
@@ -250,8 +252,9 @@ A:srl# info from state system information version
 --{ running }--[  ]--
 ```
 
-!!!note
-    Datastore value can be set either per-command as in the example above, or on the `params` level. Command-scope datastore value takes precedence over the `params`-scope value.
+/// note
+Datastore value can be set either per-command as in the example above, or on the `params` level. Command-scope datastore value takes precedence over the `params`-scope value.
+///
 
 When datastore value is omitted, `running` datastore is assumed. For example, repeating the same request without specifying the datastore will error, as `running` datastore doesn't hold state leaves and thus can't return the `version` leaf under the `/system/information` container.
 
@@ -685,8 +688,9 @@ To delete a configuration region for a certain path use `delete` action of the S
     }
     ```
 
-!!!note
-    Delete operation will not error when trying to delete a valid but non-existing node.
+/// note
+Delete operation will not error when trying to delete a valid but non-existing node.
+///
 
 #### Multiple actions
 
@@ -851,55 +855,53 @@ JSON-RPC's `diff` method allows users to send a configuration blob and let SR Li
 
 The Diff method is very similar to the Set method, so it is very easy to switch one with another. Let's take a Set request used in the previous exercise and compare it to the Diff request:
 
-/// tab | Set Request
+=== "Set Request"
 
-```bash
-curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
-{
-    "jsonrpc": "2.0",
-    "id": 0,
-    "method": "set",
-    "params": {
-        "commands": [
-            {
-                "action": "update",
-                "path": "/system/information",
-                "value": {
-                  "location": "the Netherlands",
-                  "contact": "Roman Dodin"
+    ```bash
+    curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
+    {
+        "jsonrpc": "2.0",
+        "id": 0,
+        "method": "set",
+        "params": {
+            "commands": [
+                {
+                    "action": "update",
+                    "path": "/system/information",
+                    "value": {
+                    "location": "the Netherlands",
+                    "contact": "Roman Dodin"
+                    }
                 }
-            }
-        ]
+            ]
+        }
     }
-}
-EOF
-```
+    EOF
+    ```
 
-///
+=== "Diff Request"
 
-/// tab | Diff Request
-
-```bash
-curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
-{
-    "jsonrpc": "2.0",
-    "id": 0,
-    "method": "diff",
-    "params": {
-        "commands": [
-            {
-                "action": "update",
-                "path": "/system/information",
-                "value": {
-                  "location": "the Netherlands",
-                  "contact": "Roman Dodin"
+    ```bash
+    curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
+    {
+        "jsonrpc": "2.0",
+        "id": 0,
+        "method": "diff",
+        "params": {
+            "commands": [
+                {
+                    "action": "update",
+                    "path": "/system/information",
+                    "value": {
+                    "location": "the Netherlands",
+                    "contact": "Roman Dodin"
+                    }
                 }
-            }
-        ]
+            ]
+        }
     }
-}
-EOF
-///
+    EOF
+    ```
 
 ### Validate
 
@@ -994,8 +996,9 @@ One of the reasons we ended up having JSON-RPC interface and not RESTCONF was th
 
 With JSON-RPC CLI method we allow users to remotely execute CLI commands while offering HTTP transport reliability and saving users from the burdens of screen scraping.
 
-!!!tip
-    CLI method also allows to call CLI commands that are not modelled, such as aliases or plugins (e.g. `show version`). But it is not possible to execute interactive commands, e.g. `ping`, `bash`, etc.
+/// tip
+CLI method also allows to call CLI commands that are not modelled, such as aliases or plugins (e.g. `show version`). But it is not possible to execute interactive commands, e.g. `ping`, `bash`, etc.
+///
 
 Staring with basics, let's see what it takes to execute a simple `show version` command using JSON-RPC?
 
@@ -1081,10 +1084,11 @@ Okay, there is a lot of output here, focus first on the request message. In the 
 
 The response message contains a list of results. Since we had only one command, our results list contains a single element, which matches the output of the `show version | as json` command when it is invoked in the CLI.
 
-!!!note
-    The peculiar `"basic system info"` key in the response is a special node name that is set in the `show version` plugin of the CLI as a constant.
+/// note
+The peculiar `"basic system info"` key in the response is a special node name that is set in the `show version` plugin of the CLI as a constant.
 
-    SR Linux uses a concept of CLI plugins for all its `show` commands, and each such command has a root node name that has a unique name. For `show version` command this node name is `basic system info`.
+SR Linux uses a concept of CLI plugins for all its `show` commands, and each such command has a root node name that has a unique name. For `show version` command this node name is `basic system info`.
+///
 
 #### Output format
 
@@ -1211,8 +1215,9 @@ Note, how the `result` list contains two elements matching the number of command
 
 You guessed it right, you can also perform configuration tasks with CLI method and use the CLI format of the configuration to do that. Let's configure an interface using CLI-styled commands in different ways:
 
-!!!note
-    When using CLI method for configuration tasks explicit entering into the candidate datastore and committing is necessary.
+/// note
+When using CLI method for configuration tasks explicit entering into the candidate datastore and committing is necessary.
+///
 
 === "Contextual commands"
     One option to use when executing configuration tasks is to use the commands sequence that an operator would have used. This way every other command respects the present working context.
