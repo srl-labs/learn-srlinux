@@ -946,33 +946,7 @@ Knowing if the configuration you carefully crafted is going to change the active
 
 JSON-RPC's `diff` method allows users to send a configuration blob and let SR Linux perform a diff function between the received configuration blob and the running configuration. The result of the diff function is then sent back to the user.
 
-The Diff method is very similar to the Set method, so it is very easy to switch one with another. Let's take a Set request used in the previous exercise and compare it to the Diff request:
-
-/// tab | Set Request
-
-```bash
-curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
-{
-    "jsonrpc": "2.0",
-    "id": 0,
-    "method": "set",
-    "params": {
-        "commands": [
-            {
-                "action": "update",
-                "path": "/system/information",
-                "value": {
-                "location": "the Netherlands",
-                "contact": "Roman Dodin"
-                }
-            }
-        ]
-    }
-}
-EOF
-```
-
-///
+The Diff method is similar to the Set, so it is very easy to switch one with another. Let's take a Set request that updates `location` and `contact` fields on SR Linux and compare it to the Diff request for the same fields:
 
 /// tab | Diff Request
 
@@ -988,8 +962,8 @@ curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
                 "action": "update",
                 "path": "/system/information",
                 "value": {
-                "location": "the Netherlands",
-                "contact": "Roman Dodin"
+                    "location": "from the diff",
+                    "contact": "differ"
                 }
             }
         ]
@@ -998,6 +972,120 @@ curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
 EOF
 ```
 
+///
+
+/// tab | Set Request
+
+```bash
+curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq
+{
+    "jsonrpc": "2.0",
+    "id": 0,
+    "method": "set",
+    "params": {
+        "commands": [
+            {
+                "action": "update",
+                "path": "/system/information",
+                "value": {
+                    "location": "from the diff",
+                    "contact": "differ"
+                }
+            }
+        ]
+    }
+}
+EOF
+```
+
+///
+
+We are not executing this set request just yet, we want to compare it to the diff request first. As you can see, the requests are almost identical, except for the method name, this makes it super easy to switch between the two.
+
+Let's execute our diff request as it is present in the example above and look at the output:
+
+```json
+{
+  "result": [
+    "  {\n    \"system\": {\n      \"information\": {\n+       \"contact\": \"differ\",\n+       \"location\": \"from the diff\"\n      }\n    }\n  }\n"
+  ],
+  "id": 0,
+  "jsonrpc": "2.0"
+}
+```
+
+Let's display the result in a more human-readable way by changing the jq command to `jq -r '.result[]'`:
+
+```json
+  {
+    "system": {
+      "information": {
++       "contact": "differ",
++       "location": "from the diff"
+      }
+    }
+  }
+```
+
+As you can see the diff method returns a JSON-like formatted string that contains the difference between the running configuration and the configuration that was sent in the request. Plus `+` and Minus `-` chars denotes additions and deletions respectively.
+
+You can also notice that this format is not the same as the format of the diff command executed in the SR Linux CLI. But there is a way to get the same output as the CLI diff command by using the `output-format` parameter of the diff method.
+
+Let's try it out:
+/// tab | Diff with text format
+
+```bash
+curl -s 'http://admin:NokiaSrl1!@srl/jsonrpc' -d @- <<EOF | jq -r '.result[]'
+{
+    "jsonrpc": "2.0",
+    "id": 0,
+    "method": "diff",
+    "params": {
+        "commands": [
+            {
+                "action": "update",
+                "path": "/system/information",
+                "value": {
+                    "location": "from the diff",
+                    "contact": "differ"
+                }
+            }
+        ],
+        "output-format": "text"
+    }
+}
+EOF
+```
+
+///
+
+/// tab | Output
+
+```diff
+      system {
+          information {
++             contact differ
++             location "from the diff"
+          }
+      }
+```
+
+///
+
+The `output-format` takes only one value - `text` - to denote that the output should be in the same format as the CLI diff command.
+
+When there is no difference between the provided blob in the diff method and the actual configuration, the diff method returns an empty arrya. To check that, execute the set request provided in the beginning of this section and then execute the diff method again. This is what you should see as the output:
+
+```json
+{
+  "result": [],
+  "id": 0,
+  "jsonrpc": "2.0"
+}
+```
+
+/// details | How do we use `diff`?
+Our [Ansible collection for SR Linux](../../../ansible/collection/index.md) uses `diff` method extensively to implement idempotency principles.
 ///
 
 ### Validate
