@@ -215,13 +215,16 @@ When set `ansible_httpapi_use_ssl` is set to `true`, Ansible will try to establi
 
 ### Certificate validation
 
-By default, when operating over https protocol, Ansible will try to validate the remote host's certificate. To disable certificate verification, set `ansible_httpapi_validate_certs` to `false`.
+By default, when operating over https protocol, Ansible will try to validate the remote host's certificate. If the node's certificate is signed with CA that is not in the trust chain of the ansible controller, then the certificate validation will fail. There are two ways to make TLS-based connectivity work:
+
+1. Add `ansible_httpapi_ca_path` variable pointing to the CA certificate that signed the node's certificate.
+2. Disable certificate verification with setting `ansible_httpapi_validate_certs` to `false`.
 
 ### TLS 1.3 support and cipher suites
 
 In the recent Python versions (>=3.10) default [security settings for TLS](https://bugs.python.org/issue43998) have been hardened. More specifically the cipher suites have been restricted to the ones that are considered secure.
 
-SR Linux plans to implement TLS 1.3 support in release 23.7, and thus for the time being, users should explicitly set the `ansible_httpapi_ciphers` variable to the cipher suite that is supported, for example `ECDHE-RSA-AES256-SHA`.
+SR Linux started to ramp up TLS 1.3 support starting with release 23.10.1; users of older SR Linux releases would need to explicitly set the `ansible_httpapi_ciphers` variable to the cipher suite that is supported, for example `ECDHE-RSA-AES256-SHA`.
 
 ## Example `hosts` file
 
@@ -242,8 +245,8 @@ name: ansible
 topology:
   nodes:
     srl:
-      kind: srl
-      image: ghcr.io/nokia/srlinux:23.3.1
+      kind: nokia_srlinux
+      image: ghcr.io/nokia/srlinux:23.10.1
 ```
 
 Save the file as `ansible.clab.yml` and deploy the lab with `containerlab deploy -t ansible.clab.yml`.
