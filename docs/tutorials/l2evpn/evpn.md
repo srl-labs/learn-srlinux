@@ -42,7 +42,7 @@ EVPN is enabled using iBGP and typically a Route Reflector (RR), or eBGP. In our
 
 For that iBGP configuration we will create a group called `iBGP-overlay` which will have the `peer-as` and `local-as` set to `100` to form an iBGP neighborship. The group will also host the same permissive `all` routing policy, enabled `evpn` and disabled ipv4-unicast address families.
 
-Then for each leaf we add a new BGP neighbor addressed by the remote `system0` interface address and local system address as the source. Below you will find the pastable snippets with the aforementioned config:
+Then for each leaf we add a new BGP neighbor addressed by the remote `system0` interface address and local system address as the source. Below you will find the paste-able snippets with the aforementioned config:
 
 === "leaf1"
     ```srl
@@ -131,7 +131,7 @@ Right now, as we don't have any EVPN service created, there are no EVPN routes t
 
 Next we are configuring the interfaces from the leaf switches to the corresponding servers. According to our lab's wiring diagram, interface 1 is connected to the server on both leaf switches:
 
-<div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:6,&quot;zoom&quot;:2,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/srl-labs/learn-srlinux/diagrams/quickstart.drawio&quot;}"></div>
+<div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":6,"zoom":2,"highlight":"#0000ff","nav":true,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/srl-labs/learn-srlinux/diagrams/quickstart.drawio"}'></div>
 
 Configuration of an access interface is nothing special, we already [configured leaf-spine interfaces](fabric.md#leaf-spine-interfaces) at the fabric configuration stage, so the steps are all familiar. The only detail worth mentioning here is that we have to indicate the type of the subinterface to be [`bridged`](../../kb/ifaces.md#subinterfaces), this makes the interfaces only attachable to a network instance of `mac-vrf` type with MAC learning and layer-2 forwarding enabled.
 
@@ -236,9 +236,14 @@ The servers in our fabric have IPv4 addresses for their `eth1` interfaces config
 
 Our servers connectivity diagram looks like this:
 
-<div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:7,&quot;zoom&quot;:3,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/srl-labs/learn-srlinux/diagrams/quickstart.drawio&quot;}"></div>
+<div class='mxgraph' style='max-width:100%;border:1px solid transparent;margin:0 auto; display:block;' data-mxgraph='{"page":7,"zoom":3,"highlight":"#0000ff","nav":true,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/srl-labs/learn-srlinux/diagrams/quickstart.drawio"}'></div>
 
 To connect to a bash shell of a server execute `docker exec -it <container-name> bash`:
+/// details | Configure MAC and IP addresses on the servers
+
+Both MAC and IP addresses are automatically configured in our lab definition file via the `exec` command, but should you want to change the addresses/MACs, here is how to do it.
+
+First, connect to the server's bash shell:
 
 === "srv1"
     ```
@@ -260,6 +265,7 @@ Within the shell, configure MAC address[^2] and IPv4 address for the `eth1` inte
     ip link set address 00:c1:ab:00:00:02 dev eth1
     ip addr add 192.168.0.2/24 dev eth1
     ```
+///
 
 Let's try to ping server2 from server1:
 
