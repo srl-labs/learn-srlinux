@@ -17,7 +17,7 @@ We will use a BGP based fabric design as described in [RFC7938](https://tools.ie
 
 Let's start with configuring the IP interfaces on the inter-switch links to ensure L3 connectivity is established. According to our lab topology configuration, and using the `192.168.xx.0/30` network to address the links, we will implement the following underlay addressing design:
 
-<div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:2,&quot;zoom&quot;:2,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/srl-labs/learn-srlinux/diagrams/quickstart.drawio&quot;}"></div>
+<div class='mxgraph' style='max-width:100%;border:1px solid transparent;margin:0 auto; display:block;' data-mxgraph='{"page":2,"zoom":2,"highlight":"#0000ff","nav":true,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/srl-labs/learn-srlinux/diagrams/quickstart.drawio"}'></div>
 
 On each leaf and spine we will bring up the relevant [interface](../../kb/ifaces.md) and address its routed [subinterface](../../kb/ifaces.md#subinterfaces) to achieve L3 connectivity.
 
@@ -25,12 +25,12 @@ We begin with connecting to the CLI of our nodes via SSH[^1]:
 
 ```bash
 # connecting to leaf1
-ssh admin@clab-evpn01-leaf1
+ssh clab-evpn01-leaf1
 ```
 
-Then on each node we enter into [candidate configuration mode](../../kb/cfgmgmt.md#configuration-modes) and proceed with the relevant interfaces configuration.
+Then on each node we enter into [candidate configuration mode](../../kb/cfgmgmt.md#configuration-modes) and proceed with the relevant interfaces' configuration.
 
-Let's witness the step by step process of an interface configuration on a `leaf1` switch with providing the paste-ables snippets for the rest of the nodes
+Let's witness the step by step process of an interface configuration on a `leaf1` switch with providing the paste-able snippets for the rest of the nodes
 
 1. Enter the `candidate` configuration mode to make edits to the configuration
 
@@ -78,52 +78,62 @@ Let's witness the step by step process of an interface configuration on a `leaf1
 
 Below you will find the relevant configuration snippets[^2] for leafs and spine of our fabric which you can paste in the terminal while being in candidate mode.
 
-=== "leaf1"
-    ```srl
-    interface ethernet-1/49 {
-        subinterface 0 {
-            ipv4 {
-                admin-state enable
-                address 192.168.11.1/30 {
-                }
-            }
-        }
-    }
-    ```
+/// tab | leaf1
 
-=== "leaf2"
-    ```srl
-    interface ethernet-1/49 {
-        subinterface 0 {
-            ipv4 {
-                admin-state enable
-                address 192.168.12.1/30 {
-                }
+```srl
+interface ethernet-1/49 {
+    subinterface 0 {
+        ipv4 {
+            admin-state enable
+            address 192.168.11.1/30 {
             }
         }
     }
-    ```
-=== "spine1"
-    ```srl
-    interface ethernet-1/1 {
-        subinterface 0 {
-            ipv4 {
-                admin-state enable
-                address 192.168.11.2/30 {
-                }
+}
+```
+
+///
+
+/// tab | leaf2
+
+```srl
+interface ethernet-1/49 {
+    subinterface 0 {
+        ipv4 {
+            admin-state enable
+            address 192.168.12.1/30 {
             }
         }
     }
-    interface ethernet-1/2 {
-        subinterface 0 {
-            ipv4 {
-                admin-state enable
-                address 192.168.12.2/30 {
-                }
+}
+```
+
+///
+
+/// tab | spine1
+
+```srl
+interface ethernet-1/1 {
+    subinterface 0 {
+        ipv4 {
+            admin-state enable
+            address 192.168.11.2/30 {
             }
         }
     }
-    ```
+}
+interface ethernet-1/2 {
+    subinterface 0 {
+        ipv4 {
+            admin-state enable
+            address 192.168.12.2/30 {
+            }
+        }
+    }
+}
+```
+
+///
 
 Once those snippets are committed to the running configuration with `commit now` command, we can ensure that the changes have been applied by showing the interface status:
 
@@ -143,28 +153,34 @@ ethernet-1/1 is up, speed 10G, type None
 
 At this moment, the configured interfaces can not be used as they are not yet associated with any [network instance](../../kb/netwinstance.md). Below we are placing the interfaces to the network-instance `default` that is created automatically by SR Linux.
 
-=== "leaf1 & leaf2"
-    ```srl
-    --{ + candidate shared default }--[  ]--
-    A:leaf1# network-instance default interface ethernet-1/49.0
+/// tab | leaf1 & leaf2
 
-    --{ +* candidate shared default }--[ network-instance default interface ethernet-1/49.0 ]--
-    A:leaf1# commit now                                                                        
-    All changes have been committed. Leaving candidate mode.
-    ```
+```srl
+--{ + candidate shared default }--[  ]--
+A:leaf1# network-instance default interface ethernet-1/49.0
 
-=== "spine1"
-    ```srl
-    --{ + candidate shared default }--[  ]--
-    A:spine1# network-instance default interface ethernet-1/1.0
+--{ +* candidate shared default }--[ network-instance default interface ethernet-1/49.0 ]--
+A:leaf1# commit now                                                                        
+All changes have been committed. Leaving candidate mode.
+```
 
-    --{ +* candidate shared default }--[ network-instance default interface ethernet-1/1.0 ]--
-    A:spine1# /network-instance default interface ethernet-1/2.0                              
-    
-    --{ +* candidate shared default }--[ network-instance default interface ethernet-1/2.0 ]--
-    A:spine2# commit now                                                                      
-    All changes have been committed. Leaving candidate mode.
-    ```
+///
+
+/// tab | spine1
+
+```srl
+--{ + candidate shared default }--[  ]--
+A:spine1# network-instance default interface ethernet-1/1.0
+
+--{ +* candidate shared default }--[ network-instance default interface ethernet-1/1.0 ]--
+A:spine1# /network-instance default interface ethernet-1/2.0                              
+
+--{ +* candidate shared default }--[ network-instance default interface ethernet-1/2.0 ]--
+A:spine2# commit now                                                                      
+All changes have been committed. Leaving candidate mode.
+```
+
+///
 
 When interfaces are owned by the network-instance `default`, we can ensure that the basic IP connectivity is working by issuing a ping between the pair of interfaces. For example from `spine1` to `leaf2`:
 
@@ -342,98 +358,109 @@ Here is a breakdown of the steps that are needed to configure EBGP on `leaf1` to
 
 EBGP configuration on `leaf2` and `spine1` is almost a twin of the one we did for `leaf1`. Here is a copy-paste-able[^3] config snippets for all of the nodes:
 
-=== "leaf1"
-    ```srl
-    network-instance default {
-        protocols {
-            bgp {
-                autonomous-system 101
-                router-id 10.0.0.1
-                group eBGP-underlay {
-                    export-policy all
-                    import-policy all
-                    peer-as 201
-                }
-                afi-safi ipv4-unicast {
-                    admin-state enable
-                }
-                neighbor 192.168.11.2 {
-                    peer-group eBGP-underlay
-                }
+/// tab | leaf1
+
+```srl
+network-instance default {
+    protocols {
+        bgp {
+            autonomous-system 101
+            router-id 10.0.0.1
+            group eBGP-underlay {
+                export-policy all
+                import-policy all
+                peer-as 201
+            }
+            afi-safi ipv4-unicast {
+                admin-state enable
+            }
+            neighbor 192.168.11.2 {
+                peer-group eBGP-underlay
             }
         }
     }
-    routing-policy {
-        policy all {
-            default-action {
-                policy-result accept
+}
+routing-policy {
+    policy all {
+        default-action {
+            policy-result accept
+        }
+    }
+}
+```
+
+///
+
+/// tab | leaf2
+
+```srl
+network-instance default {
+    protocols {
+        bgp {
+            autonomous-system 102
+            router-id 10.0.0.2
+            group eBGP-underlay {
+                export-policy all
+                import-policy all
+                peer-as 201
+            }
+            afi-safi ipv4-unicast {
+                admin-state enable
+            }
+            neighbor 192.168.12.2 {
+                peer-group eBGP-underlay
             }
         }
     }
-    ```
-=== "leaf2"
-    ```srl
-    network-instance default {
-        protocols {
-            bgp {
-                autonomous-system 102
-                router-id 10.0.0.2
-                group eBGP-underlay {
-                    export-policy all
-                    import-policy all
-                    peer-as 201
-                }
-                afi-safi ipv4-unicast {
-                    admin-state enable
-                }
-                neighbor 192.168.12.2 {
-                    peer-group eBGP-underlay
-                }
+}
+routing-policy {
+    policy all {
+        default-action {
+            policy-result accept
+        }
+    }
+}
+```
+
+///
+
+/// tab | spine1
+Spine configuration is a bit different, in a way that `peer-as` is specified under the neighbor context, and not the group one.
+
+```srl
+network-instance default {
+    protocols {
+        bgp {
+            autonomous-system 201
+            router-id 10.0.1.1
+            group eBGP-underlay {
+                export-policy all
+                import-policy all
+            }
+            afi-safi ipv4-unicast {
+                admin-state enable
+            }
+            neighbor 192.168.11.1 {
+                peer-group eBGP-underlay
+                peer-as 101
+            }
+            neighbor 192.168.12.1 {
+                peer-group eBGP-underlay
+                peer-as 102
             }
         }
     }
-    routing-policy {
-        policy all {
-            default-action {
-                policy-result accept
-            }
+}
+routing-policy {
+    policy all {
+        default-action {
+            policy-result accept
         }
     }
-    ```
-=== "spine1"
-    Spine configuration is a bit different, in a way that `peer-as` is specified under the neighbor context, and not the group one.
-    ```srl
-    network-instance default {
-        protocols {
-            bgp {
-                autonomous-system 201
-                router-id 10.0.1.1
-                group eBGP-underlay {
-                    export-policy all
-                    import-policy all
-                }
-                afi-safi ipv4-unicast {
-                    admin-state enable
-                }
-                neighbor 192.168.11.1 {
-                    peer-group eBGP-underlay
-                    peer-as 101
-                }
-                neighbor 192.168.12.1 {
-                    peer-group eBGP-underlay
-                    peer-as 102
-                }
-            }
-        }
-    }
-    routing-policy {
-        policy all {
-            default-action {
-                policy-result accept
-            }
-        }
-    }
-    ```
+}
+```
+
+///
 
 ## Loopbacks
 
@@ -441,64 +468,76 @@ As we will create a IBGP based EVPN control plane at a later stage, we need to c
 
 In the context of the VXLAN data plane, a special kind of a loopback needs to be created - [`system0`](../../kb/ifaces.md#system) interface.
 
-!!!info
-    The `system0.0` interface hosts the loopback address used to originate and typically
-    terminate VXLAN packets. This address is also used by default as the next-hop of all
-    EVPN routes.
+/// info
+The `system0.0` interface hosts the loopback address used to originate and typically
+terminate VXLAN packets. This address is also used by default as the next-hop of all
+EVPN routes.
+///
 
 Configuration of the `system0` interface is exactly the same as for the regular interfaces. The IPv4 addresses we assign to `system0` interfaces will match the Router-ID of a given BGP speaker.
 
-=== "leaf1"
-    ```srl
-    /interface system0 {
-        admin-state enable
-        subinterface 0 {
-            ipv4 {
-                admin-state enable
-                address 10.0.0.1/32 {
-                }
+/// tab | leaf1
+
+```srl
+/interface system0 {
+    admin-state enable
+    subinterface 0 {
+        ipv4 {
+            admin-state enable
+            address 10.0.0.1/32 {
             }
         }
     }
-    /network-instance default {
-        interface system0.0 {
-        }
+}
+/network-instance default {
+    interface system0.0 {
     }
-    ```
-=== "leaf2"
-    ```srl
-    /interface system0 {
-        admin-state enable
-        subinterface 0 {
-            ipv4 {
-                admin-state enable
-                address 10.0.0.2/32 {
-                }
+}
+```
+
+///
+
+/// tab | leaf2
+
+```srl
+/interface system0 {
+    admin-state enable
+    subinterface 0 {
+        ipv4 {
+            admin-state enable
+            address 10.0.0.2/32 {
             }
         }
     }
-    /network-instance default {
-        interface system0.0 {
-        }
+}
+/network-instance default {
+    interface system0.0 {
     }
-    ```
-=== "spine1"
-    ```srl
-    /interface system0 {
-        admin-state enable
-        subinterface 0 {
-            ipv4 {
-                admin-state enable
-                address 10.0.1.1/32 {
-                }
+}
+```
+
+///
+
+/// tab | spine1
+
+```srl
+/interface system0 {
+    admin-state enable
+    subinterface 0 {
+        ipv4 {
+            admin-state enable
+            address 10.0.1.1/32 {
             }
         }
     }
-    /network-instance default {
-        interface system0.0 {
-        }
+}
+/network-instance default {
+    interface system0.0 {
     }
-    ```
+}
+```
+
+///
 
 ## Verification
 
@@ -511,44 +550,44 @@ The first thing worth verifying is that BGP protocol is enabled and operational 
 ```srl linenums="1"
 --{ + running }--[  ]--
 A:leaf1# show network-instance default protocols bgp summary
--------------------------------------------------------------
+-----------------------------------------------------------------------
 BGP is enabled and up in network-instance "default"
 Global AS number  : 101
 BGP identifier    : 10.0.0.1
--------------------------------------------------------------
-  Total paths               : 3
-  Received routes           : 3
-  Received and active routes: None
+-----------------------------------------------------------------------
+  Total paths               : 5
+  Received routes           : 4
+  Received and active routes: 3
   Total UP peers            : 1
   Configured peers          : 1, 0 are disabled
   Dynamic peers             : None
--------------------------------------------------------------
+-----------------------------------------------------------------------
 Default preferences
   BGP Local Preference attribute: 100
   EBGP route-table preference   : 170
   IBGP route-table preference   : 170
--------------------------------------------------------------
+-----------------------------------------------------------------------
 Wait for FIB install to advertise: True
 Send rapid withdrawals           : disabled
--------------------------------------------------------------
+-----------------------------------------------------------------------
 Ipv4-unicast AFI/SAFI
-    Received routes               : 3
-    Received and active routes    : None
+    Received routes               : 4
+    Received and active routes    : 3
     Max number of multipaths      : 1, 1
     Multipath can transit multi AS: True
--------------------------------------------------------------
+-----------------------------------------------------------------------
 Ipv6-unicast AFI/SAFI
-    Received routes               : None
-    Received and active routes    : None
-    Max number of multipaths      : 1,1
-    Multipath can transit multi AS: True
--------------------------------------------------------------
+    Received routes               : 0
+    Received and active routes    : 0
+    Max number of multipaths      : None,None
+    Multipath can transit multi AS: None
+-----------------------------------------------------------------------
 EVPN-unicast AFI/SAFI
-    Received routes               : None
-    Received and active routes    : None
+    Received routes               : 0
+    Received and active routes    : 0
     Max number of multipaths      : N/A
     Multipath can transit multi AS: N/A
--------------------------------------------------------------
+-----------------------------------------------------------------------
 ```
 
 ### BGP neighbor status
@@ -694,149 +733,161 @@ Perfect, the VTEPs are reachable and the fabric underlay is properly configured.
 
 Below you will find aggregated configuration snippets which contain the entire fabric configuration we did in the steps above. Those snippets are in the _flat_ format and were extracted with `info flat` command.
 
-!!!note
-    `enter candidate` and `commit now` commands are part of the snippets, so it is possible to paste them right after you logged into the devices as well as the changes will get committed to running config.
+/// note
+`enter candidate` and `commit now` commands are part of the snippets, so it is possible to paste them right after you logged into the devices as well as the changes will get committed to running config.
+///
 
-=== "leaf1"
-    ```srl
-    enter candidate
+/// tab | leaf1
 
-    # configuration of the physical interface and its subinterface
-    set / interface ethernet-1/49
-    set / interface ethernet-1/49 subinterface 0
-    set / interface ethernet-1/49 subinterface 0 ipv4 admin-state enable
-    set / interface ethernet-1/49 subinterface 0 ipv4 address 192.168.11.1/30
-    
-    # system interface configuration
-    set / interface system0
-    set / interface system0 admin-state enable
-    set / interface system0 subinterface 0
-    set / interface system0 subinterface 0 ipv4 admin-state enable
-    set / interface system0 subinterface 0 ipv4 address 10.0.0.1/32
-    
-    # associating interfaces with net-ins default
-    set / network-instance default
-    set / network-instance default interface ethernet-1/49.0
-    set / network-instance default interface system0.0
+```srl
+enter candidate
 
-    # routing policy
-    set / routing-policy
-    set / routing-policy policy all
-    set / routing-policy policy all default-action
-    set / routing-policy policy all default-action policy-result accept
+# configuration of the physical interface and its subinterface
+set / interface ethernet-1/49
+set / interface ethernet-1/49 subinterface 0
+set / interface ethernet-1/49 subinterface 0 ipv4 admin-state enable
+set / interface ethernet-1/49 subinterface 0 ipv4 address 192.168.11.1/30
 
-    # BGP configuration
-    set / network-instance default protocols
-    set / network-instance default protocols bgp
-    set / network-instance default protocols bgp autonomous-system 101
-    set / network-instance default protocols bgp router-id 10.0.0.1
-    set / network-instance default protocols bgp group eBGP-underlay
-    set / network-instance default protocols bgp group eBGP-underlay export-policy all
-    set / network-instance default protocols bgp group eBGP-underlay import-policy all
-    set / network-instance default protocols bgp group eBGP-underlay peer-as 201
-    set / network-instance default protocols bgp afi-safi ipv4-unicast
-    set / network-instance default protocols bgp afi-safi ipv4-unicast admin-state enable
-    set / network-instance default protocols bgp neighbor 192.168.11.2
-    set / network-instance default protocols bgp neighbor 192.168.11.2 peer-group eBGP-underlay
+# system interface configuration
+set / interface system0
+set / interface system0 admin-state enable
+set / interface system0 subinterface 0
+set / interface system0 subinterface 0 ipv4 admin-state enable
+set / interface system0 subinterface 0 ipv4 address 10.0.0.1/32
 
-    commit now
-    ```
-=== "leaf2"
-    ```srl
-    enter candidate
+# associating interfaces with net-ins default
+set / network-instance default
+set / network-instance default interface ethernet-1/49.0
+set / network-instance default interface system0.0
 
-    # configuration of the physical interface and its subinterface
-    set / interface ethernet-1/49
-    set / interface ethernet-1/49 subinterface 0
-    set / interface ethernet-1/49 subinterface 0 ipv4 admin-state enable
-    set / interface ethernet-1/49 subinterface 0 ipv4 address 192.168.12.1/30
-    
-    # system interface configuration
-    set / interface system0
-    set / interface system0 admin-state enable
-    set / interface system0 subinterface 0
-    set / interface system0 subinterface 0 ipv4 admin-state enable
-    set / interface system0 subinterface 0 ipv4 address 10.0.0.2/32
-    
-    # associating interfaces with net-ins default
-    set / network-instance default
-    set / network-instance default interface ethernet-1/49.0
-    set / network-instance default interface system0.0
+# routing policy
+set / routing-policy
+set / routing-policy policy all
+set / routing-policy policy all default-action
+set / routing-policy policy all default-action policy-result accept
 
-    # routing policy
-    set / routing-policy
-    set / routing-policy policy all
-    set / routing-policy policy all default-action
-    set / routing-policy policy all default-action policy-result accept
-    
-    # BGP configuration
-    set / network-instance default protocols
-    set / network-instance default protocols bgp
-    set / network-instance default protocols bgp autonomous-system 102
-    set / network-instance default protocols bgp router-id 10.0.0.2
-    set / network-instance default protocols bgp group eBGP-underlay
-    set / network-instance default protocols bgp group eBGP-underlay export-policy all
-    set / network-instance default protocols bgp group eBGP-underlay import-policy all
-    set / network-instance default protocols bgp group eBGP-underlay peer-as 201
-    set / network-instance default protocols bgp afi-safi ipv4-unicast
-    set / network-instance default protocols bgp afi-safi ipv4-unicast admin-state enable
-    set / network-instance default protocols bgp neighbor 192.168.12.2
-    set / network-instance default protocols bgp neighbor 192.168.12.2 peer-group eBGP-underlay
+# BGP configuration
+set / network-instance default protocols
+set / network-instance default protocols bgp
+set / network-instance default protocols bgp autonomous-system 101
+set / network-instance default protocols bgp router-id 10.0.0.1
+set / network-instance default protocols bgp group eBGP-underlay
+set / network-instance default protocols bgp group eBGP-underlay export-policy all
+set / network-instance default protocols bgp group eBGP-underlay import-policy all
+set / network-instance default protocols bgp group eBGP-underlay peer-as 201
+set / network-instance default protocols bgp afi-safi ipv4-unicast
+set / network-instance default protocols bgp afi-safi ipv4-unicast admin-state enable
+set / network-instance default protocols bgp neighbor 192.168.11.2
+set / network-instance default protocols bgp neighbor 192.168.11.2 peer-group eBGP-underlay
 
-    commit now
-    ```
-=== "spine1"
-    ```srl
-    enter candidate
+commit now
+```
 
-    # configuration of the physical interface and its subinterface
-    set / interface ethernet-1/1
-    set / interface ethernet-1/1 subinterface 0
-    set / interface ethernet-1/1 subinterface 0 ipv4 admin-state enable
-    set / interface ethernet-1/1 subinterface 0 ipv4 address 192.168.11.2/30
-    set / interface ethernet-1/2
-    set / interface ethernet-1/2 subinterface 0
-    set / interface ethernet-1/2 subinterface 0 ipv4 admin-state enable
-    set / interface ethernet-1/2 subinterface 0 ipv4 address 192.168.12.2/30
+///
 
-    # system interface configuration
-    set / interface system0
-    set / interface system0 admin-state enable
-    set / interface system0 subinterface 0
-    set / interface system0 subinterface 0 ipv4 admin-state enable
-    set / interface system0 subinterface 0 ipv4 address 10.0.1.1/32
+/// tab | leaf2
 
-    # associating interfaces with net-ins default
-    set / network-instance default
-    set / network-instance default interface ethernet-1/1.0
-    set / network-instance default interface ethernet-1/2.0
-    set / network-instance default interface system0.0
+```srl
+enter candidate
 
-    # routing policy
-    set / routing-policy
-    set / routing-policy policy all
-    set / routing-policy policy all default-action
-    set / routing-policy policy all default-action policy-result accept
+# configuration of the physical interface and its subinterface
+set / interface ethernet-1/49
+set / interface ethernet-1/49 subinterface 0
+set / interface ethernet-1/49 subinterface 0 ipv4 admin-state enable
+set / interface ethernet-1/49 subinterface 0 ipv4 address 192.168.12.1/30
 
-    # BGP configuration
-    set / network-instance default protocols
-    set / network-instance default protocols bgp
-    set / network-instance default protocols bgp autonomous-system 201
-    set / network-instance default protocols bgp router-id 10.0.1.1
-    set / network-instance default protocols bgp group eBGP-underlay
-    set / network-instance default protocols bgp group eBGP-underlay export-policy all
-    set / network-instance default protocols bgp group eBGP-underlay import-policy all
-    set / network-instance default protocols bgp afi-safi ipv4-unicast
-    set / network-instance default protocols bgp afi-safi ipv4-unicast admin-state enable
-    set / network-instance default protocols bgp neighbor 192.168.11.1
-    set / network-instance default protocols bgp neighbor 192.168.11.1 peer-as 101
-    set / network-instance default protocols bgp neighbor 192.168.11.1 peer-group eBGP-underlay
-    set / network-instance default protocols bgp neighbor 192.168.12.1
-    set / network-instance default protocols bgp neighbor 192.168.12.1 peer-as 102
-    set / network-instance default protocols bgp neighbor 192.168.12.1 peer-group eBGP-underlay
+# system interface configuration
+set / interface system0
+set / interface system0 admin-state enable
+set / interface system0 subinterface 0
+set / interface system0 subinterface 0 ipv4 admin-state enable
+set / interface system0 subinterface 0 ipv4 address 10.0.0.2/32
 
-    commit now
-    ```
+# associating interfaces with net-ins default
+set / network-instance default
+set / network-instance default interface ethernet-1/49.0
+set / network-instance default interface system0.0
+
+# routing policy
+set / routing-policy
+set / routing-policy policy all
+set / routing-policy policy all default-action
+set / routing-policy policy all default-action policy-result accept
+
+# BGP configuration
+set / network-instance default protocols
+set / network-instance default protocols bgp
+set / network-instance default protocols bgp autonomous-system 102
+set / network-instance default protocols bgp router-id 10.0.0.2
+set / network-instance default protocols bgp group eBGP-underlay
+set / network-instance default protocols bgp group eBGP-underlay export-policy all
+set / network-instance default protocols bgp group eBGP-underlay import-policy all
+set / network-instance default protocols bgp group eBGP-underlay peer-as 201
+set / network-instance default protocols bgp afi-safi ipv4-unicast
+set / network-instance default protocols bgp afi-safi ipv4-unicast admin-state enable
+set / network-instance default protocols bgp neighbor 192.168.12.2
+set / network-instance default protocols bgp neighbor 192.168.12.2 peer-group eBGP-underlay
+
+commit now
+```
+
+///
+
+/// tab | spine1
+
+```srl
+enter candidate
+
+# configuration of the physical interface and its subinterface
+set / interface ethernet-1/1
+set / interface ethernet-1/1 subinterface 0
+set / interface ethernet-1/1 subinterface 0 ipv4 admin-state enable
+set / interface ethernet-1/1 subinterface 0 ipv4 address 192.168.11.2/30
+set / interface ethernet-1/2
+set / interface ethernet-1/2 subinterface 0
+set / interface ethernet-1/2 subinterface 0 ipv4 admin-state enable
+set / interface ethernet-1/2 subinterface 0 ipv4 address 192.168.12.2/30
+
+# system interface configuration
+set / interface system0
+set / interface system0 admin-state enable
+set / interface system0 subinterface 0
+set / interface system0 subinterface 0 ipv4 admin-state enable
+set / interface system0 subinterface 0 ipv4 address 10.0.1.1/32
+
+# associating interfaces with net-ins default
+set / network-instance default
+set / network-instance default interface ethernet-1/1.0
+set / network-instance default interface ethernet-1/2.0
+set / network-instance default interface system0.0
+
+# routing policy
+set / routing-policy
+set / routing-policy policy all
+set / routing-policy policy all default-action
+set / routing-policy policy all default-action policy-result accept
+
+# BGP configuration
+set / network-instance default protocols
+set / network-instance default protocols bgp
+set / network-instance default protocols bgp autonomous-system 201
+set / network-instance default protocols bgp router-id 10.0.1.1
+set / network-instance default protocols bgp group eBGP-underlay
+set / network-instance default protocols bgp group eBGP-underlay export-policy all
+set / network-instance default protocols bgp group eBGP-underlay import-policy all
+set / network-instance default protocols bgp afi-safi ipv4-unicast
+set / network-instance default protocols bgp afi-safi ipv4-unicast admin-state enable
+set / network-instance default protocols bgp neighbor 192.168.11.1
+set / network-instance default protocols bgp neighbor 192.168.11.1 peer-as 101
+set / network-instance default protocols bgp neighbor 192.168.11.1 peer-group eBGP-underlay
+set / network-instance default protocols bgp neighbor 192.168.12.1
+set / network-instance default protocols bgp neighbor 192.168.12.1 peer-as 102
+set / network-instance default protocols bgp neighbor 192.168.12.1 peer-group eBGP-underlay
+
+commit now
+```
+
+///
 
 [^1]: default SR Linux credentials are `admin:NokiaSrl1!`.
 [^2]: the snippets were extracted with `info interface ethernet-1/x` command issued in running mode.
