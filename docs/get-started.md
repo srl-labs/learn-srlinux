@@ -187,7 +187,7 @@ SR Linux containers deployed with containerlab come up with gNMI interface up an
 Using the gNMI client[^2] users can explore SR Linux' gNMI interface:
 
 ```
-gnmic -a clab-srlinux-srl1 --skip-verify -u admin -p admin capabilities
+gnmic -a clab-srlinux-srl1 --skip-verify -u admin -p 'NokiaSrl1!' capabilities
 gNMI version: 0.7.0
 supported models:
   - urn:srl_nokia/aaa:srl_nokia-aaa, Nokia, 2021-03-31
