@@ -41,10 +41,10 @@ Let's explore the different ways you can launch SR Linux container.
 
 `docker` CLI offers a quick way to run a standalone SR Linux container:
 
-```shell
+```bash
 sudo docker run -t -d --rm --privileged \
   -u 0:0 \
-  -v srl23-7-1.json:/etc/opt/srlinux/config.json \#(1)!
+  -v srl23-7-1.json:/etc/opt/srlinux/config.json \ #(1)!
   --name srlinux ghcr.io/nokia/srlinux:23.7.1 \
   sudo bash /opt/srlinux/bin/sr_linux
 ```

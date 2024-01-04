@@ -310,3 +310,6 @@ extra_css:
   - stylesheets/nokia-fonts.css
   - stylesheets/diagrams.css
   - stylesheets/animations.css
+
+extra_javascript:
+  - javascripts/sh-annotation.js
