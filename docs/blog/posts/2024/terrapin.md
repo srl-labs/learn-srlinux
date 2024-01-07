@@ -20,8 +20,11 @@ But what does it mean to us, Network Engineers? Do we need to rush the vendors p
 
 <!-- more -->
 
-///note | Disclaimer
-I'm not a security expert, and I'm not a cryptographer. I'm just a Network Engineer who was curious to understand what this attack is about and how various popular Network OSes are affected by it.
+///warning | Disclaimer
+
+1. This is **not** an official Nokia alert or security response to the CVE-2023-48795. This is merely a practical exercise to identify the scope of the vulnerability when applied to some popular Network Operating Systems.
+2. I'm not a security expert, and I'm not a cryptographer.
+
 ///
 
 With the disclaimer above, I feel obliged to start with the references to the materials written by people way more experienced in the field of cryptography and security than I am. I highly recommend reading the following articles/papers to get a better/deeper understanding of the attack:
@@ -177,15 +180,25 @@ do
 done
 ```
 
+The raw output of the script when executed against the Containerlab topology above can be found [here](https://gist.github.com/hellt/346117c124186ef9d077aa7c6b9ab1fb).
+
 ## SR Linux and Terrapin Attack mitigation
 
-In SR Linux we use the upstream OpenSSH server implementation from the Debian distribution as of 23.10.1 release. Since Debian patched the vulnerability in their OpenSSH implementation, we will use the patched version in the next patch release of SR Linux, benefitting from the upstream fix.
+In SR Linux we use the upstream OpenSSH server implementation from the Debian distribution as of 23.10.1 release. Since Debian patched the vulnerability in their OpenSSH implementation, we will use the patched version in a later release of SR Linux, benefitting from the upstream fix.
+
+/// note
+
+The management network should already be significantly protected from access by unwanted entities. When the access to the management network (and thus the SR Linux SSH server) is properly protected and only highly trusted entities have access, the severity and risk of the vulnerability is also significantly lower.
+
+As stated in the disclaimer at the beginning of the article, this is not an official Nokia alert or security response to the CVE-2023-48795. For an official response please contact your Nokia representative.
+
+///
 
 Still, if you wish to mitigate the attack in your current SR Linux release, you can do so by disabling the `chacha20-poly1305` cipher mode in the SSH server configuration. To do so, you may create the following sshd configuration file:
 
 ```
-admin@srl:~$ echo "Ciphers -chacha20-poly1305@openssh.com" | sudo tee /etc/ssh/sshd_config.d/te
-rrapin.conf
+admin@srl:~$ echo "Ciphers -chacha20-poly1305@openssh.com" \
+    | sudo tee /etc/ssh/sshd_config.d/terrapin.conf
 ```
 
 This file will remove the `chacha20-poly1305` cipher mode from the list of supported ciphers on the SR Linux SSH server side effectively removing the vulnerable cipher mode from the list of supported ciphers and mitigating the attack.
@@ -227,7 +240,9 @@ For strict key exchange to take effect, both peers must support it.
 
 Terrapin attack demonstrates a novel approach to weaken the SSH protocol that affects most SSH servers deployed in the networks. Luckily, the requirement for an attacker to establish a MitM position in the network tcp/ip layer to intercept SSH session negotiation and SSH server and client to negotiate either `chacha20-poly1305` cipher mode or any encrypt-then-mac variants (generic EtM) reduces the attack surface significantly.
 
-Anyhow, it poses a valid concern for Network operators and vendors alike. Most Network OSes are affected by the attack, and vendors will need to work on patching their server implementations. SR Linux is not an exception, but we are lucky to use the upstream OpenSSH server implementation from the Debian distribution, which was patched in the latest security release. And SR Linux users still able to mitigate the attack in their current SR Linux devices by disabling the `chacha20-poly1305` cipher mode in the SSH server configuration.
+The management network should already be significantly protected from access by unwanted entities. When the access to the management network is properly protected and only highly trusted entities have access, the severity and risk of the vulnerability is also significantly lower.
+
+Anyhow, it poses a valid concern for Network operators and vendors alike. Most Network OSes are affected by the attack, and vendors are likely to patch their SSH server implementations in due time. SR Linux is not an exception, but we are lucky to use the upstream OpenSSH server implementation from the Debian distribution, which was patched in the latest security release. And SR Linux users still able to mitigate the attack in their current SR Linux devices by disabling the `chacha20-poly1305` cipher mode in the SSH server configuration.
 
 [terrapin]: https://terrapin-attack.com/
 [cve]: https://nvd.nist.gov/vuln/detail/CVE-2023-48795
