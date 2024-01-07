@@ -10,6 +10,8 @@ authors:
 
 # SSH Terrapin Attack and Network Operating Systems
 
+<small> Discussions: [:material-twitter:][twitter-discuss] · [:material-linkedin:][linkedin-discuss]</small>
+
 > [Terrapin][terrapin] is a prefix truncation attack targeting the SSH protocol. More precisely, Terrapin breaks the integrity of SSH's secure channel.
 
 Pretty scary stuff, innit? Any Network Engineer/Admin understands the importance of SSH in their daily work. It's the most common way to access network devices, and it's the most secure way to do so. Is it now?
@@ -244,6 +246,8 @@ The management network should already be significantly protected from access by 
 
 Anyhow, it poses a valid concern for Network operators and vendors alike. Most Network OSes are affected by the attack, and vendors are likely to patch their SSH server implementations in due time. SR Linux is not an exception, but we are lucky to use the upstream OpenSSH server implementation from the Debian distribution, which was patched in the latest security release. And SR Linux users still able to mitigate the attack in their current SR Linux devices by disabling the `chacha20-poly1305` cipher mode in the SSH server configuration.
 
+You can follow up on or share the discussion on [Twitter][twitter-discuss] or [LinkedIn][linkedin-discuss].
+
 [terrapin]: https://terrapin-attack.com/
 [cve]: https://nvd.nist.gov/vuln/detail/CVE-2023-48795
 [terrapin-paper]: https://terrapin-attack.com/TerrapinAttack.pdf
@@ -251,6 +255,9 @@ Anyhow, it poses a valid concern for Network operators and vendors alike. Most N
 [redhat]: https://access.redhat.com/security/cve/cve-2023-48795
 [ars]: https://arstechnica.com/security/2023/12/hackers-can-break-ssh-channel-integrity-using-novel-data-corruption-attack/
 [scanner]: https://github.com/RUB-NDS/Terrapin-Scanner
+[twitter-discuss]: https://twitter.com/ntdvps/status/1743798974736175478
+[linkedin-discuss]: https://www.linkedin.com/feed/update/urn:li:activity:7149567441105219584/
+
 [^1]: As per [RedHat Security Bulletin][redhat] for CVE-2023-48795
 [^2]: chacha20-poly1305 cipher is supported by the server
 [^3]: encrypt-then-mac variants (generic EtM) ciphers are supported by the server
