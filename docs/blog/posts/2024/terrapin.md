@@ -16,7 +16,7 @@ authors:
 
 Pretty scary stuff, innit? Any Network Engineer/Admin understands the importance of SSH in their daily work. It's the most common way to access network devices, and it's the most secure way to do so. Is it now?
 
-On December 18th 2023, a group of researchers from the Ruhr University Bochum publicly disclosed a new attack ([CVE-2023-48795: General Protocol Flaw][cve]) on SSH protocol, called [Terrapin][terrapin]. Targeting the very best SSH Binary Packet Protocol researches proved that an attacker can remove an arbitrary amount of messages sent by the client or server at the beginning of the secure channel without the client or server noticing it.
+On December 18th 2023, a group of researchers from the Ruhr University Bochum publicly disclosed a new attack ([CVE-2023-48795: General Protocol Flaw][cve]) on SSH protocol, called [Terrapin][terrapin]. Targeting the very best SSH Binary Packet Protocol researchers proved that an attacker can remove an arbitrary amount of messages sent by the client or server at the beginning of the secure channel without the client or server noticing it.
 
 But what does it mean to us, Network Engineers? Do we need to rush the vendors patching the SSH servers in their NOSes? Let's figure it out.
 
@@ -29,7 +29,7 @@ But what does it mean to us, Network Engineers? Do we need to rush the vendors p
 
 ///
 
-With the disclaimer above, I feel obliged to start with the references to the materials written by people way more experienced in the field of cryptography and security than I am. I highly recommend reading the following articles/papers to get a better/deeper understanding of the attack:
+With the disclaimer above, I feel obliged to start with the references to the materials written by people who are way more experienced in the field of cryptography and security than I am. I highly recommend reading the following articles/papers to get a better/deeper understanding of the attack:
 
 1. [Terrapin Attack Website][terrapin]
 2. [Terrapin Attack pre-print Paper][terrapin-paper]
@@ -52,9 +52,9 @@ As you can see, the requirements are pretty much substantial. The attacker needs
 
 ### Cipher Modes Selection
 
-What about the requirement for a client and server to negotiate either `chacha20-poly1305` cipher mode or any encrypt-then-mac variants (generic EtM) as only these modes are vulnerable to the attack? If you think the chances of this happenning are slim, you are about to be surprised.
+What about the requirement for a client and server to negotiate either `chacha20-poly1305` cipher mode or any encrypt-then-mac variants (generic EtM) as only these modes are vulnerable to the attack? If you think the chances of this happening are slim, you are about to be surprised.
 
-Most recent OpenSSH versions offer `chacha20-poly1305` as the first cipher mode in the list of supported ciphers. The list of supported ciphers is sent by the client to the server during the SSH session negotiation. The server then selects the first cipher mode from the list that is also supported by the server. So chances are very high that your client and server will end up using `chacha20-poly1305` cipher mode.
+Most recent OpenSSH versions offer `chacha20-poly1305` as the first cipher mode in the list of supported ciphers. The client sends the list of supported ciphers to the server during the SSH session negotiation. The server then selects the first cipher mode from the list that is also supported by the server. So, chances are very high that your client and server will end up using `chacha20-poly1305` cipher mode.
 
 For example, here is a list of ciphers that client and server exchange during the SSH session negotiation between my SSH client (OpenSSH_9.0p1, LibreSSL 3.3.6) on MacOS 13.6.3 and OpenSSH server (OpenSSH_8.9p1 Ubuntu-3ubuntu0.6, OpenSSL 3.0.2 15 Mar 2022) on Ubuntu 22.04 LTS:
 
@@ -69,13 +69,13 @@ debug1: kex: server->client cipher: chacha20-poly1305@openssh.com MAC: <implicit
 debug1: kex: client->server cipher: chacha20-poly1305@openssh.com MAC: <implicit> compression: none
 ```
 
-As you can see, the first cipher mode in the list is `chacha20-poly1305` which is vulnerable to the attack is selected (as it should).
+As you can see, the first cipher mode in the list is `chacha20-poly1305` which is vulnerable to the attack being selected (as it should).
 
 ## Network Operating Systems and Terrapin Attack
 
-Ok, Ok, but what about Network Operating Systems? Are they affected by the attack? It is not hard to imagine that most NOSes use OpenSSH as their SSH server, so they are likely to be affected by the attack. Let's check.
+Ok, OK, but what about Network Operating Systems? Are they affected by the attack? It is not hard to imagine that most NOSes use OpenSSH as their SSH server, so they are likely to be affected by the attack. Let's check.
 
-To keep it practical, I used Containerlab to spin up a few popular NOSes on my server and tested them for the vulnerability using the [terrapin-scanner][scanner].
+To keep it practical, I used Containerlab to spin up a few popular NOSes on my server and tested them for vulnerability using the [terrapin-scanner][scanner].
 
 ///details | Containerlab topology
 
@@ -182,17 +182,17 @@ do
 done
 ```
 
-The raw output of the script when executed against the Containerlab topology above can be found [here](https://gist.github.com/hellt/346117c124186ef9d077aa7c6b9ab1fb).
+The raw output of the script, when executed against the Containerlab topology above, can be found [here](https://gist.github.com/hellt/346117c124186ef9d077aa7c6b9ab1fb).
 
 ## SR Linux and Terrapin Attack mitigation
 
-In SR Linux we use the upstream OpenSSH server implementation from the Debian distribution as of 23.10.1 release. Since Debian patched the vulnerability in their OpenSSH implementation, we will use the patched version in a later release of SR Linux, benefitting from the upstream fix.
+In SR Linux, we use the upstream OpenSSH server implementation from the Debian distribution as of 23.10.1 release. Since Debian patched the vulnerability in their OpenSSH implementation, we will use the patched version in a later release of SR Linux, benefitting from the upstream fix.
 
 /// note
 
-The management network should already be significantly protected from access by unwanted entities. When the access to the management network (and thus the SR Linux SSH server) is properly protected and only highly trusted entities have access, the severity and risk of the vulnerability is also significantly lower.
+The management network should already be significantly protected from access by unwanted entities. When the access to the management network (and thus the SR Linux SSH server) is properly protected and only highly trusted entities have access, the severity and risk of the vulnerability are also significantly lower.
 
-As stated in the disclaimer at the beginning of the article, this is not an official Nokia alert or security response to the CVE-2023-48795. For an official response please contact your Nokia representative.
+As stated in the disclaimer at the beginning of the article, this is not an official Nokia alert or security response to the CVE-2023-48795. For an official response, please get in touch with your Nokia representative.
 
 ///
 
@@ -203,7 +203,7 @@ admin@srl:~$ echo "Ciphers -chacha20-poly1305@openssh.com" \
     | sudo tee /etc/ssh/sshd_config.d/terrapin.conf
 ```
 
-This file will remove the `chacha20-poly1305` cipher mode from the list of supported ciphers on the SR Linux SSH server side effectively removing the vulnerable cipher mode from the list of supported ciphers and mitigating the attack.
+This file will remove the `chacha20-poly1305` cipher mode from the list of supported ciphers on the SR Linux SSH server side, effectively removing the vulnerable cipher mode from the list of supported ciphers and mitigating the attack.
 
 Once the configuration file is created, you need to restart the SSH server using the `tools` command in SR Linux CLI:
 
@@ -242,9 +242,9 @@ For strict key exchange to take effect, both peers must support it.
 
 Terrapin attack demonstrates a novel approach to weaken the SSH protocol that affects most SSH servers deployed in the networks. Luckily, the requirement for an attacker to establish a MitM position in the network tcp/ip layer to intercept SSH session negotiation and SSH server and client to negotiate either `chacha20-poly1305` cipher mode or any encrypt-then-mac variants (generic EtM) reduces the attack surface significantly.
 
-The management network should already be significantly protected from access by unwanted entities. When the access to the management network is properly protected and only highly trusted entities have access, the severity and risk of the vulnerability is also significantly lower.
+The management network should already be significantly protected from access by unwanted entities. When the access to the management network is properly protected and only highly trusted entities have access, the severity and risk of the vulnerability are also significantly lower.
 
-Anyhow, it poses a valid concern for Network operators and vendors alike. Most Network OSes are affected by the attack, and vendors are likely to patch their SSH server implementations in due time. SR Linux is not an exception, but we are lucky to use the upstream OpenSSH server implementation from the Debian distribution, which was patched in the latest security release. And SR Linux users still able to mitigate the attack in their current SR Linux devices by disabling the `chacha20-poly1305` cipher mode in the SSH server configuration.
+Anyhow, it poses a valid concern for Network operators and vendors alike. The attack affects Most Network OSes, and vendors are likely to patch their SSH server implementations in due time. SR Linux is not an exception, but we are lucky to use the upstream OpenSSH server implementation from the Debian distribution, which was patched in the latest security release. And SR Linux users can still mitigate the attack in their current SR Linux devices by disabling the `chacha20-poly1305` cipher mode in the SSH server configuration.
 
 You can follow up on or share the discussion on [Twitter][twitter-discuss] or [LinkedIn][linkedin-discuss].
 
