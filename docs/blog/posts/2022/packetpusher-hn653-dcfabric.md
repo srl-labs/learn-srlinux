@@ -9,7 +9,7 @@ tags:
 
 # Design, Deploy, And Operate With Nokia Data Center Fabric Solution
 
-<small>:material-podcast: [Packet Pushers](https://packetpushers.net/podcasts/heavy-networking-653-design-deploy-and-operate-with-nokia-data-center-fabric-solution-sponsored/)</small>
+<small>:material-podcast: [Packet Pushers](https://packetpushers.net/podcast/heavy-networking-653-design-deploy-and-operate-with-nokia-data-center-fabric-solution-sponsored/)</small>
 
 In this Heavy Networking piece we’re talking data center operations and automation. Data centers aren’t immune from the pressures being felt across the IT organization: things like enabling new applications and services more quickly, getting better visibility to monitor performance and speed up troubleshooting, and tying into new capabilities that come from automation, APIs, containers, and microservices.
 

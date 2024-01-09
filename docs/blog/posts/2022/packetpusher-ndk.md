@@ -9,7 +9,7 @@ tags:
 
 # Develop Custom Network Apps With Nokia’s SR Linux NDK
 
-<small>:material-podcast: [Packet Pushers](https://packetpushers.net/podcasts/tech-bytes-develop-custom-network-apps-with-nokias-sr-linux-ndk-sponsored/)</small>
+<small>:material-podcast: [Packet Pushers](https://packetpushers.net/podcast/tech-bytes-develop-custom-network-apps-with-nokias-sr-linux-ndk-sponsored/)</small>
 
 In this Tech Bytes podcast we talk with sponsor Nokia about its SR Linux network OS. More specifically, because SR Linux is open, customers can write homegrown applications to solve specific problems with the network OS using Nokia’s [NetOps Development Kit (NDK)](../../../ndk/index.md).
 
