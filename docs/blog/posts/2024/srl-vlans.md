@@ -9,6 +9,8 @@ authors:
 
 # VLANs on SR Linux
 
+<small> Discussions: [:material-twitter:][twitter-discuss] · [:material-linkedin:][linkedin-discuss]</small>
+
 What was one of the most common questions in our SR Linux discord in 2023?
 
 EVPN?
@@ -750,6 +752,9 @@ Keep the man happy, this is all for today.
 [client-config]:https://github.com/srl-labs/srlinux-vlan-handling-lab/blob/main/configs/client.sh
 [lab]: https://github.com/srl-labs/srlinux-vlan-handling-lab
 [srl-startup]: https://github.com/srl-labs/srlinux-vlan-handling-lab/blob/main/configs/srl.cfg
+[twitter-discuss]: https://twitter.com/ntdvps/status/1747400112484040792
+[linkedin-discuss]: https://www.linkedin.com/feed/update/urn:li:activity:7153167033734475776/
+
 [^1]: Untagged interface configuration also accepts frames with VLAN ID 0, aka null tag. We are not covering null tag cases here, since they are not that relevant.
 [^2]: Outer VLAN ID is 12, inner VLAN ID is 13.
 
