@@ -82,7 +82,7 @@ Here is an example of a basic interface/subinterface configuration that enables 
 A:srl1# info / interface ethernet-1/1
     interface ethernet-1/1 {
         admin-state enable #(1)!
-        vlan-tagging true
+        vlan-tagging true #(4)!
         subinterface 0 { #(3)!
             type bridged
             admin-state enable
@@ -101,6 +101,7 @@ A:srl1# info / interface ethernet-1/1
 2. On subinterface level you configure the vlan encapsulation. In this example we configure a single-tagged VLAN with ID `100`.
 3. Subinterface index is used to uniquely identify a subinterface within the scope of a physical interface and has no relation to the VLAN ID.  
     However, often it is convenient to use the same index as the VLAN ID, so we could use `subinterface 100` name to denote that traffic with VLAN ID `100` is handled by it.
+4. `vlan-tagging` is a statement that enables the ability to do a lookup on the tags on the interface. When not enabled (set to `true`) the interface (and all its subinterface) will be agnostic to any VLAN information present/absent in the incoming frames and will not perform any VLAN-related actions on them in any direction.
 
 There is a number of encapsulation modes one can configure on SR Linux; Let's dive into each and every one of them to understand what they entail for the incoming and outgoing traffic.
 
@@ -231,6 +232,27 @@ Accepted, VLAN tag `10` is added (push)
 ///
 
 This encapsulation mode is covered in the 2nd lab scenario - [Single-tagged VLAN](#scenario-2-single-tagged-vlan).
+
+#### Any or optional VLAN ID
+
+You might have noticed that the `vlan-id` parameter under the `single-tagged` block can take either an integer value in the range of `1..4094` or a special value `any`[^3].
+
+```srl
+--{ candidate shared default }--[  ]--
+A:srl1# interface ethernet-1/1 subinterface 0 vlan encap single-tagged vlan-id any
+usage: vlan-id <value>
+
+VLAN identifier for single-tagged packets.
+
+Positional arguments:
+  value             [number, range 1..4094]|[any]
+```
+
+The `any` value is a "catch all" value that will classify frames with any VLAN ID present or VLAN ID absent (untagged) as belonging to this subinterface. This is a convenient way to configure a subinterface to accept all the frames that were not classified to any other subinterface of the same physical interface.
+
+As for the tag push/pop behavior, the frame's tags won't be modified in any way.
+
+Another interesting behavior of the `any` value is that it will be considered less specific when it comes to matching untagged frames, when the `untagged` encapsulation is configured on any subinterface of the same physical interfaces. Let us know in the comments if you want a diagram for that :smile:
 
 ### Single-tagged-range VLAN
 
@@ -758,5 +780,6 @@ Keep the man happy, this is all for today.
 
 [^1]: Untagged interface configuration also accepts frames with VLAN ID 0, aka null tag. We are not covering null tag cases here, since they are not that relevant.
 [^2]: Outer VLAN ID is 12, inner VLAN ID is 13.
+[^3]: The `any` keyword will change to `optional` in SR Linux 24.3.1 release. The configuration auto-upgrade should handle this for you if you are upgrading from an older release.
 
 <script type="text/javascript" src="https://viewer.diagrams.net/js/viewer-static.min.js" async></script>
