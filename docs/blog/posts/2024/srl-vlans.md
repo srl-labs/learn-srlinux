@@ -5,6 +5,7 @@ tags:
 authors:
   - rdodin
   - reda
+  - sfomin
 ---
 
 # VLANs on SR Linux
@@ -34,8 +35,8 @@ Get yourself comfy, we are about to have a deep dive into VLANs on SR Linux.
 
 VLAN handling on SR Linux is nothing like Cisco and is based on the following core concepts:
 
-1. VLANs are locally significant within the scope of a subinterface.
-2. VLANs are configured on a subinterface level and define the action to be taken on the incoming/outgoing traffic - `pop`/`push` and `accept`/`drop`.
+1. VLAN IDs (aka dot1q tags) are locally significant within the scope of a subinterface.
+2. VLAN IDs are configured on a subinterface level and define the action to be taken on the incoming/outgoing traffic - `pop`/`push` and `accept`/`drop`.
 3. The actual switching is powered by the network instances of type `mac-vrf` and one SR Linux instance can have multiple network instances of this type.
 
 For visuals, here is a diagram that shows how VLANs are configured on SR Linux:
