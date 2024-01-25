@@ -179,7 +179,7 @@ Dropped, due to VLAN tag missing
 //////
 ////// html | td
     markdown: block
-Accepted, VLAN tag `10` is added resulting in 3 tags being present (push)
+Accepted, VLAN tag `10` is added (push)
 //////
 /////
 
