@@ -165,7 +165,7 @@ Type 'help' (and press <ENTER>) if you need any help using this.
 A:srl1#
 ```
 
-The CLI can also be accessed via an SSH service the SR Linux container runs. Using the default credentials `admin:admin` you can connect to the CLI over the network:
+The CLI can also be accessed via an SSH service the SR Linux container runs. Using the default credentials `admin:NokiaSrl1!` you can connect to the CLI over the network:
 
 ```shell
 # containerlab creates local /etc/hosts entries
