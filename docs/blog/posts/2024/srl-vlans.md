@@ -579,6 +579,10 @@ sudo containerlab deploy -c -t srl-labs/srlinux-vlan-handling-lab
 
 Containerlab will clone the repository in your current working directory and deploy the lab topology. All is ready for us to get started with our practical exercises.
 
+/// tip | packet caputers
+As we go through the lab scenarios, we will be running ping tests between the clients and see how different VLAN configurations affect the traffic. But if you want to see the actual frames, you can run packet captures on any interface of the client or SR Linux nodes, see the [Packet Captures][]
+///
+
 ### Scenario 1: Disabled VLAN tagging
 
 When the lab starts, the [startup configuration][srl-startup] is applied to both SR Linux switches which render them using the following configuration:
@@ -759,6 +763,14 @@ Running the pinger:
 Let's look at the packet diagram to see what happened:
 
 <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":5,"zoom":2,"highlight":"#0000ff","nav":false,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/srl-labs/srlinux-vlan-handling-lab/diagrams/vlan.drawio"}'></div>
+
+## Packet Captures
+
+Containerlab makes it super easy to capture and visualise frames as they pass through any of the interfaces of the nodes in the lab. Here is Roman showing how to do it based on the lab we just went through:
+
+<div class="iframe-container">
+<iframe width="100%" src="https://www.youtube.com/embed/qojiQ38troc" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
 
 ## Summary
 
