@@ -579,8 +579,8 @@ sudo containerlab deploy -c -t srl-labs/srlinux-vlan-handling-lab
 
 Containerlab will clone the repository in your current working directory and deploy the lab topology. All is ready for us to get started with our practical exercises.
 
-/// tip | packet caputers
-As we go through the lab scenarios, we will be running ping tests between the clients and see how different VLAN configurations affect the traffic. But if you want to see the actual frames, you can run packet captures on any interface of the client or SR Linux nodes, see the [Packet Captures][]
+/// tip | packet captures
+As we go through the lab scenarios, we will be running ping tests between the clients and see how different VLAN configurations affect the traffic. But if you want to see the actual frames, you can run packet captures on any interface of the client or SR Linux nodes, see the [Packet Captures](#packet-captures)
 ///
 
 ### Scenario 1: Disabled VLAN tagging
