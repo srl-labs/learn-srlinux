@@ -144,7 +144,7 @@ We [created a pipeline](https://github.com/nokia/srlinux-ansible-collection/blob
 
 Throughout this tutorial we will be using `ghcr.io/nokia/srlinux-ansible-collection/2.15.5/py3.11:v0.3.0` container image that as the url suggests is based on `ansible-core==2.15.5` with `python 3.11` running srlinux collection v0.3.0.
 
-To save some finger energy we will create a handy alias [`ansible-playbook`](https://github.com/srl-labs/jsonrpc-ansible/blob/main/ansible.sh) that runs our container image with the `inventory.yml` created before:
+To save some finger energy we will create a handy alias `ansible-playbook` that runs our container image with the `ansible-inventory.yml` file being already loaded:
 
 ```bash title="ansible-in-a-container alias"
 alias ansible-playbook="docker run --rm -it \

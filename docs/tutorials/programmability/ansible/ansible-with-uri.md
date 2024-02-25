@@ -111,7 +111,7 @@ We put a variable `e1_1_ip` for each host, as later we would like to use the val
 
 Ansible is infamous for breaking things when you least expect it. For that reason we put that beast in a [container cage](https://github.com/hellt/ansible-docker/pkgs/container/ansible).
 
-We built a container image with Ansible v6.6.0 and are going to use it throughout this tutorial via a runner script [`ansible.sh`](https://github.com/srl-labs/jsonrpc-ansible/blob/main/ansible.sh) that simply calls a `docker run` command with a few args:
+We built a container image with Ansible v6.6.0 and are going to use it throughout this tutorial via a runner script `ansible.sh` that simply calls a `docker run` command with a few args:
 
 ```bash title="ansible-in-a-container runner script"
 docker run --rm -it \
