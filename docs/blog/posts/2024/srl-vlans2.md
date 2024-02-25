@@ -174,11 +174,13 @@ When ports are configured in "bridging" operation (`switchport`), they can be co
 1. `switchport mode access` : untagged frames are accepted. MACs are registered in the mac-table with the vlan referenced in the `switchport access vlan <vlan-id>` config of the port. Tagged frames are also accepted, but only if they use the `<vlan-id>` configured.
 2. `switchport mode trunk` : both tagged and untagged frames are accepted. Untagged frames are learned under the vlan referenced in the `switchport trunk native vlan  <vlan-id>` config of the port. Tagged frames are learned with the corresponding vlan tag of the frame. The allowed range of vlans is configured with the command `switchport trunk allowed vlan <vlan-id>-<vlan-id>`   
 
-## Lab:
+## Lab
 
 We have also built a lab for this blog post: [srl-labs/srlinux-eos-vlan-handling-lab][lab]. It's quite similar to the lab we built in the previous VLAN Blog post, but in this case we are mixing SR Linux and EOS devices in the same scenarios:
 
 <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":0,"zoom":2,"highlight":"#0000ff","nav":false,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/srl-labs/srlinux-eos-vlan-handling-lab/diagrams/srl-eos-vlan.drawio"}'></div>
+
+For this lab you need to download the EOS image. You can check how to do it in the CEOS [containerlab][ceoscontainerlab] web page.
 
 The two clients are connected to the `ethernet-1/1` and `Ethernet1` interface of the respective SR Linux and Arista switches and have five interfaces [configured][client-config] on them:
 
@@ -733,6 +735,7 @@ Hopefully, this blog post has given you an in-depth view on the vlan switching o
 [single-tagged-vlan]: https://learn.srlinux.dev/blog/2024/vlans-on-sr-linux/#single-tagged-vlan
 [single-tagged-range-vlan]: https://learn.srlinux.dev/blog/2024/vlans-on-sr-linux/#single-tagged-range-vlan
 [scenario-1-disabled-vlan-tagging]: https://learn.srlinux.dev/blog/2024/vlans-on-sr-linux-part-2/#scenario-1-disabled-vlan-tagging
+[ceoscontainerlab]: https://containerlab.dev/manual/kinds/ceos/
 
 [^1]: More complex scenarios like dot1q-tunnel mode are also available, but we will stick to the basic trunk/access modes for now.
 [^2]: Outer VLAN ID is 12, inner VLAN ID is 13.
