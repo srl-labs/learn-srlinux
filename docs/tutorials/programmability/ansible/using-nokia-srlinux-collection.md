@@ -81,7 +81,7 @@ The collection is available on [Ansible Galaxy](../../../ansible/collection/inde
 
 ## Lab deployment
 
-If this is not your first tutorial on this site, you rightfully expect to get a [containerlab][clab-install]-based lab provided so that you can follow along with the provided examples. The [lab][lab-file] defines two Nokia SR Linux nodes connected over `ethernet-1/1` interfaces.
+If this is not your first tutorial on this site, you rightfully expect to get a [containerlab][clab-install][^1]-based lab provided so that you can follow along with the provided examples. The [lab][lab-file] uses Containerlab v0.51.3 and defines two Nokia SR Linux nodes connected over `ethernet-1/1` interfaces.
 
 [lab-file]: https://github.com/srl-labs/jsonrpc-ansible/blob/main/lab.clab.yml
 
@@ -94,42 +94,48 @@ sudo containerlab deploy -c -t https://github.com/srl-labs/jsonrpc-ansible
 Shortly after you should have two SR Linux containers running:
 
 ```c title="Result of containerlab deploy command"
-+---+----------------+--------------+-------------------------------+------+---------+----------------+----------------------+
-| # |      Name      | Container ID |             Image             | Kind |  State  |  IPv4 Address  |     IPv6 Address     |
-+---+----------------+--------------+-------------------------------+------+---------+----------------+----------------------+
-| 1 | clab-2srl-srl1 | cc5ba5f8cc04 | ghcr.io/nokia/srlinux:23.3.1  | srl  | running | 172.20.20.3/24 | 2001:172:20:20::3/64 |
-| 2 | clab-2srl-srl2 | aa5f8626ac4b | ghcr.io/nokia/srlinux:23.3.1  | srl  | running | 172.20.20.2/24 | 2001:172:20:20::2/64 |
-+---+----------------+--------------+-------------------------------+------+---------+----------------+----------------------+
++---+----------------+--------------+--------------------------------+------+---------+----------------+----------------------+
+| # |      Name      | Container ID |             Image              | Kind |  State  |  IPv4 Address  |     IPv6 Address     |
++---+----------------+--------------+--------------------------------+------+---------+----------------+----------------------+
+| 1 | clab-2srl-srl1 | cc5ba5f8cc04 | ghcr.io/nokia/srlinux:23.10.2  | srl  | running | 172.20.20.3/24 | 2001:172:20:20::3/64 |
+| 2 | clab-2srl-srl2 | aa5f8626ac4b | ghcr.io/nokia/srlinux:23.10.2  | srl  | running | 172.20.20.2/24 | 2001:172:20:20::2/64 |
++---+----------------+--------------+--------------------------------+------+---------+----------------+----------------------+
 ```
 
-Finally change into the cloned directory -  `cd jsonrpc-ansible` - and we are ready to start.
+Finally change into the cloned directory - `cd jsonrpc-ansible` - and we are ready to start.
 
 ## Ansible setup
 
 ### Inventory
 
-Ansible requires an [inventory][ansible-inventory] file to be present to identify the fleet of hosts it is going to operate on. Create the following `inventory.yml` file in your current working directory:
+Ansible requires an [inventory][ansible-inventory] file to be present to identify the fleet of hosts it is going to operate on. Luckily, Containerlab automatically generates a suitable inventory file for us. You will find the auto-generated inventory file in the lab directory by the `./clab-2srl/ansible-inventory.yml` path.
 
-```yaml title="inventory.yml file"
+It will look similar to this:
+
+```yaml
 all:
   vars:
-    ansible_connection: ansible.netcommon.httpapi
-    ansible_user: admin
-    ansible_password: NokiaSrl1!
-    ansible_network_os: nokia.srlinux.srlinux
+    # The generated inventory is assumed to be used from the clab host.
+    # Hence no http proxy should be used. Therefore we make sure the http
+    # module does not attempt using any global http proxy.
     ansible_httpapi_use_proxy: false
-  hosts:
-    clab-2srl-srl1:
-      e1_1_ip: 192.168.0.1/24
-    clab-2srl-srl2:
-      e1_1_ip: 192.168.0.2/24
+  children:
+    nokia_srlinux:
+      vars:
+        ansible_network_os: nokia.srlinux.srlinux
+        # default connection type for nodes of this kind
+        # feel free to override this in your inventory
+        ansible_connection: ansible.netcommon.httpapi
+        ansible_user: admin
+        ansible_password: NokiaSrl1!
+      hosts:
+        clab-2srl-srl1:
+          ansible_host: 172.20.20.3
+        clab-2srl-srl2:
+          ansible_host: 172.20.20.2
 ```
 
-We also specify the variables that are common for all hosts and are essential for the `nokia.srlinux` collection operation. These values are explained in the [collection's documentation][nokia-srlinux-collection].
-
 [ansible-inventory]: https://docs.ansible.com/ansible/latest//inventory_guide/
-
-We put a variable `e1_1_ip` for each host, as later we would like to use the values of these variables in the configuration tasks.
 
 ### Container
 
@@ -138,15 +144,15 @@ We [created a pipeline](https://github.com/nokia/srlinux-ansible-collection/blob
 
 Throughout this tutorial we will be using `ghcr.io/nokia/srlinux-ansible-collection/2.15.5/py3.11:v0.3.0` container image that as the url suggests is based on `ansible-core==2.15.5` with `python 3.11` running srlinux collection v0.3.0.
 
-To save some finger energy we will create a handy alias [`ansible-playbook`](https://github.com/srl-labs/jsonrpc-ansible/blob/main/ansible.sh) that runs our container image with the `inventory.yml` created before:
+To save some finger energy we will create a handy alias `ansible-playbook` that runs our container image with the `ansible-inventory.yml` file being already loaded:
 
 ```bash title="ansible-in-a-container alias"
 alias ansible-playbook="docker run --rm -it \
   -v $(pwd):/ansible \(1)
   -v ~/.ssh:/root/.ssh \(2)
   -v /etc/hosts:/etc/hosts \(3)
-  ghcr.io/nokia/srlinux-ansible-collection/2.15.5/py3.11:v0.3.0 \
-  ansible-playbook -i inventory.yml $@"
+  ghcr.io/nokia/srlinux-ansible-collection/2.15.5/py3.11:v0.4.0 \
+  ansible-playbook -i clab-2srl/ansible-inventory.yml $@"
 ```
 
 1. `/ansible` is a working dir for our container image, so we mount the repo's directory to this path.
@@ -345,7 +351,7 @@ We set two leaves - `location` and `contact` - by creating the `value` container
 
 Quite often, configuration templates intended to be pushed to the node are saved on disk. Hence, we want to show how to use those templates in your configuration tasks.
 
-The [`iface-cfg.json.j2`](https://github.com/srl-labs/jsonrpc-ansible/blob/main/task03/iface-cfg.json.j2) file contains a template for the two interfaces - `ethernet-1/1` and `lo0`. The `ethernet-1/1` interface is configured with a sub-interface and IP address sourced from the variable we put in the [inventory](#inventory) and is attached to the default network instance.
+The [`iface-cfg.json.j2`](https://github.com/srl-labs/jsonrpc-ansible/blob/main/task03/iface-cfg.json.j2) file contains a template for the two interfaces - `ethernet-1/1` and `lo0`. The `ethernet-1/1` interface is configured with a sub-interface and IP address sourced from the `{{e1_1_ip}}` variable and is attached to the default network instance.
 
 ```json
 {
@@ -386,6 +392,20 @@ The [`iface-cfg.json.j2`](https://github.com/srl-labs/jsonrpc-ansible/blob/main/
   ]
 }
 ```
+
+But where do we define the `{{e1_1_ip}}` variable? We can define it in the inventory file by making a tight coupling between the target device and its variables. Edit the `clab-2srl/ansible-inventory.yml` file and add the `e1_1_ip` variable to the `clab-2srl-srl1` and `clab-2srl-srl2` hosts:
+
+```yaml hl_lines="4 7"
+      hosts:
+        clab-2srl-srl1:
+          ansible_host: 172.20.20.3
+          e1_1_ip: 192.168.0.1/24
+        clab-2srl-srl2:
+          ansible_host: 172.20.20.2
+          e1_1_ip: 192.168.0.2/24
+```
+
+Now with the variables defined and set for each host we can use them in the template
 
 Since `/interface` list is a top-level element in our [YANG model](../../../yang/index.md) (as denoted by `/interface` path), to create a new member of this list, we craft a JSON object with `interface` list and specify its members (`ethernet-1/1` and `lo0`). This JSON object is then updates/merges the `/` path, thus making two new interfaces. Same with the `network-instance`.
 
@@ -442,13 +462,25 @@ To ensure that the changes were correctly applied, the last task fetches state i
 
 Additionally, since we configured IP addresses over the connected interfaces on both nodes, you should be able to execute a ping between the nodes:
 
+Login to `srl1`:
+
+```bash
+ssh clab-2srl-srl1
+```
+
+and run the ping command:
+
 ```bash
 --{ + running }--[  ]--
-A:srl1# ping 192.168.0.2 network-instance default  
+A:srl1# ping -c 2 192.168.0.2 network-instance default
 Using network instance default
 PING 192.168.0.2 (192.168.0.2) 56(84) bytes of data.
-64 bytes from 192.168.0.2: icmp_seq=1 ttl=64 time=90.3 ms
-64 bytes from 192.168.0.2: icmp_seq=2 ttl=64 time=12.6 ms
+64 bytes from 192.168.0.2: icmp_seq=1 ttl=64 time=59.3 ms
+64 bytes from 192.168.0.2: icmp_seq=2 ttl=64 time=14.5 ms
+
+--- 192.168.0.2 ping statistics ---
+2 packets transmitted, 2 received, 0% packet loss, time 1001ms
+rtt min/avg/max/mdev = 14.501/36.886/59.271/22.385 ms
 ```
 
 ### Replacing partial config
@@ -696,9 +728,9 @@ Free Memory          : 14955894 kB
 
 All the examples in this tutorial were using HTTP as a transport protocol. However, in production environments, you would want to use HTTPS to secure your communication with the network devices.
 
-Using HTTPS with this collection is as simple as adding the `ansible_httpapi_use_ssl: true` variable. For instance, to the list of variables in the inventory file:
+Using HTTPS with this collection is as simple as adding the `ansible_httpapi_use_ssl: true` and `ansible_httpapi_validate_certs: false` variable. For instance, to the list of variables in the inventory file:
 
-```yaml hl_lines="7"
+```yaml hl_lines="7 8"
 all:
   vars:
     ansible_connection: ansible.netcommon.httpapi
@@ -706,6 +738,7 @@ all:
     ansible_password: NokiaSrl1!
     ansible_network_os: nokia.srlinux.srlinux
     ansible_httpapi_use_ssl: true
+    ansible_httpapi_validate_certs: false
   hosts:
     # snip
 ```
