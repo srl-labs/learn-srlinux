@@ -147,12 +147,12 @@ Throughout this tutorial we will be using `ghcr.io/nokia/srlinux-ansible-collect
 To save some finger energy we will create a handy alias `ansible-playbook` that runs our container image with the `ansible-inventory.yml` file being already loaded:
 
 ```bash title="ansible-in-a-container alias"
-alias ansible-playbook="docker run --rm -it \
+alias ansible-playbook='docker run --rm -it \
   -v $(pwd):/ansible \(1)
   -v ~/.ssh:/root/.ssh \(2)
   -v /etc/hosts:/etc/hosts \(3)
   ghcr.io/nokia/srlinux-ansible-collection/2.15.5/py3.11:v0.4.0 \
-  ansible-playbook -i clab-2srl/ansible-inventory.yml $@"
+  ansible-playbook -i clab-2srl/ansible-inventory.yml $@'
 ```
 
 1. `/ansible` is a working dir for our container image, so we mount the repo's directory to this path.
