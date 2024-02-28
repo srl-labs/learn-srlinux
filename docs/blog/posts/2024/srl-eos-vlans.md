@@ -421,8 +421,6 @@ Whenever we want the subinterfaces to accept frames with a range of VLAN IDs, we
 
 This mode doesn't pop any VLAN tags on ingress, nor it adds them on ingress. Subinterface will just filter the frames that have VLAN ID within the configured range and pass them through without any modifications.
 
-In this case, for the SR Linux `ethernet-1/10` interface, we have configured the subinterface with vlan-id `any`. So we can also check that tags won't be modified in any way.
-
 In Arista, this scenario is similar to the previous one, the only difference is that we will increase the range of allowed vlans.
 
 This is the configuration for SR Linux:
@@ -459,7 +457,7 @@ interface ethernet-1/10 {
         vlan {
             encap {
                 single-tagged {
-                    vlan-id any
+                    vlan-id any #(1)!
                 }
             }
         }
@@ -475,6 +473,8 @@ network-instance bridge-1 {
     }
 }
 ```
+
+1. For a change, we configure `ethernet-1/10.0` subinterface with the `vlan-id any` encapsulation. This encapsulation will ensure that we have the same vlan transparency as with the `vlan-tagging false` option, but it allows us to configure VLANs on the other subinterfaces under the `ethernet-1/10` interface.
 
 ///
 
