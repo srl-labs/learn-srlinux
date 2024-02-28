@@ -4,6 +4,8 @@ tags:
   - vlan
 authors:
   - michelredondo
+links:
+  - blog/posts/2024/srl-vlans.md
 ---
 
 # VLANs on SR Linux and Arista/Cisco
@@ -52,9 +54,7 @@ VLAN tagging disabled
 ////// html | td
     markdown: block
 
-```
-interface vlan-tagging false
-```
+`interface vlan-tagging false`
 
 //////
 ////// html | td
@@ -71,11 +71,9 @@ Single-tagged VLAN
 ////// html | td
     markdown: block
 
-```
-interface vlan-tagging true
+`interface vlan-tagging true`
 
-subinterface vlan encap single-tagged vlan-id <vid>
-```
+`subinterface vlan encap single-tagged vlan-id <vid>`
 
 //////
 ////// html | td
@@ -95,11 +93,9 @@ Single-tagged VLAN
 ////// html | td
     markdown: block
 
-```
-interface vlan-tagging true
+`interface vlan-tagging true`
 
-subinterface vlan encap single-tagged vlan-id any
-```
+`subinterface vlan encap single-tagged vlan-id any`
 
 //////
 ////// html | td
@@ -116,11 +112,9 @@ Single-tagged VLAN range
 ////// html | td
     markdown: block
 
-```{.bash style="max-width:300px"}
-interface vlan-tagging true
+`interface vlan-tagging true`
 
-subinterface subinterface vlan encap single-tagged-range low-vlan-id <lvid> high-vlan-id <hvid>
-```
+`subinterface subinterface vlan encap single-tagged-range low-vlan-id <lvid> high-vlan-id <hvid>`
 
 //////
 ////// html | td
@@ -141,11 +135,9 @@ Untagged VLAN
 ////// html | td
     markdown: block
 
-```
-interface vlan-tagging true
+`interface vlan-tagging true`
 
-subinterface subinterface vlan encap untagged
-```
+`subinterface subinterface vlan encap untagged`
 
 //////
 ////// html | td
@@ -220,7 +212,7 @@ As we go through the lab scenarios, we will be running ping tests between the cl
 
 ### Scenario 1: Disabled VLAN tagging
 
-In this scenario of the previous VLAN post, SR Linux switches were configured with the `vlan-tagging false` option. With this option, all incoming frames are forwarded without any modifications.
+In this scenario SR Linux are configured with the `vlan-tagging false` option. With this option, all incoming frames are forwarded without any modifications.
 
 /// details | SR Linux Configuration
     type: tip
@@ -256,7 +248,7 @@ In this scenario of the previous VLAN post, SR Linux switches were configured wi
 
 ///
 
-There is no straightforward  [^1] equivalent scenario in Cisco/Arista that forwards frames transparently. If we want to get as close as possible to the operation in SR Linux, we will have to configure the port in Arista as `trunks` and allow all the VLANs. In Arista, by default, ports are configured in `access` mode and associated with the `VLAN 1`:
+There is no straightforward configuration in EOS/IOS that would make transparent forwarding of tagged and untagged frames. If we want to get as close as possible to the operation in SR Linux, we will have to configure the port in Arista EOS as `trunks` and allow all the VLAN IDs. In EOS, by default, ports are configured in `access` mode and associated with the `VLAN 1`:
 
 /// details | EOS Configuration
     type: tip
@@ -294,16 +286,20 @@ Let's see how this configuration affects the traffic between the clients by runn
 + Ping to 10.1.12.2 (double tag outer VID: 12, inner VID: 13) was successful.
 ```
 
-Ping in VLAN `1` fails. Why??
+Ping in `VLAN 1` fails. Why?
 
-Remember the `native` VLAN? By default, in EOS, ports send native VLAN traffic with untagged frames. The default native VLAN is ID `1`.  As we are sending traffic with this tag ID, EOS will remove VLAN ID `1` tag when traffic enters through port `Eth1`. SR Linux switch will forward traffic transparently and will be delivered to client2. If you capture the traffic at client2, you will see that, although arp traffic is received untagged, the Linux host is replying with `eth1.1` MAC address through `eth1` interface. This may seem odd but it's standard Linux kernel behavior. You can modify this setting with `arp_announce` and `arp_ignore` kernel parameters.
-Once arp reply is recieved at client1, the Linux kernel will ignore the frame because we performed the arp request using `eth1.1` interface but received the answer through  `eth1`.
+Remember the `native` VLAN? By default, in EOS, ports send native VLAN traffic with untagged frames. The default native VLAN is ID `1`.  
+As we are sending traffic with this tag ID, EOS will remove VLAN ID `1` tag when traffic enters through port `Eth1`.
+
+SR Linux forwards the traffic transparently and deliver the ethernet frames to the client2. If you capture the traffic at client2, you will see that, although ARP traffic is received untagged, the Linux host is replying with `eth1.1` MAC address via `eth1` interface. This may seem odd, but it's a standard Linux kernel behavior. You can modify this setting with `arp_announce` and `arp_ignore` kernel parameters.
+
+Once ARP reply is received at client1, the Linux kernel will ignore the frame because we performed the ARP request using `eth1.1` interface but received the answer via `eth1`.
 
 This is the visual representation of what's happening:
 
 <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":1,"zoom":2,"highlight":"#0000ff","nav":false,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/srl-labs/srlinux-eos-vlan-handling-lab/diagrams/srl-eos-vlan.drawio"}'></div>
 
-If we want traffic in VLAN `1` to work, we can configure `switchport trunk native vlan tag` in EOS interfaces. With that configuration the ports will send native VLAN traffic with tagged frames. The other effect is that untagged traffic will be discarded.
+If we want the traffic in `VLAN 1` to work, we can configure `switchport trunk native vlan tag` on EOS interfaces; with this configuration in effect, EOS sends native VLAN traffic as tagged frames. The side effect of this configuration is that the untagged traffic will be discarded entirely.
 
 You can test this alternate configuration with the following command:
 
@@ -313,11 +309,11 @@ You can test this alternate configuration with the following command:
 
 ### Scenario 2: Single-tagged VLAN
 
-In this scenario we are only allowing clients to send tagged traffic with VLAN ID `10`.
+In this scenario we are only allowing clients to send tagged traffic with VLAN tag `10`.
 
-With SR Linux, in this mode we configure the interface with VLAN tagging `enabled` and create specific subinterfaces for each required VLAN. The SRL node will drop traffic from VLANs that are not specifically configured. SR Linux Pops and Pushes VLAN tags from client and EOS switch.
+In SR Linux we configure the interface with VLAN tagging `enabled` and create subinterfaces for each specific dot1q tag. The SR Linux node will drop frames with dot1q tags that were not specifically configured on its subinterfaces. SR Linux performs Pop and Push operations on the frames ingressing and egressing from the mac-vrf.
 
-This is the configuration for SR Linux:
+This is the configuration on SR Linux:
 
 /// details | SR Linux Configuration
     type: tip
@@ -407,21 +403,21 @@ Let's run the pinger to see how this affects our setup:
 - Ping to 10.1.12.2 (double tag outer VID: 12, inner VID: 13) failed.
 ```
 
-As per our [single-tagged VLAN](#single-tagged-vlan) section of the original blog post:
+As per the [single-tagged VLAN](./srl-vlans.md#single-tagged-vlan) section of the original blog post:
 
-1. Untagged frames are dropped, since they don't have a VLAN
-2. Single tagged frames with `VLAN 1` are dropped, since they don't match the configured `VLAN 10`.
-3. Tagged frames with `VLAN 10` are accepted,  At SRL switch, VLAN tag is popped on ingress and pushed on egress.
-4. Single tagged frames with `VLAN 11` are dropped, since they don't match the configured `VLAN 10`.
-5. Double tagged frames with outer `VLAN 12` are dropped, since the outer tag doesn't match the configured `VLAN 10`.
+1. Untagged frames are dropped, since they don't have a VLAN tag present.
+2. Single tagged frames with `VLAN 1` tag are dropped, since they don't match the configured `VLAN 10`.
+3. Tagged frames with `VLAN 10` tag are accepted; on SR Linux side VLAN tag is popped on ingress and pushed on egress.
+4. Single tagged frames with `VLAN 11` tag are dropped, since they don't match the configured `VLAN 10`.
+5. Double tagged frames with outer `VLAN 12` tag are dropped, since the outer tag doesn't match the configured `VLAN 10`.
 
-This is the visual representation of what's happening:
+This is the visual representation of the packet flow for this scenario:
 
 <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":2,"zoom":2,"highlight":"#0000ff","nav":false,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/srl-labs/srlinux-eos-vlan-handling-lab/diagrams/srl-eos-vlan.drawio"}'></div>
 
 ### Scenario 3: Single-tagged-range VLAN
 
-Whenever we want the subinterface to accept frames with a range of VLAN IDs, we can use single-tagged-range encapsulation type.
+Whenever we want the subinterfaces to accept frames with a range of VLAN IDs, we can configure the `single-tagged-range` encapsulation type in SR Linux.
 
 This mode doesn't pop any VLAN tags on ingress, nor it adds them on ingress. Subinterface will just filter the frames that have VLAN ID within the configured range and pass them through without any modifications.
 
@@ -522,9 +518,9 @@ And let's run the pinger:
 + Ping to 10.1.12.2 (double tag outer VID: 12, inner VID: 13) was successful.
 ```
 
-As per our [single-tagged-range VLAN](#single-tagged-range-vlan) section of the original blog post:
+As per our [single-tagged-range VLAN](./srl-vlans.md#single-tagged-range-vlan) section of the original blog post:
 
-1. Untagged frames are dropped, since they don't have a VLAN
+1. Untagged frames are dropped, since they don't have a VLAN tag present.
 2. Single tagged frames with `VLAN 1` are dropped, since they don't match the configured `VLAN 10`.
 3. Single tagged frames with `VLAN 10` are accepted. At the SRL switch, frames are forwarded transparently.
 4. Single tagged frames with `VLAN 11` are accepted. At the SRL switch, frames are forwarded transparently.
@@ -536,9 +532,9 @@ This is the visual representation of what's happening:
 
 ### Scenario 4: Untagged VLAN
 
-In Arista, ports that only accept untagged frames are configured in `access` mode. We could also use the configuration of the first scenario ([scenario-1-disabled-vlan-tagging](#scenario-1-disabled-vlan-tagging)) to allow untagged traffic, but we would also allow the tagged one.
+In Arista, ports that only accept untagged frames are configured in `access` mode. We could also use the configuration of the [first scenario](#scenario-1-disabled-vlan-tagging) to allow untagged traffic, but we would also allow the tagged one.
 
-As we have seen, in Cisco/Arista switches, every MAC address needs to be associated with a VLAN. Even if we configure the port to accept untagged frames, we still need to define the VLAN that will be associated.  We do it with the `switchport access vlan <vlan-id>`.  
+As we have seen, in EOS/IOS systems, every MAC address needs to be associated with a VLAN. Even if we configure the port to accept untagged frames, we still need to define the VLAN that will be associated. We do it with the `switchport access vlan <vlan-id>`.
 
 In SR Linux we will use the `untagged` vlan encapsulation type.
 
@@ -548,10 +544,12 @@ This scenario has different possible outcomes depending on how we configure the 
 //// html | thead
 ///// html | tr
 ////// html | th
-<div style="width:161px">EOS Eth1 config</div>
+    markdown: block
+EOS `Eth1` config
 //////
 ////// html | th
-<div style="width:220px">EOS Eth10 config</div>
+    markdown: block
+EOS `Eth10` config
 //////
 ////// html | th
 Actions
@@ -564,11 +562,11 @@ Actions
 ///// html | tr
 ////// html | td
     markdown: block
-switchport access vlan 1
+`switchport access vlan 1`
 //////
 ////// html | td
     markdown: block
-switchport access vlan 1
+`switchport access vlan 1`
 //////
 ////// html | td
     markdown: block
@@ -579,15 +577,15 @@ Frames are untagged
 ///// html | tr
 ////// html | td
     markdown: block
-switchport access vlan 1
+`switchport access vlan 1`
 
 (the native vlan)
 //////
 ////// html | td
     markdown: block
-switchport trunk allowed vlan 1
+`switchport trunk allowed vlan 1`
 
-switchport trunk native vlan 1
+`switchport trunk native vlan 1`
 //////
 ////// html | td
     markdown: block
@@ -598,17 +596,17 @@ Frames are untagged because we use the native VLAN
 ///// html | tr
 ////// html | td
     markdown: block
-switchport access vlan 1
+`switchport access vlan 1`
 
 (the native vlan)
 //////
 ////// html | td
     markdown: block
-switchport trunk allowed vlan 1
+`switchport trunk allowed vlan 1`
 
-switchport trunk native vlan 1
+`switchport trunk native vlan 1`
 
-switchport trunk native vlan tag
+`switchport trunk native vlan tag`
 //////
 ////// html | td
     markdown: block
@@ -619,13 +617,13 @@ EOS pushes VLAN `1` to frames when egressing Eth10 because we force tagging of t
 ///// html | tr
 ////// html | td
     markdown: block
-switchport access vlan 10
+`switchport access vlan 10`
 //////
 ////// html | td
     markdown: block
-switchport trunk allowed vlan 1-10
+`switchport trunk allowed vlan 1-10`
 
-switchport trunk native vlan 1
+`switchport trunk native vlan 1`
 //////
 ////// html | td
     markdown: block
@@ -738,13 +736,13 @@ You can see that `EOS` device still forwards VLAN `10` traffic. This is because 
 
 We have seen how a simple concept as a VLAN can keep us busy for quite a long time. The flexibility of SR Linux VLAN handling provides many options to handle all the different scenarios.
 
-If we had to summarize the key concepts about working with VLANs, it would be:
+If we had to summarize the key concepts about working with VLAN on SR Linux and IOS-like platforms, here are a few takeaways:
 
 1. Always consider that in EOS the `native` VLAN can be tagged or untagged depending on the switchport configuration.
 2. In SR Linux, ports do push/pop VLAN tags only when VLAN tagging is enabled and configured with specific single-tagged VLAN IDs. This option is great if you want fine-grained control per VLAN/subinterface.
-3. In SR Linux, With `vlan-tagging false`, `single-tagged vlan-id any` or `single-tagged-range` frame's tags won't be modified in any way. Whis this option it's very easy to transport a `trunk` of vlans from one port to another. Quite handy for those `switchport trunk allowed vlan 1-4000` configurations.
+3. In SR Linux, With `vlan-tagging false`, `single-tagged vlan-id any` or `single-tagged-range` frame's tags won't be modified in any way. With this option it's very easy to transport a `trunk` of vlans from one port to another. Quite handy for those `switchport trunk allowed vlan 1-4000` configurations.
 
-Hopefully, this blog post has given you an in-depth view on the vlan switching operation for both SR Linux and EOS. The Lab is at your disposal to try more scenarios.
+Hopefully, this blog post has given you an in-depth view on the vlan switching operation for both SR Linux and EOS. The Lab is at your disposal to try more scenarios and see how the different configurations affect the traffic.
 
 [vlansonsrlinux]: ./srl-vlans.md
 [intsubintvlan]: ./srl-vlans.md#interfaces-subinterfaces-and-vlan-encapsulation
@@ -753,10 +751,6 @@ Hopefully, this blog post has given you an in-depth view on the vlan switching o
 [packet-captures]: https://www.youtube.com/watch?v=qojiQ38troc
 [edgeshark]: https://edgeshark.siemens.io/
 [edgeshark-video]: https://www.youtube.com/watch?v=iY90a_Gn5W0
-[anyvlan]:https://learn.srlinux.dev/blog/2024/vlans-on-sr-linux/#any-or-optional-vlan-id
-[single-tagged-vlan]: https://learn.srlinux.dev/blog/2024/vlans-on-sr-linux/#single-tagged-vlan
-[single-tagged-range-vlan]: https://learn.srlinux.dev/blog/2024/vlans-on-sr-linux/#single-tagged-range-vlan
-[scenario-1-disabled-vlan-tagging]: https://learn.srlinux.dev/blog/2024/vlans-on-sr-linux-part-2/#scenario-1-disabled-vlan-tagging
 [ceoscontainerlab]: https://containerlab.dev/manual/kinds/ceos/
 
 [^1]: More complex scenarios like dot1q-tunnel mode are also available, but we will stick to the basic trunk/access modes in this post.

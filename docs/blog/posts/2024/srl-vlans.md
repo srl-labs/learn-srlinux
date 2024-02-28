@@ -6,6 +6,8 @@ authors:
   - rdodin
   - reda
   - sfomin
+links:
+  - blog/posts/2024/srl-eos-vlans.md
 ---
 
 # VLANs on SR Linux
@@ -783,6 +785,10 @@ The handy diagram in the TLDR section in the beginning of this post summarizes t
 Keep the man happy, this is all for today.
 
 ![cisco-man-happy](https://gitlab.com/rdodin/pics/-/wikis/uploads/001ed6308bd7ea9657ac8850facbbb31/image.png){: .img-shadow .img-center style="width:80%"}
+
+///details | Psst... One more thing.
+Wanted to know how Cisco/Arista VLAN configuration is mapped to the SR Linux's VLAN concepts? Here is a [deep dive on that](./srl-eos-vlans.md).
+///
 
 [client-config]:https://github.com/srl-labs/srlinux-vlan-handling-lab/blob/main/configs/client.sh
 [lab]: https://github.com/srl-labs/srlinux-vlan-handling-lab
