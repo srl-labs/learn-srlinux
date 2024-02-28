@@ -158,6 +158,7 @@ theme:
     - content.action.edit
     - toc.follow
     - content.tooltips
+    - content.footnote.tooltips
     - navigation.indexes
 
   language: en
