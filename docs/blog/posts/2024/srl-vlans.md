@@ -6,6 +6,8 @@ authors:
   - rdodin
   - reda
   - sfomin
+links:
+  - blog/posts/2024/srl-eos-vlans.md
 ---
 
 # VLANs on SR Linux
@@ -32,7 +34,7 @@ Get yourself comfy, we are about to have a deep dive into VLANs on SR Linux.
 <!-- more -->
 
 ## Core concepts
-
+<!-- --8<-- [start:concepts] -->
 VLAN handling on SR Linux is nothing like Cisco and is based on the following core concepts:
 
 1. VLAN IDs (aka dot1q tags) are locally significant within the scope of a subinterface.
@@ -42,7 +44,7 @@ VLAN handling on SR Linux is nothing like Cisco and is based on the following co
 For visuals, here is a diagram that shows how VLANs are configured on SR Linux:
 
 <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":6,"zoom":2,"highlight":"#0000ff","nav":false,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/srl-labs/srlinux-vlan-handling-lab/diagrams/vlan.drawio"}'></div>
-
+<!-- --8<-- [end:concepts] -->
 Now let's go through each of these concepts in detail and see how they work together to provide a flexible and scalable solution for VLAN handling.
 
 ///note
@@ -783,6 +785,10 @@ The handy diagram in the TLDR section in the beginning of this post summarizes t
 Keep the man happy, this is all for today.
 
 ![cisco-man-happy](https://gitlab.com/rdodin/pics/-/wikis/uploads/001ed6308bd7ea9657ac8850facbbb31/image.png){: .img-shadow .img-center style="width:80%"}
+
+///details | Psst... One more thing.
+Wanted to know how Cisco/Arista VLAN configuration is mapped to the SR Linux's VLAN concepts? Here is a [deep dive on that](./srl-eos-vlans.md).
+///
 
 [client-config]:https://github.com/srl-labs/srlinux-vlan-handling-lab/blob/main/configs/client.sh
 [lab]: https://github.com/srl-labs/srlinux-vlan-handling-lab

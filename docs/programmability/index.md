@@ -58,7 +58,7 @@ title: Programmability
 
     Couple the fully-modelled configuration and state datastores with a versatile and simple Python language and you get a powerful automation execution framework running on the NOS.
 
-    [:octicons-arrow-right-24: Checkout examples](../blog/tags.md#event-handler)
+    [:octicons-arrow-right-24: Checkout examples](../blog/tags.md#tag:event-handler)
 
 - :octicons-flame-24:{ .lg .middle } **NAPALM**
 
