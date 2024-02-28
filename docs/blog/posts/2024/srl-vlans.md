@@ -32,7 +32,7 @@ Get yourself comfy, we are about to have a deep dive into VLANs on SR Linux.
 <!-- more -->
 
 ## Core concepts
-
+<!-- --8<-- [start:concepts] -->
 VLAN handling on SR Linux is nothing like Cisco and is based on the following core concepts:
 
 1. VLAN IDs (aka dot1q tags) are locally significant within the scope of a subinterface.
@@ -42,7 +42,7 @@ VLAN handling on SR Linux is nothing like Cisco and is based on the following co
 For visuals, here is a diagram that shows how VLANs are configured on SR Linux:
 
 <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":6,"zoom":2,"highlight":"#0000ff","nav":false,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/srl-labs/srlinux-vlan-handling-lab/diagrams/vlan.drawio"}'></div>
-
+<!-- --8<-- [end:concepts] -->
 Now let's go through each of these concepts in detail and see how they work together to provide a flexible and scalable solution for VLAN handling.
 
 ///note
