@@ -203,12 +203,7 @@ plugins:
       categories: false
       post_excerpt_max_authors: 2
       authors_profiles: true
-  - tags:
-      tags_file: blog/tags.md
-      # media.md is a file that only shows posts with `media` tag
-      tags_extra_files:
-        blog/media.md:
-          - media
+  - tags
   - typeset
   - search
   - minify:

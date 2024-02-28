@@ -4,4 +4,4 @@ icon: material/tag
 ---
 # Tags
 
-[TAGS]
+<!-- material/tags -->
