@@ -186,7 +186,7 @@ The raw output of the script, when executed against the Containerlab topology ab
 
 ## SR Linux and Terrapin Attack mitigation
 
-In SR Linux, we use the upstream OpenSSH server implementation from the Debian distribution as of 23.10.1 release. Since Debian patched the vulnerability in their OpenSSH implementation, we will use the patched version in a later release of SR Linux, benefitting from the upstream fix.
+In SR Linux, we use the upstream OpenSSH server implementation from the Debian distribution as of 23.10.1 release. Since Debian patched the vulnerability in their OpenSSH implementation, we will benefit from the upstream fix and provide the updated binaries in SR Linux 24.3.1.
 
 /// note
 
