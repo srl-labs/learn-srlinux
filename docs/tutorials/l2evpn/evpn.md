@@ -779,7 +779,7 @@ The IMET/RT3 routes can be viewed in summary and detailed modes:
     ```
 
 ???info "Lets capture those routes?"
-    Since our lab is launched with containerlab, we can leverage the transparent sniffing of packets that [it offers](https://containerlab.srlinux.dev/manual/wireshark/).
+    Since our lab is launched with containerlab, we can leverage the transparent sniffing of packets that [it offers](https://containerlab.dev/manual/wireshark/).
 
     By capturing on the `e1-49` interface of the `clab-evpn01-leaf1` container, we are able to collect all the packets that are flowing between the nodes. Then we simply flap the EVPN instance in the `vrf-1` network instance to trigger the BGP updates to flow and see them in the live capture.
 
