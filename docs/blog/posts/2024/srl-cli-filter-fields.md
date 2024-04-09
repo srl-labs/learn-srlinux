@@ -20,5 +20,5 @@ In this video, we explore SR Linux's CLI feature that allows you to filter the f
 **Long live CLI**
 
 <div class="iframe-container">
-  <iframe width="100%" src="https://www.youtube.com/embed/6F7NnxoSBt0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+  <iframe width="100%" src="https://www.youtube.com/embed/9gr6L4rqVS8" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 </div>
