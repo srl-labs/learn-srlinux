@@ -870,3 +870,28 @@ A:srl-ixr6# info from state platform control A disk /dev/sdb
 /// tab | Path
 `/platform/control[slot=A]/disk[name=/dev/sdb]`
 ///
+
+## Factory Reset
+
+Factory reset may involve changing the software version to a golden image, cleaning up configuration, logs, certificates and licenses or a subset of these.
+
+A complete factory reset including all the above mentioned changes can be achieved using gNOI FactoryReset service.
+
+For this section, we will focus on restoring the configuration to factory default. Use the `load factory` command in config edit mode to restore the router to factory default config.
+
+Note - All user defined configuration including inband and management IPs will be wiped out. Only console access will be available after this action.
+
+/// tab | CLI
+
+```srl
+A:srlinux# enter candidate private
+--{ + candidate private private-admin }--[  ]--
+A:srlinux# load factory
+/system/configuration/checkpoint[id=__factory__]:
+    Loaded factory configuration
+
+--{ + candidate private private-admin }--[  ]--
+A:srlinux# commit stay
+All changes have been committed. Starting new transaction.
+```
+///
