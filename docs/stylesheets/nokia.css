@@ -246,3 +246,19 @@ div.highlight.code-scroll-sm pre>code {
 .twemoji-md {
   --md-icon-size: 2em !important;
 }
+
+/* START border for content tabs 
+https://github.com/squidfunk/mkdocs-material/discussions/4157#discussioncomment-8270993
+*/
+.md-typeset .tabbed-set {
+  border: 0.5px solid var(--md-typeset-table-color);
+}
+
+.md-typeset .tabbed-content {
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  padding-bottom: 0.5rem;
+  padding-top: 0.5rem;
+}
+
+/* END border for content tabs */
