@@ -247,7 +247,7 @@ Alright we're almost there! Configure your OpenAI key, let the app know if you w
 A:srl# enter candidate
 --{ +* candidate shared default }--[  ]--
 A:srl# askai-server openai-key <key>
-A:srl# askai-server model-version gpt4
+A:srl# askai-server model-version gpt-4
 A:srl# askai-server dynamic-state true
 A:srl# commit stay
 ```
