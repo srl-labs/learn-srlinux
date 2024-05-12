@@ -186,6 +186,6 @@ Refer to the [application configuration][app-config] section to better understan
 
 [greeter-go-repo]: https://github.com/srl-labs/ndk-greeter-go
 [app-config]: ../../agent.md#application-manager-and-application-configuration-file
-[greeter-yml]: https://github.com/srl-labs/ndk-greeter-go/blob/main/greeter.yml
+[greeter-yml]: https://github.com/srl-labs/ndk-greeter-go/blob/main/greeter.yml.go.tpl
 
 [^1]: Don't mind a little template magic, it is for the debugging capabilities of the `greeter` app.
