@@ -83,9 +83,13 @@ h4 {
 }
 
 /* make announce link color always white */
-/* .md-banner__inner a {
+div[data-md-component="announce"] .md-banner__inner a {
   color: #ffffff
-} */
+}
+
+div[data-md-component="announce"] .md-banner__inner a:hover {
+  color: #00c9ff
+}
 
 /* shadow effect for images and divs for video */
 .img-shadow {
