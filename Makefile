@@ -1,10 +1,10 @@
-MKDOCS_VER = 9.5.9
+MKDOCS_VER = 9.5.19
 # insiders version/tag https://github.com/srl-labs/mkdocs-material-insiders/pkgs/container/mkdocs-material-insiders
 MKDOCS_INS_VER = 9.5.19-insiders-4.53.8-hellt
 
 .PHONY: docs
 docs:
-	docker run --rm -v $$(pwd):/docs --entrypoint mkdocs ghcr.io/srl-labs/mkdocs-material-insiders:$(MKDOCS_INS_VER) build --clean --strict
+	docker run --rm -v $$(pwd):/docs --entrypoint mkdocs registry.srlinux.dev/pub/mkdocs-material-insiders:$(MKDOCS_INS_VER) build --clean --strict
 
 # serve the site locally using mkdocs-material public container
 .PHONY: serve
@@ -14,24 +14,24 @@ serve:
 # serve the site locally using mkdocs-material insiders container
 .PHONY: serve-insiders
 serve-insiders:
-	docker run -it --rm -p 8001:8000 -v $$(pwd):/docs ghcr.io/srl-labs/mkdocs-material-insiders:$(MKDOCS_INS_VER)
+	docker run -it --rm -p 8001:8000 -v $$(pwd):/docs registry.srlinux.dev/pub/mkdocs-material-insiders:$(MKDOCS_INS_VER)
 
 # serve the site locally using mkdocs-material insiders container using dirty-reloader
 .PHONY: serve-insiders-dirty
 serve-insiders-dirty:
-	docker run -it --rm -p 8001:8000 -v $$(pwd):/docs ghcr.io/srl-labs/mkdocs-material-insiders:$(MKDOCS_INS_VER) serve --dirtyreload -a 0.0.0.0:8000
+	docker run -it --rm -p 8001:8000 -v $$(pwd):/docs registry.srlinux.dev/pub/mkdocs-material-insiders:$(MKDOCS_INS_VER) serve --dirtyreload -a 0.0.0.0:8000
 
 .PHONY: serve-docs
 serve-docs: serve-insiders-dirty
 
 .PHONY: htmltest
 htmltest:
-	docker run --rm -v $$(pwd):/docs --entrypoint mkdocs ghcr.io/srl-labs/mkdocs-material-insiders:$(MKDOCS_INS_VER) build --clean --strict
+	docker run --rm -v $$(pwd):/docs --entrypoint mkdocs registry.srlinux.dev/pub/mkdocs-material-insiders:$(MKDOCS_INS_VER) build --clean --strict
 	docker run --rm -v $$(pwd):/test wjdp/htmltest --conf ./site/htmltest.yml
 	rm -rf ./site
 
 build-insiders:
-	docker run -v $$(pwd):/docs --entrypoint mkdocs ghcr.io/srl-labs/mkdocs-material-insiders:$(MKDOCS_INS_VER) build --clean --strict
+	docker run -v $$(pwd):/docs --entrypoint mkdocs registry.srlinux.dev/pub/mkdocs-material-insiders:$(MKDOCS_INS_VER) build --clean --strict
 
 push-docs: # push docs to gh-pages branch manually. Use when pipeline misbehaves
 	docker run -v ${SSH_AUTH_SOCK}:/ssh-agent --env SSH_AUTH_SOCK=/ssh-agent --env GIT_SSH_COMMAND="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no" -v $$(pwd):/docs --entrypoint mkdocs ghcr.io/srl-labs/mkdocs-material-insiders:$(MKDOCS_INS_VER) gh-deploy --force --strict
