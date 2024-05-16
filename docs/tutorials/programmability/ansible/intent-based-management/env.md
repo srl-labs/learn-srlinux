@@ -2,35 +2,6 @@
 
 To demonstrate the intent-based configuration management with Ansible we prepared a lab environment that you can set up on your own machine[^1]. The lab environment consists of a small SR Linux-based Clos fabric that is going to be configured by Ansible using intents declared in the Ansible roles.
 
-## Prerequisites
-
-- Readers should have a basic understanding of SR Linux and its network constructs to understand what this project does. Things like _mac-vrfs_, _network instances_, _irb_'s, _sub-interfaces_, etc. should be familiar. For SR Linux newcomers we recommend first reading the [SR Linux documentation](https://documentation.nokia.com/srlinux/) to familiarize with the basic concepts.
-
-- Make sure Ansible (ansible-core) 2.9+ is installed. We recommend you run Ansible from a Python virtual environment, for example:
-
-    ```bash title="Creating a venv and installing ansible-core"
-      python3 -m venv .venv
-      source .venv/bin/activate
-      pip install ansible-core
-    ```
-
-- Ensure you have the [Containerlab](https://containerlab.dev/install)[^2] installed and are meeting its installation requirements.
-
-- We recommend you install the [fcli](https://github.com/srl-labs/nornir-srl#readme) tool that generates fabric-wide reports to verify things like configured services, interfaces, routes, etc.  
-  `fcli` is not required to run the project, but it's useful to verify the state of the fabric after running the playbook and is used throughout this tutorial to illustrate the effects of the Ansible playbooks.
-
-    ```bash
-    pip install -U nornir-srl
-    ```
-
-## Installing the Ansible collection
-
-Install the SR Linux Ansible collection from [Ansible Galaxy](https://galaxy.ansible.com/nokia/srlinux/) with the following command:
-
-```bash
-ansible-galaxy collection install nokia.srlinux
-```
-
 ## Clone the project repository
 
 The entire project is contained in the [intent-based-ansible-lab][intent-based-ansible-lab] repository. Following command will clone the repository to the current directory on your machine (in `intent-based-ansible-lab` directory):
@@ -42,12 +13,31 @@ The entire project is contained in the [intent-based-ansible-lab][intent-based-a
 
 The following sections assume you are in the `intent-based-ansible-lab` directory.
 
+## Install Ansible and dependencies
+
+- To run the playbooks in the above repo, Ansible and related dependencies must be installed. The recommended way is to create a Python virtual environment and install the packages in that environment. Next to the Python packages, the `nokia.srlinux` Ansible collection is required that provides the connection plugin to interact with SR Linux using JSON-RPC.
+
+    ```bash title="Creating a venv and installing dependencies"
+    python3 -mvenv .venv
+    source .venv/bin/activate
+    pip install -U pip && pip install -r requirements.txt
+    ansible-galaxy collection install nokia.srlinux    
+    ```
+- Ensure you have the [Containerlab](https://containerlab.dev/install)[^2] installed and are meeting its installation requirements.
+
+- We recommend you install the [fcli](https://github.com/srl-labs/nornir-srl#readme) tool that generates fabric-wide reports to verify things like configured services, interfaces, routes, etc.  
+  `fcli` is not required to run the project, but it's useful to verify the state of the fabric after running the playbook and is used throughout this tutorial to illustrate the effects of the Ansible playbooks. It is packaged in a container and run via a shell alias via the following command:
+
+    ```bash
+    source .aliases.rc
+    ```
+
 ## Deploying the lab
 
 You need an SR Linux test topology to run the Ansible playbook and roles against. We will use [Containerlab](https://containerlab.dev/) to create a lab environment with 6 SR Linux nodes: 4 leaves and 2 spines:
 
 ```bash
-sudo containerlab deploy -c -t 4l2s.clab.yml
+sudo containerlab deploy -t topo.yml --reconfigure
 ```
 
 This will create a lab environment with 6 SR Linux nodes and a set of Linux containers to act as hosts:
@@ -60,7 +50,7 @@ This will create a lab environment with 6 SR Linux nodes and a set of Linux cont
 Containerlab populates the `/etc/hosts` file on the host machine with the IP addresses of the deployed nodes. This allows Ansible to connect to the nodes that has a matching inventory file inside the `inv` directory.
 
 ```bash title="Verifying that all lab nodes are up and running"
-sudo containerlab inspect -t 4l2s.clab.yml
+sudo containerlab inspect -t topo.yml
 ```
 
 With the lab deployed, we can now explore the project's structure and understand the role's layout that powers the intent-based configuration management.

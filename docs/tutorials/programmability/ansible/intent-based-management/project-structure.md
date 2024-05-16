@@ -6,20 +6,12 @@ comments: true
 
 ## The Ansible Inventory
 
-In this project, we use the native file-based Ansible inventory. It lists the hosts that are part of the fabric and groups them in a way that reflects the fabric topology. The inventory file - [`ansible-inventory.yml`](https://github.com/srl-labs/intent-based-ansible-lab/blob/main/inv/ansible-inventory.yml) - is located in the [`inv`](https://github.com/srl-labs/intent-based-ansible-lab/tree/main/inv) directory; `host_vars` and `group_vars` directories next to it contain host- and group-specific variables.
+In this project, we use the native file-based Ansible inventory. It lists the hosts that are part of the fabric and groups them in a way that reflects the fabric topology. The inventory file - [`ansible-inventory.yml`](https://github.com/srl-labs/intent-based-ansible-lab/blob/main/inv/ansible-inventory.yml) - is located in the [`inv`](https://github.com/srl-labs/intent-based-ansible-lab/tree/main/inv) directory; `group_vars`contains connectivity parameters for specific device groups, like `srl` for SR Linux.
 
 ```bash
-inv
-├── ansible-inventory.yml # the inventory file
-├── group_vars
-│   └── srl.yml  # group-specific variables for the srl group
-└── host_vars
-    ├── clab-4l2s-l1.yml # host-specific variables for the clab-4l2s-l1 host
-    ├── clab-4l2s-l2.yml
-    ├── clab-4l2s-l3.yml
-    ├── clab-4l2s-l4.yml
-    ├── clab-4l2s-s1.yaml
-    └── clab-4l2s-s2.yml
+├── ansible-inventory.yml
+└── group_vars
+    └── srl.yml
 ```
 
 Ansible is instructed to use this inventory file by setting `inventory = inv` in the [`ansible.cfg`](https://github.com/srl-labs/intent-based-ansible-lab/blob/main/ansible.cfg#L4) configuration file.
@@ -31,7 +23,43 @@ The `ansible-inventory.yml` defines four groups:
 - `leaf` - for the leaf nodes.
 - `hosts` - for emulated hosts.
 
-The [`host_vars`](https://github.com/srl-labs/intent-based-ansible-lab/tree/main/inv/host_vars) directory contains a file for each host that defines host-specific variables. The [`group_vars`](https://github.com/srl-labs/intent-based-ansible-lab/tree/main/inv/group_vars) directory contains a single file for the `srl` group to define Ansible-specific variables that are required for the JSON-RPC connection-plugin as well as some system-level configuration data.
+## Intents
+
+Intents describe desired state of the fabric via structured data in YAML files. There are 2 types of intents:
+
+### Level-1 intents
+
+Level-1 intents are _infrastructure-level_ intents and describe per-device configuration following an abstracted device-model. Each top-level resource has a custom data model that is close to the SR Linux data model but different. This _device abstraction layer_ allows to support multiple NOS types (like SROS) and also to shield device-model changes across releases from the defined intent.
+
+The data model for these intents are defined per level-1 resource (e.g. `network_instance`, `interface`, `system`, ...) and are defined in json-schema format in directory `playbooks/roles/infra/criteria`.
+
+Level-1 intents can be defined at host- and group-level (as defined in the Ansible inventory). Host-level intent files need to start with `host_infra`, e.g. `host_infra.yml` and group-level intent files have to start with `group_infra`. 
+An example of a group-level infra intent is:
+
+```yaml
+leaf:
+  interfaces:
+    ethernet-1/{1..4,10,48..49}:
+      admin_state: enable
+    ethernet-1/{1..4,10}:
+      vlan_tagging: yes
+    ethernet-1/{48..49}:
+      irb1:
+    system0:
+      admin_state: enable
+```
+`leaf` references a group in the Ansible inventory and this applies to all nodes in that group. Intent files support ranges as shown in above example.
+
+Node-level intents follow the same device model and may have overlapping definitions with the group-level intents. Host-level intents always take precedence over group-level intents. 
+
+
+### Level-2 intents
+
+Level-2 intents are intents at a higher abstraction layer and describe _fabric-wide intents_, such as fabric intents that describe high-level underlay parameters and service intents such as bridge-domains (l2vpn) and inter-subnet routing (l3vpn) and multi-homing intents (lags and ethernet-segments).
+
+  The data mo
+
+
 
 ## The Ansible Playbook
 
