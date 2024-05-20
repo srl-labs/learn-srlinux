@@ -12,7 +12,7 @@ If you have installed the [fcli](https://github.com/srl-labs/nornir-srl) tool, y
 
 === "LLDP neighbors"
     ```bash
-    ❯ fcli -i lldp
+    ❯ fcli lldp
                                LLDP Neighbors                                
     +----------------------------------------------------------------------------+
     | Node         | interface     | Nbr-System | Nbr-port      | Nbr-port-desc  |
@@ -42,7 +42,7 @@ If you have installed the [fcli](https://github.com/srl-labs/nornir-srl) tool, y
     ```
 === "Network instances and interfaces"
     ```bash
-    ❯ fcli -i fabric=yes ni
+    ❯ fcli ni
                                         Network-Instance Interfaces
                                         Inventory:{'fabric': 'yes'}
                    ╷      ╷      ╷        ╷           ╷         ╷         ╷                      ╷      ╷
@@ -169,7 +169,7 @@ This will deploy the underlay configuration to all the nodes of the fabric. Let'
 
 === "BGP Peers"
     ```bash
-    ❯ fcli -i bgp-peers
+    ❯ fcli bgp-peers
                                                                           BGP Peers                                                                           
                                                               Inventory filter:{'fabric': 'yes'}                                                              
     +------------------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -217,7 +217,7 @@ This will deploy the underlay configuration to all the nodes of the fabric. Let'
     ```
 === "Network instances and interfaces"
     ```bash
-    ❯ fcli -i fabric=yes ni
+    ❯ fcli ni
                                                      Network Instances and interfaces                                                      
                                                     Inventory filter:{'fabric': 'yes'}                                                     
     +-----------------------------------------------------------------------------------------------------------------------------------------+
@@ -795,6 +795,11 @@ To accept the change, wait for the timeout to expire or press `Ctrl+C` followed 
     Using commit-confirm functionality of the playbook results in intent and configuration state on the nodes to be out-of-sync. You will need to update the intent and deploy again to bring the network into the desired state as defined by the intents. 
     Also, the playbook run becomes interactive, which may not be desirable depending on how you use this playbook. When you run the playbook inside a _runner_ of a CI/CD pipeline, this is not desirable. Alternatively, you could rely on Git functionality, e.g. `git revert` to roll back your intents to a previous state. 
 
-With both underlay, L2VPN and L3VPN services configured we conclude the fabric configuration part. Let's [summarize](summary.md) the project goals and design choices.
+### SROS devices
+
+This playbook and the included roles provide limited support for SROS. This is especially useful if the Datacenter Gateway is an SROS device and you want to provide external connectivity to ip-vrf's configured in the fabric. It uses the same level-1 infra intents as with SR Linux and get transformed to device-specific configuration (netconf in case of SROS). 
+
+Further discussion on how to use this is out-of-scope of this tutorial. It may be part of a future update or a blog post that specifically focusses on SROS support.
+
 
 <script type="text/javascript" src="https://viewer.diagrams.net/js/viewer-static.min.js" async></script>
