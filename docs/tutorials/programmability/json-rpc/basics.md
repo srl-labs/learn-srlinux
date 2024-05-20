@@ -1738,6 +1738,6 @@ The response will contain just an error container, even though technically the f
 [^3]: using HTTP POST method.
 [^4]: JSON-RPC, as gNMI, can run in a user-configured network-instance.
 [^5]: https://github.com/openconfig/reference/blob/master/rpc/gnmi/gnmi-path-conventions.md
-[^6]: Tools paths can be viewed in our [tree YANG browser](https://yang.srlinux.dev/release/v23.10.1/tree.html).
+[^6]: Tools paths can be viewed in our [tree YANG browser](https://yang.srlinux.dev/releases/v23.10.1/tree).
 [^7]: Support for setting configuration with Openconfig schema will be added at a later date. Currently only CLI method allows working with Openconfig schema via `enter oc` command.
 [^8]: SR Linux logs JSON-RPC incoming and outgoing requests to `/var/log/srlinux/debug/sr_json_rpc_server.log` log file.

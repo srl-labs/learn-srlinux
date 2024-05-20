@@ -408,7 +408,7 @@ Consider the following output when a wrong path is value is used in the `update`
 
 Let's see step by step how to use the `config` module to add the `ethernet-1/1` interface to a device.
 
-First, we need to identify the path to the interface configuration and the values that can be set on that path. One way to do that is to leverage YANG Browser's [Tree viewer](../../yang/browser.md#tree-browser) and visually inspect the YANG model. The following screenshot shows the YANG Browser's [Tree viewer for SR Linux 23.3.1](https://yang.srlinux.dev/release/v23.3.1/tree.html) release with `interfaces` model opened:
+First, we need to identify the path to the interface configuration and the values that can be set on that path. One way to do that is to leverage YANG Browser's [Tree viewer](../../yang/browser.md#tree-browser) and visually inspect the YANG model. The following screenshot shows the YANG Browser's [Tree viewer for SR Linux 23.3.1](https://yang.srlinux.dev/releases/v23.3.1/tree) release with `interfaces` model opened:
 
 ![if1](https://gitlab.com/rdodin/pics/-/wikis/uploads/631943f74a2e9ba1e0a1035adf8f3168/image.png){: .img-shadow}
 
