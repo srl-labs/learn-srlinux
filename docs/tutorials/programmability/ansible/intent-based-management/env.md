@@ -6,10 +6,10 @@ To demonstrate the intent-based configuration management with Ansible we prepare
 
 The entire project is contained in the [intent-based-ansible-lab][intent-based-ansible-lab] repository. Following command will clone the repository to the current directory on your machine (in `intent-based-ansible-lab` directory):
 
-  ```bash
-  git clone https://github.com/srl-labs/intent-based-ansible-lab.git
-  cd intent-based-ansible-lab
-  ```
+```bash
+git clone https://github.com/srl-labs/intent-based-ansible-lab.git
+cd intent-based-ansible-lab
+```
 
 The following sections assume you are in the `intent-based-ansible-lab` directory.
 
@@ -23,6 +23,7 @@ The following sections assume you are in the `intent-based-ansible-lab` director
     pip install -U pip && pip install -r requirements.txt
     ansible-galaxy collection install nokia.srlinux    
     ```
+
 - Ensure you have the [Containerlab](https://containerlab.dev/install)[^2] installed and are meeting its installation requirements.
 
 - We recommend you install the [fcli](https://github.com/srl-labs/nornir-srl#readme) tool that generates fabric-wide reports to verify things like configured services, interfaces, routes, etc.  

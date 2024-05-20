@@ -13,7 +13,7 @@ If you have installed the [fcli](https://github.com/srl-labs/nornir-srl) tool, y
 === "LLDP neighbors"
     ```bash
     ❯ fcli lldp
-                               LLDP Neighbors                                
+                               LLDP Neighbors
     +----------------------------------------------------------------------------+
     | Node         | interface     | Nbr-System | Nbr-port      | Nbr-port-desc  |
     |--------------+---------------+------------+---------------+----------------|
@@ -38,7 +38,7 @@ If you have installed the [fcli](https://github.com/srl-labs/nornir-srl) tool, y
     |              | ethernet-1/2  | l2         | ethernet-1/49 | no description |
     |              | ethernet-1/3  | l3         | ethernet-1/49 | no description |
     |              | ethernet-1/4  | l4         | ethernet-1/49 | no description |
-    +----------------------------------------------------------------------------+    
+    +----------------------------------------------------------------------------+
     ```
 === "Network instances and interfaces"
     ```bash
@@ -170,8 +170,8 @@ This will deploy the underlay configuration to all the nodes of the fabric. Let'
 === "BGP Peers"
     ```bash
     ❯ fcli bgp-peers
-                                                                          BGP Peers                                                                           
-                                                              Inventory filter:{'fabric': 'yes'}                                                              
+                                                                          BGP Peers
+                                                              Inventory filter:{'fabric': 'yes'}
     +------------------------------------------------------------------------------------------------------------------------------------------------------------+
     |              |         |                 | AF: EVPN  | AF: IPv4  | AF: IPv6  |                |         |               |          |         |             |
     | Node         | NI      | 1_peer          | Rx/Act/Tx | Rx/Act/Tx | Rx/Act/Tx | export_policy  | group   | import_policy | local_as | peer_as | state       |
@@ -218,8 +218,8 @@ This will deploy the underlay configuration to all the nodes of the fabric. Let'
 === "Network instances and interfaces"
     ```bash
     ❯ fcli ni
-                                                     Network Instances and interfaces                                                      
-                                                    Inventory filter:{'fabric': 'yes'}                                                     
+                                                     Network Instances and interfaces
+                                                    Inventory filter:{'fabric': 'yes'}
     +-----------------------------------------------------------------------------------------------------------------------------------------+
     | Node         | NI      | oper | type    | router-id       | Subitf          | assoc-ni | if-oper | ipv4                   | mtu  | vlan |
     |--------------+---------+------+---------+-----------------+-----------------+----------+---------+------------------------+------+------|
@@ -265,7 +265,6 @@ This will deploy the underlay configuration to all the nodes of the fabric. Let'
 !!!note
     Notice that the IBGP sessions exchange no routes. This is expected as we didn't configure overlay services or Ethernet Segments yet that would trigger announcement of EVPN routes.
 
-
 Alternatively, we could opt to use _BGP unnumbered_ inter-switch links (dynamic BGP-peers using IPv6 LLA addresses). It suffices to change the `.fabric.underlay_routing.bgp.bgp-unnumbered` from `false` to `true`, remove the `.fabric.p2p` parameter as inter-switch link addresses are no longer needed, and run the playbook again. Since intents are declarative, there is no need to worry about the previous configuration. Run the playbook again as before and check the fabric status.
 
 ### Using level-1 infra intents
@@ -281,7 +280,6 @@ The schema files for these level-1 intents exist in the `playbooks/roles/infra/c
 
 Both the level-2 Fabric Intent and level-1 Infra Intents can be used together with the latter taking precedence over the Fabric intent generated level-1 intent. This is because of the order of role execution in the `cf_fabric` playbook: the `fabric` role is run before the `infra` role.
 
-
 ## Configuring services
 
 ### Multi-homing Access Intent
@@ -289,7 +287,7 @@ Both the level-2 Fabric Intent and level-1 Infra Intents can be used together wi
 Although not a true service intent, the Multi-homing Access intent is a requirement for services that have multi-homed clients. It involves creating a LAG interface with the proper member links and LACP parameters as well as the EVPN Ethernet Segment that is the standarized construct for EVPN multi-homing in either _all-active_ or _single-active_ mode.
 There is an N:1 relationship between a L2VPN service and a Multi-homing Access instance.
 
-These intents are handled by the `mh_access` role and the schema of  `mh_access` intents are defined in `playbooks/roles/mh_access/criteria/mh_access.json`. 
+These intents are handled by the `mh_access` role and the schema of `mh_access` intents are defined in `playbooks/roles/mh_access/criteria/mh_access.json`.
 
 Let's start by adding a `mh_access` intent to create a multi-homed lag for `cl121` that is multi-homed to `clab-4l2s-l1` and `clab-4l2s-l2`:
 
@@ -309,7 +307,7 @@ mh-1: # ID used to construct ESI <prefix>:<id>:<lag_id>, lag_id per rack, id far
   min_links: 1
 ```
 
-Each Multi-Homing Access intent is identified by an id in the format `mh-`_identifier_ that must be unique across all `mh_access` intents. This intent creates a LAG interface `lag1` on nodes specified in the `interface_list` on the specified interfaces. 
+Each Multi-Homing Access intent is identified by an id in the format `mh-`_identifier_ that must be unique across all `mh_access` intents. This intent creates a LAG interface `lag1` on nodes specified in the `interface_list` on the specified interfaces.
 
 Alternatively, you can use interface tags to reference the interfaces of a multi-homing access like so:
 
@@ -340,6 +338,7 @@ clab-4l2s-l2:
       TAGS:
         - mh-1
 ```
+
 Copy over above 2 files from `intent_examples/services` into `intent/` and run the playbook:
 
 ```
@@ -347,18 +346,16 @@ cp intent_examples/services/mh_access-1.yml intent_examples/services/host_infra_
 ansible-playbook -i inv -e intent_dir=${PWD}/intent --diff playbooks/cf_fabric.yml
 ```
 
-
 !!!note
     Although we use a separate infra intent file for the interface tagging, it's equally valid to update the existing group- or host_infra files to include the interface tagging. All level-1 intents in group and host infra files get merged to a single per-device level-1 intent, with host data taking precedence over group data.
-
 
 Check the relevant state of the fabric:
 
 === "LAGs"
     ```bash
     ❯ fcli lag
-                                                                                          LAGs                                                                                          
-                                                                           Inventory filter:{'fabric': 'yes'}                                                                           
+                                                                                          LAGs
+                                                                           Inventory filter:{'fabric': 'yes'}
     +--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
     | Node         | lag  | oper | mtu  | min | desc      | type | speed | stby-sig | lacp-key | lacp-itvl | lacp-mode | lacp-sysid        | lacp-prio | act    | member-itf | member-oper |
     |--------------+------+------+------+-----+-----------+------+-------+----------+----------+-----------+-----------+-------------------+-----------+--------+------------+-------------|
@@ -370,8 +367,8 @@ Check the relevant state of the fabric:
 === "Ethernet Segments"
     ```bash
     ❯ fcli es
-                                     Ethernet Segments                                       
-                              Inventory filter:{'fabric': 'yes'}                              
+                                     Ethernet Segments
+                              Inventory filter:{'fabric': 'yes'}
     +--------------------------------------------------------------------------------------------+
     | Node         | name  | esi                           | mh-mode    | oper | itf  | ni-peers |
     |--------------+-------+-------------------------------+------------+------+------+----------|
@@ -383,7 +380,7 @@ Check the relevant state of the fabric:
 
 ### L2VPN Intent
 
-L2VPN intents describe high-level parameters required to deploy a fabric-wide bridge-domain. The schema of the configuration data is defined in `playbooks/roles/l2vpn/criteria/l2vpn.json`. 
+L2VPN intents describe high-level parameters required to deploy a fabric-wide bridge-domain. The schema of the configuration data is defined in `playbooks/roles/l2vpn/criteria/l2vpn.json`.
 
 Below is an example of a L2VPN intent definition:
 
@@ -400,7 +397,7 @@ subnet-1:
   vlan: 100
 ```
 
-A L2VPN intent definition starts with the name of the service, `subnet-1` in this example together with its properties. `id` is a unique ID across all service instances. This intent will create a mac-vrf on all nodes that have interfaces tagged with `_mh-1` with the mac-vrf name equal to the L2VPN name. 
+A L2VPN intent definition starts with the name of the service, `subnet-1` in this example together with its properties. `id` is a unique ID across all service instances. This intent will create a mac-vrf on all nodes that have interfaces tagged with `_mh-1` with the mac-vrf name equal to the L2VPN name.
 This `_mh_1` tag is a special type of tag, starting with `_` and is automatically added to interfaces by the Multi-homing Access intent `mh-1`. A sub-interface for each of the tagged interfaces is created with the proper VLAN encapsulation and associated with the mac-vrf instances on the nodes with the tagged interfaces.
 
 Let's copy this file from the intent examples directory and deploy it:
@@ -415,20 +412,20 @@ Check the state of the service and the Ethernet Segments in the fabric with `fcl
 === "Network Instances"
     ```bash
     ❯ fcli ni -f ni=subnet-1
-                                     Network Instances and interfaces                                       
-                                      Fields filter:{'ni': 'subnet-1'}                                       
+                                     Network Instances and interfaces
+                                      Fields filter:{'ni': 'subnet-1'}
     +-----------------------------------------------------------------------------------------------------------+
     | Node         | NI       | oper | type    | router-id | Subitf   | assoc-ni | if-oper | ipv4 | mtu  | vlan |
     |--------------+----------+------+---------+-----------+----------+----------+---------+------+------+------|
     | clab-4l2s-l1 | subnet-1 | up   | mac-vrf |           | lag1.100 |          | up      |      | 9232 | 100  |
     |--------------+----------+------+---------+-----------+----------+----------+---------+------+------+------|
     | clab-4l2s-l2 | subnet-1 | up   | mac-vrf |           | lag1.100 |          | up      |      | 9232 | 100  |
-    +-----------------------------------------------------------------------------------------------------------+    
+    +-----------------------------------------------------------------------------------------------------------+
     ```
 === "Ethernet Segments"
     ```bash
     ❯ fcli es
-                                                       Ethernet Segments                                                        
+                                                       Ethernet Segments
     +------------------------------------------------------------------------------------------------------------------------------+
     | Node         | name  | esi                           | mh-mode    | oper | itf  | ni-peers                                   |
     |--------------+-------+-------------------------------+------------+------+------+--------------------------------------------|
@@ -441,8 +438,8 @@ We now have bridge domain across leaf1 and leaf2 with a single multi-homed inter
 
 Two additional LAG interfaces are required to be mapped to the bridge domain:
 
-  * LAG with interface `e-1/30` on `leaf1` and `leaf2` for client `cl123`
-  * LAG with interface `e-1/30` on `leaf3` and `leaf4` for client `cl342`
+* LAG with interface `e-1/30` on `leaf1` and `leaf2` for client `cl123`
+* LAG with interface `e-1/30` on `leaf3` and `leaf4` for client `cl342`
 
 The appropriate interface tagging has already been done in `host_infra_itf_tags.yml` of the previous step. We now need to reference these tags in 2 additional Multi-homing Access intents in the existing L2VPN intent.
 
@@ -512,7 +509,7 @@ Verify the LAGs, ES's and mac-vrf `subnet-1`:
     +-----------------------------------------------------------------------------------------------------------+
     ```
 
-Verify connectivity between clients `cl121`, `cl123` and `cl342`. They should be able to ping each other. 
+Verify connectivity between clients `cl121`, `cl123` and `cl342`. They should be able to ping each other.
 
 === "ping from `cl121` to `cl123` and `cl343`"
     ```bash
@@ -584,7 +581,7 @@ Verify the mac-table of `subnet-1`:
 
 ### L3VPN services
 
-L3VPN intents describe high-level parameters required to deploy ip-vrfs on the participating nodes. The schema of the configuration data is defined in `playbooks/roles/l3vpn/criteria/l3vpn.json`. 
+L3VPN intents describe high-level parameters required to deploy ip-vrfs on the participating nodes. The schema of the configuration data is defined in `playbooks/roles/l3vpn/criteria/l3vpn.json`.
 
 Below is an example of a L3VPN intent definition:
 
@@ -603,8 +600,7 @@ ipvrf-1:
   import_rt: 100:2002
 ```
 
-
-A L3VPN intent definition starts with the name of the service, `ipvrf-1` in this example together with its properties. `id` is a unique ID across all service instances (L2VPNs and L3VPNs). 
+A L3VPN intent definition starts with the name of the service, `ipvrf-1` in this example together with its properties. `id` is a unique ID across all service instances (L2VPNs and L3VPNs).
 
 `snet_list` is a list of subnets. Each subnet is defined by an existing mac-vrf on the node and the anycast gateway IP address of the subnet. This intent will create an ip-vrf with name `ipvrf-1` on all nodes that have mac-vrf `subnet-1` configured.
 
@@ -726,13 +722,12 @@ You can now verify inter-subnet routing between clients in different subnets.
     +-------------------------------------------------------------------------------------------------------+
     ```
 
-
 ### Deleting services
 
 There are 2 ways to delete a service:
 
-- implicitly by removing it from the intent. We call this _pruning_ or _purging_ resources
-- explicitly by setting the `_state` field to `deleted`
+* implicitly by removing it from the intent. We call this _pruning_ or _purging_ resources
+* explicitly by setting the `_state` field to `deleted`
 
 In the first case, resources are removed from the device configuration if they are not present in the infra and services intents. The playbook uses the running configuration of the device to determine what resources to remove. This means that if you manually add resources to the device configuration, they will be removed when you run the playbook. This approach is suited for network teams that take a _hands-off_ approach to the device configuration and only use the playbook to configure the network.
 
@@ -752,16 +747,15 @@ Pruning is controlled via the `purge` and `purgeable` variables in the `cf_fabri
       - network-instance
 ```
 
-
 You can try out pruning by commenting out or removing service instances in the intent files under `./intent` or by adding the property `_state: deleted` to the service instance and run the `cf_fabric` playbook as usual.
 
 !!! note
-    The use of the `_state` property to delete a service may serve the purpose of documentation. If you want to keep the service definition in your intent but don't want it to be deployed (yet/no more). 
+    The use of the `_state` property to delete a service may serve the purpose of documentation. If you want to keep the service definition in your intent but don't want it to be deployed (yet/no more).
 
 !!! note
     Use of the initial `_` in a field name is a convention to indicate that the field is not part of the intent but is _metadata_ used by the playbook to control the behaviour of the playbook.
 
-If you are in a brownfield situation where not all resources are to be managed by this playbook, you can limit the scope of your intents to the part you want to automate with this project, together with tuning the `purge` and `purgeable` variables in the main playbook. 
+If you are in a brownfield situation where not all resources are to be managed by this playbook, you can limit the scope of your intents to the part you want to automate with this project, together with tuning the `purge` and `purgeable` variables in the main playbook.
 
 ### Confirming commits
 
@@ -792,14 +786,13 @@ Press 'C' to continue the play or 'A' to abort
 To accept the change, wait for the timeout to expire or press `Ctrl+C` followed by `C` to accept before timeout. To roll back the change, press `Ctrl-C` followed by `A`, in which case the playbook run is aborted while the nodes have uncommitted confirms. After the specified `confirm_timeout`, the changes will roll back on the devices.
 
 !!!note
-    Using commit-confirm functionality of the playbook results in intent and configuration state on the nodes to be out-of-sync. You will need to update the intent and deploy again to bring the network into the desired state as defined by the intents. 
-    Also, the playbook run becomes interactive, which may not be desirable depending on how you use this playbook. When you run the playbook inside a _runner_ of a CI/CD pipeline, this is not desirable. Alternatively, you could rely on Git functionality, e.g. `git revert` to roll back your intents to a previous state. 
+    Using commit-confirm functionality of the playbook results in intent and configuration state on the nodes to be out-of-sync. You will need to update the intent and deploy again to bring the network into the desired state as defined by the intents.
+    Also, the playbook run becomes interactive, which may not be desirable depending on how you use this playbook. When you run the playbook inside a _runner_ of a CI/CD pipeline, this is not desirable. Alternatively, you could rely on Git functionality, e.g. `git revert` to roll back your intents to a previous state.
 
 ### SROS devices
 
-This playbook and the included roles provide limited support for SROS. This is especially useful if the Datacenter Gateway is an SROS device and you want to provide external connectivity to ip-vrf's configured in the fabric. It uses the same level-1 infra intents as with SR Linux and get transformed to device-specific configuration (netconf in case of SROS). 
+This playbook and the included roles provide limited support for SROS. This is especially useful if the Datacenter Gateway is an SROS device and you want to provide external connectivity to ip-vrf's configured in the fabric. It uses the same level-1 infra intents as with SR Linux and get transformed to device-specific configuration (netconf in case of SROS).
 
 Further discussion on how to use this is out-of-scope of this tutorial. It may be part of a future update or a blog post that specifically focusses on SROS support.
-
 
 <script type="text/javascript" src="https://viewer.diagrams.net/js/viewer-static.min.js" async></script>
