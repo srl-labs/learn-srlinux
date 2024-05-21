@@ -103,7 +103,7 @@ fabric:
   # Spine specific configuration, defines which ports can be used for ISLs
   spine:
     clab-4l2s-s[1-2]:
-      isl-ports: ethernet-1/[1-128]
+      isl-ports: ethernet-1/[1-128] # in case of 7220IXR-H2
 
   # Physical cabling layout between network devices
   fabric_cabling:
@@ -265,6 +265,55 @@ This will deploy the underlay configuration to all the nodes of the fabric. Let'
     Notice that the IBGP sessions exchange no routes. This is expected as we didn't configure overlay services or Ethernet Segments yet that would trigger announcement of EVPN routes.
 
 Alternatively, we could opt to use _BGP unnumbered_ inter-switch links (dynamic BGP-peers using IPv6 LLA addresses). It suffices to change the `.fabric.underlay_routing.bgp.bgp-unnumbered` from `false` to `true`, remove the `.fabric.p2p` parameter as inter-switch link addresses are no longer needed, and run the playbook again. Since intents are declarative, there is no need to worry about the previous configuration. Run the playbook again as before and check the fabric status.
+
+=== "BGP peers with BGP unnumbered peers"
+    ```bash
+    ❯ fcli bgp-peers
+                                                                                    BGP Peers                                                                                      
+    +----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+    |              |         |                                       | AF: EVPN  | AF: IPv4  | AF: IPv6  |                |         |               |          |         |             |
+    | Node         | NI      | 1_peer                                | Rx/Act/Tx | Rx/Act/Tx | Rx/Act/Tx | export_policy  | group   | import_policy | local_as | peer_as | state       |
+    |--------------+---------+---------------------------------------+-----------+-----------+-----------+----------------+---------+---------------+----------+---------+-------------|
+    | clab-4l2s-l1 | default | 192.168.255.101                       | 0/0/0     | disabled  | disabled  | pass-evpn      | overlay | pass-evpn     | 65501    | 65501   | established |
+    |              |         | 192.168.255.102                       | 0/0/0     | disabled  | disabled  | pass-evpn      | overlay | pass-evpn     | 65501    | 65501   | established |
+    |              |         | fe80::1871:cff:feff:1%ethernet-1/50.0 | disabled  | 4/4/2     | disabled  | lo-and-servers | spines  | pass-all      | 65001    | 65100   | established |
+    |              |         | fe80::18aa:dff:feff:1%ethernet-1/49.0 | disabled  | 4/4/5     | disabled  | lo-and-servers | spines  | pass-all      | 65001    | 65100   | established |
+    |--------------+---------+---------------------------------------+-----------+-----------+-----------+----------------+---------+---------------+----------+---------+-------------|
+    | clab-4l2s-l2 | default | 192.168.255.101                       | 0/0/0     | disabled  | disabled  | pass-evpn      | overlay | pass-evpn     | 65501    | 65501   | established |
+    |              |         | 192.168.255.102                       | 0/0/0     | disabled  | disabled  | pass-evpn      | overlay | pass-evpn     | 65501    | 65501   | established |
+    |              |         | fe80::1871:cff:feff:2%ethernet-1/50.0 | disabled  | 4/4/2     | disabled  | lo-and-servers | spines  | pass-all      | 65002    | 65100   | established |
+    |              |         | fe80::18aa:dff:feff:2%ethernet-1/49.0 | disabled  | 4/4/5     | disabled  | lo-and-servers | spines  | pass-all      | 65002    | 65100   | established |
+    |--------------+---------+---------------------------------------+-----------+-----------+-----------+----------------+---------+---------------+----------+---------+-------------|
+    | clab-4l2s-l3 | default | 192.168.255.101                       | 0/0/0     | disabled  | disabled  | pass-evpn      | overlay | pass-evpn     | 65501    | 65501   | established |
+    |              |         | 192.168.255.102                       | 0/0/0     | disabled  | disabled  | pass-evpn      | overlay | pass-evpn     | 65501    | 65501   | established |
+    |              |         | fe80::1871:cff:feff:3%ethernet-1/50.0 | disabled  | 4/4/2     | disabled  | lo-and-servers | spines  | pass-all      | 64609    | 65100   | established |
+    |              |         | fe80::18aa:dff:feff:3%ethernet-1/49.0 | disabled  | 4/4/5     | disabled  | lo-and-servers | spines  | pass-all      | 64609    | 65100   | established |
+    |--------------+---------+---------------------------------------+-----------+-----------+-----------+----------------+---------+---------------+----------+---------+-------------|
+    | clab-4l2s-l4 | default | 192.168.255.101                       | 0/0/0     | disabled  | disabled  | pass-evpn      | overlay | pass-evpn     | 65501    | 65501   | established |
+    |              |         | 192.168.255.102                       | 0/0/0     | disabled  | disabled  | pass-evpn      | overlay | pass-evpn     | 65501    | 65501   | established |
+    |              |         | fe80::1871:cff:feff:4%ethernet-1/50.0 | disabled  | 4/4/2     | disabled  | lo-and-servers | spines  | pass-all      | 65004    | 65100   | established |
+    |              |         | fe80::18aa:dff:feff:4%ethernet-1/49.0 | disabled  | 4/4/5     | disabled  | lo-and-servers | spines  | pass-all      | 65004    | 65100   | established |
+    |--------------+---------+---------------------------------------+-----------+-----------+-----------+----------------+---------+---------------+----------+---------+-------------|
+    | clab-4l2s-s1 | default | 192.168.255.1                         | 0/0/0     | disabled  | disabled  | pass-evpn      | overlay | pass-evpn     | 65501    | 65501   | established |
+    |              |         | 192.168.255.2                         | 0/0/0     | disabled  | disabled  | pass-evpn      | overlay | pass-evpn     | 65501    | 65501   | established |
+    |              |         | 192.168.255.4                         | 0/0/0     | disabled  | disabled  | pass-evpn      | overlay | pass-evpn     | 65501    | 65501   | established |
+    |              |         | 192.168.255.12                        | 0/0/0     | disabled  | disabled  | pass-evpn      | overlay | pass-evpn     | 65501    | 65501   | established |
+    |              |         | fe80::184a:9ff:feff:32%ethernet-1/2.0 | disabled  | 2/1/4     | disabled  | pass-all       | leafs   | pass-all      | 65100    | 65002   | established |
+    |              |         | fe80::18ab:bff:feff:32%ethernet-1/4.0 | disabled  | 2/1/4     | disabled  | pass-all       | leafs   | pass-all      | 65100    | 65004   | established |
+    |              |         | fe80::18ce:8ff:feff:32%ethernet-1/1.0 | disabled  | 2/1/4     | disabled  | pass-all       | leafs   | pass-all      | 65100    | 65001   | established |
+    |              |         | fe80::18e3:aff:feff:32%ethernet-1/3.0 | disabled  | 2/1/4     | disabled  | pass-all       | leafs   | pass-all      | 65100    | 64609   | established |
+    |--------------+---------+---------------------------------------+-----------+-----------+-----------+----------------+---------+---------------+----------+---------+-------------|
+    | clab-4l2s-s2 | default | 192.168.255.1                         | 0/0/0     | disabled  | disabled  | pass-evpn      | overlay | pass-evpn     | 65501    | 65501   | established |
+    |              |         | 192.168.255.2                         | 0/0/0     | disabled  | disabled  | pass-evpn      | overlay | pass-evpn     | 65501    | 65501   | established |
+    |              |         | 192.168.255.4                         | 0/0/0     | disabled  | disabled  | pass-evpn      | overlay | pass-evpn     | 65501    | 65501   | established |
+    |              |         | 192.168.255.12                        | 0/0/0     | disabled  | disabled  | pass-evpn      | overlay | pass-evpn     | 65501    | 65501   | established |
+    |              |         | fe80::184a:9ff:feff:31%ethernet-1/2.0 | disabled  | 5/1/4     | disabled  | pass-all       | leafs   | pass-all      | 65100    | 65002   | established |
+    |              |         | fe80::18ab:bff:feff:31%ethernet-1/4.0 | disabled  | 5/1/4     | disabled  | pass-all       | leafs   | pass-all      | 65100    | 65004   | established |
+    |              |         | fe80::18ce:8ff:feff:31%ethernet-1/1.0 | disabled  | 5/1/4     | disabled  | pass-all       | leafs   | pass-all      | 65100    | 65001   | established |
+    |              |         | fe80::18e3:aff:feff:31%ethernet-1/3.0 | disabled  | 5/1/4     | disabled  | pass-all       | leafs   | pass-all      | 65100    | 64609   | established |
+    +----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+    ```
+
 
 ### Using level-1 infra intents
 
@@ -538,7 +587,7 @@ Verify the mac-table of `subnet-1`:
 
 === "mac-vrf `subnet-1`"
     ```bash
-    ❯ fcli ni -f ni=subnet-1
+    ❯ fcli mac -f ni=subnet-1
                                                             MAC Table
                                                   Fields filter:{'ni': 'subnet-1'}
     +--------------------------------------------------------------------------------------------------------------------------+
@@ -644,7 +693,7 @@ subnet-2:
   vlan: 200
 ```
 
-Let's copy this file from the intent examples directory and deploy it:
+Now the L3VPN service is defined using the two L2VPN intents (subnets) together with the additional L2VPN intent for `subnet-2`. Let's copy this file from the intent examples directory and deploy it:
 
 ```
 cp intent_examples/services/mh_access-3.yml intent
@@ -695,7 +744,7 @@ You can now verify inter-subnet routing between clients in different subnets.
     3 packets transmitted, 3 received, 0% packet loss, time 2039ms
     rtt min/avg/max/mdev = 0.200/0.250/0.347/0.068 ms
     ```
-=== "ARP table`"
+=== "ARP table"
     ```bash
     ❯ fcli arp -f ni="*ipvrf-1*"
                                                     ARP table

@@ -86,7 +86,7 @@ The playbook is structured in 3 sections:
         - the SR Linux software version
         - the LLDP neighborship states
     - **INFRA**: This section has 2 roles:
-        - `fabric`: this role fully configures the fabric based on a fabric intent defined in the intent directory. If there is no fabric intent file present, this role will have no effect (skipped)
+        - `fabric`: this role generates level-1 intents based on a fabric intent defined in the intent directory. If there is no fabric intent file present, this role will have no effect (skipped)
         - `infra`: this role validates and merges group- and host infra intents to form a level-1 per-device infra intent.
     - **SERVICES**: This section validates the level-2 intents (`services` role) and each of the roles in the rest of the this section transforms the level-2 intent into a per-device level-1 intent.
     - **CONFIG PUSH**: This section applies configuration to the nodes. This is where the level-1 intent is transformed into actual device configuration. It also has the capability to _prune_ resources that exist on the device but have no matching intent. This requires the `.role.purge` to be set to `true`. The list of purgeable resources is also configurable via `.role.purgeable`.
