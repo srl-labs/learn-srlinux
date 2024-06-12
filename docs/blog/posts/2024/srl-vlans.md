@@ -582,7 +582,7 @@ sudo containerlab deploy -c -t srl-labs/srlinux-vlan-handling-lab
 
 ///
 /// tab | With Codespaces
-<div align=center>
+<div align=center markdown>
 <a href="https://codespaces.new/srl-labs/srlinux-vlan-handling-lab?quickstart=1">
 <img src="https://gitlab.com/rdodin/pics/-/wikis/uploads/d78a6f9f6869b3ac3c286928dd52fa08/run_in_codespaces-v1.svg?sanitize=true" style="width:50%"/></a>
 
