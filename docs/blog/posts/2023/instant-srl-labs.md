@@ -18,8 +18,8 @@ Simple enough, but quite often you want to run this simple SR Linux lab to test 
 If we have two steps to start a lab (cloning and calling `deploy`) we can combine them into one step by using two different approaches:
 
 1. provide HTTP(S) URL to the deploy command and let containerlab fetch the clab file and deploy from it
-1. provide GitHub/GitLab URL to the `deploy` command and [let containerlab clone the repo](https://containerlab.dev/cmd/deploy/#remote-topology-files) for us and deploy from it
-2. curl the lab definition file from the repository and pipe it to `containerlab deploy` command
+2. provide GitHub/GitLab URL to the `deploy` command and [let containerlab clone the repo](https://containerlab.dev/cmd/deploy/#remote-topology-files) for us and deploy from it
+3. curl the lab definition file from the repository and pipe it to `containerlab deploy` command
 
 These approaches are equally simple, but they have quite distinct powers and limitations. Let's explore them in more detail.
 
@@ -52,6 +52,15 @@ INFO[0013] Adding ssh config for containerlab nodes
 </div>
 
 When deploying a clab file from a remote URL containerlab will download the clab file to a temporary directory - `/tmp/.clab` - and then perform a deploy command using the downloaded file. The temporary file will be deleted when the lab is destroyed with the cleanup flag provided.
+
+Your Containerlab lab directory will still get created in the current working directory. While this is the default Containerlab behavior, it might not be quite useful for this particular case since you might want to quickly boot a lab from a dir where you don't want to see extra files popping up.
+
+For this case, leverage `CLAB_LABDIR_BASE` env var to influence where Containerlab should put the lab directory:
+
+```bash
+CLAB_LABDIR_BASE=/tmp \
+sudo -E containerlab deploy -c -t srlinux.dev/clab-srl
+```
 
 /// details | Where exactly is my topology file?
 The lab file is downloaded to a temporary location as can be verified with the `containerlab inspect --all` command:
