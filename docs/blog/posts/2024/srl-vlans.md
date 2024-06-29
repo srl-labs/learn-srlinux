@@ -574,10 +574,23 @@ where `${ID}` is the client ID (1 or 2).
 With a static configuration on the clients we will change the encapsulation type on the `ethernet-1/1` interface of the SR Linux switches and see how it affects the traffic between the clients' interfaces.
 
 Deploy the lab:
+/// tab | Locally
 
 ```
 sudo containerlab deploy -c -t srl-labs/srlinux-vlan-handling-lab
 ```
+
+///
+/// tab | With Codespaces
+<div align=center markdown>
+<a href="https://codespaces.new/srl-labs/srlinux-vlan-handling-lab?quickstart=1">
+<img src="https://gitlab.com/rdodin/pics/-/wikis/uploads/d78a6f9f6869b3ac3c286928dd52fa08/run_in_codespaces-v1.svg?sanitize=true" style="width:50%"/></a>
+
+**[Run](https://codespaces.new/srl-labs/srlinux-vlan-handling-lab?quickstart=1) this lab in GitHub Codespaces for free**.  
+[Learn more](https://containerlab.dev/manual/codespaces) about Containerlab for Codespaces.  
+<small>Machine type: 2 vCPU · 8 GB RAM</small>
+</div>
+///
 
 Containerlab will clone the repository in your current working directory and deploy the lab topology. All is ready for us to get started with our practical exercises.
 
