@@ -87,6 +87,11 @@ nav:
                   - tutorials/evpn-mh/basics/index.md
                   - Configuration: tutorials/evpn-mh/basics/conf.md
                   - Verification: tutorials/evpn-mh/basics/verify.md
+          - Layer 3 EVPN Basics:
+              - Introduction: tutorials/l3evpn/intro.md
+              - Underlay and Overlay Routing: tutorials/l3evpn/fabric.md
+              - L3 Overlay Instance / IP-VRF: tutorials/l3evpn/ipvrf.md
+              - About L3 EVPN: tutorials/l3evpn/aboutl3evpn.md
       - Infrastructure:
           - KNE:
               - tutorials/infrastructure/kne/index.md
