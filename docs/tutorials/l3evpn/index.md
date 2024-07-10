@@ -11,23 +11,27 @@ tags:
 | --------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Tutorial name**           | L3 EVPN-VXLAN with SR Linux                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 | **Lab components**          | 3 SR Linux nodes & 2 [FRR](https://frrouting.org)                                                                                                                                                                                                                                                                                                                                                                                                                                 |
-| **Resource requirements**   | :fontawesome-solid-microchip: 3vCPU <br/>:fontawesome-solid-memory: 8 GB                                                                                                                                                                                                                                                                                                                                                                                                          |
+| **Resource requirements**   | :fontawesome-solid-microchip: 2vCPU <br/>:fontawesome-solid-memory: 8 GB                                                                                                                                                                                                                                                                                                                                                                                                          |
 | **Lab Repo**                | [srl-l3evpn-basics-lab][lab-repo]                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | **Packet captures**         | [EVPN IP Prefix routes exchange][capture-evpn-rt5]                                                                                                                                                                                                                                                                                                                                                                                                                                |
 | **Main ref documents**      | [RFC 7432 - BGP MPLS-Based Ethernet VPN](https://datatracker.ietf.org/doc/html/rfc7432)<br/>[RFC 8365 - A Network Virtualization Overlay Solution Using Ethernet VPN (EVPN)](https://datatracker.ietf.org/doc/html/rfc8365)<br/>[RFC 9136 - IP Prefix Advertisement in Ethernet VPN (EVPN)](https://datatracker.ietf.org/doc/html/rfc9136)<br/>[Nokia 7220 SR Linux Advanced Solutions Guide][adv-sol-guide-evpn-l3]<br/>[Nokia 7220 SR Linux EVPN-VXLAN Guide][evpn-vxlan-guide] |
 | **Version information**[^1] | [`containerlab:v0.56.0`][clab-install], [`srlinux:24.3.3`][srlinux-container], [`frr:9.0.2`][frr-container] [`docker-ce:26.1.4`][docker-install]                                                                                                                                                                                                                                                                                                                                  |
 
-EVPN serves as a control plane protocol for MAC address dissemination among routers, offering a scalable and efficient solution.
-VxLAN is a datapath encapsulation, addresses the scalability issues of conventional VLANs by encapsulating Ethernet frames within UDP packets.
-Together, EVPN and VxLAN facilitate the encapsulation of Layer 2 and Layer 3 traffic over an underlying IP network.
+While EVPN originally emerged as a Layer 2 VPN technology to overcome VPLS limitations, it has since evolved to support other applications, like Layer 3 VPN services.
 
-This tutorial will lead you through configuring the DC fabric underlay. It will then cover the creation of an L3 EVPN overlay across two routers functioning as a unified virtual router. In the final chapter, it details how to peer the client with the EVPN overlay for route exchange.
+We have covered the basics of Layer 2 EVPN in the [Layer 2 EVPN Basics Tutorial][evpn-basics-tutorial] where we discussed how to configure EVPN to provide a layer 2 service across an IP fabric.  
+Today' focus will be on deploying a **Layer 3 Ethernet VPN (EVPN)** in the SR Linux-powered DC fabric.  
+As you might expect, the Layer 3 EVPN is designed to provide Layer 3 services across the fabric. As such, there are **no** stretched broadcast domains across the fabric and the customer equipment is typically running a BGP PE-CE session with the top of rack switch to exchange IP prefixes.
 
-Our lab setup will resemble the following configuration: it will feature two Leaf devices linked to a Spine, collectively referred to as the DC Fabric. Attached to each Leaf, there will be a client that also functions as a CE router, capable of communicating routing protocols with the fabric. We will employ FRR for this task. For detailed information on the CE Router (Client), please check https://frrouting.org.
+To explain the Layer 3 EVPN configuration and concepts we will use a small fabric with two leafs, one spine and two clients connected to the leafs. The clients will run FRRouting software as a CE router.
 
-<p align="center">
-  <img src="https://raw.githubusercontent.com/srl-labs/srl-l3evpn-tutorial-lab/main/images/initial-to-final.png" alt="Fabric Diagram">
-</p>
+<div class='mxgraph' style='max-width:100%;border:1px solid transparent;margin:0 auto; display:block;' data-mxgraph='{"page":0,"zoom":2,"highlight":"#0000ff","nav":true,"resize":true,"edit":"_blank","url":"https://raw.githubusercontent.com/srl-labs/srl-l3evpn-basics-lab/main/images/diagrams.drawio"}'></div>
+
+Service-wise, and in contrast to the Layer 2 EVPN, the CE devices will establish a BGP session with the leaf devices to exchange IP prefixes and the Layer 3 EVPN service will make sure that the client prefixes are reachable across the fabric.
+
+<div class='mxgraph' style='max-width:100%;border:1px solid transparent;margin:0 auto; display:block;' data-mxgraph='{"page":1,"zoom":2,"highlight":"#0000ff","nav":true,"resize":true,"edit":"_blank","url":"https://raw.githubusercontent.com/srl-labs/srl-l3evpn-basics-lab/main/images/diagrams.drawio"}'></div>
+
+As part of this tutorial we will configure the SR Linux-based DC fabric underlay. Then cover the creation of an L3 EVPN overlay across two routers functioning as a unified virtual router. In the final chapter, we will get into the details how to peer the client with the EVPN overlay for the route exchange.
 
 ## Lab deployment
 
@@ -92,5 +96,6 @@ We advise the newcomers not to skip the [Configuration Basics Guide][conf-basics
 [adv-sol-guide-evpn-l3]: https://documentation.nokia.com/srlinux/24-3/books/advanced-solutions/evpn-vxlan-layer-3.html#evpn-vxlan-layer-3
 [evpn-vxlan-guide]: https://documentation.nokia.com/srlinux/24-3/books/evpn-vxlan/evpn-vxlan-tunnels-layer-3.html#evpn-vxlan-tunnels-layer-3
 [conf-basics-guide]: https://documentation.nokia.com/srlinux/24-3/title/basics.html
+[evpn-basics-tutorial]: ../l2evpn/intro.md
 
 [^1]: the following versions have been used to create this tutorial. The newer versions might work, but if they don't, please pin the version to the mentioned ones.
