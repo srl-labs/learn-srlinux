@@ -16,6 +16,7 @@ tags:
 | **Packet captures**         | [EVPN IP Prefix routes exchange][capture-evpn-rt5]                                                                                                                                                                                                                                                                                                                                                                                                                                |
 | **Main ref documents**      | [RFC 7432 - BGP MPLS-Based Ethernet VPN](https://datatracker.ietf.org/doc/html/rfc7432)<br/>[RFC 8365 - A Network Virtualization Overlay Solution Using Ethernet VPN (EVPN)](https://datatracker.ietf.org/doc/html/rfc8365)<br/>[RFC 9136 - IP Prefix Advertisement in Ethernet VPN (EVPN)](https://datatracker.ietf.org/doc/html/rfc9136)<br/>[Nokia 7220 SR Linux Advanced Solutions Guide][adv-sol-guide-evpn-l3]<br/>[Nokia 7220 SR Linux EVPN-VXLAN Guide][evpn-vxlan-guide] |
 | **Version information**[^1] | [`containerlab:v0.56.0`][clab-install], [`srlinux:24.3.3`][srlinux-container], [`frr:9.0.2`][frr-container] [`docker-ce:26.1.4`][docker-install]                                                                                                                                                                                                                                                                                                                                  |
+| **Authors**                 | Korhan Kayhan [:material-linkedin:][kkayhan-linkedin]<br>Michel Redondo [:material-linkedin:][mr-linkedin]<br/>Roman Dodin [:material-linkedin:][rd-linkedin] [:material-twitter:][rd-twitter]                                                                                                                                                                                                                                                                                    |
 
 While EVPN originally emerged as a Layer 2 VPN technology to overcome VPLS limitations, it has since evolved to support other applications, like Layer 3 VPN services.
 
@@ -97,5 +98,8 @@ We advise the newcomers not to skip the [Configuration Basics Guide][conf-basics
 [evpn-vxlan-guide]: https://documentation.nokia.com/srlinux/24-3/books/evpn-vxlan/evpn-vxlan-tunnels-layer-3.html#evpn-vxlan-tunnels-layer-3
 [conf-basics-guide]: https://documentation.nokia.com/srlinux/24-3/title/basics.html
 [evpn-basics-tutorial]: ../l2evpn/intro.md
-
+[rd-linkedin]: https://linkedin.com/in/rdodin
+[rd-twitter]: https://twitter.com/ntdvps
+[kkayhan-linkedin]: https://www.linkedin.com/in/korhan-kayhan-b6b45065/
+[mr-linkedin]: https://www.linkedin.com/in/michelredondo/
 [^1]: the following versions have been used to create this tutorial. The newer versions might work, but if they don't, please pin the version to the mentioned ones.
