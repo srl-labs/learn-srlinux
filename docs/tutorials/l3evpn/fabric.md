@@ -1050,4 +1050,3 @@ Summary:
 
 [^1]: default SR Linux credentials are `admin:NokiaSrl1!`.
 [^2]: the snippets were extracted with `info flat` command issued in running mode.
-[^3]: you can paste those snippets right after you do `enter candidate`
