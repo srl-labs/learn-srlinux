@@ -2,7 +2,7 @@
 comments: true
 ---
 
-<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/hellt/drawio-js@main/embed2.js" async></script>
+<script type="text/javascript" src="https://viewer.diagrams.net/js/viewer-static.min.js" async></script>
 
 # Routing for Underlay & Overlay
 
@@ -27,11 +27,11 @@ BGP is strongly recommended for data center fabrics as described in [RFC7938](ht
 * **Flexible Policy:** BGP provides numerous attributes for policy matching, offering extensive options for traffic steering.
 
 * **Smaller Failure Impact Radius with BGP compared to IGP:**
-    - In case of link failure in an ISIS/OSPF network, all devices need to run SPF on the entire link state database. The failure impact radius is the whole network.
+    * In case of link failure in an ISIS/OSPF network, all devices need to run SPF on the entire link state database. The failure impact radius is the whole network.
 
-    - In case of link failure in an eBGP network, only devices one hop away need to recalculate the best path, this is because eBGP announces all routes with next-hop self and the next hop remains unchanged. The failure impact radius is only 1 hop.
+    * In case of link failure in an eBGP network, only devices one hop away need to recalculate the best path, this is because eBGP announces all routes with next-hop self and the next hop remains unchanged. The failure impact radius is only 1 hop.
 
-One of the disadvantage of BGP was that BGP did not have neighbor discovery like IGP protocols have. However SR Linux can automatically establish BGP peers using the BGP Unnumbered feature. BGP unnumbered involves setting up BGP sessions without allocating a specific, unique IP address for each interface engaging in a BGP session. 
+One of the disadvantage of BGP was that BGP did not have neighbor discovery like IGP protocols have. However SR Linux can automatically establish BGP peers using the BGP Unnumbered feature. BGP unnumbered involves setting up BGP sessions without allocating a specific, unique IP address for each interface engaging in a BGP session.
 
 BGP IPv6 Unnumbered utilizes:
 
@@ -44,7 +44,6 @@ In the diagram below, a Spine is dynamically peering eBGP with each Leaf using I
 <p align="center">
   <img src="https://github.com/srl-labs/srl-l3evpn-tutorial-lab/blob/main/images/fabric.png?raw=true" alt="Fabric Diagram" width="600">
 </p>
-
 
 ### Physical Interface Configuration
 
@@ -81,7 +80,7 @@ Let's witness the step by step process of an interface configuration on a `leaf1
     A:leaf1#                              
     ```
 
-4. Create a subinterface under a physical interface and enable IPv6. We will not configure an IP address but a link-local address will be automatically configured for this interface. 
+4. Create a subinterface under a physical interface and enable IPv6. We will not configure an IP address but a link-local address will be automatically configured for this interface.
 
     ```srl
     set / interface ethernet-1/49 subinterface 1 ipv6 admin-state enable
@@ -98,7 +97,6 @@ Let's witness the step by step process of an interface configuration on a `leaf1
     ```srl
     set / network-instance default interface ethernet-1/49.1
     ```
-
 
 7. Apply the configuration changes by issuing a `commit now` command. The changes will be written to the running configuration.
 
@@ -149,11 +147,11 @@ set / network-instance default interface ethernet-1/2.1
 
 ///
 
-Once those snippets are committed to the running configuration with `commit now` command, we can ensure that the changes have been applied by showing the interface status. 
+Once those snippets are committed to the running configuration with `commit now` command, we can ensure that the changes have been applied by showing the interface status.
 
 Below highlighted, you will see that an IPv6 link-layer address is auto assigned to each interface. This address is not routable and is not announced to other peers by default.
 
-/// tab | leaf1 
+/// tab | leaf1
 
 ```srl hl_lines="10"
 --{ running }--[  ]--
@@ -286,7 +284,6 @@ A:spine# show arpnd neighbors interface ethernet-1/{1..2}
 
 ///
 
-
 ### eBGP Unnumbered for Underlay Routing
 
 Now we will set up the routing protocol that will be used for exchang loopback addresses throughout the fabric. These loopbacks will be used to set up iBGP EVPN peerings, which we will cover in the following chapter.
@@ -323,7 +320,7 @@ Here is a breakdown of the steps that are needed to configure eBGP on `leaf1` to
     ```
 
 1. **Create BGP peer-group**  
-    A BGP peer group simplifies configuring multiple BGP peers with similar requirements by grouping them together, allowing the same policies and attributes to be applied to all peers in the group simultaneously. Here we create a group named underlay to be used for the eBGP peerings. 
+    A BGP peer group simplifies configuring multiple BGP peers with similar requirements by grouping them together, allowing the same policies and attributes to be applied to all peers in the group simultaneously. Here we create a group named underlay to be used for the eBGP peerings.
   
     ```srl
     set / network-instance default protocols bgp group underlay
@@ -337,16 +334,19 @@ Here is a breakdown of the steps that are needed to configure eBGP on `leaf1` to
     ```
 
     Then we assign this interface to the BGP group
+
     ```srl
     set / network-instance default protocols bgp dynamic-neighbors interface ethernet-1/49.1 peer-group underlay
     ```
 
     And we define the AS range for this router should accept dynamic peering from, in this case we defined the whole range.
+
     ```srl
     set / network-instance default protocols bgp dynamic-neighbors interface ethernet-1/49.1 allowed-peer-as [ 1..4294967295 ]
     ```
 
     **{Optional}** It is also possible to only allow peers that match a certain prefix.
+
     ```srl
     set / network-instance default protocols bgp dynamic-neighbors accept match fe80::/10 peer-group underlay
     ```
@@ -363,6 +363,7 @@ Here is a breakdown of the steps that are needed to configure eBGP on `leaf1` to
 Here are the config snippets per device for easy copy paste:
 
 /// tab | leaf1
+
 ```srl
 set / network-instance default protocols bgp autonomous-system 4200000001
 set / network-instance default protocols bgp router-id 100.0.0.1
@@ -377,9 +378,11 @@ set / network-instance default protocols bgp afi-safi ipv4-unicast admin-state e
 
 set / network-instance default protocols bgp group underlay
 ```
+
 ///
 
 /// tab | leaf2
+
 ```srl
 set / network-instance default protocols bgp autonomous-system 4200000002
 set / network-instance default protocols bgp router-id 100.0.0.2
@@ -394,9 +397,11 @@ set / network-instance default protocols bgp afi-safi ipv4-unicast admin-state e
 
 set / network-instance default protocols bgp group underlay
 ```
+
 ///
 
 /// tab | spine
+
 ```srl
 set / network-instance default protocols bgp autonomous-system 65000
 set / network-instance default protocols bgp router-id 100.100.100.100
@@ -414,6 +419,7 @@ set / network-instance default protocols bgp afi-safi ipv4-unicast export-policy
 
 set / network-instance default protocols bgp group underlay
 ```
+
 ///
 
 ### Loopback Interface for EVPN peering and VxLAN Termination
@@ -459,7 +465,6 @@ set / interface system0 subinterface 0 ipv4 address 100.100.100.100/32
 
 ///
 
-
 Then we will need to add the loopback/system interface to the default network instance
 
 ```srl
@@ -485,7 +490,6 @@ The fabric will use IPv6 interfaces to route IPv4 packets. By default, SRLinux d
 set / network-instance default ip-forwarding receive-ipv4-check false
 ```
 
-
 ### Verification
 
 As stated in the beginning of this section, the VxLAN VTEPs need to be advertised throughout the DC fabric. The `system0` interfaces we just configured are the VTEPs and they should be advertised via eBGP peering established before. The following verification commands can help ensure that.
@@ -495,6 +499,7 @@ As stated in the beginning of this section, the VxLAN VTEPs need to be advertise
 First, verify that the eBGP peerings are in the established state using BGP Family IPv4-Unicast. Note that all peerings are dynamic, automatically configured using the dynamic-peering feature.
 
 /// tab | leaf1
+
 ```srl
 A:leaf1# show network-instance default protocols bgp neighbor
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -513,9 +518,11 @@ Summary:
 0 configured neighbors, 0 configured sessions are established,0 disabled peers
 1 dynamic peers
 ```
+
 ///
 
 /// tab | leaf2
+
 ```srl
 A:leaf2# show network-instance default protocols bgp neighbor
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -534,9 +541,11 @@ Summary:
 0 configured neighbors, 0 configured sessions are established,0 disabled peers
 1 dynamic peers
 ```
+
 ///
 
 /// tab | spine
+
 ```srl
 A:spine# show network-instance default protocols bgp neighbor
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -557,15 +566,15 @@ Summary:
 0 configured neighbors, 0 configured sessions are established,0 disabled peers
 2 dynamic peers
 ```
-///
 
+///
 
 **Advertised routes**
 
 We configured eBGP in the fabric's underlay to advertise the VxLAN tunnel endpoints. The output below verifies that the routers are advertising the prefix of the `system0` interface to their eBGP peers:
 
-
 /// tab | leaf1
+
 ```srl hl_lines="12"
 A:leaf1# show network-instance default protocols bgp neighbor fe80::181d:4ff:feff:1%ethernet-1/49.1 advertised-routes ipv4
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -585,9 +594,11 @@ Origin codes: i=IGP, e=EGP, ?=incomplete
 1 advertised BGP routes
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ```
+
 ///
 
 /// tab | leaf2
+
 ```srl hl_lines="12"
 A:leaf2# show network-instance default protocols bgp neighbor fe80::181d:4ff:feff:2%ethernet-1/49.1 advertised-routes ipv4
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -607,9 +618,11 @@ Origin codes: i=IGP, e=EGP, ?=incomplete
 1 advertised BGP routes
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ```
+
 ///
 
 /// tab | spine
+
 ```srl hl_lines="12 14 33 35"
 A:spine# show network-instance default protocols bgp neighbor  fe80::1805:2ff:feff:31%ethernet-1/1.1 advertised-routes ipv4
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -652,14 +665,15 @@ Origin codes: i=IGP, e=EGP, ?=incomplete
 2 advertised BGP routes
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ```
+
 ///
 
 **Route table**
 
 The last stop in the control plane verification would be to check if the remote loopback prefixes were installed in the `default` network-instance where we expect them to be:
 
-
 /// tab | leaf1
+
 ```srl hl_lines="11 13"
 A:leaf1# show network-instance default route-table
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -682,10 +696,11 @@ IPv4 prefixes with active routes     : 3
 IPv4 prefixes with active ECMP routes: 0
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ```
+
 ///
 
-
 /// tab | leaf2
+
 ```srl hl_lines="10 13"
 A:leaf2# show network-instance default route-table
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -708,9 +723,11 @@ IPv4 prefixes with active routes     : 3
 IPv4 prefixes with active ECMP routes: 0
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ```
+
 ///
 
 /// tab | spine
+
 ```srl hl_lines="10 12"
 A:spine# show network-instance default route-table
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -733,6 +750,7 @@ IPv4 prefixes with active routes     : 3
 IPv4 prefixes with active ECMP routes: 0
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ```
+
 ///
 
 Both learned prefixes appear in the route table of the default network instance, with bgp_mgr as their owner, indicating they were added by the BGP process. The system0 interface prefix owner is the network instance manager, signifying it is a local prefix.
@@ -912,7 +930,7 @@ commit now
 
 The BGP EVPN family facilitates the exchange of overlay routes. Further details on EVPN and its mechanisms will be discussed in subsequent chapter. In this section we will focus on how BGP EVPN is configured.
 
-Typically, Route Reflectors (RRs) are used for iBGP peering instead of configuring a full mesh. Utilizing RRs reduces the number of BGP sessions, requiring only peering with RRs. This approach minimizes configuration efforts and allows for centralized application of routing policies. 
+Typically, Route Reflectors (RRs) are used for iBGP peering instead of configuring a full mesh. Utilizing RRs reduces the number of BGP sessions, requiring only peering with RRs. This approach minimizes configuration efforts and allows for centralized application of routing policies.
 
 In our case Spine will be the EVPN RR and Leaves will be the client.
 
@@ -924,7 +942,7 @@ In our case Spine will be the EVPN RR and Leaves will be the client.
     ```
 
 1. **Assign Autonomous System Number**  
-    We'll use iBGP with the EVPN family, meaning all routers in this data center will share the same AS number for overlay route exchange. 
+    We'll use iBGP with the EVPN family, meaning all routers in this data center will share the same AS number for overlay route exchange.
 
     ```srl
     set / network-instance default protocols bgp group overlay peer-as 55555
@@ -940,31 +958,36 @@ In our case Spine will be the EVPN RR and Leaves will be the client.
     ```
 
 1. **Configure the neighbor**  
-    
+
     /// tab | leaf1 & leaf2
     Leaf devices uses Spine's System IP for BGP EVPN peering.
+
     ```srl
     set / network-instance default protocols bgp neighbor 100.100.100.100 admin-state enable
     set / network-instance default protocols bgp neighbor 100.100.100.100 peer-group overlay
     ```
+
     ///
 
     /// tab | spine ( RR )
     Spine is configured to establish dynamic peering with any IP address.
+
     ```srl
     set / network-instance default protocols bgp dynamic-neighbors accept match 0.0.0.0/0 peer-group overlay
     ```
+
     ///
 
 1. **Configure EVPN Route Reflector (only on spine)**  
-    
+
     The command below will enable the route reflector functionality and only needs to be enabled on the Spine.
     /// tab | spine
+
     ```srl
     set / network-instance default protocols bgp group overlay route-reflector client true
     ```
-    ///
 
+    ///
 
 ### Verification
 
@@ -972,8 +995,8 @@ The eBGP IPv4 sessions between Leaves and the spine is now active using IPv6 lin
 
 Simultaneously, the iBGP EVPN address family, set up through the loopback addresses, supports the sharing of overlay routes, which will be covered in detail in the following chapter.
 
-
 /// tab | leaf1
+
 ```srl
 A:leaf1# show network-instance default protocols bgp neighbor
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -994,10 +1017,11 @@ Summary:
 1 configured neighbors, 1 configured sessions are established,0 disabled peers
 1 dynamic peers
 ```
+
 ///
 
-
 /// tab | leaf2
+
 ```srl
 A:leaf2# show network-instance default protocols bgp neighbor
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -1018,10 +1042,11 @@ Summary:
 1 configured neighbors, 1 configured sessions are established,0 disabled peers
 1 dynamic peers
 ```
+
 ///
 
-
 /// tab | spine
+
 ```srl
 A:spine# show network-instance default protocols bgp neighbor
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -1045,8 +1070,8 @@ Summary:
 0 configured neighbors, 0 configured sessions are established,0 disabled peers
 4 dynamic peers
 ```
-///
 
+///
 
 [^1]: default SR Linux credentials are `admin:NokiaSrl1!`.
 [^2]: the snippets were extracted with `info flat` command issued in running mode.
