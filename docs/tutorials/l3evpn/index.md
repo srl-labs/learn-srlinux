@@ -18,17 +18,16 @@ tags:
 | **Version information**[^1] | [`containerlab:v0.56.0`][clab-install], [`srlinux:24.3.3`][srlinux-container], [`frr:9.0.2`][frr-container] [`docker-ce:26.1.4`][docker-install]                                                                                                                                                                                                                                                                                                                                  |
 | **Authors**                 | Korhan Kayhan [:material-linkedin:][kkayhan-linkedin]<br>Michel Redondo [:material-linkedin:][mr-linkedin]<br/>Roman Dodin [:material-linkedin:][rd-linkedin] [:material-twitter:][rd-twitter]                                                                                                                                                                                                                                                                                    |
 
-While EVPN originally emerged as a Layer 2 VPN technology to overcome VPLS limitations, it has since evolved to support other applications, like Layer 3 VPN services.
+While EVPN originally emerged as a Layer 2 VPN technology to overcome VPLS limitations, it has since evolved to support other applications, such as Layer 3 VPN services.
 
-We have covered the basics of Layer 2 EVPN in the [Layer 2 EVPN Basics Tutorial][evpn-basics-tutorial] where we discussed how to configure EVPN to provide a layer 2 service across an IP fabric.  
-Today' focus will be on deploying a **Layer 3 Ethernet VPN (EVPN)** in the SR Linux-powered DC fabric.  
+In the [Layer 2 EVPN Basics Tutorial][evpn-basics-tutorial] we discussed how to configure EVPN to provide a layer 2 service across an IP fabric. Today' focus will be on deploying a **Layer 3 Ethernet VPN (EVPN)** in the SR Linux-powered DC fabric.  
 As you might expect, the Layer 3 EVPN is designed to provide Layer 3 services across the fabric. As such, there are **no** stretched broadcast domains across the fabric and the customer equipment is typically running a BGP PE-CE session with the top of rack switch to exchange IP prefixes.
 
 To explain the Layer 3 EVPN configuration and concepts we will use a small fabric with two leafs, one spine and two clients connected to the leafs. The clients will run FRRouting software as a CE router.
 
 <div class='mxgraph' style='max-width:100%;border:1px solid transparent;margin:0 auto; display:block;' data-mxgraph='{"page":0,"zoom":2,"highlight":"#0000ff","nav":true,"resize":true,"edit":"_blank","url":"https://raw.githubusercontent.com/srl-labs/srl-l3evpn-basics-lab/main/images/diagrams.drawio"}'></div>
 
-Control plane-wise, and in contrast to the Layer 2 EVPN, the CE devices will establish a BGP session with the leaf devices to exchange IP prefixes and the BGP EVPN will make sure that the client prefixes are distributed to the tenants of the same L3 EVPN service. On the data plance side the VXLAN tunnels will be used to transport encapsulated packets between the leafs and the spine.
+Control plane-wise, and in contrast to the Layer 2 EVPN, the CE devices will establish a BGP session with the leaf devices to exchange IP prefixes and the BGP EVPN will make sure that the client prefixes are distributed to the tenants of the same L3 EVPN service. On the data plane side the VXLAN tunnels will be used to transport encapsulated packets between the leafs and spines.
 
 <div class='mxgraph' style='max-width:100%;border:1px solid transparent;margin:0 auto; display:block;' data-mxgraph='{"page":1,"zoom":2,"highlight":"#0000ff","nav":true,"resize":true,"edit":"_blank","url":"https://raw.githubusercontent.com/srl-labs/srl-l3evpn-basics-lab/main/images/diagrams.drawio"}'></div>
 
@@ -36,7 +35,7 @@ As part of this tutorial we will configure the SR Linux-based DC fabric underlay
 
 ## Lab deployment
 
-To let you follow along the configuration steps of this tutorial we created [a lab][lab-repo] that you can deploy on any Linux VM or in [Codespaces](../../blog/posts/2024/codespaces.md):
+To let you follow along the configuration steps of this tutorial we created [a lab][lab-repo] that you can deploy on any Linux VM with [containerlab][clab-install] or run in the cloud with [Codespaces](../../blog/posts/2024/codespaces.md):
 
 /// tab | Locally
 
@@ -44,6 +43,7 @@ To let you follow along the configuration steps of this tutorial we created [a l
 sudo containerlab deploy -c -t srl-labs/srl-l3evpn-basics-lab
 ```
 
+Containerlab will pull the git repo to your current working directory and start deploying the lab.
 ///
 /// tab | With Codespaces
 
@@ -59,11 +59,11 @@ If you want to run the lab in a free cloud instance, click the button below to o
 </div>
 ///
 
-Containerlab will pull the git repo to your current working directory and start deploying the lab. Once the deployment process is finished you'll see a table with the deployed nodes.  
+Once the deployment process is finished you'll see a table with the deployed nodes.  
 Using the names provided in the table you can SSH into the nodes to start the configuration process. For example, to connect to the `clab-l3evpn-leaf1` node you can use the following command:
 
 ```bash
-ssh clab-l3evpn-leaf1 #(1)!
+ssh l3evpn-leaf1 #(1)!
 ```
 
 1. If you happen to have an SSH key the login will be passwordless. If not, `admin:NokiaSrl1!` is the default username and password.
@@ -81,7 +81,7 @@ We advise the newcomers not to skip the [Configuration Basics Guide][conf-basics
 [srlinux-container]: https://github.com/orgs/nokia/packages/container/package/srlinux
 [frr-container]: https://quay.io/repository/frrouting/frr?tab=tags
 [docker-install]: https://docs.docker.com/engine/install/
-[capture-evpn-rt5]: https://github.com/srl-labs/srl-l3evpn-tutorial-lab/blob/main/evpn_rt5.pcap
+[capture-evpn-rt5]: https://github.com/srl-labs/srl-l3evpn-basics-lab/raw/main/evpn_rt5.pcap
 [adv-sol-guide-evpn-l3]: https://documentation.nokia.com/srlinux/24-3/books/advanced-solutions/evpn-vxlan-layer-3.html#evpn-vxlan-layer-3
 [evpn-vxlan-guide]: https://documentation.nokia.com/srlinux/24-3/books/evpn-vxlan/evpn-vxlan-tunnels-layer-3.html#evpn-vxlan-tunnels-layer-3
 [conf-basics-guide]: https://documentation.nokia.com/srlinux/24-3/title/basics.html
