@@ -2,154 +2,169 @@
 comments: true
 ---
 
-<script type="text/javascript" src="https://viewer.diagrams.net/js/viewer-static.min.js" async></script>
-
 # Overlay Routing
 
-The BGP EVPN family facilitates the exchange of overlay routes. Further details on EVPN and its mechanisms will be discussed in subsequent chapter. In this section we will focus on how BGP EVPN is configured.
+With IP underlay configured we prepared the grounds for the EVPN overlay services. In order to create an EVPN service on top of an IP fabric our leaf devices should be able to exchange overlay routing information. And you guessed it, there is no better protocol for this job than BGP with an EVPN address family.
 
-Typically, Route Reflectors (RRs) are used for iBGP peering instead of configuring a full mesh. Utilizing RRs reduces the number of BGP sessions, requiring only peering with RRs. This approach minimizes configuration efforts and allows for centralized application of routing policies.
+Since all our leaf switches can reach each other via loopbacks, we can establish a BGP peering between them with `evpn` address family enabled. Operators can choose to use iBGP or eBGP for this purpose. In this tutorial, we will use iBGP for overlay routing using spine as the route reflector. Utilizing RRs reduces the number of BGP sessions, requiring only peering with RRs. This approach minimizes configuration efforts and allows for centralized application of routing policies.
 
-In our case Spine will be the EVPN RR and Leaves will be the client.
+<div class='mxgraph' style='max-width:100%;border:1px solid transparent;margin:0 auto; display:block;' data-mxgraph='{"page":5,"zoom":2,"highlight":"#0000ff","nav":true,"resize":true,"edit":"_blank","url":"https://raw.githubusercontent.com/srl-labs/srl-l3evpn-basics-lab/main/images/diagrams.drawio"}'></div>
+
+Let's have a look at the configuration steps required to setup overlay routing on our leaf switches:
 
 1. **Create BGP peer-group**  
-    A BGP peer group simplifies configuring multiple BGP peers with similar requirements by grouping them together.
+    Just like with the underlay, creating a BGP peer group simplifies configuring multiple BGP peers with similar requirements by grouping them together. We will call this group `overlay`.
   
-    ```srl
+    ```{.srl .no-select}
     set / network-instance default protocols bgp group overlay
     ```
 
-1. **Assign Autonomous System Number**  
-    We'll use iBGP with the EVPN family, meaning all routers in this data center will share the same AS number for overlay route exchange.
+2. **Assign Autonomous System Number**  
+    Since we are configuring a new iBGP instance, all routers should share the same AS number. We will use AS 65535; note, that we will have to set the peer-as and local-as, since otherwise a globally configured underlay AS number would be used.
 
-    ```srl
-    set / network-instance default protocols bgp group overlay peer-as 55555
-    set / network-instance default protocols bgp group overlay local-as as-number 55555
+    ```{.srl .no-select}
+    set / network-instance default protocols bgp group overlay peer-as 65535
+    set / network-instance default protocols bgp group overlay local-as as-number 65535
     ```
 
-1. **Enable Address Family**  
-    Here we are enabling the EVPN address family and disabling the IPv4 family for the overlay BGP group.
+3. **Enable Address Family**  
+    In the overlay, we only care about EVPN routes, hence we are enabling the EVPN address family for the overlay BGP group.
 
-    ```srl
-    set / network-instance default protocols bgp group evpn afi-safi evpn admin-state enable
-    set / network-instance default protocols bgp group evpn afi-safi ipv4-unicast admin-state disable
+    ```{.srl .no-select}
+    set / network-instance default protocols bgp group overlay afi-safi evpn admin-state enable
     ```
 
-1. **Configure the neighbor**  
+4. **Configure the neighbor**  
 
     /// tab | leaf1 & leaf2
     Leaf devices uses Spine's System IP for BGP EVPN peering.
 
-    ```srl
-    set / network-instance default protocols bgp neighbor 100.100.100.100 admin-state enable
-    set / network-instance default protocols bgp neighbor 100.100.100.100 peer-group overlay
+    ```{.srl .no-select}
+    set / network-instance default protocols bgp neighbor 10.10.10.10 admin-state enable
+    set / network-instance default protocols bgp neighbor 10.10.10.10 peer-group overlay
     ```
 
     ///
 
     /// tab | spine ( RR )
-    Spine is configured to establish dynamic peering with any IP address.
+    On the spine we configure dynamic peering, that accepts peers with any IP address. This drastically simplifies the configuration, as we don't have to specify each leaf's IP address.
 
-    ```srl
+    ```{.srl .no-select}
     set / network-instance default protocols bgp dynamic-neighbors accept match 0.0.0.0/0 peer-group overlay
     ```
 
     ///
 
-1. **Configure EVPN Route Reflector (only on spine)**  
+5. **Configure EVPN Route Reflector (only on spine)**  
 
-    The command below will enable the route reflector functionality and only needs to be enabled on the Spine.
+    The command below will enable the route reflector functionality and only needs to be enabled on the spine.
     /// tab | spine
 
-    ```srl
+    ```{.srl .no-select}
     set / network-instance default protocols bgp group overlay route-reflector client true
     ```
 
     ///
 
-### Verification
+## Resulting configs
 
-The eBGP IPv4 sessions between Leaves and the spine is now active using IPv6 link-local addresses for peering. Through this eBGP peering, the IPv4 address family is distributing the loopback IPs across the DC.
+Here are the config snippets for the leaf and spine devices covering everything we discussed above.
 
-Simultaneously, the iBGP EVPN address family, set up through the loopback addresses, supports the sharing of overlay routes, which will be covered in detail in the following chapter.
-
-/// tab | leaf1
+/// tab | leaf1 & leaf2
 
 ```srl
-A:leaf1# show network-instance default protocols bgp neighbor
----------------------------------------------------------------------------------------------------------------------------------------------------------------------
-BGP neighbor summary for network-instance "default"
-Flags: S static, D dynamic, L discovered by LLDP, B BFD enabled, - disabled, * slow
----------------------------------------------------------------------------------------------------------------------------------------------------------------------
----------------------------------------------------------------------------------------------------------------------------------------------------------------------
-+------------------+--------------------------+------------------+------+----------+---------------+---------------+-------------+--------------------------+
-|     Net-Inst     |           Peer           |      Group       | Flag | Peer-AS  |     State     |    Uptime     |  AFI/SAFI   |      [Rx/Active/Tx]      |
-|                  |                          |                  |  s   |          |               |               |             |                          |
-+==================+==========================+==================+======+==========+===============+===============+=============+==========================+
-| default          | 100.100.100.100          | overlay          | S    | 55555    | established   | 0d:1h:13m:3s  | evpn        | [2/2/2]                  |
-| default          | fe80::181d:4ff:feff:1%et | underlay         | D    | 65000    | established   | 0d:1h:13m:9s  | ipv4-       | [2/2/1]                  |
-|                  | hernet-1/49.1            |                  |      |          |               |               | unicast     |                          |
-+------------------+--------------------------+------------------+------+----------+---------------+---------------+-------------+--------------------------+
----------------------------------------------------------------------------------------------------------------------------------------------------------------------
-Summary:
-1 configured neighbors, 1 configured sessions are established,0 disabled peers
-1 dynamic peers
+enter candidate
+
+/ network-instance default {
+    protocols {
+        bgp {
+            group overlay {
+                peer-as 65535
+                afi-safi evpn {
+                    admin-state enable
+                }
+                local-as {
+                    as-number 65535
+                }
+            }
+            neighbor 10.10.10.10 {
+                admin-state enable
+                peer-group overlay
+            }
+        }
+    }
+}
+
+commit now
+
 ```
 
 ///
-
-/// tab | leaf2
-
-```srl
-A:leaf2# show network-instance default protocols bgp neighbor
----------------------------------------------------------------------------------------------------------------------------------------------------------------------
-BGP neighbor summary for network-instance "default"
-Flags: S static, D dynamic, L discovered by LLDP, B BFD enabled, - disabled, * slow
----------------------------------------------------------------------------------------------------------------------------------------------------------------------
----------------------------------------------------------------------------------------------------------------------------------------------------------------------
-+------------------+--------------------------+------------------+------+----------+---------------+---------------+-------------+--------------------------+
-|     Net-Inst     |           Peer           |      Group       | Flag | Peer-AS  |     State     |    Uptime     |  AFI/SAFI   |      [Rx/Active/Tx]      |
-|                  |                          |                  |  s   |          |               |               |             |                          |
-+==================+==========================+==================+======+==========+===============+===============+=============+==========================+
-| default          | 100.100.100.100          | overlay          | S    | 55555    | established   | 0d:1h:13m:29s | evpn        | [2/2/2]                  |
-| default          | fe80::181d:4ff:feff:2%et | underlay         | D    | 65000    | established   | 0d:1h:13m:35s | ipv4-       | [2/2/1]                  |
-|                  | hernet-1/49.1            |                  |      |          |               |               | unicast     |                          |
-+------------------+--------------------------+------------------+------+----------+---------------+---------------+-------------+--------------------------+
----------------------------------------------------------------------------------------------------------------------------------------------------------------------
-Summary:
-1 configured neighbors, 1 configured sessions are established,0 disabled peers
-1 dynamic peers
-```
-
-///
-
 /// tab | spine
 
 ```srl
-A:spine# show network-instance default protocols bgp neighbor
----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+enter candidate
+
+/ network-instance default {
+    protocols {
+        bgp {
+            dynamic-neighbors {
+                accept {
+                    match 0.0.0.0/0 {
+                        peer-group overlay
+                    }
+                }
+            }
+            group overlay {
+                peer-as 65535
+                afi-safi evpn {
+                    admin-state enable
+                }
+                local-as {
+                    as-number 65535
+                }
+                route-reflector {
+                    client true
+                }
+            }
+        }
+    }
+}
+
+commit now
+```
+
+///
+
+## Verification
+
+Similarly to the verifications we did for the underlay, we can check the BGP neighbor status to ensure that the overlay iBGP peering is up and running. Since all leafs establish the iBGP session with the spine, we can list the session on the spine to ensure that all leafs are connected.
+
+```{.srl .no-select}
+--{ + running }--[  ]--
+A:spine# / show network-instance default protocols bgp neighbor 10.*
+----------------------------------------------------------------------------------------------------
 BGP neighbor summary for network-instance "default"
 Flags: S static, D dynamic, L discovered by LLDP, B BFD enabled, - disabled, * slow
----------------------------------------------------------------------------------------------------------------------------------------------------------------------
----------------------------------------------------------------------------------------------------------------------------------------------------------------------
-+------------------+--------------------------+------------------+------+----------+---------------+---------------+-------------+--------------------------+
-|     Net-Inst     |           Peer           |      Group       | Flag | Peer-AS  |     State     |    Uptime     |  AFI/SAFI   |      [Rx/Active/Tx]      |
-|                  |                          |                  |  s   |          |               |               |             |                          |
-+==================+==========================+==================+======+==========+===============+===============+=============+==========================+
-| default          | 100.0.0.1                | overlay          | D    | 55555    | established   | 0d:1h:12m:24s | evpn        | [2/0/2]                  |
-| default          | 100.0.0.2                | overlay          | D    | 55555    | established   | 0d:1h:12m:29s | evpn        | [2/0/2]                  |
-| default          | fe80::1805:2ff:feff:31%e | underlay         | D    | 42000000 | established   | 0d:1h:12m:36s | ipv4-       | [1/1/2]                  |
-|                  | thernet-1/1.1            |                  |      | 01       |               |               | unicast     |                          |
-| default          | fe80::18d9:3ff:feff:31%e | underlay         | D    | 42000000 | established   | 0d:1h:12m:31s | ipv4-       | [1/1/2]                  |
-|                  | thernet-1/2.1            |                  |      | 02       |               |               | unicast     |                          |
-+------------------+--------------------------+------------------+------+----------+---------------+---------------+-------------+--------------------------+
----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
++----------+----------+----------+----------+----------+----------+----------+----------+----------+
+| Net-Inst |   Peer   |  Group   |  Flags   | Peer-AS  |  State   |  Uptime  | AFI/SAFI | [Rx/Acti |
+|          |          |          |          |          |          |          |          |  ve/Tx]  |
++==========+==========+==========+==========+==========+==========+==========+==========+==========+
+| default  | 10.0.0.1 | overlay  | D        | 65535    | establis | 0d:0h:3m | evpn     | [0/0/0]  |
+|          |          |          |          |          | hed      | :35s     |          |          |
+| default  | 10.0.0.2 | overlay  | D        | 65535    | establis | 0d:0h:3m | evpn     | [0/0/0]  |
+|          |          |          |          |          | hed      | :27s     |          |          |
++----------+----------+----------+----------+----------+----------+----------+----------+----------+
+----------------------------------------------------------------------------------------------------
 Summary:
 0 configured neighbors, 0 configured sessions are established,0 disabled peers
 4 dynamic peers
 ```
 
-///
+Both iBGP sessions from the spine towards the leafs are established. It is also perfectly fine to see no prefixes exchanged at this point, as we have not yet configured any EVPN services that would create the evpn routes.
 
-[^1]: default SR Linux credentials are `admin:NokiaSrl1!`.
-[^2]: the snippets were extracted with `info flat` command issued in running mode.
+This is what we are going to do next in the [L3 EVPN section](l3evpn.md).
+
+<script type="text/javascript" src="https://viewer.diagrams.net/js/viewer-static.min.js" async></script>
