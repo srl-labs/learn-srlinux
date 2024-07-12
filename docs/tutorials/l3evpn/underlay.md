@@ -116,6 +116,7 @@ Below you will find the relevant configuration snippets for leafs and spine devi
 
 ```srl
 enter candidate
+
 / interface ethernet-1/49
     admin-state enable
     subinterface 1 {
@@ -130,6 +131,7 @@ enter candidate
     }
 
 / network-instance default interface ethernet-1/49.1
+
 commit now
 ```
 
@@ -139,6 +141,7 @@ commit now
 
 ```srl
 enter candidate
+
 / interface ethernet-1/{1..2} #(1)
     admin-state enable
     subinterface 1 {
@@ -153,6 +156,7 @@ enter candidate
     }
 
 / network-instance default interface ethernet-1/{1..2}.1
+
 commit now
 ```
 
@@ -292,6 +296,7 @@ Configuration of the `system0` interface/subinterface is exactly the same as for
 
 ```srl
 enter candidate
+
 / interface system0 {
     subinterface 0 {
         ipv4 {
@@ -312,6 +317,7 @@ commit now
 
 ```srl
 enter candidate
+
 / interface system0 {
     subinterface 0 {
         ipv4 {
@@ -333,6 +339,7 @@ commit now
 
 ```srl
 enter candidate
+
 / interface system0 {
     subinterface 0 {
         ipv4 {
@@ -380,14 +387,7 @@ Here is a breakdown of the configuration steps done on `leaf1` and you will find
     set / network-instance default protocols bgp router-id 10.0.0.1
     ```
 
-3. **Enable `ipv4-unicast` Address Family**  
-    In order to exchange IPv4 loopback IPs we need to enable `ipv4-unicast` address family under the global BGP protocols configuration block.
-
-    ```{.srl .no-select}
-    set / network-instance default protocols bgp afi-safi ipv4-unicast admin-state enable
-    ```
-
-4. **Create Routing Policy**
+3. **Create Routing Policy**
 
     Recall, that our goal is to announce the loopback addresses of the leaf devices via eBGP so that we can establish iBGP peering over them later on.  
     In accordance with best security practices, and [RFC 8212](https://datatracker.ietf.org/doc/html/rfc8212), SR Linux does not announce anything via eBGP unless an explicit export policy exists. Let's configure one.
@@ -417,15 +417,22 @@ Here is a breakdown of the configuration steps done on `leaf1` and you will find
 
     ///
 
-5. **Create BGP peer-group**  
+4. **Create BGP peer-group**  
     A BGP peer group simplifies configuring multiple BGP peers with similar requirements by grouping them together, allowing the same policies and attributes to be applied to all peers in the group. Here we create a group named `underlay` to be used for the eBGP peerings and set the created import/export policies to it.
   
     ```{.srl .no-select}
     set / network-instance default protocols bgp group underlay
-    set / network-instance default protocols bgp group underlay export-policy announce_system_IP
-    set / network-instance default protocols bgp group underlay import-policy announce_system_IP
+    set / network-instance default protocols bgp group underlay export-policy system-loopbacks-policy
+    set / network-instance default protocols bgp group underlay import-policy system-loopbacks-policy
     ```
 
+    ```
+
+5. **Enable `ipv4-unicast` Address Family**  
+    In order to exchange IPv4 loopback IPs we need to enable `ipv4-unicast` address family; we put this under the underlay group.
+
+    ```{.srl .no-select}
+    set / network-instance default protocols bgp group underlay afi-safi ipv4-unicast admin-state enable
     ```
 
 6. **Configure dynamic BGP neighbors**  
@@ -506,10 +513,10 @@ enter candidate
                     ]
                 }
             }
-            afi-safi ipv4-unicast {
-                admin-state enable
-            }
             group underlay {
+                afi-safi ipv4-unicast {
+                    admin-state enable
+                }
                 export-policy system-loopbacks-policy
                 import-policy system-loopbacks-policy
             }
@@ -561,10 +568,10 @@ enter candidate
                     ]
                 }
             }
-            afi-safi ipv4-unicast {
-                admin-state enable
-            }
             group underlay {
+                afi-safi ipv4-unicast {
+                    admin-state enable
+                }
                 export-policy system-loopbacks-policy
                 import-policy system-loopbacks-policy
             }
@@ -609,10 +616,10 @@ enter candidate
                 import-reject-all false
                 export-reject-all false
             }
-            afi-safi ipv4-unicast {
-                admin-state enable
-            }
             group underlay {
+                afi-safi ipv4-unicast {
+                    admin-state enable
+                }
             }
         }
     }
@@ -1008,10 +1015,10 @@ enter candidate
                     ]
                 }
             }
-            afi-safi ipv4-unicast {
-                admin-state enable
-            }
             group underlay {
+                afi-safi ipv4-unicast {
+                    admin-state enable
+                }
                 export-policy system-loopbacks-policy
                 import-policy system-loopbacks-policy
             }
@@ -1089,10 +1096,10 @@ enter candidate
                     ]
                 }
             }
-            afi-safi ipv4-unicast {
-                admin-state enable
-            }
             group underlay {
+                afi-safi ipv4-unicast {
+                    admin-state enable
+                }
                 export-policy system-loopbacks-policy
                 import-policy system-loopbacks-policy
             }
@@ -1178,10 +1185,10 @@ enter candidate
                 import-reject-all false
                 export-reject-all false
             }
-            afi-safi ipv4-unicast {
-                admin-state enable
-            }
             group underlay {
+                afi-safi ipv4-unicast {
+                    admin-state enable
+                }
             }
         }
     }
