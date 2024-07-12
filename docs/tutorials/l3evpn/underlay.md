@@ -380,7 +380,7 @@ Here is a breakdown of the configuration steps done on `leaf1` and you will find
     set / network-instance default protocols bgp router-id 10.0.0.1
     ```
 
-3. **Enable Address Family**  
+3. **Enable `ipv4-unicast` Address Family**  
     In order to exchange IPv4 loopback IPs we need to enable `ipv4-unicast` address family under the global BGP protocols configuration block.
 
     ```{.srl .no-select}
@@ -389,71 +389,78 @@ Here is a breakdown of the configuration steps done on `leaf1` and you will find
 
 4. **Create Routing Policy**
 
-    Recall, that our goal is to announce via eBGP the loopback addresses of the leaf devices so that we can establish iBGP peering over them later on.  
-    In accordance with best security practices, and [RFC 8212](https://datatracker.ietf.org/doc/html/rfc8212), SR Linux does not announce anything via eBGP unless an explicit export policy is configured. Let's configure one.
+    Recall, that our goal is to announce the loopback addresses of the leaf devices via eBGP so that we can establish iBGP peering over them later on.  
+    In accordance with best security practices, and [RFC 8212](https://datatracker.ietf.org/doc/html/rfc8212), SR Linux does not announce anything via eBGP unless an explicit export policy exists. Let's configure one.
 
-    The policy below will permit announcement of all locally prefixes of the locally configured interfaces in the network instance, but since link-local addresses are not announced and that is all we have, only the system0 prefixes (loopback) will be announced to the peers.
+    First, we will create a prefix set that matches the range of loopback addresses we want to send and receive.
 
-    <small>If you wish to, you can configure a more specific export policy matching a prefix list.</small>
-
-    ```srl
-    set / routing-policy policy announce_system_IP statement 1 match protocol local
-    set / routing-policy policy announce_system_IP statement 1 action policy-result accept
-
-    set / network-instance default protocols bgp afi-safi ipv4-unicast export-policy announce_system_IP
+    ```{.srl .no-select}
+    set / routing-policy prefix-set system-loopbacks prefix 10.0.0.0/8 mask-length-range 8..32
     ```
 
-    After committing the configs above, a System Interface will be configured with a unique IP address (identical to the BGP Router ID as best practice) and that IP will be exported to the eBGP and announced to the neighbors.
+    Next, we will create a routing policy that matches on the prefix set we just created and accepts them.
 
-5. **Allow Route Advertisement for eBGP**  
-   eBGP assumes that peers are external systems and by default all incoming and outgoing routes are blocked. We will disable this behavior and permit all incoming and outgoing routes.
-
-    ```srl
-    set / network-instance default protocols bgp eBGP-default-policy import-reject-all false
-    set / network-instance default protocols bgp eBGP-default-policy export-reject-all false
+    ```{.srl .no-select}
+    set / routing-policy policy system-loopbacks-policy statement 1 match prefix-set system-loopbacks
+    set / routing-policy policy system-loopbacks-policy statement 1 action policy-result accept
     ```
 
-6. **Create BGP peer-group**  
-    A BGP peer group simplifies configuring multiple BGP peers with similar requirements by grouping them together, allowing the same policies and attributes to be applied to all peers in the group simultaneously. Here we create a group named underlay to be used for the eBGP peerings.
+    /// admonition | We configure the spine differently
+        type: note
+    The spine device should import and export the prefixes received from the leaf devices. We could have used the same policy as for the leafs, but instead we will make use of the [default import/export policy](https://documentation.nokia.com/srlinux/24-3/books/routing-protocols/bgp.html?hl=default%2Cbgp%2Cpolicy#bgp-peer-import-export-policies) that is enacted when no explicit policy is configured and will allow all prefixes to be accepted and announced.
+
+    By setting both `ebgp-default-policy import-reject-all` and ` ebgp-default-policy export-reject-all` to `false` we will allow import and export of all prefixes.
+
+    ```{.srl .no-select}
+    set / network-instance default protocols bgp ebgp-default-policy import-reject-all false export-reject-all false
+    ```
+
+    ///
+
+5. **Create BGP peer-group**  
+    A BGP peer group simplifies configuring multiple BGP peers with similar requirements by grouping them together, allowing the same policies and attributes to be applied to all peers in the group. Here we create a group named `underlay` to be used for the eBGP peerings and set the created import/export policies to it.
   
-    ```srl
+    ```{.srl .no-select}
     set / network-instance default protocols bgp group underlay
+    set / network-instance default protocols bgp group underlay export-policy announce_system_IP
+    set / network-instance default protocols bgp group underlay import-policy announce_system_IP
     ```
 
-7. **Configure dynamic neighbor**  
-    We will configure the dynamic neighbor feature to establish eBGP over leaf-spine links.
-
-    ```srl
-    set / network-instance default protocols bgp dynamic-neighbors interface ethernet-1/49.1
     ```
 
-    Then we assign this interface to the BGP group
+6. **Configure dynamic BGP neighbors**  
+    Here is the beauty of BGP IPv6 Unnumbered. We can configure dynamic BGP neighbors on the interfaces without specifying the neighbor's IP address. The BGP session will be established using the link-local address of the interface.
 
     ```srl
     set / network-instance default protocols bgp dynamic-neighbors interface ethernet-1/49.1 peer-group underlay
     ```
 
-    And we define the AS range for this router should accept dynamic peering from, in this case we defined the whole range.
+    To control which peers would be able allowed to form a BGP session with the `leaf1` device we can use the `allowed-peer-as` knob. This will limit the allowed AS numbers of the peers that can establish a BGP session with the device.
 
     ```srl
-    set / network-instance default protocols bgp dynamic-neighbors interface ethernet-1/49.1 allowed-peer-as [ 1..4294967295 ]
+    set / network-instance default protocols bgp dynamic-neighbors interface ethernet-1/49.1 allowed-peer-as [ 4200000001..4200000010 ]
     ```
 
-    **{Optional}** It is also possible to only allow peers that match a certain prefix.
+    /// details | want to have more control over the allowed peers?
+    It is also possible to only allow peers that match a certain prefix.</small>
 
     ```srl
     set / network-instance default protocols bgp dynamic-neighbors accept match fe80::/10 peer-group underlay
     ```
 
-8. **Allow IPv4 packets on IPv6-only Interfaces**
+    ///
 
-    The fabric will use IPv6 interfaces to route IPv4 packets. By default, SRLinux drops IPv4 packets if the receiving interface lacks an operational IPv4 subinterface. To change this and allow IPv4 packets on IPv6-only interfaces, use the following system-wide config knob.
+7. **Allow IPv4 Packets on IPv6-only Interfaces**
+
+    You may have noticed that our fabric now has a peculiar configuration of interfaces. The physical interfaces between leaf and spine devices are IPv6-only, whereas our `system0` loopback interfaces are addressed with IPv4.
+
+    Essentially we will have VXLANv4 packets traversing the IPv6-only interfaces and, by default, SR Linux drops IPv4 packets if the receiving interface lacks an operational IPv4 subinterface. To change this and allow IPv4 packets on IPv6-only interfaces, use the following system-wide config knob.
 
     ```srl
     set / network-instance default ip-forwarding receive-ipv4-check false
     ```
 
-9. **Commit configuration**  
+8. **Commit configuration**  
 
     Once we apply the config above (whole snippet below), we should have BGP peerings automatically established.
 
@@ -462,23 +469,59 @@ Here is a breakdown of the configuration steps done on `leaf1` and you will find
     A:leaf1# commit now
     ```
 
-Here are the config snippets per device for easy copy paste:
+Here are the config snippets related to eBGP configuration per device for an easy copy paste experience. Note, that the snippets already include entering the candidate step and commit command at the end.
 
 /// tab | leaf1
 
 ```srl
-set / network-instance default protocols bgp autonomous-system 4200000001
-set / network-instance default protocols bgp router-id 100.0.0.1
+enter candidate
 
-set / network-instance default protocols bgp dynamic-neighbors interface ethernet-1/49.1 peer-group underlay
-set / network-instance default protocols bgp dynamic-neighbors interface ethernet-1/49.1 allowed-peer-as [ 1..4294967295 ]
+/ routing-policy {
+    prefix-set system-loopbacks {
+        prefix 10.0.0.0/8 mask-length-range 8..32 {
+        }
+    }
+    policy system-loopbacks-policy {
+        statement 1 {
+            match {
+                prefix-set system-loopbacks
+            }
+            action {
+                policy-result accept
+            }
+        }
+    }
+}
 
-set / network-instance default protocols bgp eBGP-default-policy import-reject-all false
-set / network-instance default protocols bgp eBGP-default-policy export-reject-all false
+/ network-instance default {
+    protocols {
+        bgp {
+            autonomous-system 4200000001
+            router-id 10.0.0.1
+            dynamic-neighbors {
+                interface ethernet-1/49.1 {
+                    peer-group underlay
+                    allowed-peer-as [
+                        4200000001..4200000010
+                    ]
+                }
+            }
+            afi-safi ipv4-unicast {
+                admin-state enable
+            }
+            group underlay {
+                export-policy system-loopbacks-policy
+                import-policy system-loopbacks-policy
+            }
+        }
+    }
+    ip-forwarding {
+        receive-ipv4-check false
+    }
+}
 
-set / network-instance default protocols bgp afi-safi ipv4-unicast admin-state enable
 
-set / network-instance default protocols bgp group underlay
+commit now
 ```
 
 ///
@@ -486,18 +529,54 @@ set / network-instance default protocols bgp group underlay
 /// tab | leaf2
 
 ```srl
-set / network-instance default protocols bgp autonomous-system 4200000002
-set / network-instance default protocols bgp router-id 100.0.0.2
+enter candidate
 
-set / network-instance default protocols bgp dynamic-neighbors interface ethernet-1/49.1 peer-group underlay
-set / network-instance default protocols bgp dynamic-neighbors interface ethernet-1/49.1 allowed-peer-as [ 1..4294967295 ]
+/ routing-policy {
+    prefix-set system-loopbacks {
+        prefix 10.0.0.0/8 mask-length-range 8..32 {
+        }
+    }
+    policy system-loopbacks-policy {
+        statement 1 {
+            match {
+                prefix-set system-loopbacks
+            }
+            action {
+                policy-result accept
+            }
+        }
+    }
+}
 
-set / network-instance default protocols bgp eBGP-default-policy import-reject-all false
-set / network-instance default protocols bgp eBGP-default-policy export-reject-all false
+/ network-instance default {
+    protocols {
+        bgp {
+            autonomous-system 4200000002
+            router-id 10.0.0.2
+            dynamic-neighbors {
+                interface ethernet-1/49.1 {
+                    peer-group underlay
+                    allowed-peer-as [
+                        4200000001..4200000010
+                    ]
+                }
+            }
+            afi-safi ipv4-unicast {
+                admin-state enable
+            }
+            group underlay {
+                export-policy system-loopbacks-policy
+                import-policy system-loopbacks-policy
+            }
+        }
+    }
+    ip-forwarding {
+        receive-ipv4-check false
+    }
+}
 
-set / network-instance default protocols bgp afi-safi ipv4-unicast admin-state enable
 
-set / network-instance default protocols bgp group underlay
+commit now
 ```
 
 ///
@@ -505,49 +584,79 @@ set / network-instance default protocols bgp group underlay
 /// tab | spine
 
 ```srl
-set / network-instance default protocols bgp autonomous-system 65000
-set / network-instance default protocols bgp router-id 100.100.100.100
+enter candidate
 
-set / network-instance default protocols bgp dynamic-neighbors interface ethernet-1/1.1 peer-group underlay
-set / network-instance default protocols bgp dynamic-neighbors interface ethernet-1/1.1 allowed-peer-as [ 1..4294967295 ]
-set / network-instance default protocols bgp dynamic-neighbors interface ethernet-1/2.1 peer-group underlay
-set / network-instance default protocols bgp dynamic-neighbors interface ethernet-1/2.1 allowed-peer-as [ 1..4294967295 ]
+/ network-instance default {
+    protocols {
+        bgp {
+            autonomous-system 4200000010
+            router-id 10.10.10.10
+            dynamic-neighbors {
+                interface ethernet-1/1.1 {
+                    peer-group underlay
+                    allowed-peer-as [
+                        4200000001..4200000010
+                    ]
+                }
+                interface ethernet-1/2.1 {
+                    peer-group underlay
+                    allowed-peer-as [
+                        4200000001..4200000010
+                    ]
+                }
+            }
+            ebgp-default-policy {
+                import-reject-all false
+                export-reject-all false
+            }
+            afi-safi ipv4-unicast {
+                admin-state enable
+            }
+            group underlay {
+            }
+        }
+    }
+    ip-forwarding {
+        receive-ipv4-check false
+    }
+}
 
-set / network-instance default protocols bgp eBGP-default-policy import-reject-all false
-set / network-instance default protocols bgp eBGP-default-policy export-reject-all false
 
-set / network-instance default protocols bgp afi-safi ipv4-unicast admin-state enable
-set / network-instance default protocols bgp afi-safi ipv4-unicast export-policy announce_system_IP
-
-set / network-instance default protocols bgp group underlay
+commit now
 ```
 
 ///
 
 ## Verification
 
-As stated in the beginning of this section, the VxLAN VTEPs need to be advertised throughout the DC fabric. The `system0` interfaces we just configured are the VTEPs and they should be advertised via eBGP peering established before. The following verification commands can help ensure that.
+Congratulations, we just configured the underlay routing using eBGP with IPv6 Unnumbered. Let's run some verification commands to ensure that we achieved the desired end state, which is to have leaf' loopback prefixes exchanged over the eBGP sessions.
 
-**BGP neighbor status**
+### BGP neighbor status
 
 First, verify that the eBGP peerings are in the established state using BGP Family IPv4-Unicast. Note that all peerings are dynamic, automatically configured using the dynamic-peering feature.
 
 /// tab | leaf1
 
 ```srl
-A:leaf1# show network-instance default protocols bgp neighbor
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--{ + running }--[ network-instance default interface system0.0 ]--
+A:leaf1# / show network-instance default protocols bgp neighbor
+-------------------------------------------------------------------------------------------------
 BGP neighbor summary for network-instance "default"
 Flags: S static, D dynamic, L discovered by LLDP, B BFD enabled, - disabled, * slow
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-+------------------------+-----------------------------------+------------------------+--------+-------------+-------------------+-------------------+-----------------+-----------------------------------+
-|        Net-Inst        |               Peer                |         Group          | Flags  |   Peer-AS   |       State       |      Uptime       |    AFI/SAFI     |          [Rx/Active/Tx]           |
-+========================+===================================+========================+========+=============+===================+===================+=================+===================================+
-| default                | fe80::181d:4ff:feff:1%ethernet-   | underlay               | D      | 65000       | established       | 0d:0h:5m:3s       | ipv4-unicast    | [2/2/1]                           |
-|                        | 1/49.1                            |                        |        |             |                   |                   |                 |                                   |
-+------------------------+-----------------------------------+------------------------+--------+-------------+-------------------+-------------------+-----------------+-----------------------------------+
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------
++---------+---------+---------+---------+---------+---------+---------+---------+---------+
+|  Net-   |  Peer   |  Group  |  Flags  | Peer-AS |  State  | Uptime  | AFI/SAF | [Rx/Act |
+|  Inst   |         |         |         |         |         |         |    I    | ive/Tx] |
++=========+=========+=========+=========+=========+=========+=========+=========+=========+
+| default | fe80::1 | underla | D       | 4200000 | establi | 0d:0h:2 | ipv4-   | [1/0/1] |
+|         | 83d:4ff | y       |         | 010     | shed    | 8m:42s  | unicast |         |
+|         | :feff:1 |         |         |         |         |         |         |         |
+|         | %ethern |         |         |         |         |         |         |         |
+|         | et-     |         |         |         |         |         |         |         |
+|         | 1/49.1  |         |         |         |         |         |         |         |
++---------+---------+---------+---------+---------+---------+---------+---------+---------+
+-------------------------------------------------------------------------------------------------
 Summary:
 0 configured neighbors, 0 configured sessions are established,0 disabled peers
 1 dynamic peers
@@ -558,19 +667,25 @@ Summary:
 /// tab | leaf2
 
 ```srl
-A:leaf2# show network-instance default protocols bgp neighbor
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--{ + running }--[  ]--
+A:leaf2# / show network-instance default protocols bgp neighbor
+-------------------------------------------------------------------------------------------------
 BGP neighbor summary for network-instance "default"
 Flags: S static, D dynamic, L discovered by LLDP, B BFD enabled, - disabled, * slow
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-+------------------------+-----------------------------------+------------------------+--------+-------------+-------------------+-------------------+-----------------+-----------------------------------+
-|        Net-Inst        |               Peer                |         Group          | Flags  |   Peer-AS   |       State       |      Uptime       |    AFI/SAFI     |          [Rx/Active/Tx]           |
-+========================+===================================+========================+========+=============+===================+===================+=================+===================================+
-| default                | fe80::181d:4ff:feff:2%ethernet-   | underlay               | D      | 65000       | established       | 0d:0h:7m:59s      | ipv4-unicast    | [2/2/1]                           |
-|                        | 1/49.1                            |                        |        |             |                   |                   |                 |                                   |
-+------------------------+-----------------------------------+------------------------+--------+-------------+-------------------+-------------------+-----------------+-----------------------------------+
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------
++---------+---------+---------+---------+---------+---------+---------+---------+---------+
+|  Net-   |  Peer   |  Group  |  Flags  | Peer-AS |  State  | Uptime  | AFI/SAF | [Rx/Act |
+|  Inst   |         |         |         |         |         |         |    I    | ive/Tx] |
++=========+=========+=========+=========+=========+=========+=========+=========+=========+
+| default | fe80::1 | underla | D       | 4200000 | establi | 0d:0h:2 | ipv4-   | [1/0/1] |
+|         | 83d:4ff | y       |         | 010     | shed    | 6m:40s  | unicast |         |
+|         | :feff:2 |         |         |         |         |         |         |         |
+|         | %ethern |         |         |         |         |         |         |         |
+|         | et-     |         |         |         |         |         |         |         |
+|         | 1/49.1  |         |         |         |         |         |         |         |
++---------+---------+---------+---------+---------+---------+---------+---------+---------+
+-------------------------------------------------------------------------------------------------
 Summary:
 0 configured neighbors, 0 configured sessions are established,0 disabled peers
 1 dynamic peers
@@ -581,21 +696,30 @@ Summary:
 /// tab | spine
 
 ```srl
-A:spine# show network-instance default protocols bgp neighbor
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+A:spine# / show network-instance default protocols bgp neighbor
+---------------------------------------------------------------------------------------------
 BGP neighbor summary for network-instance "default"
 Flags: S static, D dynamic, L discovered by LLDP, B BFD enabled, - disabled, * slow
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-+------------------------+-----------------------------------+------------------------+--------+-------------+-------------------+-------------------+-----------------+-----------------------------------+
-|        Net-Inst        |               Peer                |         Group          | Flags  |   Peer-AS   |       State       |      Uptime       |    AFI/SAFI     |          [Rx/Active/Tx]           |
-+========================+===================================+========================+========+=============+===================+===================+=================+===================================+
-| default                | fe80::1805:2ff:feff:31%ethernet-  | underlay               | D      | 4200000001  | established       | 0d:0h:6m:28s      | ipv4-unicast    | [1/1/2]                           |
-|                        | 1/1.1                             |                        |        |             |                   |                   |                 |                                   |
-| default                | fe80::18d9:3ff:feff:31%ethernet-  | underlay               | D      | 4200000002  | established       | 0d:0h:8m:27s      | ipv4-unicast    | [1/1/2]                           |
-|                        | 1/2.1                             |                        |        |             |                   |                   |                 |                                   |
-+------------------------+-----------------------------------+------------------------+--------+-------------+-------------------+-------------------+-----------------+-----------------------------------+
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------
++---------+---------+---------+---------+---------+---------+---------+---------+---------+
+|  Net-   |  Peer   |  Group  |  Flags  | Peer-AS |  State  | Uptime  | AFI/SAF | [Rx/Act |
+|  Inst   |         |         |         |         |         |         |    I    | ive/Tx] |
++=========+=========+=========+=========+=========+=========+=========+=========+=========+
+| default | fe80::1 | underla | D       | 4200000 | establi | 0d:0h:3 | ipv4-   | [1/0/1] |
+|         | 835:2ff | y       |         | 001     | shed    | 0m:49s  | unicast |         |
+|         | :feff:3 |         |         |         |         |         |         |         |
+|         | 1%ether |         |         |         |         |         |         |         |
+|         | net-    |         |         |         |         |         |         |         |
+|         | 1/1.1   |         |         |         |         |         |         |         |
+| default | fe80::1 | underla | D       | 4200000 | establi | 0d:0h:2 | ipv4-   | [1/0/1] |
+|         | 8f3:3ff | y       |         | 002     | shed    | 7m:20s  | unicast |         |
+|         | :feff:3 |         |         |         |         |         |         |         |
+|         | 1%ether |         |         |         |         |         |         |         |
+|         | net-    |         |         |         |         |         |         |         |
+|         | 1/2.1   |         |         |         |         |         |         |         |
++---------+---------+---------+---------+---------+---------+---------+---------+---------+
+---------------------------------------------------------------------------------------------
 Summary:
 0 configured neighbors, 0 configured sessions are established,0 disabled peers
 2 dynamic peers
@@ -603,30 +727,152 @@ Summary:
 
 ///
 
-**Advertised routes**
+All good, we see two spines established eBGP session with the spine using ipv4-unicast address family.
 
-We configured eBGP in the fabric's underlay to advertise the VxLAN tunnel endpoints. The output below verifies that the routers are advertising the prefix of the `system0` interface to their eBGP peers:
+### Advertised routes
+
+We configured eBGP in the fabric's underlay to advertise the VXLAN tunnel endpoints (our `system0` interfaces). The output below verifies that the leafs are advertising their `system0` prefixes to the spine and spine advertises them to the respective leafs.
+
+<small> Note, that the neighbor address in the case of IPv6 Unnumbered is composed of a link-local address (`fe80:...`) and the interface name. You can use CLI autosuggestion to complete the interface name.</small>
 
 /// tab | leaf1
 
-```srl hl_lines="12"
-A:leaf1# show network-instance default protocols bgp neighbor fe80::181d:4ff:feff:1%ethernet-1/49.1 advertised-routes ipv4
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-Peer        : fe80::181d:4ff:feff:1%ethernet-1/49.1, remote AS: 65000, local AS: 4200000001
+```srl hl_lines="13-14"
+--{ + running }--[  ]--
+A:leaf1# / show network-instance default protocols bgp neighbor fe80::183d:4ff:feff:1%ethernet-1/49.1 advertised-routes ipv4
+---------------------------------------------------------------------------------------------------------------
+Peer        : fe80::183d:4ff:feff:1%ethernet-1/49.1, remote AS: 4200000010, local AS: 4200000001
 Type        : static
 Description : None
 Group       : underlay
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
 Origin codes: i=IGP, e=EGP, ?=incomplete
-+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-|                 Network                              Path-id                   Next Hop                 MED                                     LocPref                                   AsPath               Origin      |
-+============================================================================================================================================================================================================================+
-| 100.0.0.1/32                              0                               fe80::1805:2ff:feff            -                                        100                               [4200000001]                  i        |
-|                                                                           :31                                                                                                                                              |
-+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
++--------------------------------------------------------------------------------------------------------+
+|   Network        Path-id        Next Hop         MED          LocPref         AsPath         Origin    |
++========================================================================================================+
+| 10.0.0.1/32    0              fe80::1835:2        -             100        [4200000001]         i      |
+|                               ff:feff:31                                                               |
++--------------------------------------------------------------------------------------------------------+
+---------------------------------------------------------------------------------------------------------------
 1 advertised BGP routes
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+```
+
+///
+
+/// tab | leaf2
+
+```srl hl_lines="13-14"
+--{ + running }--[  ]--
+A:leaf2# / show network-instance default protocols bgp neighbor fe80::183d:4ff:feff:2%ethernet-1/49.1 advertised-routes ipv4
+--------------------------------------------------------------------------------------------------------------
+Peer        : fe80::183d:4ff:feff:2%ethernet-1/49.1, remote AS: 4200000010, local AS: 4200000002
+Type        : static
+Description : None
+Group       : underlay
+--------------------------------------------------------------------------------------------------------------
+Origin codes: i=IGP, e=EGP, ?=incomplete
++--------------------------------------------------------------------------------------------------------+
+|   Network        Path-id        Next Hop         MED          LocPref         AsPath         Origin    |
++========================================================================================================+
+| 10.0.0.2/32    0              fe80::18f3:3        -             100        [4200000002]         i      |
+|                               ff:feff:31                                                               |
++--------------------------------------------------------------------------------------------------------+
+--------------------------------------------------------------------------------------------------------------
+1 advertised BGP routes
+--------------------------------------------------------------------------------------------------------------
+```
+
+///
+
+/// tab | spine
+
+Towards `leaf1`:
+
+```srl hl_lines="13-16"
+--{ + running }--[  ]--
+A:spine# / show network-instance default protocols bgp neighbor fe80::1835:2ff:feff:31%ethernet-1/1.1 advertised-routes ipv4
+-----------------------------------------------------------------------------------------------------------------------------
+Peer        : fe80::1835:2ff:feff:31%ethernet-1/1.1, remote AS: 4200000001, local AS: 4200000010
+Type        : static
+Description : None
+Group       : underlay
+-----------------------------------------------------------------------------------------------------------------------------
+Origin codes: i=IGP, e=EGP, ?=incomplete
++----------------------------------------------------------------------------------------------------------------------+
+|    Network          Path-id          Next Hop           MED            LocPref           AsPath           Origin     |
++======================================================================================================================+
+| 10.0.0.2/32      0                fe80::183d:4ff         -               100         [4200000010,            i       |
+|                                   :feff:1                                            4200000002]                     |
+| 10.10.10.10/32   0                fe80::183d:4ff         -               100         [4200000010]            i       |
+|                                   :feff:1                                                                            |
++----------------------------------------------------------------------------------------------------------------------+
+-----------------------------------------------------------------------------------------------------------------------------
+2 advertised BGP routes
+-----------------------------------------------------------------------------------------------------------------------------
+```
+
+Towards `leaf2`:
+
+```srl hl_lines="13-16"
+--{ + running }--[  ]--
+A:spine# / show network-instance default protocols bgp neighbor fe80::18f3:3ff:feff:31%ethernet-1/2.1 advertised-routes ipv4
+-----------------------------------------------------------------------------------------------------------------------------
+Peer        : fe80::18f3:3ff:feff:31%ethernet-1/2.1, remote AS: 4200000002, local AS: 4200000010
+Type        : static
+Description : None
+Group       : underlay
+-----------------------------------------------------------------------------------------------------------------------------
+Origin codes: i=IGP, e=EGP, ?=incomplete
++----------------------------------------------------------------------------------------------------------------------+
+|    Network          Path-id          Next Hop           MED            LocPref           AsPath           Origin     |
++======================================================================================================================+
+| 10.0.0.1/32      0                fe80::183d:4ff         -               100         [4200000010,            i       |
+|                                   :feff:2                                            4200000001]                     |
+| 10.10.10.10/32   0                fe80::183d:4ff         -               100         [4200000010]            i       |
+|                                   :feff:2                                                                            |
++----------------------------------------------------------------------------------------------------------------------+
+-----------------------------------------------------------------------------------------------------------------------------
+2 advertised BGP routes
+-----------------------------------------------------------------------------------------------------------------------------
+```
+
+///
+
+### Route table
+
+The last stop in the control plane verification process is to check if the remote loopback prefixes were installed in the `default` network-instance where we expect them to be:
+
+/// tab | leaf1
+
+```srl hl_lines="14"
+--{ + running }--[  ]--
+A:leaf1# / show network-instance default route-table
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+IPv4 unicast route table of network instance default
+--------------------------------------------------------------------------------------------------------------------------------------------------------
++----------------+------+-----------+--------------------+---------+---------+--------+-----------+-----------+-----------+-----------+-------------+
+|     Prefix     |  ID  |   Route   |    Route Owner     | Active  | Origin  | Metric |   Pref    | Next-hop  | Next-hop  |  Backup   |   Backup    |
+|                |      |   Type    |                    |         | Network |        |           |  (Type)   | Interface | Next-hop  |  Next-hop   |
+|                |      |           |                    |         | Instanc |        |           |           |           |  (Type)   |  Interface  |
+|                |      |           |                    |         |    e    |        |           |           |           |           |             |
++================+======+===========+====================+=========+=========+========+===========+===========+===========+===========+=============+
+| 10.0.0.1/32    | 3    | host      | net_inst_mgr       | True    | default | 0      | 0         | None      | None      |           |             |
+|                |      |           |                    |         |         |        |           | (extract) |           |           |             |
+| 10.0.0.2/32    | 0    | bgp       | bgp_mgr            | True    | default | 0      | 170       | fe80::183 | ethernet- |           |             |
+|                |      |           |                    |         |         |        |           | d:4ff:fef | 1/49.1    |           |             |
+|                |      |           |                    |         |         |        |           | f:1       |           |           |             |
+|                |      |           |                    |         |         |        |           | (direct)  |           |           |             |
+| 10.10.10.10/32 | 0    | bgp       | bgp_mgr            | True    | default | 0      | 170       | fe80::183 | ethernet- |           |             |
+|                |      |           |                    |         |         |        |           | d:4ff:fef | 1/49.1    |           |             |
+|                |      |           |                    |         |         |        |           | f:1       |           |           |             |
+|                |      |           |                    |         |         |        |           | (direct)  |           |           |             |
++----------------+------+-----------+--------------------+---------+---------+--------+-----------+-----------+-----------+-----------+-------------+
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+IPv4 routes total                    : 3
+IPv4 prefixes with active routes     : 3
+IPv4 prefixes with active ECMP routes: 0
+--------------------------------------------------------------------------------------------------------------------------------------------------------
 ```
 
 ///
@@ -634,229 +880,144 @@ Origin codes: i=IGP, e=EGP, ?=incomplete
 /// tab | leaf2
 
 ```srl hl_lines="12"
-A:leaf2# show network-instance default protocols bgp neighbor fe80::181d:4ff:feff:2%ethernet-1/49.1 advertised-routes ipv4
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-Peer        : fe80::181d:4ff:feff:2%ethernet-1/49.1, remote AS: 65000, local AS: 4200000002
-Type        : static
-Description : None
-Group       : underlay
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-Origin codes: i=IGP, e=EGP, ?=incomplete
-+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-|                 Network                              Path-id                   Next Hop                 MED                                     LocPref                                   AsPath               Origin      |
-+============================================================================================================================================================================================================================+
-| 100.0.0.2/32                              0                               fe80::18d9:3ff:feff            -                                        100                               [4200000002]                  i        |
-|                                                                           :31                                                                                                                                              |
-+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-1 advertised BGP routes
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-```
-
-///
-
-/// tab | spine
-
-```srl hl_lines="12 14 33 35"
-A:spine# show network-instance default protocols bgp neighbor  fe80::1805:2ff:feff:31%ethernet-1/1.1 advertised-routes ipv4
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-Peer        : fe80::1805:2ff:feff:31%ethernet-1/1.1, remote AS: 4200000001, local AS: 65000
-Type        : static
-Description : None
-Group       : underlay
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-Origin codes: i=IGP, e=EGP, ?=incomplete
-+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-|                 Network                              Path-id                   Next Hop                 MED                                     LocPref                                   AsPath               Origin      |
-+============================================================================================================================================================================================================================+
-| 100.0.0.2/32                              0                               fe80::181d:4ff:feff            -                                        100                               [65000, 4200000002]           i        |
-|                                                                           :1                                                                                                                                               |
-| 100.100.100.100/32                        0                               fe80::181d:4ff:feff            -                                        100                               [65000]                       i        |
-|                                                                           :1                                                                                                                                               |
-+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-2 advertised BGP routes
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-
-A:spine# show network-instance default protocols bgp neighbor fe80::18d9:3ff:feff:31%ethernet-1/2.1 advertised-routes ipv4
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-Peer        : fe80::18d9:3ff:feff:31%ethernet-1/2.1, remote AS: 4200000002, local AS: 65000
-Type        : static
-Description : None
-Group       : underlay
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-Origin codes: i=IGP, e=EGP, ?=incomplete
-+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-|                 Network                              Path-id                   Next Hop                 MED                                     LocPref                                   AsPath               Origin      |
-+============================================================================================================================================================================================================================+
-| 100.0.0.1/32                              0                               fe80::181d:4ff:feff            -                                        100                               [65000, 4200000001]           i        |
-|                                                                           :2                                                                                                                                               |
-| 100.100.100.100/32                        0                               fe80::181d:4ff:feff            -                                        100                               [65000]                       i        |
-|                                                                           :2                                                                                                                                               |
-+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-2 advertised BGP routes
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-```
-
-///
-
-**Route table**
-
-The last stop in the control plane verification would be to check if the remote loopback prefixes were installed in the `default` network-instance where we expect them to be:
-
-/// tab | leaf1
-
-```srl hl_lines="11 13"
-A:leaf1# show network-instance default route-table
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--{ + running }--[  ]--
+A:leaf2# / show network-instance default route-table
+--------------------------------------------------------------------------------------------------------------------------------------------------------
 IPv4 unicast route table of network instance default
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-+---------------------------------+-------+------------+----------------------+----------+----------+---------+------------+--------------------+--------------------+--------------------+------------------------------------+
-|             Prefix              |  ID   | Route Type |     Route Owner      |  Active  |  Origin  | Metric  |    Pref    |  Next-hop (Type)   | Next-hop Interface |  Backup Next-hop   |     Backup Next-hop Interface      |
-|                                 |       |            |                      |          | Network  |         |            |                    |                    |       (Type)       |                                    |
-|                                 |       |            |                      |          | Instance |         |            |                    |                    |                    |                                    |
-+=================================+=======+============+======================+==========+==========+=========+============+====================+====================+====================+====================================+
-| 100.0.0.1/32                    | 4     | host       | net_inst_mgr         | True     | default  | 0       | 0          | None (extract)     | None               |                    |                                    |
-| 100.0.0.2/32                    | 0     | bgp        | bgp_mgr              | True     | default  | 0       | 170        | fe80::181d:4ff:fef | ethernet-1/49.1    |                    |                                    |
-|                                 |       |            |                      |          |          |         |            | f:1 (direct)       |                    |                    |                                    |
-| 100.100.100.100/32              | 0     | bgp        | bgp_mgr              | True     | default  | 0       | 170        | fe80::181d:4ff:fef | ethernet-1/49.1    |                    |                                    |
-|                                 |       |            |                      |          |          |         |            | f:1 (direct)       |                    |                    |                                    |
-+---------------------------------+-------+------------+----------------------+----------+----------+---------+------------+--------------------+--------------------+--------------------+------------------------------------+
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------------------------------
++----------------+------+-----------+--------------------+---------+---------+--------+-----------+-----------+-----------+-----------+-------------+
+|     Prefix     |  ID  |   Route   |    Route Owner     | Active  | Origin  | Metric |   Pref    | Next-hop  | Next-hop  |  Backup   |   Backup    |
+|                |      |   Type    |                    |         | Network |        |           |  (Type)   | Interface | Next-hop  |  Next-hop   |
+|                |      |           |                    |         | Instanc |        |           |           |           |  (Type)   |  Interface  |
+|                |      |           |                    |         |    e    |        |           |           |           |           |             |
++================+======+===========+====================+=========+=========+========+===========+===========+===========+===========+=============+
+| 10.0.0.1/32    | 0    | bgp       | bgp_mgr            | True    | default | 0      | 170       | fe80::183 | ethernet- |           |             |
+|                |      |           |                    |         |         |        |           | d:4ff:fef | 1/49.1    |           |             |
+|                |      |           |                    |         |         |        |           | f:2       |           |           |             |
+|                |      |           |                    |         |         |        |           | (direct)  |           |           |             |
+| 10.0.0.2/32    | 3    | host      | net_inst_mgr       | True    | default | 0      | 0         | None      | None      |           |             |
+|                |      |           |                    |         |         |        |           | (extract) |           |           |             |
+| 10.10.10.10/32 | 0    | bgp       | bgp_mgr            | True    | default | 0      | 170       | fe80::183 | ethernet- |           |             |
+|                |      |           |                    |         |         |        |           | d:4ff:fef | 1/49.1    |           |             |
+|                |      |           |                    |         |         |        |           | f:2       |           |           |             |
+|                |      |           |                    |         |         |        |           | (direct)  |           |           |             |
++----------------+------+-----------+--------------------+---------+---------+--------+-----------+-----------+-----------+-----------+-------------+
+--------------------------------------------------------------------------------------------------------------------------------------------------------
 IPv4 routes total                    : 3
 IPv4 prefixes with active routes     : 3
 IPv4 prefixes with active ECMP routes: 0
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------------------------------
 ```
 
 ///
 
-/// tab | leaf2
+Both leafs have in their routing table a route to the loopback of the other leaf!
 
-```srl hl_lines="10 13"
-A:leaf2# show network-instance default route-table
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-IPv4 unicast route table of network instance default
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-+---------------------------------+-------+------------+----------------------+----------+----------+---------+------------+--------------------+--------------------+--------------------+------------------------------------+
-|             Prefix              |  ID   | Route Type |     Route Owner      |  Active  |  Origin  | Metric  |    Pref    |  Next-hop (Type)   | Next-hop Interface |  Backup Next-hop   |     Backup Next-hop Interface      |
-|                                 |       |            |                      |          | Network  |         |            |                    |                    |       (Type)       |                                    |
-|                                 |       |            |                      |          | Instance |         |            |                    |                    |                    |                                    |
-+=================================+=======+============+======================+==========+==========+=========+============+====================+====================+====================+====================================+
-| 100.0.0.1/32                    | 0     | bgp        | bgp_mgr              | True     | default  | 0       | 170        | fe80::181d:4ff:fef | ethernet-1/49.1    |                    |                                    |
-|                                 |       |            |                      |          |          |         |            | f:2 (direct)       |                    |                    |                                    |
-| 100.0.0.2/32                    | 4     | host       | net_inst_mgr         | True     | default  | 0       | 0          | None (extract)     | None               |                    |                                    |
-| 100.100.100.100/32              | 0     | bgp        | bgp_mgr              | True     | default  | 0       | 170        | fe80::181d:4ff:fef | ethernet-1/49.1    |                    |                                    |
-|                                 |       |            |                      |          |          |         |            | f:2 (direct)       |                    |                    |                                    |
-+---------------------------------+-------+------------+----------------------+----------+----------+---------+------------+--------------------+--------------------+--------------------+------------------------------------+
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-IPv4 routes total                    : 3
-IPv4 prefixes with active routes     : 3
-IPv4 prefixes with active ECMP routes: 0
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-```
+### Dataplane
 
-///
-
-/// tab | spine
-
-```srl hl_lines="10 12"
-A:spine# show network-instance default route-table
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-IPv4 unicast route table of network instance default
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-+---------------------------------+-------+------------+----------------------+----------+----------+---------+------------+--------------------+--------------------+--------------------+------------------------------------+
-|             Prefix              |  ID   | Route Type |     Route Owner      |  Active  |  Origin  | Metric  |    Pref    |  Next-hop (Type)   | Next-hop Interface |  Backup Next-hop   |     Backup Next-hop Interface      |
-|                                 |       |            |                      |          | Network  |         |            |                    |                    |       (Type)       |                                    |
-|                                 |       |            |                      |          | Instance |         |            |                    |                    |                    |                                    |
-+=================================+=======+============+======================+==========+==========+=========+============+====================+====================+====================+====================================+
-| 100.0.0.1/32                    | 0     | bgp        | bgp_mgr              | True     | default  | 0       | 170        | fe80::1805:2ff:fef | ethernet-1/1.1     |                    |                                    |
-|                                 |       |            |                      |          |          |         |            | f:31 (direct)      |                    |                    |                                    |
-| 100.0.0.2/32                    | 0     | bgp        | bgp_mgr              | True     | default  | 0       | 170        | fe80::18d9:3ff:fef | ethernet-1/2.1     |                    |                                    |
-|                                 |       |            |                      |          |          |         |            | f:31 (direct)      |                    |                    |                                    |
-| 100.100.100.100/32              | 4     | host       | net_inst_mgr         | True     | default  | 0       | 0          | None (extract)     | None               |                    |                                    |
-+---------------------------------+-------+------------+----------------------+----------+----------+---------+------------+--------------------+--------------------+--------------------+------------------------------------+
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-IPv4 routes total                    : 3
-IPv4 prefixes with active routes     : 3
-IPv4 prefixes with active ECMP routes: 0
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-```
-
-///
-
-Both learned prefixes appear in the route table of the default network instance, with bgp_mgr as their owner, indicating they were added by the BGP process. The system0 interface prefix owner is the network instance manager, signifying it is a local prefix.
-
-**Dataplane**
-
-To finish the verification process let's ensure that the datapath is indeed working, and the VTEPs on both leafs can reach each other via the routed fabric underlay.
+To finish the verification process let's ensure that the datapath is working, and the VTEPs on both leafs can reach each other via the routed underlay.
 
 For that we will use the `ping` command with src/dst set to loopback addresses:
 
-```
-A:leaf1# ping network-instance default 100.0.0.2 -I 100.0.0.1 -c 3
+```title="leaf1 loopback pings leaf2 loopback"
+A:leaf1# ping network-instance default 10.0.0.2 -I 10.0.0.1 -c 3
 Using network instance default
-PING 100.0.0.2 (100.0.0.2) from 100.0.0.1 : 56(84) bytes of data.
-64 bytes from 100.0.0.2: icmp_seq=1 ttl=63 time=4.72 ms
-64 bytes from 100.0.0.2: icmp_seq=2 ttl=63 time=5.71 ms
-64 bytes from 100.0.0.2: icmp_seq=3 ttl=63 time=5.64 ms
+PING 10.0.0.2 (10.0.0.2) from 10.0.0.1 : 56(84) bytes of data.
+64 bytes from 10.0.0.2: icmp_seq=1 ttl=63 time=9.93 ms
+64 bytes from 10.0.0.2: icmp_seq=2 ttl=63 time=16.2 ms
+64 bytes from 10.0.0.2: icmp_seq=3 ttl=63 time=15.2 ms
 
---- 100.0.0.2 ping statistics ---
-3 packets transmitted, 3 received, 0% packet loss, time 2004ms
-rtt min/avg/max/mdev = 4.722/5.355/5.707/0.448 ms
+--- 10.0.0.2 ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2002ms
+rtt min/avg/max/mdev = 9.926/13.776/16.178/2.750 ms
 
 ```
 
-Perfect, the VTEPs are reachable and the fabric underlay is properly configured. We can proceed with EVPN service configuration!
+Perfect, the loopbacks are reachable and the fabric underlay is properly configured. We can proceed with EVPN service configuration!
 
 ## Resulting configs
 
-Below you will find aggregated configuration snippets which contain the entire fabric configuration we did in the steps above. Those snippets are in the _flat_ format and were extracted with `info flat` command.
+Below you will find aggregated configuration snippets that contain the entire fabric configuration we did in the steps above. Those snippets are in the CLI format and were extracted with the `info` command.
 
 /// note
-`enter candidate` and `commit now` commands are part of the snippets, so it is possible to paste them right after you logged into the devices as well as the changes will get committed to running config.
+`enter candidate` and `commit now` commands are part of the snippets, so it is possible to apply them right after you logged into the freshly booted devices.
 ///
 
 /// tab | leaf1
 
-```srl
+```{.srl .code-scroll-lg}
 enter candidate
 
-# Allow IPv4 packets on an IPv6 interface
-set / network-instance default ip-forwarding receive-ipv4-check false
+/ routing-policy {
+    prefix-set system-loopbacks {
+        prefix 10.0.0.0/8 mask-length-range 8..32 {
+        }
+    }
+    policy system-loopbacks-policy {
+        statement 1 {
+            match {
+                prefix-set system-loopbacks
+            }
+            action {
+                policy-result accept
+            }
+        }
+    }
+}
 
-# Configure the link and enable the IPv6 subinterface
-set / interface ethernet-1/49 admin-state enable
-set / interface ethernet-1/49 subinterface 1 ipv6 admin-state enable
-set / interface ethernet-1/49 subinterface 1 ipv6 router-advertisement router-role admin-state enable
+/ interface ethernet-1/49 {
+    admin-state enable
+    subinterface 1 {
+        ipv6 {
+            admin-state enable
+            router-advertisement {
+                router-role {
+                    admin-state enable
+                }
+            }
+        }
+    }
+}
+/ interface system0 {
+    subinterface 0 {
+        ipv4 {
+            admin-state enable
+            address 10.0.0.1/32 {
+            }
+        }
+    }
+}
 
-# Configure the system interface
-set / interface system0 subinterface 0 ipv4 admin-state enable
-set / interface system0 subinterface 0 ipv4 address 100.0.0.1/32
-
-# Add interfaces to default routing instance
-set / network-instance default interface ethernet-1/49.1
-set / network-instance default interface system0.0
-
-# Policy to export local routes (system) to BGP neighbors
-set / routing-policy policy announce_system_IP statement 1 match protocol local
-set / routing-policy policy announce_system_IP statement 1 action policy-result accept
-
-# BGP Configuration
-set / network-instance default protocols bgp autonomous-system 4200000001
-set / network-instance default protocols bgp router-id 100.0.0.1
-set / network-instance default protocols bgp group underlay
-
-set / network-instance default protocols bgp dynamic-neighbors interface ethernet-1/49.1 peer-group underlay
-set / network-instance default protocols bgp dynamic-neighbors interface ethernet-1/49.1 allowed-peer-as [ 1..4294967295 ]
-
-set / network-instance default protocols bgp ebgp-default-policy import-reject-all false
-set / network-instance default protocols bgp ebgp-default-policy export-reject-all false
-
-set / network-instance default protocols bgp afi-safi ipv4-unicast admin-state enable
-set / network-instance default protocols bgp afi-safi ipv4-unicast export-policy announce_system_IP
+/ network-instance default {
+    ip-forwarding {
+        receive-ipv4-check false
+    }
+    interface ethernet-1/49.1 {
+    }
+    interface system0.0 {
+    }
+    protocols {
+        bgp {
+            autonomous-system 4200000001
+            router-id 10.0.0.1
+            dynamic-neighbors {
+                interface ethernet-1/49.1 {
+                    peer-group underlay
+                    allowed-peer-as [
+                        4200000001..4200000010
+                    ]
+                }
+            }
+            afi-safi ipv4-unicast {
+                admin-state enable
+            }
+            group underlay {
+                export-policy system-loopbacks-policy
+                import-policy system-loopbacks-policy
+            }
+        }
+    }
+}
 
 commit now
 ```
@@ -865,42 +1026,79 @@ commit now
 
 /// tab | leaf2
 
-```srl
+```{.srl .code-scroll-lg}
 enter candidate
 
-# Allow IPv4 packets on an IPv6 interface
-set / network-instance default ip-forwarding receive-ipv4-check false
+/ routing-policy {
+    prefix-set system-loopbacks {
+        prefix 10.0.0.0/8 mask-length-range 8..32 {
+        }
+    }
+    policy system-loopbacks-policy {
+        statement 1 {
+            match {
+                prefix-set system-loopbacks
+            }
+            action {
+                policy-result accept
+            }
+        }
+    }
+}
 
-# Configure the link and enable the IPv6 subinterface
-set / interface ethernet-1/49 admin-state enable
-set / interface ethernet-1/49 subinterface 1 ipv6 admin-state enable
-set / interface ethernet-1/49 subinterface 1 ipv6 router-advertisement router-role admin-state enable
+/ interface ethernet-1/49 {
+    admin-state enable
+    subinterface 1 {
+        ipv6 {
+            admin-state enable
+            router-advertisement {
+                router-role {
+                    admin-state enable
+                }
+            }
+        }
+    }
+}
+/ interface system0 {
+    subinterface 0 {
+        ipv4 {
+            admin-state enable
+            address 10.0.0.2/32 {
+            }
+        }
+    }
+}
 
-# Configure the system interface
-set / interface system0 subinterface 0 ipv4 admin-state enable
-set / interface system0 subinterface 0 ipv4 address 100.0.0.2/32
-
-# Add interfaces to default routing instance
-set / network-instance default interface ethernet-1/49.1
-set / network-instance default interface system0.0
-
-# Policy to export local routes (system) to BGP neighbors
-set / routing-policy policy announce_system_IP statement 1 match protocol local
-set / routing-policy policy announce_system_IP statement 1 action policy-result accept
-
-# BGP Configuration
-set / network-instance default protocols bgp autonomous-system 4200000002
-set / network-instance default protocols bgp router-id 100.0.0.2
-set / network-instance default protocols bgp group underlay
-
-set / network-instance default protocols bgp dynamic-neighbors interface ethernet-1/49.1 peer-group underlay
-set / network-instance default protocols bgp dynamic-neighbors interface ethernet-1/49.1 allowed-peer-as [ 1..4294967295 ]
-
-set / network-instance default protocols bgp ebgp-default-policy import-reject-all false
-set / network-instance default protocols bgp ebgp-default-policy export-reject-all false
-
-set / network-instance default protocols bgp afi-safi ipv4-unicast admin-state enable
-set / network-instance default protocols bgp afi-safi ipv4-unicast export-policy announce_system_IP
+/ network-instance default {
+    ip-forwarding {
+        receive-ipv4-check false
+    }
+    interface ethernet-1/49.1 {
+    }
+    interface system0.0 {
+    }
+    protocols {
+        bgp {
+            autonomous-system 4200000002
+            router-id 10.0.0.2
+            dynamic-neighbors {
+                interface ethernet-1/49.1 {
+                    peer-group underlay
+                    allowed-peer-as [
+                        4200000001..4200000010
+                    ]
+                }
+            }
+            afi-safi ipv4-unicast {
+                admin-state enable
+            }
+            group underlay {
+                export-policy system-loopbacks-policy
+                import-policy system-loopbacks-policy
+            }
+        }
+    }
+}
 
 commit now
 ```
@@ -912,53 +1110,89 @@ commit now
 ```srl
 enter candidate
 
-# Allow IPv4 packets on an IPv6 interface
-set / network-instance default ip-forwarding receive-ipv4-check false
+/ interface ethernet-1/1 {
+    admin-state enable
+    subinterface 1 {
+        ipv6 {
+            admin-state enable
+            router-advertisement {
+                router-role {
+                    admin-state enable
+                }
+            }
+        }
+    }
+}
+/ interface ethernet-1/2 {
+    admin-state enable
+    subinterface 1 {
+        ipv6 {
+            admin-state enable
+            router-advertisement {
+                router-role {
+                    admin-state enable
+                }
+            }
+        }
+    }
+}
+/ interface system0 {
+    subinterface 0 {
+        ipv4 {
+            admin-state enable
+            address 10.10.10.10/32 {
+            }
+        }
+    }
+}
 
-# Configure the link and enable the IPv6 subinterface
-set / interface ethernet-1/1 admin-state enable
-set / interface ethernet-1/1 subinterface 1 ipv6 admin-state enable
-set / interface ethernet-1/1 subinterface 1 ipv6 router-advertisement router-role admin-state enable
-set / interface ethernet-1/2 admin-state enable
-set / interface ethernet-1/2 subinterface 1 ipv6 admin-state enable
-set / interface ethernet-1/2 subinterface 1 ipv6 router-advertisement router-role admin-state enable
-
-
-# Configure the system interface
-set / interface system0 subinterface 0 ipv4 admin-state enable
-set / interface system0 subinterface 0 ipv4 address 100.100.100.100/32
-
-# Add interfaces to default routing instance
-set / network-instance default interface ethernet-1/1.1
-set / network-instance default interface ethernet-1/2.1
-set / network-instance default interface system0.0
-
-# Policy to export local routes (system) to BGP neighbors
-set / routing-policy policy announce_system_IP statement 1 match protocol local
-set / routing-policy policy announce_system_IP statement 1 action policy-result accept
-
-# BGP Configuration
-set / network-instance default protocols bgp autonomous-system 65000
-set / network-instance default protocols bgp router-id 100.100.100.100
-
-set / network-instance default protocols bgp dynamic-neighbors interface ethernet-1/1.1 peer-group underlay
-set / network-instance default protocols bgp dynamic-neighbors interface ethernet-1/1.1 allowed-peer-as [ 1..4294967295 ]
-
-set / network-instance default protocols bgp dynamic-neighbors interface ethernet-1/2.1 peer-group underlay
-set / network-instance default protocols bgp dynamic-neighbors interface ethernet-1/2.1 allowed-peer-as [ 1..4294967295 ]
-
-set / network-instance default protocols bgp ebgp-default-policy import-reject-all false
-set / network-instance default protocols bgp ebgp-default-policy export-reject-all false
-
-set / network-instance default protocols bgp afi-safi ipv4-unicast admin-state enable
-set / network-instance default protocols bgp afi-safi ipv4-unicast export-policy announce_system_IP
-
-set / network-instance default protocols bgp group underlay
+/ network-instance default {
+    ip-forwarding {
+        receive-ipv4-check false
+    }
+    interface ethernet-1/1.1 {
+    }
+    interface ethernet-1/2.1 {
+    }
+    interface system0.0 {
+    }
+    protocols {
+        bgp {
+            autonomous-system 4200000010
+            router-id 10.10.10.10
+            dynamic-neighbors {
+                interface ethernet-1/1.1 {
+                    peer-group underlay
+                    allowed-peer-as [
+                        4200000001..4200000010
+                    ]
+                }
+                interface ethernet-1/2.1 {
+                    peer-group underlay
+                    allowed-peer-as [
+                        4200000001..4200000010
+                    ]
+                }
+            }
+            ebgp-default-policy {
+                import-reject-all false
+                export-reject-all false
+            }
+            afi-safi ipv4-unicast {
+                admin-state enable
+            }
+            group underlay {
+            }
+        }
+    }
+}
 
 commit now
 ```
 
 ///
+
+Great stuff, now we are ready to move on to the [L3 EVPN service configuration](overlay.md).
 
 [RFC 8950]: https://datatracker.ietf.org/doc/html/rfc8950
 [srl-unnumbered-docs]: https://documentation.nokia.com/srlinux/24-3/books/routing-protocols/bgp.html#bgp-unnumbered-peer
