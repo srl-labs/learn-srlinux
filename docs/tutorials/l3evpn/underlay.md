@@ -352,18 +352,6 @@ Here is a breakdown of the configuration steps done on `leaf1` and you will find
     set / routing-policy policy system-loopbacks-policy statement 1 action policy-result accept
     ```
 
-    /// admonition | We configure the spine differently
-        type: note
-    The spine device should import and export the prefixes received from the leaf devices. We could have used the same policy as for the leafs, but instead we will make use of the [default import/export policy](https://documentation.nokia.com/srlinux/24-3/books/routing-protocols/bgp.html?hl=default%2Cbgp%2Cpolicy#bgp-peer-import-export-policies) that is enacted when no explicit policy is configured and will allow all prefixes to be accepted and announced.
-
-    By setting both `ebgp-default-policy import-reject-all` and ` ebgp-default-policy export-reject-all` to `false` we will allow import and export of all prefixes.
-
-    ```{.srl .no-select}
-    set / network-instance default protocols bgp ebgp-default-policy import-reject-all false export-reject-all false
-    ```
-
-    ///
-
 4. **Create BGP peer-group**  
     A BGP peer group simplifies configuring multiple BGP peers with similar requirements by grouping them together, allowing the same policies and attributes to be applied to all peers in the group. Here we create a group named `underlay` to be used for the eBGP peerings and set the created import/export policies to it.
   
@@ -824,7 +812,7 @@ commit now
 
 ///
 
-Great stuff, now we are ready to move on to the [L3 EVPN service configuration](overlay.md).
+Great stuff, now we are ready to move on to the [Overlay Routing configuration](overlay.md).
 
 [RFC 8950]: https://datatracker.ietf.org/doc/html/rfc8950
 [srl-unnumbered-docs]: https://documentation.nokia.com/srlinux/24-3/books/routing-protocols/bgp.html#bgp-unnumbered-peer
