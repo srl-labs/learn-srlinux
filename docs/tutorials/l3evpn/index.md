@@ -23,15 +23,15 @@ While EVPN originally emerged as a Layer 2 VPN technology to overcome VPLS limit
 In the [Layer 2 EVPN Basics Tutorial][evpn-basics-tutorial] we discussed how to configure EVPN to provide a layer 2 service across an IP fabric. Today' focus will be on deploying a **Layer 3 Ethernet VPN (EVPN)** in the SR Linux-powered DC fabric.  
 As you might expect, the Layer 3 EVPN is designed to provide Layer 3 services across the fabric. As such, there are **no** stretched broadcast domains across the fabric and the customer equipment is typically running a BGP PE-CE session with the top of rack switch to exchange IP prefixes.
 
-To explain the Layer 3 EVPN configuration and concepts we will use a small fabric with two leafs, one spine and two clients connected to the leafs. The clients will run FRRouting software as a CE router.
+To explain the Layer 3 EVPN configuration and concepts we will use a small fabric with two leafs, one spine and two clients connected to the leafs. The clients will run [FRRouting](https://frrouting.org) software as a CE router.
 
 <div class='mxgraph' style='max-width:100%;border:1px solid transparent;margin:0 auto; display:block;' data-mxgraph='{"page":0,"zoom":2,"highlight":"#0000ff","nav":true,"resize":true,"edit":"_blank","url":"https://raw.githubusercontent.com/srl-labs/srl-l3evpn-basics-lab/main/images/diagrams.drawio"}'></div>
 
-Control plane-wise, and in contrast to the Layer 2 EVPN, the CE devices will establish a BGP session with the leaf devices to exchange IP prefixes and the BGP EVPN will make sure that the client prefixes are distributed to the tenants of the same L3 EVPN service. On the data plane side the VXLAN tunnels will be used to transport encapsulated packets between the leafs and spines.
+Control plane-wise, and in contrast to the Layer 2 EVPN, the CE devices will establish a BGP session with the leaf devices to exchange IP prefixes and the BGP EVPN will make sure that the client prefixes are distributed to the tenants of the same L3 EVPN service. On the data plane side the VXLAN tunnels will be used to transport encapsulated packets through the fabric.
 
 <div class='mxgraph' style='max-width:100%;border:1px solid transparent;margin:0 auto; display:block;' data-mxgraph='{"page":1,"zoom":2,"highlight":"#0000ff","nav":true,"resize":true,"edit":"_blank","url":"https://raw.githubusercontent.com/srl-labs/srl-l3evpn-basics-lab/main/images/diagrams.drawio"}'></div>
 
-As part of this tutorial we will configure the SR Linux-based DC fabric underlay. Then cover the creation of an L3 EVPN overlay across two routers functioning as a unified virtual router. In the final chapter, we will get into the details how to peer the client with the EVPN overlay for the route exchange.
+As part of this tutorial we will configure the SR Linux-based DC fabric underlay. Then we will setup the overlay routing using EVPN address family and proceed with the creation of an L3 EVPN service. In the final chapter, we will get into the details how to peer the client equipment with the EVPN overlay for the route exchange.
 
 ## Lab deployment
 
@@ -60,7 +60,7 @@ If you want to run the lab in a free cloud instance, click the button below to o
 ///
 
 Once the deployment process is finished you'll see a table with the deployed nodes.  
-Using the names provided in the table you can SSH into the nodes to start the configuration process. For example, to connect to the `clab-l3evpn-leaf1` node you can use the following command:
+Using the names provided in the table you can SSH into the nodes to start the configuration process. For example, to connect to the `l3evpn-leaf1` node you can use the following command:
 
 ```bash
 ssh l3evpn-leaf1 #(1)!
@@ -70,7 +70,7 @@ ssh l3evpn-leaf1 #(1)!
 
 <small>The lab comes up online with the FRR nodes configured, and no configuration is present on the SR Linux nodes besides the basic setup. During the course of this tutorial we will configure the SR Linux nodes and explain the FRR config bits.</small>
 
-With the lab deployed we are ready to embark on our learn-by-doing EVPN configuration journey!
+With the lab deployed we are ready to embark on our [learn-by-doing EVPN configuration journey](underlay.md)!
 
 /// note | Are you new to SR Linux?
 We advise the newcomers not to skip the [Configuration Basics Guide][conf-basics-guide] as it provides just enough details to survive in the configuration waters we are about to get in.

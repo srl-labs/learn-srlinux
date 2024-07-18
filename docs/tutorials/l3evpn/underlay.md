@@ -117,20 +117,7 @@ Below you will find the relevant configuration snippets for leafs and spine devi
 ```srl
 enter candidate
 
-/ interface ethernet-1/49
-    admin-state enable
-    subinterface 1 {
-        ipv6 {
-            admin-state enable
-            router-advertisement {
-                router-role {
-                    admin-state enable
-                }
-            }
-        }
-    }
-
-/ network-instance default interface ethernet-1/49.1
+--8<-- "https://raw.githubusercontent.com/srl-labs/srl-l3evpn-basics-lab/main/startup_configs/leaf1.cfg:physical-interfaces"
 
 commit now
 ```
@@ -142,20 +129,7 @@ commit now
 ```srl
 enter candidate
 
-/ interface ethernet-1/{1..2} #(1)
-    admin-state enable
-    subinterface 1 {
-        ipv6 {
-            admin-state enable
-            router-advertisement {
-                router-role {
-                    admin-state enable
-                }
-            }
-        }
-    }
-
-/ network-instance default interface ethernet-1/{1..2}.1
+--8<-- "https://raw.githubusercontent.com/srl-labs/srl-l3evpn-basics-lab/main/startup_configs/spine.cfg:physical-interfaces"
 
 commit now
 ```
@@ -297,16 +271,7 @@ Configuration of the `system0` interface/subinterface is exactly the same as for
 ```srl
 enter candidate
 
-/ interface system0 {
-    subinterface 0 {
-        ipv4 {
-            admin-state enable
-            address 10.0.0.1/32
-        }
-    }
-}
-
-/ network-instance default interface system0.0
+--8<-- "https://raw.githubusercontent.com/srl-labs/srl-l3evpn-basics-lab/main/startup_configs/leaf1.cfg:loopback-interfaces"
 
 commit now
 ```
@@ -318,16 +283,7 @@ commit now
 ```srl
 enter candidate
 
-/ interface system0 {
-    subinterface 0 {
-        ipv4 {
-            admin-state enable
-            address 10.0.0.2/32
-        }
-    }
-}
-
-/ network-instance default interface system0.0
+--8<-- "https://raw.githubusercontent.com/srl-labs/srl-l3evpn-basics-lab/main/startup_configs/leaf2.cfg:loopback-interfaces"
 
 commit now
 
@@ -340,16 +296,7 @@ commit now
 ```srl
 enter candidate
 
-/ interface system0 {
-    subinterface 0 {
-        ipv4 {
-            admin-state enable
-            address 10.10.10.10/32
-        }
-    }
-}
-
-/ network-instance default interface system0.0
+--8<-- "https://raw.githubusercontent.com/srl-labs/srl-l3evpn-basics-lab/main/startup_configs/spine.cfg:loopback-interfaces"
 
 commit now
 ```
@@ -426,13 +373,11 @@ Here is a breakdown of the configuration steps done on `leaf1` and you will find
     set / network-instance default protocols bgp group underlay import-policy system-loopbacks-policy
     ```
 
-    ```
-
 5. **Enable `ipv4-unicast` Address Family**  
-    In order to exchange IPv4 loopback IPs we need to enable `ipv4-unicast` address family; we put this under the underlay group.
+    In order to exchange IPv4 loopback IPs we need to enable `ipv4-unicast` address family; we put this under the global bgp region, since at least one address family must be enabled for the BGP process.
 
     ```{.srl .no-select}
-    set / network-instance default protocols bgp group underlay afi-safi ipv4-unicast admin-state enable
+    set / network-instance default protocols bgp afi-safi ipv4-unicast admin-state enable
     ```
 
 6. **Configure dynamic BGP neighbors**  
@@ -483,49 +428,7 @@ Here are the config snippets related to eBGP configuration per device for an eas
 ```srl
 enter candidate
 
-/ routing-policy {
-    prefix-set system-loopbacks {
-        prefix 10.0.0.0/8 mask-length-range 8..32 {
-        }
-    }
-    policy system-loopbacks-policy {
-        statement 1 {
-            match {
-                prefix-set system-loopbacks
-            }
-            action {
-                policy-result accept
-            }
-        }
-    }
-}
-
-/ network-instance default {
-    protocols {
-        bgp {
-            autonomous-system 4200000001
-            router-id 10.0.0.1
-            dynamic-neighbors {
-                interface ethernet-1/49.1 {
-                    peer-group underlay
-                    allowed-peer-as [
-                        4200000001..4200000010
-                    ]
-                }
-            }
-            group underlay {
-                afi-safi ipv4-unicast {
-                    admin-state enable
-                }
-                export-policy system-loopbacks-policy
-                import-policy system-loopbacks-policy
-            }
-        }
-    }
-    ip-forwarding {
-        receive-ipv4-check false
-    }
-}
+--8<-- "https://raw.githubusercontent.com/srl-labs/srl-l3evpn-basics-lab/main/startup_configs/leaf1.cfg:ebgp-underlay"
 
 
 commit now
@@ -538,50 +441,7 @@ commit now
 ```srl
 enter candidate
 
-/ routing-policy {
-    prefix-set system-loopbacks {
-        prefix 10.0.0.0/8 mask-length-range 8..32 {
-        }
-    }
-    policy system-loopbacks-policy {
-        statement 1 {
-            match {
-                prefix-set system-loopbacks
-            }
-            action {
-                policy-result accept
-            }
-        }
-    }
-}
-
-/ network-instance default {
-    protocols {
-        bgp {
-            autonomous-system 4200000002
-            router-id 10.0.0.2
-            dynamic-neighbors {
-                interface ethernet-1/49.1 {
-                    peer-group underlay
-                    allowed-peer-as [
-                        4200000001..4200000010
-                    ]
-                }
-            }
-            group underlay {
-                afi-safi ipv4-unicast {
-                    admin-state enable
-                }
-                export-policy system-loopbacks-policy
-                import-policy system-loopbacks-policy
-            }
-        }
-    }
-    ip-forwarding {
-        receive-ipv4-check false
-    }
-}
-
+--8<-- "https://raw.githubusercontent.com/srl-labs/srl-l3evpn-basics-lab/main/startup_configs/leaf2.cfg:ebgp-underlay"
 
 commit now
 ```
@@ -593,41 +453,7 @@ commit now
 ```srl
 enter candidate
 
-/ network-instance default {
-    protocols {
-        bgp {
-            autonomous-system 4200000010
-            router-id 10.10.10.10
-            dynamic-neighbors {
-                interface ethernet-1/1.1 {
-                    peer-group underlay
-                    allowed-peer-as [
-                        4200000001..4200000010
-                    ]
-                }
-                interface ethernet-1/2.1 {
-                    peer-group underlay
-                    allowed-peer-as [
-                        4200000001..4200000010
-                    ]
-                }
-            }
-            ebgp-default-policy {
-                import-reject-all false
-                export-reject-all false
-            }
-            group underlay {
-                afi-safi ipv4-unicast {
-                    admin-state enable
-                }
-            }
-        }
-    }
-    ip-forwarding {
-        receive-ipv4-check false
-    }
-}
-
+--8<-- "https://raw.githubusercontent.com/srl-labs/srl-l3evpn-basics-lab/main/startup_configs/spine.cfg:ebgp-underlay"
 
 commit now
 ```
@@ -656,7 +482,7 @@ Flags: S static, D dynamic, L discovered by LLDP, B BFD enabled, - disabled, * s
 |  Net-   |  Peer   |  Group  |  Flags  | Peer-AS |  State  | Uptime  | AFI/SAF | [Rx/Act |
 |  Inst   |         |         |         |         |         |         |    I    | ive/Tx] |
 +=========+=========+=========+=========+=========+=========+=========+=========+=========+
-| default | fe80::1 | underla | D       | 4200000 | establi | 0d:0h:2 | ipv4-   | [1/0/1] |
+| default | fe80::1 | underla | D       | 4200000 | establi | 0d:0h:2 | ipv4-   | [1/1/1] |
 |         | 83d:4ff | y       |         | 010     | shed    | 8m:42s  | unicast |         |
 |         | :feff:1 |         |         |         |         |         |         |         |
 |         | %ethern |         |         |         |         |         |         |         |
@@ -685,7 +511,7 @@ Flags: S static, D dynamic, L discovered by LLDP, B BFD enabled, - disabled, * s
 |  Net-   |  Peer   |  Group  |  Flags  | Peer-AS |  State  | Uptime  | AFI/SAF | [Rx/Act |
 |  Inst   |         |         |         |         |         |         |    I    | ive/Tx] |
 +=========+=========+=========+=========+=========+=========+=========+=========+=========+
-| default | fe80::1 | underla | D       | 4200000 | establi | 0d:0h:2 | ipv4-   | [1/0/1] |
+| default | fe80::1 | underla | D       | 4200000 | establi | 0d:0h:2 | ipv4-   | [1/1/1] |
 |         | 83d:4ff | y       |         | 010     | shed    | 6m:40s  | unicast |         |
 |         | :feff:2 |         |         |         |         |         |         |         |
 |         | %ethern |         |         |         |         |         |         |         |
@@ -713,13 +539,13 @@ Flags: S static, D dynamic, L discovered by LLDP, B BFD enabled, - disabled, * s
 |  Net-   |  Peer   |  Group  |  Flags  | Peer-AS |  State  | Uptime  | AFI/SAF | [Rx/Act |
 |  Inst   |         |         |         |         |         |         |    I    | ive/Tx] |
 +=========+=========+=========+=========+=========+=========+=========+=========+=========+
-| default | fe80::1 | underla | D       | 4200000 | establi | 0d:0h:3 | ipv4-   | [1/0/1] |
+| default | fe80::1 | underla | D       | 4200000 | establi | 0d:0h:3 | ipv4-   | [1/1/1] |
 |         | 835:2ff | y       |         | 001     | shed    | 0m:49s  | unicast |         |
 |         | :feff:3 |         |         |         |         |         |         |         |
 |         | 1%ether |         |         |         |         |         |         |         |
 |         | net-    |         |         |         |         |         |         |         |
 |         | 1/1.1   |         |         |         |         |         |         |         |
-| default | fe80::1 | underla | D       | 4200000 | establi | 0d:0h:2 | ipv4-   | [1/0/1] |
+| default | fe80::1 | underla | D       | 4200000 | establi | 0d:0h:2 | ipv4-   | [1/1/1] |
 |         | 8f3:3ff | y       |         | 002     | shed    | 7m:20s  | unicast |         |
 |         | :feff:3 |         |         |         |         |         |         |         |
 |         | 1%ether |         |         |         |         |         |         |         |
@@ -955,76 +781,11 @@ Below you will find aggregated configuration snippets that contain the entire fa
 ```{.srl .code-scroll-lg}
 enter candidate
 
-/ routing-policy {
-    prefix-set system-loopbacks {
-        prefix 10.0.0.0/8 mask-length-range 8..32 {
-        }
-    }
-    policy system-loopbacks-policy {
-        statement 1 {
-            match {
-                prefix-set system-loopbacks
-            }
-            action {
-                policy-result accept
-            }
-        }
-    }
-}
+--8<-- "https://raw.githubusercontent.com/srl-labs/srl-l3evpn-basics-lab/main/startup_configs/leaf1.cfg:physical-interfaces"
 
-/ interface ethernet-1/49 {
-    admin-state enable
-    subinterface 1 {
-        ipv6 {
-            admin-state enable
-            router-advertisement {
-                router-role {
-                    admin-state enable
-                }
-            }
-        }
-    }
-}
-/ interface system0 {
-    subinterface 0 {
-        ipv4 {
-            admin-state enable
-            address 10.0.0.1/32 {
-            }
-        }
-    }
-}
+--8<-- "https://raw.githubusercontent.com/srl-labs/srl-l3evpn-basics-lab/main/startup_configs/leaf1.cfg:loopback-interfaces"
 
-/ network-instance default {
-    ip-forwarding {
-        receive-ipv4-check false
-    }
-    interface ethernet-1/49.1 {
-    }
-    interface system0.0 {
-    }
-    protocols {
-        bgp {
-            autonomous-system 4200000001
-            router-id 10.0.0.1
-            dynamic-neighbors {
-                interface ethernet-1/49.1 {
-                    peer-group underlay
-                    allowed-peer-as [
-                        4200000001..4200000010
-                    ]
-                }
-            }
-            group underlay {
-                afi-safi ipv4-unicast {
-                    admin-state enable
-                }
-                export-policy system-loopbacks-policy
-                import-policy system-loopbacks-policy
-            }
-        }
-    }
-}
+--8<-- "https://raw.githubusercontent.com/srl-labs/srl-l3evpn-basics-lab/main/startup_configs/leaf1.cfg:ebgp-underlay"
 
 commit now
 ```
@@ -1036,76 +797,11 @@ commit now
 ```{.srl .code-scroll-lg}
 enter candidate
 
-/ routing-policy {
-    prefix-set system-loopbacks {
-        prefix 10.0.0.0/8 mask-length-range 8..32 {
-        }
-    }
-    policy system-loopbacks-policy {
-        statement 1 {
-            match {
-                prefix-set system-loopbacks
-            }
-            action {
-                policy-result accept
-            }
-        }
-    }
-}
+--8<-- "https://raw.githubusercontent.com/srl-labs/srl-l3evpn-basics-lab/main/startup_configs/leaf2.cfg:physical-interfaces"
 
-/ interface ethernet-1/49 {
-    admin-state enable
-    subinterface 1 {
-        ipv6 {
-            admin-state enable
-            router-advertisement {
-                router-role {
-                    admin-state enable
-                }
-            }
-        }
-    }
-}
-/ interface system0 {
-    subinterface 0 {
-        ipv4 {
-            admin-state enable
-            address 10.0.0.2/32 {
-            }
-        }
-    }
-}
+--8<-- "https://raw.githubusercontent.com/srl-labs/srl-l3evpn-basics-lab/main/startup_configs/leaf2.cfg:loopback-interfaces"
 
-/ network-instance default {
-    ip-forwarding {
-        receive-ipv4-check false
-    }
-    interface ethernet-1/49.1 {
-    }
-    interface system0.0 {
-    }
-    protocols {
-        bgp {
-            autonomous-system 4200000002
-            router-id 10.0.0.2
-            dynamic-neighbors {
-                interface ethernet-1/49.1 {
-                    peer-group underlay
-                    allowed-peer-as [
-                        4200000001..4200000010
-                    ]
-                }
-            }
-            group underlay {
-                afi-safi ipv4-unicast {
-                    admin-state enable
-                }
-                export-policy system-loopbacks-policy
-                import-policy system-loopbacks-policy
-            }
-        }
-    }
-}
+--8<-- "https://raw.githubusercontent.com/srl-labs/srl-l3evpn-basics-lab/main/startup_configs/leaf2.cfg:ebgp-underlay"
 
 commit now
 ```
@@ -1117,82 +813,11 @@ commit now
 ```srl
 enter candidate
 
-/ interface ethernet-1/1 {
-    admin-state enable
-    subinterface 1 {
-        ipv6 {
-            admin-state enable
-            router-advertisement {
-                router-role {
-                    admin-state enable
-                }
-            }
-        }
-    }
-}
-/ interface ethernet-1/2 {
-    admin-state enable
-    subinterface 1 {
-        ipv6 {
-            admin-state enable
-            router-advertisement {
-                router-role {
-                    admin-state enable
-                }
-            }
-        }
-    }
-}
-/ interface system0 {
-    subinterface 0 {
-        ipv4 {
-            admin-state enable
-            address 10.10.10.10/32 {
-            }
-        }
-    }
-}
+--8<-- "https://raw.githubusercontent.com/srl-labs/srl-l3evpn-basics-lab/main/startup_configs/spine.cfg:physical-interfaces"
 
-/ network-instance default {
-    ip-forwarding {
-        receive-ipv4-check false
-    }
-    interface ethernet-1/1.1 {
-    }
-    interface ethernet-1/2.1 {
-    }
-    interface system0.0 {
-    }
-    protocols {
-        bgp {
-            autonomous-system 4200000010
-            router-id 10.10.10.10
-            dynamic-neighbors {
-                interface ethernet-1/1.1 {
-                    peer-group underlay
-                    allowed-peer-as [
-                        4200000001..4200000010
-                    ]
-                }
-                interface ethernet-1/2.1 {
-                    peer-group underlay
-                    allowed-peer-as [
-                        4200000001..4200000010
-                    ]
-                }
-            }
-            ebgp-default-policy {
-                import-reject-all false
-                export-reject-all false
-            }
-            group underlay {
-                afi-safi ipv4-unicast {
-                    admin-state enable
-                }
-            }
-        }
-    }
-}
+--8<-- "https://raw.githubusercontent.com/srl-labs/srl-l3evpn-basics-lab/main/startup_configs/spine.cfg:loopback-interfaces"
+
+--8<-- "https://raw.githubusercontent.com/srl-labs/srl-l3evpn-basics-lab/main/startup_configs/spine.cfg:ebgp-underlay"
 
 commit now
 ```
