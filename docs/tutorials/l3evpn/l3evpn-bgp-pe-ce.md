@@ -6,28 +6,52 @@ comments: true
 
 # L3 EVPN Instance with BGP PE-CE
 
-## (Optional) BGP Peering with the CE/Client
+Now, off to a more elaborated example where a server wants to talk BGP to datacenter fabric. Maybe it is a k8s node that uses a LoadBalancer such as MetalLB or KubeVIP and wants to expose service to the outside world. Or, it is a fleet of VMs do not require a stretched L2 network, then a BGP speaker on the host could announce the whole subnet to the fabric.
 
-This step is optional and is relevant if another router, acting as our client, wants to exchange routes with the EVPN Overlay (ip-vrf).
+It is enough to say that there are use cases for BGP on the host, and we will show you how to do it.
 
-<p align="center">
-  <img src="https://raw.githubusercontent.com/srl-labs/srl-l3evpn-tutorial-lab/main/images/pe-ce.png" alt="Peering with Client">
-</p>
+<div class='mxgraph' style='max-width:100%;border:1px solid transparent;margin:0 auto; display:block;' data-mxgraph='{"page":1,"zoom":2,"highlight":"#0000ff","nav":true,"resize":true,"edit":"_blank","url":"https://raw.githubusercontent.com/srl-labs/srl-l3evpn-basics-lab/main/images/diagrams.drawio"}'></div>
 
-In this case, both clients have loopback IPs that need to be advertised to the L3 EVPN Network Instance (ip-vrf). This requires setting up a routing protocol between the clients (frr) and the routers they're connected to (Leaf1 & Leaf2).
+## BGP on the Host
 
-In the previous chapter, we completed the ip-vrf configuration, moving forward, we'll integrate a routing protocol within it to establish connectivity with the client. SRLinux supports OSPF, ISIS, and BGP in the overlay. We're opting for BGP because we love it for many reasons. **Please note, the FRR client BGP parameters have been pre configured.**
+In our lab realm, both FRR routers have loopback IPs that need to be advertised to the L3 EVPN Network Instance (ip-vrf). This requires setting up a routing protocol between the clients (frr) and the routers they're connected to (Leaf1 & Leaf2).  
+While these are just loopbacks, they can be real routes that need to be advertised to the fabric in real life. Here is what we have on FRR nodes as part of their startup config related to loopbacks:
+
+///tab | ce1
+
+```
+--8<-- "https://raw.githubusercontent.com/srl-labs/srl-l3evpn-basics-lab/main/startup_configs/frr1.conf:lo-interface"
+--8<-- "https://raw.githubusercontent.com/srl-labs/srl-l3evpn-basics-lab/main/startup_configs/frr1.conf:bgp"
+```
+
+///
+///tab | ce2
+
+```
+--8<-- "https://raw.githubusercontent.com/srl-labs/srl-l3evpn-basics-lab/main/startup_configs/frr2.conf:lo-interface"
+--8<-- "https://raw.githubusercontent.com/srl-labs/srl-l3evpn-basics-lab/main/startup_configs/frr2.conf:bgp"
+```
+
+///
+
+As you can see, both routers come preconfigured with the loopbacks and a simple eBGP configuration waiting for a remote end to establish a session with ipv4 unicast address family.
+
+## BGP on the Leaf
+
+In the previous chapter, we completed the ip-vrf configuration, moving forward, we'll integrate a routing protocol within it to establish connectivity with the client. SR Linux supports OSPF, ISIS, and BGP as a PE-CE protocol. We're opting for BGP because we love it for many reasons.
+
+The BGP configuration in the IP VRF is exactly the same as the global BGP configuration, we just use `ip-vrf-1` as the network instance.
 
 1. **AS Number and Router ID**  
 The initial step involves specifying the autonomous system number and router-id for this ip-vrf, which will be uniformly applied across all routers encompassed by this ip-vrf. Ultimately, these routers will function collectively as if they are a singular router distributed over multiple devices.
 
     ``` srl
     set / network-instance ip-vrf-1 protocols bgp autonomous-system 500
-    set / network-instance ip-vrf-1 protocols bgp router-id 3.3.3.3
+    set / network-instance ip-vrf-1 protocols bgp router-id 10.100.100.100
     ```
 
 1. **BGP Address Family**  
-Since our clients use IPv4 addresses, we activate the BGP IPv4 address family to facilitate route exchange with the client. Although the overlay supports IPv6, we have not enabled it as our clients do not have IPv6 routes to announce.
+Since our clients use IPv4 addresses, we activate the `ipv4-unicast` address family to facilitate route exchange with the client. Although we could've enabled IPv6 family as well, we chose not to as our clients do not have IPv6 routes to announce.
 
     ``` srl
     set / network-instance ip-vrf-1 protocols bgp afi-safi ipv4-unicast admin-state enable
@@ -51,31 +75,58 @@ By default, all incoming and outgoing eBGP routes are blocked. We will disable t
     ```
 
 1. **Send Default Route to the Client**  
-In the previous step, we disabled eBGP's default route blocking. However, eBGP doesn't automatically announce routes to the client since it treats the peer as an external system and only announces selected routes through a policy. To share overlay routes with the client, we must either configure an export route policy or enable the following feature to distribute a default route to the client.
+In the previous step, we disabled eBGP's default route blocking. However, eBGP doesn't automatically announce routes to the client since it treats the peer as an external system and only announces selected routes through a policy. To share overlay routes with the client, we must either configure an export route policy or advertise a default route to the client.
 
     ``` srl
     set / network-instance ip-vrf-1 protocols bgp group client send-default-route ipv4-unicast true
     ```
 
-**Verification**
-
-Each leaf appears to have successfully established eBGP with its client.
+The resulting configuration for the leaf routers is as follows:
 
 /// tab | leaf1
 
-```srl hl_lines="10"
-A:leaf1# show network-instance ip-vrf-1 protocols bgp neighbor
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+```srl
+enter candidate
+
+--8<-- "https://raw.githubusercontent.com/srl-labs/srl-l3evpn-basics-lab/main/startup_configs/leaf1.conf:pece"
+
+commit now
+```
+
+///
+/// tab | leaf2
+
+```srl
+enter candidate
+
+--8<-- "https://raw.githubusercontent.com/srl-labs/srl-l3evpn-basics-lab/main/startup_configs/leaf2.conf:pece"
+
+commit now
+```
+
+///
+
+## Verification
+
+Each leaf has successfully established an eBGP session with the CE device and started to receive and advertise ipv4 prefixes.
+
+/// tab | leaf1
+
+```srl
+A:leaf1# / show network-instance ip-vrf-1 protocols bgp neighbor
+------------------------------------------------------------------------------------------------
 BGP neighbor summary for network-instance "ip-vrf-1"
 Flags: S static, D dynamic, L discovered by LLDP, B BFD enabled, - disabled, * slow
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-+------------------------+-----------------------------------+------------------------+--------+-------------+-------------------+-------------------+-----------------+-----------------------------------+
-|        Net-Inst        |               Peer                |         Group          | Flags  |   Peer-AS   |       State       |      Uptime       |    AFI/SAFI     |          [Rx/Active/Tx]           |
-+========================+===================================+========================+========+=============+===================+===================+=================+===================================+
-| ip-vrf-1               | 192.168.1.100                     | client                 | S      | 1000000000  | established       | 2d:1h:56m:18s     | ipv4-unicast    | [3/1/1]                           |
-+------------------------+-----------------------------------+------------------------+--------+-------------+-------------------+-------------------+-----------------+-----------------------------------+
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------
++---------+---------+---------+---------+---------+---------+---------+---------+---------+
+|  Net-   |  Peer   |  Group  |  Flags  | Peer-AS |  State  | Uptime  | AFI/SAF | [Rx/Act |
+|  Inst   |         |         |         |         |         |         |    I    | ive/Tx] |
++=========+=========+=========+=========+=========+=========+=========+=========+=========+
+| ip-     | 192.168 | client  | S       | 1000000 | establi | 0d:0h:1 | ipv4-   | [3/1/1] |
+| vrf-1   | .1.100  |         |         | 000     | shed    | 8m:47s  | unicast |         |
++---------+---------+---------+---------+---------+---------+---------+---------+---------+
+------------------------------------------------------------------------------------------------
 Summary:
 1 configured neighbors, 1 configured sessions are established,0 disabled peers
 0 dynamic peers
@@ -85,19 +136,21 @@ Summary:
 
 /// tab | leaf2
 
-```srl hl_lines="10"
-A:leaf2# show network-instance ip-vrf-1 protocols bgp neighbor
-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+```srl
+:leaf2# / show network-instance ip-vrf-1 protocols bgp neighbor
+---------------------------------------------------------------------------------------------
 BGP neighbor summary for network-instance "ip-vrf-1"
 Flags: S static, D dynamic, L discovered by LLDP, B BFD enabled, - disabled, * slow
-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-+----------------------+--------------------------------+----------------------+--------+------------+------------------+------------------+----------------+--------------------------------+
-|       Net-Inst       |              Peer              |        Group         | Flags  |  Peer-AS   |      State       |      Uptime      |    AFI/SAFI    |         [Rx/Active/Tx]         |
-+======================+================================+======================+========+============+==================+==================+================+================================+
-| ip-vrf-1             | 192.168.2.100                  | client               | S      | 2000000000 | established      | 2d:1h:57m:51s    | ipv4-unicast   | [3/1/1]                        |
-+----------------------+--------------------------------+----------------------+--------+------------+------------------+------------------+----------------+--------------------------------+
-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------
++---------+---------+---------+---------+---------+---------+---------+---------+---------+
+|  Net-   |  Peer   |  Group  |  Flags  | Peer-AS |  State  | Uptime  | AFI/SAF | [Rx/Act |
+|  Inst   |         |         |         |         |         |         |    I    | ive/Tx] |
++=========+=========+=========+=========+=========+=========+=========+=========+=========+
+| ip-     | 192.168 | client  | S       | 2000000 | establi | 0d:0h:1 | ipv4-   | [3/1/1] |
+| vrf-1   | .2.100  |         |         | 000     | shed    | 3m:36s  | unicast |         |
++---------+---------+---------+---------+---------+---------+---------+---------+---------+
+---------------------------------------------------------------------------------------------
 Summary:
 1 configured neighbors, 1 configured sessions are established,0 disabled peers
 0 dynamic peers
@@ -105,169 +158,159 @@ Summary:
 
 ///
 
-Below are the advertised and received routes from Leaf's perspective. Each leaf has announced a default route to its clients and is receiving the client's loopback IP (highlighted).
+Each leaf has announced a default route to its clients and receives the client's loopback IP. We can verify that by checking the advertised and received routes.
 
-It appears the client is re-advertising the default route back to the leaf, but the leaf is ignoring the route due to AS-Loop.
+/// tab | leaf1 - received
+
+```srl hl_lines="16-17"
+A:leaf1# / show network-instance ip-vrf-1 protocols bgp neighbor 192.168.1.100 received-routes ipv4
+------------------------------------------------------------------------------------------------
+Peer        : 192.168.1.100, remote AS: 1000000000, local AS: 500
+Type        : static
+Description : None
+Group       : client
+------------------------------------------------------------------------------------------------
+Status codes: u=used, *=valid, >=best, x=stale
+Origin codes: i=IGP, e=EGP, ?=incomplete
++---------------------------------------------------------------------------------------+
+|  Status    Network    Path-id    Next Hop     MED      LocPref     AsPath     Origin  |
++=======================================================================================+
+|            0.0.0.0/   0          192.168.      -         100      [1000000       ?    |
+|            0                     1.100                            000,                |
+|                                                                   500]                |
+|   u*>      1.1.1.1/   0          192.168.      -         100      [1000000       ?    |
+|            32                    1.100                            000]                |
+|    *       192.168.   0          192.168.      -         100      [1000000       ?    |
+|            1.0/24                1.100                            000]                |
++---------------------------------------------------------------------------------------+
+------------------------------------------------------------------------------------------------
+3 received BGP routes : 1 used 2 valid
+------------------------------------------------------------------------------------------------
+```
+
+///
+
+/// tab | leaf1 - advertised
+
+```srl
+A:leaf1# / show network-instance ip-vrf-1 protocols bgp neighbor 192.168.1.100 advertised-routes ipv4
+A:leaf1# / show network-instance ip-vrf-1 protocols bgp neighbor 192.168.1.100 advertised-rout
+es ipv4
+----------------------------------------------------------------------------------------------
+Peer        : 192.168.1.100, remote AS: 1000000000, local AS: 500
+Type        : static
+Description : None
+Group       : client
+----------------------------------------------------------------------------------------------
+Origin codes: i=IGP, e=EGP, ?=incomplete
++------------------------------------------------------------------------------------------+
+|  Network      Path-id      Next Hop       MED        LocPref       AsPath       Origin   |
++==========================================================================================+
+| 0.0.0.0/0    0            192.168.1.       -           100       [500]             ?     |
+|                           1                                                              |
++------------------------------------------------------------------------------------------+
+----------------------------------------------------------------------------------------------
+1 advertised BGP routes
+----------------------------------------------------------------------------------------------
+```
+
+///
+
+Let's examine the routing table of the VRF on each leaf. Both leaves share the same list of routes, with different next hops. Local routes resolve to a local interface, while remote routes learned from the other leaf resolve to a VxLAN tunnel. Routes resolving to a VXLAN tunnel are highlighted for clarity.
 
 /// tab | leaf1
 
-```srl hl_lines="33"
-A:leaf1# show network-instance ip-vrf-1 protocols bgp neighbor 192.168.1.100 advertised-routes ipv4
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-Peer        : 192.168.1.100, remote AS: 1000000000, local AS: 500
-Type        : static
-Description : None
-Group       : client
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-Origin codes: i=IGP, e=EGP, ?=incomplete
-+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-|                 Network                              Path-id                   Next Hop                 MED                                     LocPref                                   AsPath               Origin      |
-+============================================================================================================================================================================================================================+
-| 0.0.0.0/0                                 0                               192.168.1.1                    -                                        100                               [500]                         ?        |
-+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-1 advertised BGP routes
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-
-
-A:leaf1# show network-instance ip-vrf-1 protocols bgp neighbor 192.168.1.100 received-routes ipv4
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-Peer        : 192.168.1.100, remote AS: 1000000000, local AS: 500
-Type        : static
-Description : None
-Group       : client
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-Status codes: u=used, *=valid, >=best, x=stale
-Origin codes: i=IGP, e=EGP, ?=incomplete
-+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-|  Status               Network                        Path-id                   Next Hop                 MED                                    LocPref                                   AsPath               Origin      |
-+===========================================================================================================================================================================================================================+
-|             0.0.0.0/0                      0                              192.168.1.100                  -                                       100                               [1000000000, 500]             ?        |
-|    u*>      1.1.1.1/32                     0                              192.168.1.100                  -                                       100                               [1000000000]                  ?        |
-|     *       192.168.1.0/24                 0                              192.168.1.100                  -                                       100                               [1000000000]                  ?        |
-+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-3 received BGP routes : 1 used 2 valid
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+```srl hl_lines="15-18 26-29"
+A:leaf1# / show network-instance ip-vrf-1 route-table
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+IPv4 unicast route table of network instance ip-vrf-1
+---------------------------------------------------------------------------------------------------------------------------------------------------------
++-----------------+------+-----------+--------------------+---------+---------+--------+-----------+-----------+-----------+-----------+-------------+
+|     Prefix      |  ID  |   Route   |    Route Owner     | Active  | Origin  | Metric |   Pref    | Next-hop  | Next-hop  |  Backup   |   Backup    |
+|                 |      |   Type    |                    |         | Network |        |           |  (Type)   | Interface | Next-hop  |  Next-hop   |
+|                 |      |           |                    |         | Instanc |        |           |           |           |  (Type)   |  Interface  |
+|                 |      |           |                    |         |    e    |        |           |           |           |           |             |
++=================+======+===========+====================+=========+=========+========+===========+===========+===========+===========+=============+
+| 1.1.1.1/32      | 0    | bgp       | bgp_mgr            | True    | ip-     | 0      | 170       | 192.168.1 | ethernet- |           |             |
+|                 |      |           |                    |         | vrf-1   |        |           | .0/24 (in | 1/1.1     |           |             |
+|                 |      |           |                    |         |         |        |           | direct/lo |           |           |             |
+|                 |      |           |                    |         |         |        |           | cal)      |           |           |             |
+| 2.2.2.2/32      | 0    | bgp-evpn  | bgp_evpn_mgr       | True    | ip-     | 0      | 170       | 10.0.0.2/ |           |           |             |
+|                 |      |           |                    |         | vrf-1   |        |           | 32 (indir |           |           |             |
+|                 |      |           |                    |         |         |        |           | ect/vxlan |           |           |             |
+|                 |      |           |                    |         |         |        |           | )         |           |           |             |
+| 192.168.1.0/24  | 2    | local     | net_inst_mgr       | True    | ip-     | 0      | 0         | 192.168.1 | ethernet- |           |             |
+|                 |      |           |                    |         | vrf-1   |        |           | .1        | 1/1.1     |           |             |
+|                 |      |           |                    |         |         |        |           | (direct)  |           |           |             |
+| 192.168.1.1/32  | 2    | host      | net_inst_mgr       | True    | ip-     | 0      | 0         | None      | None      |           |             |
+|                 |      |           |                    |         | vrf-1   |        |           | (extract) |           |           |             |
+| 192.168.1.255/3 | 2    | host      | net_inst_mgr       | True    | ip-     | 0      | 0         | None (bro |           |           |             |
+| 2               |      |           |                    |         | vrf-1   |        |           | adcast)   |           |           |             |
+| 192.168.2.0/24  | 0    | bgp-evpn  | bgp_evpn_mgr       | True    | ip-     | 0      | 170       | 10.0.0.2/ |           |           |             |
+|                 |      |           |                    |         | vrf-1   |        |           | 32 (indir |           |           |             |
+|                 |      |           |                    |         |         |        |           | ect/vxlan |           |           |             |
+|                 |      |           |                    |         |         |        |           | )         |           |           |             |
++-----------------+------+-----------+--------------------+---------+---------+--------+-----------+-----------+-----------+-----------+-------------+
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+IPv4 routes total                    : 6
+IPv4 prefixes with active routes     : 6
+IPv4 prefixes with active ECMP routes: 0
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+IPv4 routes total                    : 6
+IPv4 prefixes with active routes     : 6
+IPv4 prefixes with active ECMP routes: 0
+----------------------------------------------------------------------------------------------------------------------------------------------
 ```
 
 ///
 
 /// tab | leaf2
 
-```srl hl_lines="33"
-A:leaf2# show network-instance ip-vrf-1 protocols bgp neighbor 192.168.2.100 advertised-routes ipv4
-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-Peer        : 192.168.2.100, remote AS: 2000000000, local AS: 500
-Type        : static
-Description : None
-Group       : client
-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-Origin codes: i=IGP, e=EGP, ?=incomplete
-+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-|               Network                          Path-id                 Next Hop               MED                                 LocPref                               AsPath             Origin     |
-+=======================================================================================================================================================================================================+
-| 0.0.0.0/0                             0                            192.168.2.1                 -                                    100                            [500]                      ?       |
-+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-1 advertised BGP routes
-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-
-
-A:leaf2# show network-instance ip-vrf-1 protocols bgp neighbor 192.168.2.100 received-routes ipv4
-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-Peer        : 192.168.2.100, remote AS: 2000000000, local AS: 500
-Type        : static
-Description : None
-Group       : client
-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-Status codes: u=used, *=valid, >=best, x=stale
-Origin codes: i=IGP, e=EGP, ?=incomplete
-+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-|  Status             Network                      Path-id                 Next Hop               MED                                 LocPref                               AsPath             Origin     |
-+=========================================================================================================================================================================================================+
-|            0.0.0.0/0                    0                            192.168.2.100               -                                    100                            [2000000000, 500]          ?       |
-|   u*>      2.2.2.2/32                   0                            192.168.2.100               -                                    100                            [2000000000]               ?       |
-|    *       192.168.2.0/24               0                            192.168.2.100               -                                    100                            [2000000000]               ?       |
-+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-3 received BGP routes : 1 used 2 valid
-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-```
-
-///
-
-Let's examine the routing table of the VRF on each leaf. Both leaves share the same list of routes, with different next hops. Local routes resolve to a local interface, while remote routes learned from the other leaf resolve to a VxLAN tunnel. Routes resolving to a VxLAN tunnel are highlighted for clarity.
-
-/// tab | leaf1
-
-```srl hl_lines="12 18"
-A:leaf1# show network-instance ip-vrf-1 route-table
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+```srl hl_lines="11-14 19-22"
+A:leaf2# / show network-instance ip-vrf-1 route-table
+---------------------------------------------------------------------------------------------------------------------------------------------------------
 IPv4 unicast route table of network instance ip-vrf-1
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-+---------------------------------+-------+------------+----------------------+----------+----------+---------+------------+--------------------+--------------------+--------------------+------------------------------------+
-|             Prefix              |  ID   | Route Type |     Route Owner      |  Active  |  Origin  | Metric  |    Pref    |  Next-hop (Type)   | Next-hop Interface |  Backup Next-hop   |     Backup Next-hop Interface      |
-|                                 |       |            |                      |          | Network  |         |            |                    |                    |       (Type)       |                                    |
-|                                 |       |            |                      |          | Instance |         |            |                    |                    |                    |                                    |
-+=================================+=======+============+======================+==========+==========+=========+============+====================+====================+====================+====================================+
-| 1.1.1.1/32                      | 0     | bgp        | bgp_mgr              | True     | ip-vrf-1 | 0       | 170        | 192.168.1.0/24     | ethernet-1/1.1     |                    |                                    |
-|                                 |       |            |                      |          |          |         |            | (indirect/local)   |                    |                    |                                    |
-| 2.2.2.2/32                      | 0     | bgp-evpn   | bgp_evpn_mgr         | True     | ip-vrf-1 | 0       | 170        | 100.0.0.2/32       |                    |                    |                                    |
-|                                 |       |            |                      |          |          |         |            | (indirect/vxlan)   |                    |                    |                                    |
-| 192.168.1.0/24                  | 2     | local      | net_inst_mgr         | True     | ip-vrf-1 | 0       | 0          | 192.168.1.1        | ethernet-1/1.1     |                    |                                    |
-|                                 |       |            |                      |          |          |         |            | (direct)           |                    |                    |                                    |
-| 192.168.1.1/32                  | 2     | host       | net_inst_mgr         | True     | ip-vrf-1 | 0       | 0          | None (extract)     | None               |                    |                                    |
-| 192.168.1.255/32                | 2     | host       | net_inst_mgr         | True     | ip-vrf-1 | 0       | 0          | None (broadcast)   |                    |                    |                                    |
-| 192.168.2.0/24                  | 0     | bgp-evpn   | bgp_evpn_mgr         | True     | ip-vrf-1 | 0       | 170        | 100.0.0.2/32       |                    |                    |                                    |
-|                                 |       |            |                      |          |          |         |            | (indirect/vxlan)   |                    |                    |                                    |
-+---------------------------------+-------+------------+----------------------+----------+----------+---------+------------+--------------------+--------------------+--------------------+------------------------------------+
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------
++-----------------+------+-----------+--------------------+---------+---------+--------+-----------+-----------+-----------+-----------+-------------+
+|     Prefix      |  ID  |   Route   |    Route Owner     | Active  | Origin  | Metric |   Pref    | Next-hop  | Next-hop  |  Backup   |   Backup    |
+|                 |      |   Type    |                    |         | Network |        |           |  (Type)   | Interface | Next-hop  |  Next-hop   |
+|                 |      |           |                    |         | Instanc |        |           |           |           |  (Type)   |  Interface  |
+|                 |      |           |                    |         |    e    |        |           |           |           |           |             |
++=================+======+===========+====================+=========+=========+========+===========+===========+===========+===========+=============+
+| 1.1.1.1/32      | 0    | bgp-evpn  | bgp_evpn_mgr       | True    | ip-     | 0      | 170       | 10.0.0.1/ |           |           |             |
+|                 |      |           |                    |         | vrf-1   |        |           | 32 (indir |           |           |             |
+|                 |      |           |                    |         |         |        |           | ect/vxlan |           |           |             |
+|                 |      |           |                    |         |         |        |           | )         |           |           |             |
+| 2.2.2.2/32      | 0    | bgp       | bgp_mgr            | True    | ip-     | 0      | 170       | 192.168.2 | ethernet- |           |             |
+|                 |      |           |                    |         | vrf-1   |        |           | .0/24 (in | 1/1.1     |           |             |
+|                 |      |           |                    |         |         |        |           | direct/lo |           |           |             |
+|                 |      |           |                    |         |         |        |           | cal)      |           |           |             |
+| 192.168.1.0/24  | 0    | bgp-evpn  | bgp_evpn_mgr       | True    | ip-     | 0      | 170       | 10.0.0.1/ |           |           |             |
+|                 |      |           |                    |         | vrf-1   |        |           | 32 (indir |           |           |             |
+|                 |      |           |                    |         |         |        |           | ect/vxlan |           |           |             |
+|                 |      |           |                    |         |         |        |           | )         |           |           |             |
+| 192.168.2.0/24  | 2    | local     | net_inst_mgr       | True    | ip-     | 0      | 0         | 192.168.2 | ethernet- |           |             |
+|                 |      |           |                    |         | vrf-1   |        |           | .1        | 1/1.1     |           |             |
+|                 |      |           |                    |         |         |        |           | (direct)  |           |           |             |
+| 192.168.2.1/32  | 2    | host      | net_inst_mgr       | True    | ip-     | 0      | 0         | None      | None      |           |             |
+|                 |      |           |                    |         | vrf-1   |        |           | (extract) |           |           |             |
+| 192.168.2.255/3 | 2    | host      | net_inst_mgr       | True    | ip-     | 0      | 0         | None (bro |           |           |             |
+| 2               |      |           |                    |         | vrf-1   |        |           | adcast)   |           |           |             |
++-----------------+------+-----------+--------------------+---------+---------+--------+-----------+-----------+-----------+-----------+-------------+
+---------------------------------------------------------------------------------------------------------------------------------------------------------
 IPv4 routes total                    : 6
 IPv4 prefixes with active routes     : 6
 IPv4 prefixes with active ECMP routes: 0
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------
 ```
 
 ///
 
-/// tab | leaf2
+Then let's send a ping between `ce1` and `ce2` loopbacks to ensure that the datapath works.
 
-```srl hl_lines="10 14"
-A:leaf2# show network-instance ip-vrf-1 route-table
-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-IPv4 unicast route table of network instance ip-vrf-1
-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-+-----------------------------+-------+------------+----------------------+----------+----------+---------+------------+------------------+------------------+------------------+--------------------------+
-|           Prefix            |  ID   | Route Type |     Route Owner      |  Active  |  Origin  | Metric  |    Pref    | Next-hop (Type)  |     Next-hop     | Backup Next-hop  |     Backup Next-hop      |
-|                             |       |            |                      |          | Network  |         |            |                  |    Interface     |      (Type)      |        Interface         |
-|                             |       |            |                      |          | Instance |         |            |                  |                  |                  |                          |
-+=============================+=======+============+======================+==========+==========+=========+============+==================+==================+==================+==========================+
-| 1.1.1.1/32                  | 0     | bgp-evpn   | bgp_evpn_mgr         | True     | ip-vrf-1 | 0       | 170        | 100.0.0.1/32     |                  |                  |                          |
-|                             |       |            |                      |          |          |         |            | (indirect/vxlan) |                  |                  |                          |
-| 2.2.2.2/32                  | 0     | bgp        | bgp_mgr              | True     | ip-vrf-1 | 0       | 170        | 192.168.2.0/24   | ethernet-1/1.1   |                  |                          |
-|                             |       |            |                      |          |          |         |            | (indirect/local) |                  |                  |                          |
-| 192.168.1.0/24              | 0     | bgp-evpn   | bgp_evpn_mgr         | True     | ip-vrf-1 | 0       | 170        | 100.0.0.1/32     |                  |                  |                          |
-|                             |       |            |                      |          |          |         |            | (indirect/vxlan) |                  |                  |                          |
-| 192.168.2.0/24              | 2     | local      | net_inst_mgr         | True     | ip-vrf-1 | 0       | 0          | 192.168.2.1      | ethernet-1/1.1   |                  |                          |
-|                             |       |            |                      |          |          |         |            | (direct)         |                  |                  |                          |
-| 192.168.2.1/32              | 2     | host       | net_inst_mgr         | True     | ip-vrf-1 | 0       | 0          | None (extract)   | None             |                  |                          |
-| 192.168.2.255/32            | 2     | host       | net_inst_mgr         | True     | ip-vrf-1 | 0       | 0          | None (broadcast) |                  |                  |                          |
-+-----------------------------+-------+------------+----------------------+----------+----------+---------+------------+------------------+------------------+------------------+--------------------------+
-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-IPv4 routes total                    : 6
-IPv4 prefixes with active routes     : 6
-IPv4 prefixes with active ECMP routes: 0
-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ```
-
-///
-
-Then let's send a ping between client loopbacks to conclue this chapter.
-
-/// tab | Ping between client loopbacks
+sudo docker exec -i -t l3evpn-ce1 bash
+```
 
 ```srl
 frr1:/# ping 2.2.2.2 -I 1.1.1.1 -c3
@@ -281,4 +324,8 @@ PING 2.2.2.2 (2.2.2.2) from 1.1.1.1: 56 data bytes
 round-trip min/avg/max = 1.865/2.080/2.453 ms
 ```
 
-///
+Great, datapath works!
+
+Control-plane things work exactly the same way as in the previous chapter. We just announce more prefixes via RT5 NLRI, and that's it.
+
+Was a fun run, innit? Let's wrap it up with a quick [summary](summary.md).
