@@ -6,7 +6,6 @@ comments: true
 
 # L3 EVPN Instance with BGP PE-CE
 
-
 ## (Optional) BGP Peering with the CE/Client
 
 This step is optional and is relevant if another router, acting as our client, wants to exchange routes with the EVPN Overlay (ip-vrf).
@@ -283,5 +282,3 @@ round-trip min/avg/max = 1.865/2.080/2.453 ms
 ```
 
 ///
-
-[^1]: Like it is in the [L2 EVPN tutorial](../l2evpn/evpn.md#tunnelvxlan-interface).
