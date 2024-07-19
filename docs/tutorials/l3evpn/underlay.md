@@ -117,7 +117,7 @@ Below you will find the relevant configuration snippets for leafs and spine devi
 ```srl
 enter candidate
 
---8<-- "https://raw.githubusercontent.com/srl-labs/srl-l3evpn-basics-lab/main/startup_configs/leaf1.cfg:physical-interfaces"
+--8<-- "https://raw.githubusercontent.com/srl-labs/srl-l3evpn-basics-lab/main/startup_configs/leaf1.conf:physical-interfaces"
 
 commit now
 ```
@@ -129,7 +129,7 @@ commit now
 ```srl
 enter candidate
 
---8<-- "https://raw.githubusercontent.com/srl-labs/srl-l3evpn-basics-lab/main/startup_configs/spine.cfg:physical-interfaces"
+--8<-- "https://raw.githubusercontent.com/srl-labs/srl-l3evpn-basics-lab/main/startup_configs/spine.conf:physical-interfaces"
 
 commit now
 ```
@@ -271,7 +271,7 @@ Configuration of the `system0` interface/subinterface is exactly the same as for
 ```srl
 enter candidate
 
---8<-- "https://raw.githubusercontent.com/srl-labs/srl-l3evpn-basics-lab/main/startup_configs/leaf1.cfg:loopback-interfaces"
+--8<-- "https://raw.githubusercontent.com/srl-labs/srl-l3evpn-basics-lab/main/startup_configs/leaf1.conf:loopback-interfaces"
 
 commit now
 ```
@@ -283,7 +283,7 @@ commit now
 ```srl
 enter candidate
 
---8<-- "https://raw.githubusercontent.com/srl-labs/srl-l3evpn-basics-lab/main/startup_configs/leaf2.cfg:loopback-interfaces"
+--8<-- "https://raw.githubusercontent.com/srl-labs/srl-l3evpn-basics-lab/main/startup_configs/leaf2.conf:loopback-interfaces"
 
 commit now
 
@@ -296,7 +296,7 @@ commit now
 ```srl
 enter candidate
 
---8<-- "https://raw.githubusercontent.com/srl-labs/srl-l3evpn-basics-lab/main/startup_configs/spine.cfg:loopback-interfaces"
+--8<-- "https://raw.githubusercontent.com/srl-labs/srl-l3evpn-basics-lab/main/startup_configs/spine.conf:loopback-interfaces"
 
 commit now
 ```
@@ -416,7 +416,7 @@ Here are the config snippets related to eBGP configuration per device for an eas
 ```srl
 enter candidate
 
---8<-- "https://raw.githubusercontent.com/srl-labs/srl-l3evpn-basics-lab/main/startup_configs/leaf1.cfg:ebgp-underlay"
+--8<-- "https://raw.githubusercontent.com/srl-labs/srl-l3evpn-basics-lab/main/startup_configs/leaf1.conf:ebgp-underlay"
 
 
 commit now
@@ -429,7 +429,7 @@ commit now
 ```srl
 enter candidate
 
---8<-- "https://raw.githubusercontent.com/srl-labs/srl-l3evpn-basics-lab/main/startup_configs/leaf2.cfg:ebgp-underlay"
+--8<-- "https://raw.githubusercontent.com/srl-labs/srl-l3evpn-basics-lab/main/startup_configs/leaf2.conf:ebgp-underlay"
 
 commit now
 ```
@@ -441,7 +441,7 @@ commit now
 ```srl
 enter candidate
 
---8<-- "https://raw.githubusercontent.com/srl-labs/srl-l3evpn-basics-lab/main/startup_configs/spine.cfg:ebgp-underlay"
+--8<-- "https://raw.githubusercontent.com/srl-labs/srl-l3evpn-basics-lab/main/startup_configs/spine.conf:ebgp-underlay"
 
 commit now
 ```
@@ -769,11 +769,11 @@ Below you will find aggregated configuration snippets that contain the entire fa
 ```{.srl .code-scroll-lg}
 enter candidate
 
---8<-- "https://raw.githubusercontent.com/srl-labs/srl-l3evpn-basics-lab/main/startup_configs/leaf1.cfg:physical-interfaces"
+--8<-- "https://raw.githubusercontent.com/srl-labs/srl-l3evpn-basics-lab/main/startup_configs/leaf1.conf:physical-interfaces"
 
---8<-- "https://raw.githubusercontent.com/srl-labs/srl-l3evpn-basics-lab/main/startup_configs/leaf1.cfg:loopback-interfaces"
+--8<-- "https://raw.githubusercontent.com/srl-labs/srl-l3evpn-basics-lab/main/startup_configs/leaf1.conf:loopback-interfaces"
 
---8<-- "https://raw.githubusercontent.com/srl-labs/srl-l3evpn-basics-lab/main/startup_configs/leaf1.cfg:ebgp-underlay"
+--8<-- "https://raw.githubusercontent.com/srl-labs/srl-l3evpn-basics-lab/main/startup_configs/leaf1.conf:ebgp-underlay"
 
 commit now
 ```
@@ -785,11 +785,11 @@ commit now
 ```{.srl .code-scroll-lg}
 enter candidate
 
---8<-- "https://raw.githubusercontent.com/srl-labs/srl-l3evpn-basics-lab/main/startup_configs/leaf2.cfg:physical-interfaces"
+--8<-- "https://raw.githubusercontent.com/srl-labs/srl-l3evpn-basics-lab/main/startup_configs/leaf2.conf:physical-interfaces"
 
---8<-- "https://raw.githubusercontent.com/srl-labs/srl-l3evpn-basics-lab/main/startup_configs/leaf2.cfg:loopback-interfaces"
+--8<-- "https://raw.githubusercontent.com/srl-labs/srl-l3evpn-basics-lab/main/startup_configs/leaf2.conf:loopback-interfaces"
 
---8<-- "https://raw.githubusercontent.com/srl-labs/srl-l3evpn-basics-lab/main/startup_configs/leaf2.cfg:ebgp-underlay"
+--8<-- "https://raw.githubusercontent.com/srl-labs/srl-l3evpn-basics-lab/main/startup_configs/leaf2.conf:ebgp-underlay"
 
 commit now
 ```
@@ -801,11 +801,11 @@ commit now
 ```srl
 enter candidate
 
---8<-- "https://raw.githubusercontent.com/srl-labs/srl-l3evpn-basics-lab/main/startup_configs/spine.cfg:physical-interfaces"
+--8<-- "https://raw.githubusercontent.com/srl-labs/srl-l3evpn-basics-lab/main/startup_configs/spine.conf:physical-interfaces"
 
---8<-- "https://raw.githubusercontent.com/srl-labs/srl-l3evpn-basics-lab/main/startup_configs/spine.cfg:loopback-interfaces"
+--8<-- "https://raw.githubusercontent.com/srl-labs/srl-l3evpn-basics-lab/main/startup_configs/spine.conf:loopback-interfaces"
 
---8<-- "https://raw.githubusercontent.com/srl-labs/srl-l3evpn-basics-lab/main/startup_configs/spine.cfg:ebgp-underlay"
+--8<-- "https://raw.githubusercontent.com/srl-labs/srl-l3evpn-basics-lab/main/startup_configs/spine.conf:ebgp-underlay"
 
 commit now
 ```

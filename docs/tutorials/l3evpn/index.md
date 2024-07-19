@@ -92,7 +92,7 @@ We advise the newcomers not to skip the [Configuration Basics Guide][conf-basics
 [srlinux-container]: https://github.com/orgs/nokia/packages/container/package/srlinux
 [frr-container]: https://quay.io/repository/frrouting/frr?tab=tags
 [docker-install]: https://docs.docker.com/engine/install/
-[capture-evpn-rt5]: https://github.com/srl-labs/srl-l3evpn-basics-lab/raw/main/evpn_rt5.pcap
+[capture-evpn-rt5]: https://gitlab.com/rdodin/pics/-/wikis/uploads/e0d9687ad72413769e4407eb4e498f71/bgp-underlay-overlay-ex1.pcapng
 [adv-sol-guide-evpn-l3]: https://documentation.nokia.com/srlinux/24-3/books/advanced-solutions/evpn-vxlan-layer-3.html#evpn-vxlan-layer-3
 [evpn-vxlan-guide]: https://documentation.nokia.com/srlinux/24-3/books/evpn-vxlan/evpn-vxlan-tunnels-layer-3.html#evpn-vxlan-tunnels-layer-3
 [conf-basics-guide]: https://documentation.nokia.com/srlinux/24-3/title/basics.html

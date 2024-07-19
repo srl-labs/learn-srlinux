@@ -78,7 +78,7 @@ Here are the config snippets for the leaf and spine devices covering everything 
 ```srl
 enter candidate
 
---8<-- "https://raw.githubusercontent.com/srl-labs/srl-l3evpn-basics-lab/main/startup_configs/leaf1.cfg:ibgp-overlay"
+--8<-- "https://raw.githubusercontent.com/srl-labs/srl-l3evpn-basics-lab/main/startup_configs/leaf1.conf:ibgp-overlay"
 
 commit now
 
@@ -90,7 +90,7 @@ commit now
 ```srl
 enter candidate
 
---8<-- "https://raw.githubusercontent.com/srl-labs/srl-l3evpn-basics-lab/main/startup_configs/spine.cfg:ibgp-overlay"
+--8<-- "https://raw.githubusercontent.com/srl-labs/srl-l3evpn-basics-lab/main/startup_configs/spine.conf:ibgp-overlay"
 
 commit now
 ```
