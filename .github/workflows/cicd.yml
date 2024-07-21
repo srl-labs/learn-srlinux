@@ -13,9 +13,9 @@ env:
 
 jobs:
   docs-test:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v1
@@ -28,7 +28,7 @@ jobs:
 
       - name: Cache htmltest external links
         id: cache-htmltest
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: tmp/.htmltest
           # key will contain hash of all md files to check if files have changed
@@ -71,11 +71,11 @@ jobs:
   #     - run: docker run -v $(pwd):/docs --entrypoint ash ghcr.io/srl-labs/mkdocs-material-insiders:$MKDOCS_MATERIAL_VER -c 'git config --global --add safe.directory /docs; mkdocs gh-deploy --force'
 
   publish-docs:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs: docs-test
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
