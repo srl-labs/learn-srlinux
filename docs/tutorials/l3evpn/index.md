@@ -22,28 +22,29 @@ While EVPN originally emerged as a Layer 2 VPN technology to overcome VPLS limit
 
 In the [Layer 2 EVPN Basics Tutorial][evpn-basics-tutorial] we discussed how to configure EVPN to provide a layer 2 service across an IP fabric. Today' focus will be on deploying a **Layer 3 Ethernet VPN (EVPN)** in the SR Linux-powered DC fabric. We will be working with a flavor of an L3 EVPN service that does not require the use of Integrated Routing and Bridging (IRB) interfaces, and as such has no need MAC VRF instances, ARP/ND entries, or IMET routes.
 
-As you might expect, the Layer 3 EVPN is designed to provide Layer 3 services across the fabric. As such, there are **no** stretched broadcast domains across the fabric and the customer equipment is typically running a BGP PE-CE session with the top of rack switch to exchange IP prefixes.
+As you might expect, the Layer 3 EVPN is designed to provide Layer 3 services across the fabric. As such, there are **no** stretched broadcast domains across the fabric and the customer equipment either directly connected via L3 interfaces to leafs or run a BGP PE-CE session with the top of rack switch to exchange IP prefixes.
 
-To explain the Layer 3 EVPN configuration and concepts we will use a small fabric with two leafs, one spine and two clients connected to the leafs. The clients will be represented by an [FRRouting](https://frrouting.org) software and will act both as L3 client and a CE router.
+To explain the Layer 3 EVPN configuration and concepts we will use a lab representing a tiny fabric built with two leafs, one spine and two pairs of clients devices connected to the leafs; one pair per each tenant. The first pair of clients will represent L3 servers connected to leaf ports directly, while the second pair will be represented by an [FRRouting](https://frrouting.org) routers that act a CE router and announce routes.
 
 <div class='mxgraph' style='max-width:100%;border:1px solid transparent;margin:0 auto; display:block;' data-mxgraph='{"page":0,"zoom":2,"highlight":"#0000ff","nav":true,"resize":true,"edit":"_blank","url":"https://raw.githubusercontent.com/srl-labs/srl-l3evpn-basics-lab/main/images/diagrams.drawio"}'></div>
 
-As part of this tutorial we will go over two L3 EVPN scenarios. First, we will demonstrate how we can provide connectivity for directly attached L3 clients. These are the clients that are addressed with L3 interfaces and connected to the leaf devices directly.
+As part of this tutorial we will go over two L3 EVPN scenarios. First, we will demonstrate how we can provide connectivity for directly attached L3 clients of Tenant 1. These are the clients that are addressed with L3 interfaces and connected to the leaf devices directly.
 
 <figure>
   <div class='mxgraph' style='max-width:100%;border:1px solid transparent;margin:0 auto; display:block;' data-mxgraph='{"page":7,"zoom":2,"highlight":"#0000ff","nav":true,"resize":true,"edit":"_blank","url":"https://raw.githubusercontent.com/srl-labs/srl-l3evpn-basics-lab/main/images/diagrams.drawio"}'></div>
   <figcaption>Directly attached L3 clients</figcaption>
 </figure>
 
-The second scenario will demonstrate how to connect CE devices that establish a BGP session with the leaf devices to exchange IP prefixes and the BGP EVPN will make sure that the client prefixes are distributed to the tenants of the same L3 EVPN service.
-<figure>
+The second scenario will demonstrate how to connect CE devices of Tenant 2 that establish a BGP session with the leaf devices to exchange IP prefixes. The BGP EVPN will make sure that the client prefixes are distributed to the to the participants of the same L3 EVPN service of this tenant.
 
-<div class='mxgraph' style='max-width:100%;border:1px solid transparent;margin:0 auto; display:block;' data-mxgraph='{"page":1,"zoom":2,"highlight":"#0000ff","nav":true,"resize":true,"edit":"_blank","url":"https://raw.githubusercontent.com/srl-labs/srl-l3evpn-basics-lab/main/images/diagrams.drawio"}'></div>
-<figcaption>BGP-enabled CE clients</figcaption>
+<figure>
+  <div class='mxgraph' style='max-width:100%;border:1px solid transparent;margin:0 auto; display:block;' data-mxgraph='{"page":1,"zoom":2,"highlight":"#0000ff","nav":true,"resize":true,"edit":"_blank","url":"https://raw.githubusercontent.com/srl-labs/srl-l3evpn-basics-lab/main/images/diagrams.drawio"}'></div>
+  <figcaption>BGP-enabled CE clients</figcaption>
 </figure>
+
 From the data plane perspective we will be using VXLAN tunnels to transport the encapsulated tenant' packets through the IP fabric.
 
-As part of this tutorial we will configure the SR Linux-based DC fabric underlay. Then we will setup the overlay routing using EVPN address family and proceed with the creation of an L3 EVPN service. In the final chapter, we will get into the details how to peer the client equipment with the EVPN overlay for the route exchange.
+As part of this tutorial we will configure the SR Linux-based DC fabric underlay with BGP Unnumbered. Then we will setup the overlay routing using iBGP with EVPN address family and proceed with the creation of an L3 EVPN service for the two tenants of our fabric.
 
 ## Lab deployment
 

@@ -4,7 +4,7 @@ comments: true
 
 # Summary
 
-While originally designed for layer 2 VPNs, EVPN has been extended to support inter-subnet routing, and subsequently, layer 3 VPNs. This tutorial walked you through the configuration of a non-IRB-based layer 3 EVPN service deployed on top of an IP fabric.
+While originally designed for layer 2 VPNs, EVPN has been extended to support inter-subnet routing, and subsequently, layer 3 VPNs. This tutorial walked you through the configuration of **a simple, non-IRB-based layer 3 EVPN service**[^1] deployed on top of an IP fabric.
 
 The two scenarios covered in this tutorial included a Layer 3 CE end device connected to a leaf switch and a Layer 3 CE router device that utilized a PE-CE routing protocol to exchange prefixes. In both scenarios, the EVPN service was configured to provide end-to-end Layer 3 reachability between the CE prefixes.
 
@@ -28,3 +28,5 @@ In the repository, you therefore can find the full startup configs per each devi
 
 [lab-topo]: https://github.com/srl-labs/srl-l3evpn-tutorial-lab/tree/main/l3evpn-tutorial.clab.yml
 [startup-configs-dir]: https://github.com/srl-labs/srl-l3evpn-tutorial-lab/tree/main/startup_configs
+
+[^1]: A more advanced, feature rich, and therefore complex L3 EVPN service introduces a combination of MAC and IP VRFs with IRB interfaces and ESI support. This tutorial does not cover these advanced topics.

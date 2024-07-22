@@ -52,7 +52,7 @@ The first thing we need to configure is the interfaces between the leaf and spin
 
 <div class='mxgraph' style='max-width:100%;border:1px solid transparent;margin:0 auto; display:block;' data-mxgraph='{"page":3,"zoom":2,"highlight":"#0000ff","nav":true,"resize":true,"edit":"_blank","url":"https://raw.githubusercontent.com/srl-labs/srl-l3evpn-basics-lab/main/images/diagrams.drawio"}'></div>
 
-The examples will target the highlighted interfaces between leaf1 and spine devices, but at the end of this section, you will find the configuration snippets for all devices.
+The examples will target the highlighted interfaces between `leaf1` and spine devices, but at the end of this section, you will find the configuration snippets for all devices.
 
 We begin with connecting to the CLI of our nodes via SSH[^1]:
 
@@ -76,7 +76,7 @@ Let's got through a step by step process of an interface configuration on a `lea
     A:leaf1#
     ```
 
-    The prompt will indicate we entered the candidate data store. In the following steps we will enter the commands to make changes to the candidate config and at the end we will commit.
+    The prompt will indicate we entered the candidate configuration mode. In the following steps we will enter the commands to make changes to the candidate config and at the end we will commit.
 
 2. As a next step, we create a subinterface with index 1 under a physical `ethernet-1/49` interface that connects leaf1 to spine.
     In contrast with the L2 EVPN Tutorial, we will not configure an explicit IP address, but enable IPv6 with Router Advertisement messages on it . An IPv6 Link Local Address will be automatically configured for this interface.
@@ -258,7 +258,7 @@ In addition to the physical interfaces in our fabric we need to configure the lo
 
 Besides iBGP peering, the loopback interfaces will be used to originate and terminate VXLAN packets. And in the context of the VXLAN data plane, a special kind of a loopback needs to be created - `system0` interface.
 
-/// note
+/// note | `system0`
 The `system0.0` interface hosts the loopback address used to originate and typically
 terminate VXLAN packets. This address is also used by default as the next-hop of all
 EVPN routes.
@@ -342,7 +342,7 @@ Here is a breakdown of the configuration steps done on `leaf1` and you will find
     First, we will create a prefix set that matches the range of loopback addresses we want to send and receive.
 
     ```{.srl .no-select}
-    set / routing-policy prefix-set system-loopbacks prefix 10.0.0.0/8 mask-length-range 8..32
+    set / routing-policy prefix-set system-loopbacks prefix 10.0.0.0/8 mask-length-range 32..32
     ```
 
     Next, we will create a routing policy that matches on the prefix set we just created and accepts them.
@@ -470,7 +470,7 @@ Flags: S static, D dynamic, L discovered by LLDP, B BFD enabled, - disabled, * s
 |  Net-   |  Peer   |  Group  |  Flags  | Peer-AS |  State  | Uptime  | AFI/SAF | [Rx/Act |
 |  Inst   |         |         |         |         |         |         |    I    | ive/Tx] |
 +=========+=========+=========+=========+=========+=========+=========+=========+=========+
-| default | fe80::1 | underla | D       | 4200000 | establi | 0d:0h:2 | ipv4-   | [1/1/1] |
+| default | fe80::1 | underla | D       | 4200000 | establi | 0d:0h:2 | ipv4-   | [2/2/1] |
 |         | 83d:4ff | y       |         | 010     | shed    | 8m:42s  | unicast |         |
 |         | :feff:1 |         |         |         |         |         |         |         |
 |         | %ethern |         |         |         |         |         |         |         |
@@ -499,7 +499,7 @@ Flags: S static, D dynamic, L discovered by LLDP, B BFD enabled, - disabled, * s
 |  Net-   |  Peer   |  Group  |  Flags  | Peer-AS |  State  | Uptime  | AFI/SAF | [Rx/Act |
 |  Inst   |         |         |         |         |         |         |    I    | ive/Tx] |
 +=========+=========+=========+=========+=========+=========+=========+=========+=========+
-| default | fe80::1 | underla | D       | 4200000 | establi | 0d:0h:2 | ipv4-   | [1/1/1] |
+| default | fe80::1 | underla | D       | 4200000 | establi | 0d:0h:2 | ipv4-   | [2/2/1] |
 |         | 83d:4ff | y       |         | 010     | shed    | 6m:40s  | unicast |         |
 |         | :feff:2 |         |         |         |         |         |         |         |
 |         | %ethern |         |         |         |         |         |         |         |
@@ -732,7 +732,7 @@ IPv4 prefixes with active ECMP routes: 0
 
 ///
 
-Both leafs have in their routing table a route to the loopback of the other leaf!
+Both leafs have in their routing table a route to the loopback of the other leaf and therefore the underlay routing is working as expected.
 
 ### Dataplane
 
@@ -740,7 +740,7 @@ To finish the verification process let's ensure that the datapath is working, an
 
 For that we will use the `ping` command with src/dst set to loopback addresses:
 
-```title="leaf1 loopback pings leaf2 loopback"
+```srl title="leaf1 loopback pings leaf2 loopback"
 A:leaf1# ping network-instance default 10.0.0.2 -I 10.0.0.1 -c 3
 Using network instance default
 PING 10.0.0.2 (10.0.0.2) from 10.0.0.1 : 56(84) bytes of data.
@@ -761,7 +761,7 @@ Perfect, the loopbacks are reachable and the fabric underlay is properly configu
 Below you will find aggregated configuration snippets that contain the entire fabric configuration we did in the steps above. Those snippets are in the CLI format and were extracted with the `info` command.
 
 /// note
-`enter candidate` and `commit now` commands are part of the snippets, so it is possible to apply them right after you logged into the freshly booted devices.
+`enter candidate` and `commit now` commands are part of the snippets, so it is possible to paste them right after you logged into the devices.
 ///
 
 /// tab | leaf1
