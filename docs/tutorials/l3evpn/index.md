@@ -72,6 +72,10 @@ If you want to run the lab in a free cloud instance, click the button below to o
 </div>
 ///
 
+The lab comes up online with the FRR nodes configured, and no configuration is present on the SR Linux nodes besides the basic setup. During the course of this tutorial we will configure the SR Linux nodes and explain the FRR config bits.
+
+If you want to deploy the lab with all configs already applied, just uncomment the `startup-config` knobs in the topology file.
+
 Once the deployment process is finished you'll see a table with the deployed nodes.  
 Using the names provided in the table you can SSH into the nodes to start the configuration process. For example, to connect to the `l3evpn-leaf1` node you can use the following command:
 
@@ -80,10 +84,6 @@ ssh l3evpn-leaf1 #(1)!
 ```
 
 1. If you happen to have an SSH key the login will be passwordless. If not, `admin:NokiaSrl1!` is the default username and password.
-
-<small>The lab comes up online with the FRR nodes configured, and no configuration is present on the SR Linux nodes besides the basic setup. During the course of this tutorial we will configure the SR Linux nodes and explain the FRR config bits.
-
-If you want to deploy the lab with all configs already applied, just uncomment the `startup-config` knobs in the topology file</small>
 
 With the lab deployed we are ready to embark on our [learn-by-doing EVPN configuration journey](underlay.md)!
 
