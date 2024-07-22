@@ -24,7 +24,7 @@ docker pull ghcr.io/nokia/srlinux
 
 When image is referenced without a tag, the latest container image version will be pulled. To obtain a specific version of a containerized SR Linux, refer to the [list of tags](https://github.com/orgs/nokia/packages/container/srlinux/versions) the `nokia/srlinux` image has and change the `docker pull` command accordingly.
 
-### Running SR Linux
+## Running SR Linux
 
 When the image is pulled to a local image store, you can start exploring SR Linux by either running a full-fledged lab topology, or by starting a single container to explore SR Linux CLI and its management interfaces.
 
@@ -37,7 +37,7 @@ A system on which you can run SR Linux containers should conform to the followin
 
 Let's explore the different ways you can launch SR Linux container.
 
-#### Docker CLI
+### Docker CLI
 
 `docker` CLI offers a quick way to run a standalone SR Linux container:
 
@@ -65,7 +65,7 @@ Using docker CLI is a viable approach when all you need is to run a standalone c
 
 For multi-node SR Linux deployments containerlab[^3] offers a better way.
 
-#### Containerlab
+### Containerlab
 
 <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:4,&quot;zoom&quot;:1,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/srl-labs/containerlab/diagrams/containerlab.drawio&quot;}"></div>
 
@@ -113,7 +113,7 @@ INFO[0001] Writing /etc/hosts file
 +---+--------------------+--------------+-----------------------+------+-------+---------+----------------+----------------------+
 ```
 
-#### Deployment verification
+### Deployment verification
 
 Regardless of the way you spin up SR Linux container it will be visible in the output of the `docker ps` command. If the deployment process went well and the container did not exit, a user can see it with `docker ps` command:
 
@@ -195,6 +195,12 @@ supported models:
   - urn:srl_nokia/acl:srl_nokia-acl, Nokia, 2021-03-31
 <SNIP>
 ```
+
+## My DCF Learning Labs
+
+More than just a lab service, **My DCF Learning Labs** offers lab exercises complete with inline instructions and solutions, giving you everything you need in one easy-to-use browser-based application - access multiple lab types and exercises to develop your SR Linux skills.
+
+[Learn more](https://www.nokia.com/networks/training/dcf/my-dcf-learning-labs/?utm_source=Learn+SR+Linux) about My DCF Learning Labs and [watch a tutorial](https://www.youtube.com/watch?v=ycDNLoYrdko), or [request your free access now](https://forms.office.com/e/x8d1P1rdNt).
 
 [^1]: Centos 7.3+ has a 3.x kernel and won't be able to run SR Linux container images newer than v22.11.
 [^2]: for example [gnmic](https://gnmic.openconfig.net)
