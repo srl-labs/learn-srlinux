@@ -75,19 +75,20 @@ The next step is to create an L3 Network Instance (IP-VRF) on our leaf switches 
     set / network-instance tenant-1 protocols bgp-evpn bgp-instance 1 vxlan-interface vxlan1.100
     ```
 
-    Define an EVPN Virtual Identifier (EVI) under the bgp-evpn instance will be used as a service identifier and to auto-derive the route distinguisher value.  
-    As for the Route Target, we will set it manually, because otherwise auto-derivation process will use the AS number specified under the global BGP process, and we have different AS numbers per leaf.
+    Define an EVPN Virtual Identifier (EVI) under the bgp-evpn instance will be used as a service identifier and to auto-derive the route distinguisher value.
 
     ```srl
     set / network-instance tenant-1 protocols bgp-evpn bgp-instance 1 evi 1
-    set / network-instance tenant-1 protocols bgp-vpn bgp-instance 1 route-target export-rt target:65535:1
-    set / network-instance tenant-1 protocols bgp-vpn bgp-instance 1 route-target import-rt target:65535:1
     ```
 
-    And create the `bgp-vpn` context under the IP VRF to enable multi-protocol BGP operation.
+    We also create the `bgp-vpn` context under the IP VRF to enable multi-protocol BGP operation to support the EVPN route exchange.  
+    Since we are going to exchange VPN routes (EVPN in this case) we need to provide a Route Target values for import and export so that the routes marked with this RT value would be imported in the target VRF.  
+    We will set it manually, because otherwise auto-derivation process will use the AS number specified under the global BGP process, and we have different AS numbers per leaf.
 
     ```srl
     set / network-instance tenant-1 protocols bgp-vpn bgp-instance 1
+    set / network-instance tenant-1 protocols bgp-vpn bgp-instance 1 route-target export-rt target:65535:1
+    set / network-instance tenant-1 protocols bgp-vpn bgp-instance 1 route-target import-rt target:65535:1
     ```
 
     Optionally configure ECMP to enable load balancing in the overlay network.

@@ -313,6 +313,11 @@ The eBGP setup is done according to the following diagram:
 
 The private 32bit AS Numbers are used on all devices and Router ID is set to match the IPv4 address of the `system0` loopback interface.
 
+/// admonition | SR Linux and BGP Unnumbered for EVPN
+    type: warning
+SR Linux supports EVPN-VXLAN with BGP Unnumbered starting with 24.3.1 release.
+///
+
 Here is a breakdown of the configuration steps done on `leaf1` and you will find configuration for other devices at the end of this section:
 
 <small>In this case we show the `set`-based configuration syntax</small>
