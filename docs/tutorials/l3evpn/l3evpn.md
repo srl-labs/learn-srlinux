@@ -171,7 +171,7 @@ Summary:
 1 dynamic peers
 ```
 
-Now we see that a single route has been sent and received by the `leaf1` to/from the `spine` switch acting as a Route Reflector. Let's chec what has been received and sent:
+Now we see that a single route has been sent and received by the `leaf1` to/from the `spine` switch acting as a Route Reflector. Let's check what has been received and sent:
 
 /// tab | received
 

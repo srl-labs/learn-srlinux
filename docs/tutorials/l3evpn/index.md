@@ -20,7 +20,7 @@ tags:
 
 While EVPN originally emerged as a Layer 2 VPN technology to overcome VPLS and VPWS limitations, it has since evolved to become a unified control plane for many services, Layer 3 VPN included. Founded upon the BGP protocol, EVPN has [lots of flexibility and features](https://www.nokia.com/networks/ethernet-vpn/) to become a one-stop-shop for all VPN services in various network deployments, Datacenter fabrics included.
 
-In the [Layer 2 EVPN Basics Tutorial][evpn-basics-tutorial] we discussed how to configure EVPN to provide a layer 2 service across an IP fabric. Today' focus will be on deploying a **Layer 3 Ethernet VPN (EVPN)** in the SR Linux-powered DC fabric. We will be working with a flavor of an L3 EVPN service that does not require the use of Integrated Routing and Bridging (IRB) interfaces, and as such has no need MAC VRF instances, ARP/ND entries, or IMET routes.
+In the [Layer 2 EVPN Basics Tutorial][evpn-basics-tutorial] we discussed how to configure EVPN to provide a layer 2 service across an IP fabric. Today' focus will be on deploying a **Layer 3 Ethernet VPN (EVPN)** in the SR Linux-powered DC fabric. We will be working with a flavor of an L3 EVPN service that does not require the use of Integrated Routing and Bridging (IRB) interfaces, and as such has no need MAC VRF instances, ARP/ND entries synchronization, MAC/IP (RT2) and IMET routes.
 
 As you might expect, the Layer 3 EVPN is designed to provide Layer 3 services across the fabric. As such, there are **no** stretched broadcast domains across the fabric and the customer equipment either directly connected via L3 interfaces to leafs or run a BGP PE-CE session with the top of rack switch to exchange IP prefixes.
 

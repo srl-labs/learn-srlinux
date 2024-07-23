@@ -373,6 +373,6 @@ The BGP on the Host model allows to advertise a range of prefixes from the host 
 
 At the same time, it requires a BGP speaker on the host, which may not be feasible in all environments and introduces another routing protocol and stack to the host. So, as always, evaluate the trade-offs and choose the model that fits your environment best.
 
-We hope this was a fun configration marathong, and you enjoyed getting through this lab? Let's wrap it up with a quick [summary](summary.md).
+We hope this was a fun configration marathon, and you enjoyed getting through this lab? Let's wrap it up with a quick [summary](summary.md).
 
 <script type="text/javascript" src="https://viewer.diagrams.net/js/viewer-static.min.js" async></script>
