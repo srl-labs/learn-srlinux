@@ -17,7 +17,9 @@ However, there are some considerations to keep in mind:
 2. When a PE-CE protocol is used, the configuration tasks are more comples on the CE side when compared to a simple LAG configuration in the case of L2 EVPN service or L3 EVPN with IRB.
 3. And lastly, another consideration to keep in mind when opting for pure Layer 3 services is the legacy workloads that may _require_ Layer 2 connectivity. In such cases, a Layer 2 EVPN is a must.
 
-In a nutsheel, network designers and operators should carefully consider the trade-offs between the simplicity of the EVPN control plane and the additional tasks required on the server and CE device side when deciding on the type of EVPN service to deploy.
+In a nutshell, network designers and operators should carefully consider the trade-offs between the simplicity of the EVPN control plane and the additional tasks required on the server and CE device side when deciding on the type of EVPN service to deploy.
+
+We are going to cover more advanced L3 EVPN scenarios with symmetric IRB interfaces, Interface-full mode of operation, and ESI support in the upcoming tutorials. Stay tuned!
 
 /// details | Resulting configs
 If you wish to start a lab with the resulting configurations from this tutorial already in place, you need to uncomment the `startup-config` knobs in the [topology file][lab-topo] prior to the lab deployment.

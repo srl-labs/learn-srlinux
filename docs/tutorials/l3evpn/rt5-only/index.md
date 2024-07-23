@@ -3,7 +3,7 @@ comments: true
 tags:
   - evpn
 ---
-# L3 EVPN Basics Tutorial
+# RT5-only L3 EVPN Tutorial
 
 <script type="text/javascript" src="https://viewer.diagrams.net/js/viewer-static.min.js" async></script>
 
@@ -12,11 +12,11 @@ tags:
 | **Tutorial name**           | RT5-only L3 EVPN-VXLAN with SR Linux                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | **Lab components**          | 3 SR Linux nodes, 2 [FRR](https://frrouting.org), 2 Alpine nodes                                                                                                                                                                                                                                                                                                                                                                                                                  |
 | **Resource requirements**   | :fontawesome-solid-microchip: 2vCPU <br/>:fontawesome-solid-memory: 8 GB                                                                                                                                                                                                                                                                                                                                                                                                          |
-| **Lab Repo**                | [srl-l3evpn-basics-lab][lab-repo]                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| **Lab Repo**                | [srl-rt5-l3evpn-basics-lab][lab-repo]                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 | **Packet captures**         | [EVPN IP Prefix routes exchange][capture-evpn-rt5]                                                                                                                                                                                                                                                                                                                                                                                                                                |
 | **Main ref documents**      | [RFC 7432 - BGP MPLS-Based Ethernet VPN](https://datatracker.ietf.org/doc/html/rfc7432)<br/>[RFC 8365 - A Network Virtualization Overlay Solution Using Ethernet VPN (EVPN)](https://datatracker.ietf.org/doc/html/rfc8365)<br/>[RFC 9136 - IP Prefix Advertisement in Ethernet VPN (EVPN)](https://datatracker.ietf.org/doc/html/rfc9136)<br/>[Nokia 7220 SR Linux Advanced Solutions Guide][adv-sol-guide-evpn-l3]<br/>[Nokia 7220 SR Linux EVPN-VXLAN Guide][evpn-vxlan-guide] |
 | **Version information**[^1] | [`containerlab:v0.56.0`][clab-install], [`srlinux:24.3.3`][srlinux-container], [`frr:9.0.2`][frr-container] [`docker-ce:26.1.4`][docker-install]                                                                                                                                                                                                                                                                                                                                  |
-| **Authors**                 | Korhan Kayhan [:material-linkedin:][kkayhan-linkedin]<br>Michel Redondo [:material-linkedin:][mr-linkedin]<br/>Roman Dodin [:material-linkedin:][rd-linkedin] [:material-twitter:][rd-twitter]                                                                                                                                                                                                                                                                                    |
+| **Authors**                 | Korhan Kayhan [:material-linkedin:][kkayhan-linkedin]<br>Roman Dodin [:material-linkedin:][rd-linkedin] [:material-twitter:][rd-twitter]<br/>Michel Redondo [:material-linkedin:][mr-linkedin]                                                                                                                                                                                                                                                                                    |
 
 While EVPN originally emerged as a Layer 2 VPN technology to overcome VPLS and VPWS limitations, it has since evolved to become a unified control plane for many services, Layer 3 VPN included. Founded upon the BGP protocol, EVPN has [lots of flexibility and features](https://www.nokia.com/networks/ethernet-vpn/) to become a one-stop-shop for all VPN services in various network deployments, Datacenter fabrics included.
 
@@ -48,7 +48,7 @@ As part of this tutorial we will configure the SR Linux-based DC fabric underlay
 
 ## Lab deployment
 
-To let you follow along the configuration steps of this tutorial we created [a lab][lab-repo] that you can deploy on any Linux VM with [containerlab][clab-install] or run in the cloud with [Codespaces](../../blog/posts/2024/codespaces.md):
+To let you follow along the configuration steps of this tutorial we created [a lab][lab-repo] that you can deploy on any Linux VM with [containerlab][clab-install] or run in the cloud with [Codespaces](../../../blog/posts/2024/codespaces.md):
 
 /// tab | Locally
 
@@ -100,7 +100,7 @@ We advise the newcomers not to skip the [Configuration Basics Guide][conf-basics
 [adv-sol-guide-evpn-l3]: https://documentation.nokia.com/srlinux/24-3/books/advanced-solutions/evpn-vxlan-layer-3.html#evpn-vxlan-layer-3
 [evpn-vxlan-guide]: https://documentation.nokia.com/srlinux/24-3/books/evpn-vxlan/evpn-vxlan-tunnels-layer-3.html#evpn-vxlan-tunnels-layer-3
 [conf-basics-guide]: https://documentation.nokia.com/srlinux/24-3/title/basics.html
-[evpn-basics-tutorial]: ../l2evpn/intro.md
+[evpn-basics-tutorial]: ../../l2evpn/intro.md
 [rd-linkedin]: https://linkedin.com/in/rdodin
 [rd-twitter]: https://twitter.com/ntdvps
 [kkayhan-linkedin]: https://www.linkedin.com/in/korhan-kayhan-b6b45065/
