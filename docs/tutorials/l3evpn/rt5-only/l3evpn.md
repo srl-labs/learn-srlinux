@@ -481,7 +481,7 @@ Besides multihoming, workload migration may be a challenge, since moving the wor
 
 Some of these limitations may be lifted off when [a more dynamic L3 EVPN service](l3evpn-bgp-pe-ce.md) is used with CE devices being actual routers exchanging prefixes with the L3 EVPN instance running on the leaf switches. Let's check it out!
 
-[^1]: Like it is in the [L2 EVPN tutorial](../l2evpn/evpn.md#tunnelvxlan-interface).
+[^1]: Like it is in the [L2 EVPN tutorial](../../l2evpn/evpn.md#tunnelvxlan-interface).
 
 [capture-evpn-rt5]: https://gitlab.com/rdodin/pics/-/wikis/uploads/e0d9687ad72413769e4407eb4e498f71/bgp-underlay-overlay-ex1.pcapng
 [capture-icmp]: https://gitlab.com/rdodin/pics/-/wikis/uploads/580114f029cd12ef3c459f84b07e2963/icmp-vxlan.pcapng

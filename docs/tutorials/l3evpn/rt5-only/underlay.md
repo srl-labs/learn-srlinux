@@ -134,7 +134,7 @@ enter candidate
 commit now
 ```
 
-1. Cool trick with using [configuration ranges](../../blog/posts/2023/cli-ranges.md), yeah!
+1. Cool trick with using [configuration ranges](../../../blog/posts/2023/cli-ranges.md), yeah!
 
 ///
 
