@@ -5,8 +5,6 @@ tags:
 ---
 # RT5-only L3 EVPN Tutorial
 
-<script type="text/javascript" src="https://viewer.diagrams.net/js/viewer-static.min.js" async></script>
-
 |                             |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
 | --------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Tutorial name**           | RT5-only L3 EVPN-VXLAN with SR Linux                                                                                                                                                                                                                                                                                                                                                                                                                                              |
@@ -106,3 +104,5 @@ We advise the newcomers not to skip the [Configuration Basics Guide][conf-basics
 [kkayhan-linkedin]: https://www.linkedin.com/in/korhan-kayhan-b6b45065/
 [mr-linkedin]: https://www.linkedin.com/in/michelredondo/
 [^1]: the following versions have been used to create this tutorial. The newer versions might work, but if they don't, please pin the version to the mentioned ones.
+
+<script type="text/javascript" src="https://viewer.diagrams.net/js/viewer-static.min.js" async></script>

@@ -1,7 +1,9 @@
 ---
 date: 2024-07-04
 tags:
-    - codespaces
+  - codespaces
+authors:
+  - rdodin
 ---
 
 # SR Linux labs in GitHub Codespaces
