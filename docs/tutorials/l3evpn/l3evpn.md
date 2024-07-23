@@ -232,7 +232,15 @@ Type 5 IP Prefix Routes
 
 ///
 
-Brilliant, we receive the remote IP prefix `192.168.2.0/24` and sent local IP prefix `192.168.0.1/24` to the other leaf. Let's have a look at the routing table of IP-VRF on both leafs:
+Brilliant, we receive the remote IP prefix `192.168.2.0/24` and sent local IP prefix `192.168.0.1/24` to the other leaf.
+
+/// details | Route Summarization
+In a real-world scenario, you would see more routes being exchanged, especially if you have multiple clients connected to the leaf switches. A good design practice is to summarize the routes on the leaf switches to reduce the number of routes exchanged between the leafs and the spine and mimimize the control plane churn when new host routes are added/removed.
+
+Route summarization is not covered in this tutorial, but it should be not that complicated to add it!
+///
+
+Let's have a look at the routing table of IP-VRF on both leafs:
 
 /// tab | leaf1
 
