@@ -266,3 +266,16 @@ https://github.com/squidfunk/mkdocs-material/discussions/4157#discussioncomment-
 }
 
 /* END border for content tabs */
+
+/* START hide code copy and selection icons until on hover */
+/* Hide the nav element by default */
+div.highlight .md-code__nav {
+  display: none;
+}
+
+/* Show the nav element when the div is hovered over */
+div.highlight:hover .md-code__nav {
+  display: flex;
+}
+
+/* END hide code copy and selection icons until on hover */
