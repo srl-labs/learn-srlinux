@@ -20,7 +20,7 @@ While EVPN originally emerged as a Layer 2 VPN technology to overcome VPLS limit
 
 In the [Layer 2 EVPN Basics Tutorial][evpn-basics-tutorial] we discussed how to configure EVPN to provide a layer 2 service across an IP fabric. Today' focus will be on deploying a **Layer 3 Ethernet VPN (EVPN)** in the SR Linux-powered DC fabric. We will be working with a flavor of an L3 EVPN service that does not require the use of Integrated Routing and Bridging (IRB) interfaces, and as such has no need MAC VRF instances, ARP/ND entries synchronization, MAC/IP (RT2) and IMET routes.
 
-As you might expect, the Layer 3 EVPN is designed to provide Layer 3 services across the fabric. As such, there are **no** stretched broadcast domains across the fabric and the customer equipment either directly connected via L3 interfaces to leafs or run a BGP PE-CE session with the top of rack switch to exchange IP prefixes.
+As you might expect, the Layer 3 EVPN is designed to provide Layer 3 services across the fabric. As such, there are no _stretched_ broadcast domains across the fabric and the customer equipment is directly connected via L3 interfaces to the leafs and often runs a PE-CE routing protocol to exchange IP prefixes.
 
 To explain the Layer 3 EVPN configuration and concepts we will use a lab representing a tiny fabric built with two leafs, one spine and two pairs of clients devices connected to the leafs; one pair per each tenant. The first pair of clients will represent L3 servers connected to leaf ports directly, while the second pair will be represented by an [FRRouting](https://frrouting.org) routers that act a CE router and announce routes.
 
