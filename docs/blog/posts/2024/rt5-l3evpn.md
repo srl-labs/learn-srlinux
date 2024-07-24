@@ -29,4 +29,6 @@ You'll get exposed to many interesting concepts, such as:
 
 So, have your favorite drink ready, and let's have [our first dive](../../../tutorials/l3evpn/rt5-only/index.md) into the world of L3 EVPN!
 
+--8<-- "docs/tutorials/l3evpn/rt5-only/summary.md:linkedin-question"
+
 <script type="text/javascript" src="https://viewer.diagrams.net/js/viewer-static.min.js" async></script>
