@@ -16,7 +16,7 @@ SR Linux supports the following routing protocols for the underlay network:
 
 BGP as a routing protocol for large IP fabrics was well defined in [RFC7938](https://datatracker.ietf.org/doc/html/rfc7938) and can offer the following:
 
-* **Scalability:** BGP announces only the best paths, unlike IGPs that share the entire link state database. This may be important for very large fabrics and less so for smaller ones.
+* **Scalability:** BGP is known to scale well in very large networks, making it a good choice for scaled-out data center fabrics.
 * **Flexible Policy Engine:** BGP provides numerous attributes for policy matching, offering extensive options for traffic steering.
 * **Smaller Failure Impact Radius with BGP compared to IGP:**
     * In case of a link failure in an ISIS/OSPF network, all devices need to run SPF on the entire link state database. The blast radius is effectively the whole network.
