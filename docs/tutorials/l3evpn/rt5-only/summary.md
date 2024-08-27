@@ -14,7 +14,7 @@ However, there are, as always, some considerations to keep in mind:
 
 1. When connecting servers to the fabric using L3 routed interfaces (as opposed to L2 interfaces), the servers must be reconfigured to use the leaf switch as the default gateway. You will have to configure routed interfaces on leaf switches per each server. This may become a challenge in certain environments.  
     All active load balancing must be done with ECMP and may require a routing protocol that supports ECMP. This, again, may or may not be feasible.
-2. When a PE-CE protocol is used, the configuration tasks are more comples on the CE side when compared to a simple LAG configuration in the case of L2 EVPN service or L3 EVPN with IRB.
+2. When a PE-CE protocol is used, the configuration tasks are more complex on the CE side when compared to a simple LAG configuration in the case of L2 EVPN service or L3 EVPN with IRB.
 3. And lastly, another consideration to keep in mind when opting for pure Layer 3 services is the legacy workloads that may _require_ Layer 2 connectivity. In such cases, a Layer 2 EVPN is a must.
 
 In a nutshell, network designers and operators should carefully consider the trade-offs between the simplicity of the EVPN control plane and the additional tasks required on the server and CE device side when deciding on the type of EVPN service to deploy.
