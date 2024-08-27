@@ -107,7 +107,7 @@ In the previous step, we disabled eBGP's default route import/export blocking. H
 
     ``` srl
     set / tunnel-interface vxlan1 vxlan-interface 200 type routed
-    set / tunnel-interface vxlan1 vxlan-interface 200 ingress vni 100
+    set / tunnel-interface vxlan1 vxlan-interface 200 ingress vni 200
     ```
 
     And add these interfaces to the network instance:
