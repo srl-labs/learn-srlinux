@@ -245,9 +245,9 @@ Let's have a look at the routing table of IP-VRF on both leafs:
 /// tab | leaf1
 
 ```srl hl_lines="17-19"
-A:leaf1# / show network-instance ip-vrf-1 route-table
+A:leaf1# / show network-instance tenant-1 route-table
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-IPv4 unicast route table of network instance ip-vrf-1
+IPv4 unicast route table of network instance tenant-1
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 +----------------------+------+-----------+---------------------+---------+---------+--------+-----------+-------------+-------------+-------------+----------------+
 |        Prefix        |  ID  |   Route   |     Route Owner     | Active  | Origin  | Metric |   Pref    |  Next-hop   |  Next-hop   |   Backup    |  Backup Next-  |
@@ -277,9 +277,9 @@ IPv4 prefixes with active ECMP routes: 0
 /// tab | leaf2
 
 ```srl hl_lines="10"
-A:leaf2# / show network-instance ip-vrf-1 route-table
+A:leaf2# / show network-instance tenant-1 route-table
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-IPv4 unicast route table of network instance ip-vrf-1
+IPv4 unicast route table of network instance tenant-1
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 +----------------------+------+-----------+---------------------+---------+---------+--------+-----------+-------------+-------------+-------------+----------------+
 |        Prefix        |  ID  |   Route   |     Route Owner     | Active  | Origin  | Metric |   Pref    |  Next-hop   |  Next-hop   |   Backup    |  Backup Next-  |
@@ -415,7 +415,7 @@ Border Gateway Protocol - UPDATE Message
 ```
 
 Quite a lot of information here in this Route Type 5 (RT5), but the most important part is the EVPN NLRI that contains the IP Prefix route the has `192.168.1.0` address with `/24` prefix length and `VNI=100`.  
-This prefix route is derived from the IP address of the `ethernet-1/1.1` subinterface attached to the `ip-vrf-1` network instance. And the VNI value is the same as the one used in the VXLAN tunnel interface attached to the `tenant-1` network instance.
+This prefix route is derived from the IP address of the `ethernet-1/1.1` subinterface attached to the `tenant-1` network instance. And the VNI value is the same as the one used in the VXLAN tunnel interface attached to the `tenant-1` network instance.
 
 At the very end of this update message we see the extended community that indicates that VXLAN encapsulation is used for this route. This information is crucial for the receiving leaf to know how to encapsulate the traffic towards the destination. We can ensure that this information is well received, by looking at the tunnel table on `leaf2`:
 
