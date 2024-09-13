@@ -65,7 +65,7 @@ Let's witness the step by step process of an interface configuration on a `leaf1
     --{ * candidate shared default }--[ interface ethernet-1/49 subinterface 0 ]--
     A:leaf1# ipv4 admin-state enable
     --{ * candidate shared default }--[ interface ethernet-1/49 subinterface 0 ]--
-    A:leaf1# address 192.168.11.1/30
+    A:leaf1# ipv4 address 192.168.11.1/30
     ```
 
 5. Apply the configuration changes by issuing a `commit now` command. The changes will be written to the running configuration.
