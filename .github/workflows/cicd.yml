@@ -108,5 +108,5 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: '✨ deployed to <${{ steps.wrangler-deploy.outputs.deployment-url }} and https://${{ env.BRANCH_NAME }}.learn-srlinux.pages.dev>'
+              body: '✨ deployed to ${{ steps.wrangler-deploy.outputs.deployment-url }} and https://${{ env.BRANCH_NAME }}.learn-srlinux.pages.dev>'
               })
