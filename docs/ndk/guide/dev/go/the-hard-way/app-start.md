@@ -3,7 +3,7 @@
 Recall that our program's entrypoint [finishes](main.md#initializing-the-application) with initializing the app struct and calling the `app.Start(ctx)` function. The `Start` function is a place where we start the application's lifecycle.
 
 ```{.go title="greeter/app.go"}
---8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/main/greeter/app.go:app-start"
+--8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/v0.1.0/greeter/app.go:app-start"
 ```
 
 The `Start` function is composed of the following parts:

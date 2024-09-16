@@ -3,14 +3,14 @@
 When `processConfig` function finished processing the configuration, we need to update the state datastore with the new values. We do this by calling the `updateState` function.
 
 ```{.go title="greeter/app.go" hl_lines="11"}
---8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/main/greeter/app.go:app-start"
+--8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/v0.1.0/greeter/app.go:app-start"
 ```
 
 In SR Linux, the state data store contains both configuration and read-only elements, so we need to update the state datastore with the `ConfigState` struct that contains both the `name` and `greeting` values.
 
 ```{.go title="greeter/state.go"}
---8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/main/greeter/state.go:state-const"
---8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/main/greeter/state.go:update-state"
+--8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/v0.1.0/greeter/state.go:state-const"
+--8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/v0.1.0/greeter/state.go:update-state"
 ```
 
 The `updateState` function first marshals the `ConfigState` struct to JSON and then calls `telemetryAddOrUpdate` function to post these changes to the state datastore.
@@ -18,7 +18,7 @@ The `updateState` function first marshals the `ConfigState` struct to JSON and t
 Let's see what's inside the `telemetryAddOrUpdate`:
 
 ```{.go title="greeter/state.go"}
---8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/main/greeter/state.go:telemetry-add-or-update"
+--8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/v0.1.0/greeter/state.go:telemetry-add-or-update"
 ```
 
 As we covered in the [Handling application's configuration and state](../../operations.md#handling-applications-configuration-and-state) section, NDK's [Telemetry service][sdk_mgr_telem_svc_doc] provides the RPCs to add/update and delete data from SR Linux's state data store. We initialized the Telemetry service client when we [created](app-instance.md#creating-ndk-clients) the application's instance at the very beginning of this tutorial, and now we use it to modify the state data.

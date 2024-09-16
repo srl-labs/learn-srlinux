@@ -5,7 +5,7 @@ In the previous chapter we looked at `receiveConfigNotifications` function that 
 Let's see how the notification stream is created and how we receive notifications from it.
 
 ```{.go title="greeter/notification.go"}
---8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/main/greeter/notification.go:start-cfg-notif-stream"
+--8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/v0.1.0/greeter/notification.go:start-cfg-notif-stream"
 ```
 
 The `StartConfigNotificationStream` performs three major tasks:
@@ -21,7 +21,7 @@ Wouldn't hurt to have a look at each of these tasks in more detail.
 First, on [line 2](#__codelineno-0-2), we create a notification stream as explained in the [Creating Notification Stream][operations-create-notif-stream] section.
 
 ```{.go title="greeter/notification.go"}
---8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/main/greeter/notification.go:create-notif-stream"
+--8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/v0.1.0/greeter/notification.go:create-notif-stream"
 ```
 
 The function tries to create a notification stream for the `greeter` application with a retry timeout and returns the allocated Stream ID when it succeeds. The Stream ID is later used to request notification delivery of a specific type, which is in our case the [Config Notification][config_notif_doc].
@@ -33,7 +33,7 @@ With the notification stream created, we now request the NDK to deliver updates 
 This is done in the [`a.addConfigSubscription(ctx, streamID)`](#__codelineno-0-8) function.
 
 ```{.go title="greeter/notification.go"}
---8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/main/greeter/notification.go:add-cfg-sub"
+--8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/v0.1.0/greeter/notification.go:add-cfg-sub"
 ```
 
 To indicate that we want to receive config notifications over the created notification stream we have to craft the [`NotificationRegisterRequest`][notif_reg_req_doc]. We populate it with the `streamID` received after creating the notification stream to specify the stream we want to receive the notifications on.
@@ -51,7 +51,7 @@ It is time to start the notification stream.
 [The last bits](#__codelineno-0-10:14){ data-proofer-ignore } in the `StartConfigNotificationStream` function create a Go channel[^10] of type [`NotificationStreamResponse`][notif_stream_resp_doc] and pass it to the `startNotificationStream` function that is started in its own goroutine. Here is the `startNotificationStream` function:
 
 ```{.go title="greeter/notification.go" .code-scroll-lg}
---8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/main/greeter/notification.go:start-notif-stream"
+--8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/v0.1.0/greeter/notification.go:start-notif-stream"
 ```
 
 Let's have a look at the two major parts of the function - creating the streaming client and receiving notifications.
@@ -61,7 +61,7 @@ Let's have a look at the two major parts of the function - creating the streamin
 The function [starts](#__codelineno-3-14) with creating a Notification Stream Client with `a.getNotificationStreamClient(ctx, req)` function call. This client is a pure gRPC construct, it is automatically generated from the gRPC service proto file and facilitates the streaming of notifications.
 
 ```{.go title="greeter/notification.go"}
---8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/main/greeter/notification.go:stream-client"
+--8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/v0.1.0/greeter/notification.go:stream-client"
 ```
 
 ### Receiving Notifications
@@ -69,7 +69,7 @@ The function [starts](#__codelineno-3-14) with creating a Notification Stream Cl
 Coming back to our `startNotificationStream` function, we can see that it [loops](#__codelineno-5-16:37){ data-proofer-ignore } over the notifications received from the NDK until the parent context is cancelled. The `streamClient.Recv()` function call is a blocking call that waits for the next notification to be streamed from the NDK.
 
 ```{.go title="greeter/notification.go"}
---8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/main/greeter/notification.go:start-notif-stream"
+--8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/v0.1.0/greeter/notification.go:start-notif-stream"
 ```
 
 When the notification is received, it is passed to the `streamChan` channel. On the receiving end of this channel is our app's [`Start`](#__codelineno-0-6:17){ data-proofer-ignore } function that starts the `aggregateConfigNotifications` function for each received notification.

@@ -12,7 +12,7 @@ Whenever we configure the `/greeter/name` leaf and commit the configuration, our
 It all begins in the `Start` function where we called `a.receiveConfigNotifications(ctx)` function.
 
 ```{.go title="greeter/app.go" hl_lines="2"}
---8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/main/greeter/app.go:app-start"
+--8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/v0.1.0/greeter/app.go:app-start"
 ```
 
 We start this function in a goroutine because we want this function to signal when the full configuration has been received by writing to `receivedCh` channel. We will see how this is used later.
@@ -20,7 +20,7 @@ We start this function in a goroutine because we want this function to signal wh
 Inside the `receiveConfigNotifications` function we start by creating the Configuration Notification Stream; this is the stream of notifications about greeter's config.
 
 ```{.go title="greeter/config.go"}
---8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/main/greeter/config.go:rcv-cfg-notif"
+--8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/v0.1.0/greeter/config.go:rcv-cfg-notif"
 ```
 
 Then we start receiving notifications from the stream. For every received [`NotificationStreamResponse`][notif_stream_resp_doc] from the `configStream` channel we handle that notification with `handleConfigNotifications` function.

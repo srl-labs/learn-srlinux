@@ -29,15 +29,15 @@ Syslog is the default way to log messages in SR Linux. NDK app can write message
 In the greeter app the logging is set up in the `main()` function:
 
 ```{.go linenums="1" hl_lines="18" title="main.go"}
---8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/main/main.go:pkg-main"
---8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/main/main.go:pkg-main-vars"
---8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/main/main.go:main"
+--8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/v0.1.0/main.go:pkg-main"
+--8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/v0.1.0/main.go:pkg-main-vars"
+--8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/v0.1.0/main.go:main"
 ```
 
 We create and configure the logger instance in the `setupLogger()` function:
 
 ```{.go linenums="1" title="main.go"}
---8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/main/main.go:setup-logger"
+--8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/v0.1.0/main.go:setup-logger"
 ```
 
 Our logger is implemented by the [zerolog](https://github.com/rs/zerolog) logger library. It is a very powerful and fast logger that supports structured logging and can write messages to different destinations.
@@ -92,7 +92,7 @@ As mentioned above, syslog is the default way to log messages in SR Linux. NDK a
 To setup syslog logging for the greeter app, we use the `github.com/RackSec/srslog` package in the `setupLogger()` function:
 
 ```{.go title="main.go"}
---8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/main/main.go:syslog-logger"
+--8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/v0.1.0/main.go:syslog-logger"
 ```
 
 Our app will write messages to the `local7` facility[^10] with the `ndk-greeter-go` tag. The tag is later used by the logging subsystem to route messages to the correct log file.

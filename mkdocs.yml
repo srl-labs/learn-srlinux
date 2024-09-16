@@ -42,15 +42,19 @@ nav:
               - Developing with NDK:
                   - Go:
                       - ndk/guide/dev/go/index.md
-                      - Main function: ndk/guide/dev/go/main.md
-                      - App Instance: ndk/guide/dev/go/app-instance.md
-                      - App Start: ndk/guide/dev/go/app-start.md
-                      - Receiving Configuration: ndk/guide/dev/go/receiving-config.md
-                      - Notification Stream: ndk/guide/dev/go/notif-stream.md
-                      - Handling Notifications: ndk/guide/dev/go/handling-notif.md
-                      - Processing Config: ndk/guide/dev/go/processing-config.md
-                      - Updating State: ndk/guide/dev/go/updating-state.md
-                      - Logging: ndk/guide/dev/go/logging.md
+                      - With Bond:
+                          - ndk/guide/dev/go/bond/index.md
+                      - The Hard Way:
+                          - ndk/guide/dev/go/the-hard-way/index.md
+                          - Main function: ndk/guide/dev/go/the-hard-way/main.md
+                          - App Instance: ndk/guide/dev/go/the-hard-way/app-instance.md
+                          - App Start: ndk/guide/dev/go/the-hard-way/app-start.md
+                          - Receiving Configuration: ndk/guide/dev/go/the-hard-way/receiving-config.md
+                          - Notification Stream: ndk/guide/dev/go/the-hard-way/notif-stream.md
+                          - Handling Notifications: ndk/guide/dev/go/the-hard-way/handling-notif.md
+                          - Processing Config: ndk/guide/dev/go/the-hard-way/processing-config.md
+                          - Updating State: ndk/guide/dev/go/the-hard-way/updating-state.md
+                          - Logging: ndk/guide/dev/go/the-hard-way/logging.md
                   - Python:
                       - ndk/guide/dev/py/index.md
                       - Greeter App: ndk/guide/dev/py/greeter-py.md

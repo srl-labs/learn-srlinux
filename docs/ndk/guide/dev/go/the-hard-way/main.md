@@ -3,9 +3,9 @@
 In Go, the `main()` function is the entry point of the binary application and is defined in the [`main.go`][main-go] file of our application:
 
 ```{.go linenums="1"}
---8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/main/main.go:pkg-main"
---8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/main/main.go:pkg-main-vars"
---8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/main/main.go:main"
+--8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/v0.1.0/main.go:pkg-main"
+--8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/v0.1.0/main.go:pkg-main-vars"
+--8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/v0.1.0/main.go:main"
 ```
 
 ## Application version
@@ -61,7 +61,7 @@ Once the context is created we attach the [metadata](https://grpc.io/docs/guides
 The NDK service uses the metadata to identify the application from which the request was sent.
 
 ```go
---8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/main/main.go:metadata"
+--8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/v0.1.0/main.go:metadata"
 ```
 
 The metadata **must** be attached to the parent context and it should has the `agent_name` key with the value of the application name. The application name in the metadata doesn't have to match anything, but should be unique among all the applications that are registered with the Application Manager.
@@ -75,13 +75,13 @@ The exit handler is a good place to perform cleanup actions like closing the ope
 We execute `exitHandler` function passing it the cancel function of the context:
 
 ```go linenums="1"
---8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/main/main.go:exit-handler"
+--8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/v0.1.0/main.go:exit-handler"
 ```
 
 This function is non-blocking as it spawns a goroutine that waits for the registered signals and then execute the `cancel` function of the context. This will propagate the cancellation signal to all the child contexts and our application [reacts](#__codelineno-6-13:15){ data-proofer-ignore } to it.
 
 ```go linenums="1" hl_lines="19-21" title="greeter/app.go"
---8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/main/greeter/app.go:app-start"
+--8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/v0.1.0/greeter/app.go:app-start"
 ```
 
 We will cover the `func (a *App) Start()` function properly when we get there, but for now, it is important to highlight how cancellation of the main context is intercepted in this function and leading to `a.stop()` call.
@@ -89,7 +89,7 @@ We will cover the `func (a *App) Start()` function properly when we get there, b
 The `a.stop()` function is responsible to perform the graceful shutdown of the application.
 
 ```go linenums="1" title="greeter/app.go"
---8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/main/greeter/app.go:app-stop"
+--8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/v0.1.0/greeter/app.go:app-stop"
 ```
 
 Following the [Graceful Exit](../../operations.md#exiting-gracefully) section we first unregister the agent with the NDK manager and then closing all connections that our app had opened.
@@ -99,7 +99,7 @@ Following the [Graceful Exit](../../operations.md#exiting-gracefully) section we
 And finally in the main function we initialize the greeter application and start it:
 
 ```go title="main.go"
---8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/main/main.go:main-init-app"
+--8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/v0.1.0/main.go:main-init-app"
 ```
 
 This is where the application logic starts to kick in. Let's turn the page and start digging into it in the [next chapter](app-instance.md).
