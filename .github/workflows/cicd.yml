@@ -72,7 +72,6 @@ jobs:
 
   publish-docs:
     runs-on: ubuntu-22.04
-    needs: docs-test
     steps:
       - name: Checkout
         uses: actions/checkout@v4
