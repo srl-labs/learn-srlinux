@@ -72,6 +72,8 @@ jobs:
 
   publish-docs:
     runs-on: ubuntu-22.04
+    env:
+      BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -92,8 +94,6 @@ jobs:
       - name: Publish to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3
         id: wrangler-deploy
-        env:
-          BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: 62e7f50db0ad5b34dbf1fb9b0ed2ef81
