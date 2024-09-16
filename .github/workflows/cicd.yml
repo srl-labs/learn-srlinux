@@ -104,9 +104,10 @@ jobs:
         if: github.event_name == 'pull_request'
         with:
           script: |
+            const branchName = process.env.BRANCH_NAME.replace(/\./g, '-');
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: '✨ deployed to ${{ steps.wrangler-deploy.outputs.deployment-url }} and https://${{ env.BRANCH_NAME }}.learn-srlinux.pages.dev>'
+              body: `✨ deployed to ${{ steps.wrangler-deploy.outputs.deployment-url }} and https://${branchName}.learn-srlinux.pages.dev`
               })
