@@ -1,54 +1,23 @@
 # Developing Go NDK applications with Bond
 
-## Development Environment
+The [**`srl-labs/bond`**][bond-repo] package is a helper Go package that abstracts the low-level NDK API and assists in the development of the NDK applications. It is a wrapper around the NDK gRPC services with utility functions that were designed to provide a more pleasant development experience.
 
-Although every developer's environment is different and is subject to a personal preference, we will provide recommendations for a [Go](https://go.dev) toolchain setup suitable for the NDK applications development.
+We recommend users to develop their apps with the `bond` package and resort to the barebones NDK API only when the `bond` package is not sufficient.
 
-The toolchain that can be used to develop and build Go-based NDK apps consists of the following components:
-
-1. [Go programming language](https://golang.org/dl/) - Go compiler, toolchain, and standard library  
-    To continue with this tutorial users should install the Go programming language on their development machine. The installation process is described in the [Go documentation](https://golang.org/doc/install).
-
-2. [Go NDK bindings](https://github.com/nokia/srlinux-ndk-go) - generated language bindings for the gRPC-based NDK service.  
-    As covered in the [NDK Architecture](../../architecture.md) section, NDK is a collection of gRPC-based services. To be able to use gRPC services in a Go program the [language bindings](https://grpc.io/docs/languages/go/quickstart/) have to be generated from the [source proto files](../../architecture.md#proto-files).
-
-    Nokia not only provides the [proto files](https://github.com/nokia/srlinux-ndk-protobufs) for the SR Linux NDK service but also offers [NDK Go language bindings](https://github.com/nokia/srlinux-ndk-go) generated for each NDK release.
-
-    With the provided Go bindings, users don't need to generate them themselves.
-
-3. [Goreleaser](https://goreleaser.com/) - Go-focused build & release pipeline runner. Contains [nFPM](https://nfpm.goreleaser.com/) project to craft deb/rpm packages. Deb/RPM packages is the preferred way to [install NDK agents](../../agent-install-and-ops.md).  
-    Goreleaser is optional, but it is a nice tool to build and release Go-based NDK applications in an automated fashion.
-
-## Meet the `greeter`
-
-This tutorial is based on the simple `greeter` NDK app published at [**`srl-labs/ndk-greeter-go`**][greeter-go-repo] GitHub repository. The app is a simple starter kit for developers looking to work with the NDK. It gets a developer through the most common NDK functionality:
-
-* Agent Registration
-* Receiving and handling configuration
-* Performing "the work" based on the received config
-* And finally publishing state
-
-The `greeter` app adds `/greeter` context to SR Linux and allows users to configure `/greeter/name` value. Greeter will greet the user with a message  
-`👋 Hi ${provided name}, SR Linux was last booted at ${last-booted-time}`  
-and publish `/greeter/name` and `/greeter/greeting` values in the state datastore.
-
-Maybe a quick demo that shows how to interact with `greeter` and get its state over gNMI and JSON-RPC is worth a thousand words:
-
-<div class="iframe-container">
-<iframe width="100%" src="https://www.youtube.com/embed/CmYML_ttCjA" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-</div>
+The development environment that we will use in this tutorial is [covered in the introduction](../index.md#development-environment) to the Go NDK development guide.
 
 ## Deploying the lab
 
-Before taking a deep dive into the code, let's deploy the `greeter` app to SR Linux using containerlab and see how it works.
+Before taking a deep dive into the code, let's deploy the [`greeter`][greeter-go-repo] app to SR Linux using [containerlab][clab-home] and see how it works.
 
 /// details | Containerlab for NDK
+    type: subtle-note
 When developing NDK applications, it is important to have a lab environment to test the application. The lab environment should be as close as possible to the production environment and also be easy to spin up and tear down.
 
-The [Containerlab](https://containerlab.dev/) tool is a perfect fit for this purpose. Containerlab makes it easy to create a personal lab environment composed of network devices and connected by virtual links. We are going to use Containerlab to create a lab environment for the `greeter` NDK application development down the road.
+The [Containerlab][clab-home] tool is a perfect fit for this purpose. Containerlab makes it easy to create a personal lab environment composed of network devices and connected by virtual links. We are going to use Containerlab to create a lab environment for the `greeter` NDK application development down the road.
 ///
 
-It all starts with cloning the `greeter`[greeter-go-repo] repo:
+It all starts with cloning the [`srl-labs/ndk-greeter-go`][greeter-go-repo] repo:
 
 ```bash
 git clone https://github.com/srl-labs/ndk-greeter-go.git && \
@@ -57,18 +26,18 @@ cd ndk-greeter-go
 
 /// note
     attrs: {class: inline end}
-[Containerlab v0.48.6](https://containerlab.dev/install) version and SR Linux 23.10.1 are used in this tutorial. Users are advised to use these version to have the same outputs as in this tutorial.
+[Containerlab v0.57.2](https://containerlab.dev/install) version and SR Linux 24.3.3 are used in this tutorial. Users are advised to use these version to have the same outputs as in this tutorial.
 
 Newer versions of Containerlab and SR Linux should work as well, but the outputs might be slightly different.
 ///
 
-And then running the deployment script[^10]:
+And then running the deployment script:
 
 ```bash
 ./run.sh deploy-all #(1)!
 ```
 
-1. `deploy-all` is a script that builds the `greeter` app, deploys a containerlab topology file, and installs the app on the running SR Linux node.
+1. `deploy-all` script builds the `greeter` app, deploys a containerlab topology file, and installs the app on the running SR Linux node.
 
 It won't take you longer than 30 seconds to get the `greeter` app up and running on a freshly deployed lab. Type `ssh greeter` and let's configure our greeter app:
 
@@ -121,6 +90,8 @@ A:greeter# info from state
 
 As advertised, the greeter app greets us with a message that includes the `name` value we've set and the last booted time of the SR Linux node. Should you change the `name` value and commit, you will see the new `greeting` message.
 
+Now let's go and see how this app is written, starting with the project structure.
+
 ## Project structure
 
 The project structure is a matter of personal preference. There are no strict rules on how to structure a Go project. However, there are some best practices we can enforce making the NDK project structure more consistent and easier to understand.
@@ -153,7 +124,7 @@ This is the project structure used in this tutorial:
 1. Directory to store build artifacts. This directory is ignored by Git.
 2. [Goreleaser](https://goreleaser.com/) config file to build and publish the NDK application. Usually run via CI/CD pipeline.
 3. Directory to store the `greeter` package source code. This is where the application logic is implemented.
-4. Application [configuration file](../../agent.md#application-manager-and-application-configuration-file).
+4. Application [configuration file](../../../agent.md#application-manager-and-application-configuration-file).
 5. Containerlab topology file to assist with the development and testing of the NDK application.
 6. Directory with the application log file.
 7. Directory with the SR Linux log directory to browse the SR Linux applications logs.
@@ -171,13 +142,38 @@ As was [mentioned before][app-config], in order for the NDK application to be in
 The Application Manager uses the application configuration file to onboard the application. Our greeter app comes with the following [`greeter.yml`][greeter-yml] configuration file[^1]:
 
 ```yaml
---8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/v0.1.0/greeter.yml.go.tpl:snip"
+--8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/use-bond-agent/greeter.yml.go.tpl:snip"
 ```
 
 Refer to the [application configuration][app-config] section to better understand what each field means. Application Manager will look for the `greeter` binary in the `/usr/local/bin/` directory when starting our application.
 
+## Application YANG
+
+Every SR Linux application needs its own schema, this is what makes SR Linux a 100% modelled system. Even the custom, user-defined application must have a schema so that it can be onboarded to the SR Linux NOS.
+
+We have covered the YANG module structure in the [architecture section](../../../agent.md#yang-module), here is the resulting YANG module of our `greeter` application.
+
+```{.yang title="yang/greeter.yang"}
+--8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/use-bond-agent/yang/greeter.yang"
+```
+
+With this YANG module loaded in SR Linux, we will extend SR Linux schema with the following nodes:
+
+```
+module: greeter
+  +--rw greeter
+     +--rw name     string
+     +--r  greeting string
+```
+
+Now that we have our YANG module and the application config file, we can start looking into the application's entrypoint - the `main` function.
+
+:octicons-arrow-right-16: [Main function](main.md)
+
 [greeter-go-repo]: https://github.com/srl-labs/ndk-greeter-go
-[app-config]: ../../agent.md#application-manager-and-application-configuration-file
+[app-config]: ../../../agent.md#application-manager-and-application-configuration-file
 [greeter-yml]: https://github.com/srl-labs/ndk-greeter-go/blob/main/greeter.yml.go.tpl
+[bond-repo]: https://github.com/srl-labs/bond
+[clab-home]: https://containerlab.dev
 
 [^1]: Don't mind a little template magic, it is for the debugging capabilities of the `greeter` app.

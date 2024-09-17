@@ -2,7 +2,7 @@
 
 Application logs are essential for debugging, troubleshooting, and monitoring. NDK apps are no exception. In this section we explain how we set up logging for NDK applications based on the `greeter` example.
 
-There are three different how NDK app can log messages:
+There are three different ways how NDK app can log messages:
 
 1. By creating its own log file.
 2. By logging to the stdout/stderr.
@@ -29,15 +29,15 @@ Syslog is the default way to log messages in SR Linux. NDK app can write message
 In the greeter app the logging is set up in the `main()` function:
 
 ```{.go linenums="1" hl_lines="18" title="main.go"}
---8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/v0.1.0/main.go:pkg-main"
---8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/v0.1.0/main.go:pkg-main-vars"
---8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/v0.1.0/main.go:main"
+--8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/use-bond-agent/main.go:pkg-main"
+--8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/use-bond-agent/main.go:pkg-main-vars"
+--8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/use-bond-agent/main.go:main"
 ```
 
 We create and configure the logger instance in the `setupLogger()` function:
 
 ```{.go linenums="1" title="main.go"}
---8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/v0.1.0/main.go:setup-logger"
+--8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/use-bond-agent/main.go:setup-logger"
 ```
 
 Our logger is implemented by the [zerolog](https://github.com/rs/zerolog) logger library. It is a very powerful and fast logger that supports structured logging and can write messages to different destinations.
@@ -46,12 +46,9 @@ We configure our logger to write to two destinations:
 
 1. To a file with log rotation policy in the structured JSON format when the application is running in production mode.
 2. To `stdout` with the `console` format when the application is running in debug mode.
+3. To syslog facility
 
-With this setup we show two modes of logging that can be used in the NDK applications.
-
-/// note | Syslog
-Syslog-based logging examples will follow soon.
-///
+With this setup we show the three modes of logging that can be used by the NDK applications.
 
 ### Stdout log
 
@@ -92,10 +89,10 @@ As mentioned above, syslog is the default way to log messages in SR Linux. NDK a
 To setup syslog logging for the greeter app, we use the `github.com/RackSec/srslog` package in the `setupLogger()` function:
 
 ```{.go title="main.go"}
---8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/v0.1.0/main.go:syslog-logger"
+--8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/use-bond-agent/main.go:syslog-logger"
 ```
 
-Our app will write messages to the `local7` facility[^10] with the `ndk-greeter-go` tag. The tag is later used by the logging subsystem to route messages to the correct log file.
+Our app will write messages to the `local7` facility[^1] with the `ndk-greeter-go` tag. The tag is later used by the logging subsystem to route messages to the correct log file.
 
 Finally, we add our syslog writer to the multiwriter that is used by zerolog logger to write to multiple destinations.
 
@@ -148,4 +145,4 @@ Now when our app logs anything, besides the `stdout` and manually set up file lo
 2023-12-06T20:42:34.829257+00:00 greeter ndk-greeter-go[9185]: {"level":"info","caller":"/root/srl-labs/ndk-greeter-go/greeter/state.go:49","time":"2023-12-06T20:42:34Z","message":"Telemetry add/update status: kSdkMgrSuccess, error_string: \"\""}
 ```
 
-[^10]: Native SR Linux apps write to `local6` facility
+[^1]: Native SR Linux apps write to `local6` facility
