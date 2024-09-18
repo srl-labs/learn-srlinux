@@ -64,6 +64,48 @@ As you can see, the logic is straightforwards, but it is a good example of how t
 
 As we already mentioned, the `greeter` app uses two data points to create the greeting message. The first one is the `name` a user has configured the app with. The second one is the last-booted-time from the SR Linux state. Our app gets the `name` from the configuration, and the last-booted-time we need to fetch from the SR Linux state as this is not part of the app's config.
 
-An application developer can choose different ways to fetch data from the SR Linux, but Bond provides a gNMI client that can be used to fetch the data.
+An application developer can choose different ways to fetch data from SR Linux, but since Bond already provides a gNMI client, it might be the easiest way to fetch the data.
 
+```{.go title="greeter/app.go"}
+--8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/use-bond-agent/greeter/app.go:get-uptime"
+```
+
+Using the `bond.NewGetRequest` we construct a gNMI Get request by providing a path for the `last-booted` state data. Then `a.NDKAgent.GetWithGNMI(getReq)` sends the request to the SR Linux and receives the response.  
+All we have to do is parse the response and extract the value.
+
+Now we have all ingredients to compose the greeting message, which we save in the application' `configState` structure:
+
+```go
+a.configState.Greeting = "👋 Hi " + a.configState.Name +
+    ", SR Linux was last booted at " + uptime
+```
+
+## Posting app's state
+
+Ok, we've completed 90% of our greeter application. The last 10% is sending the computed greeting value back to SR Linux. This is what we call "updating the application state".
+
+Right now the greeting message is nothing more than a string value in the application's `configState` structure. But SR Linux doesn't know anything about it, only application does. Let's fix it.
+
+Applications can post their state to SR Linux via NDK, this way the application state becomes visible to SR Linux and therefore the data can be fetched through any of the available interfaces. The greeter app has the `updateState` function defined that does exactly that.
+
+```{.go title="greeter/state.go"}
+--8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/use-bond-agent/greeter/state.go:update-state"
+```
+
+The updateState logic is rather straightforward. We have to convert the application's `configState` structure into a json-serialized byte slice and then use Bond's `UpdateState` function to post it to SR Linux.  
+We provide the application's YANG path (`AppRoot`) and the string formatted json blob of the application's `configState` structure.
+
+This will populate the application's state in the SR Linux state and will become available for query over any of the supported management interfaces.
+
+## Summary
+
+That's it! We have successfully created a simple application that uses SR Linux's [NetOps Development Kit](https://ndk.srlinux.dev) and [srl-labs/bond][bond-repo] library that assists in the development process.
+
+We hope that this guide has helped you understand the high-level steps every application needs to take out in order successfully use NDK to register itself with SR Linux, get its configuration, and update its state.
+
+Now let's see how we can package our app and make it installable on SR Linux.
+
+:octicons-arrow-right-24: [Building and packaging the application](../build-and-package.md)
+
+[bond-repo]: https://github.com/srl-labs/bond
 [main-go]: https://github.com/srl-labs/ndk-greeter-go/blob/use-bond-agent/main.go

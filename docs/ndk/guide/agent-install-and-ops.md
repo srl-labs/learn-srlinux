@@ -20,7 +20,7 @@ The agent installation procedure can be carried out in different ways:
 The first two options are easy to execute, but they are a bit more involved as the installers need to maintain the remote paths for the copy commands. When using the `deb` option, though, it becomes less cumbersome to install the package. All the installers deal with is a single `.deb` file and a copy command.  
 Of course, the build process of the `deb` package is still required, and we would like to explain this process in detail.
 
-## Deb/RPM package
+## Packaging the NDK application
 
 /// admonition | Deb or RPM?
 Prior to 24.3 release SR Linux used an rpm-based base Linux image, therefore the RPM package was used to distribute the NDK applications.

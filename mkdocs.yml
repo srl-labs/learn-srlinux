@@ -47,6 +47,7 @@ nav:
                           - Main function: ndk/guide/dev/go/with-bond/main.md
                           - Bond agent: ndk/guide/dev/go/with-bond/bond.md
                           - Greeter app: ndk/guide/dev/go/with-bond/app.md
+                          - Packaging: ndk/guide/dev/go/with-bond/package.md
                           - Logging: ndk/guide/dev/go/with-bond/logging.md
                       - The Hard Way:
                           - ndk/guide/dev/go/the-hard-way/index.md
