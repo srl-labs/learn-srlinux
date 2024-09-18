@@ -47,7 +47,6 @@ nav:
                           - Main function: ndk/guide/dev/go/with-bond/main.md
                           - Bond agent: ndk/guide/dev/go/with-bond/bond.md
                           - Greeter app: ndk/guide/dev/go/with-bond/app.md
-                          - Packaging: ndk/guide/dev/go/with-bond/package.md
                           - Logging: ndk/guide/dev/go/with-bond/logging.md
                       - The Hard Way:
                           - ndk/guide/dev/go/the-hard-way/index.md
@@ -60,6 +59,7 @@ nav:
                           - Processing Config: ndk/guide/dev/go/the-hard-way/processing-config.md
                           - Updating State: ndk/guide/dev/go/the-hard-way/updating-state.md
                           - Logging: ndk/guide/dev/go/the-hard-way/logging.md
+                      - Build & Package: ndk/guide/dev/go/build-and-package.md
                   - Python:
                       - ndk/guide/dev/py/index.md
                       - Greeter App: ndk/guide/dev/py/greeter-py.md
