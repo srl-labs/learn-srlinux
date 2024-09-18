@@ -22,6 +22,8 @@ The `Start` function is composed of the following parts:
 4. [Update application's state](#__codelineno-1-11) with `name` and `greeting` values
 5. [Stop](#__codelineno-1-13:14){ data-proofer-ignore } the application when the context is cancelled
 
+When the app is stopped by a user (or even killed with a `SIGKILL`) Bond will gracefully stop the application and de-register it on your behalf. Everything that needs to happen will happen behind the scenes, you don't need to do anything special unless you want to perform some custom cleaning steps.
+
 ## Configuration load
 
 Time to have a closer look at why and how we load the application configuration. Starting with the "why" first. When we start the greeter application it doesn't hold any state of its own, besides the desired name. The application configuration is done via any of the SR Linux interfaces - CLI, gNMI, JSON-RPC, etc. Like it should be.  
