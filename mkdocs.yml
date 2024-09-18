@@ -1,7 +1,14 @@
 site_name: Learn SR Linux
 nav:
   - Home: index.md
-  - Get Started: get-started.md
+  - Get Started:
+      - get-started/index.md
+      - Lab: get-started/lab.md
+      - CLI: get-started/cli.md
+      - Interfaces: get-started/interface.md
+      - Network Instances: get-started/network-instance.md
+      - IGP: get-started/igp.md
+      - BGP: get-started/bgp.md
   - Management:
       - mgmt/index.md
       - CLI:
@@ -167,6 +174,7 @@ theme:
     - navigation.top
     # - navigation.instant # removed until code selection are fixed https://github.com/squidfunk/mkdocs-material/issues/5066
     - navigation.tabs
+    - navigation.sections
     - search.suggest
     - content.code.annotate
     - content.code.copy

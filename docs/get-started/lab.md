@@ -1,16 +1,10 @@
----
-hide: navigation
----
-
-SR Linux packs a lot of unique features that the IP and data center networking teams can leverage.
-Some of the features are truly new to the networking domain.
-The goal of this portal is to introduce SR Linux to visitors through interactive tutorials centered around SR Linux services and capabilities.
-
-We believe that learning by doing yields the best results. With that in mind we made SR Linux container image available to everybody without any registration or licensing requirements :partying_face:
-
-The public SR Linux container image when powered by [containerlab](https://containerlab.srlinux.dev) allows us to create easily deployable labs that everyone can launch at their convenience. All that to let you not only read about the features we offer, but to try them live!
+# SR Linux Lab
 
 ## SR Linux container image
+
+We believe that "learning by doing" yields the best results. With that in mind we made SR Linux container image available to everybody without any registration or licensing requirements :partying_face:
+
+The public SR Linux container image when powered by [containerlab](https://containerlab.dev) allows us to create easily deployable labs that everyone can launch at their convenience. All that to let you not only read about the features we offer, but to try them live!
 
 A single container image that hosts management, control and data plane functions is all you need to get started.
 
@@ -127,82 +121,3 @@ The logs of the running container can be displayed with `docker logs <container-
 
 In case of the misconfiguration or runtime errors, container may exit abruptly. In that case it won't appear in the `docker ps` output as this command only shows running containers. Containers which are in the exited status will be part of the `docker ps -a` output.  
 In case your container exits abruptly, check the logs as they typically reveal the cause of termination.
-
-## Documentation
-
-This portal does not substitute but augments the official SR Linux documentation. You can find official docs using one of the following links:
-
-1. SR Linux documentation collection - https://documentation.nokia.com/srlinux
-2. Short and memorizable URLs with the release version being part of the URL
-    1. https://doc.srlinux.dev/22-11 for the main documentation pages of SR Linux 22.11 release.
-    2. https://doc.srlinux.dev/rn22-11-2 for a direct link to Release Notes.
-3. Network Infrastructure documentation collection - https://bit.ly/iondoc
-
-## Connecting to SR Linux
-
-When SR Linux container is up and running, users can connect to it over different interfaces.
-
-### CLI
-
-One of the ways to manage SR Linux is via its advanced and extensible [Command Line Interface](kb/mgmt.md#sr-linux-cli).
-
-To invoke the CLI application inside the SR Linux container get container name/ID first, and then execute the `sr_cli` process inside of it:
-
-```shell
-# get SR Linux container name -> clab-srl01-srl
-$ docker ps
-CONTAINER ID   IMAGE                             COMMAND                  CREATED          STATUS         PORTS                    NAMES
-17a47c58ad59   ghcr.io/nokia/srlinux             "/tini -- fixuid -q …"   10 seconds ago   Up 6 seconds                            clab-learn-01-srl1
-```
-
-```shell
-# start the sr_cli process inside this container to get access to CLI
-docker exec -it clab-learn-01-srl1 sr_cli
-Using configuration file(s): []
-Welcome to the srlinux CLI.
-Type 'help' (and press <ENTER>) if you need any help using this.
---{ running }--[  ]--                                                                                                                           
-A:srl1#
-```
-
-The CLI can also be accessed via an SSH service the SR Linux container runs. Using the default credentials `admin:NokiaSrl1!` you can connect to the CLI over the network:
-
-```shell
-# containerlab creates local /etc/hosts entries
-# for container names to resolve to their IP
-ssh admin@clab-learn-01-srl1
-
-admin@clab-learn-01-srl1's password: 
-Using configuration file(s): []
-Welcome to the srlinux CLI.
-Type 'help' (and press <ENTER>) if you need any help using this.
---{ running }--[  ]--                                                                                                                           
-A:srl1#
-```
-
-### gNMI
-
-SR Linux containers deployed with containerlab come up with gNMI interface up and running over port 57400.
-
-Using the gNMI client[^2] users can explore SR Linux' gNMI interface:
-
-```
-gnmic -a clab-srlinux-srl1 --skip-verify -u admin -p 'NokiaSrl1!' capabilities
-gNMI version: 0.7.0
-supported models:
-  - urn:srl_nokia/aaa:srl_nokia-aaa, Nokia, 2021-03-31
-  - urn:srl_nokia/aaa-types:srl_nokia-aaa-types, Nokia, 2019-11-30
-  - urn:srl_nokia/acl:srl_nokia-acl, Nokia, 2021-03-31
-<SNIP>
-```
-
-## My DCF Learning Labs
-
-More than just a lab service, **My DCF Learning Labs** offers lab exercises complete with inline instructions and solutions, giving you everything you need in one easy-to-use browser-based application - access multiple lab types and exercises to develop your SR Linux skills.
-
-[Learn more](https://www.nokia.com/networks/training/dcf/my-dcf-learning-labs/?utm_source=Learn+SR+Linux) about My DCF Learning Labs and [watch a tutorial](https://www.youtube.com/watch?v=ycDNLoYrdko), or [request your free access now](https://forms.office.com/e/x8d1P1rdNt).
-
-[^1]: Centos 7.3+ has a 3.x kernel and won't be able to run SR Linux container images newer than v22.11.
-[^2]: for example [gnmic](https://gnmic.openconfig.net)
-[^3]: The labs referenced on this site are deployed with containerlab unless stated otherwise
-[^4]: Prior to SR Linux v23.3 users had to mount a topology file for a container to start.
