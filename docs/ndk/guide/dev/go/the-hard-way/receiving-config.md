@@ -27,5 +27,5 @@ Then we start receiving notifications from the stream. For every received [`Noti
 
 But first, let's understand how the notification stream is started in the next chapter.
 
-[operations-subscr-to-notif]: ../../operations.md#subscribing-to-notifications
-[notif_stream_resp_doc]: https://rawcdn.githack.com/nokia/srlinux-ndk-protobufs/v0.2.0/doc/index.html#srlinux.sdk.NotificationStreamResponse
+[operations-subscr-to-notif]: ../../../operations.md#subscribing-to-notifications
+[notif_stream_resp_doc]: https://ndk.srlinux.dev/doc/sdk#NotificationStreamResponse

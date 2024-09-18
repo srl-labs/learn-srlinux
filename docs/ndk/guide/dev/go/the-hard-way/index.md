@@ -10,13 +10,13 @@ The toolchain that can be used to develop and build Go-based NDK apps consists o
     To continue with this tutorial users should install the Go programming language on their development machine. The installation process is described in the [Go documentation](https://golang.org/doc/install).
 
 2. [Go NDK bindings](https://github.com/nokia/srlinux-ndk-go) - generated language bindings for the gRPC-based NDK service.  
-    As covered in the [NDK Architecture](../../architecture.md) section, NDK is a collection of gRPC-based services. To be able to use gRPC services in a Go program the [language bindings](https://grpc.io/docs/languages/go/quickstart/) have to be generated from the [source proto files](../../architecture.md#proto-files).
+    As covered in the [NDK Architecture](../../../architecture.md) section, NDK is a collection of gRPC-based services. To be able to use gRPC services in a Go program the [language bindings](https://grpc.io/docs/languages/go/quickstart/) have to be generated from the [source proto files](../../../architecture.md#proto-files).
 
     Nokia not only provides the [proto files](https://github.com/nokia/srlinux-ndk-protobufs) for the SR Linux NDK service but also offers [NDK Go language bindings](https://github.com/nokia/srlinux-ndk-go) generated for each NDK release.
 
     With the provided Go bindings, users don't need to generate them themselves.
 
-3. [Goreleaser](https://goreleaser.com/) - Go-focused build & release pipeline runner. Contains [nFPM](https://nfpm.goreleaser.com/) project to craft deb/rpm packages. Deb/RPM packages is the preferred way to [install NDK agents](../../agent-install-and-ops.md).  
+3. [Goreleaser](https://goreleaser.com/) - Go-focused build & release pipeline runner. Contains [nFPM](https://nfpm.goreleaser.com/) project to craft deb/rpm packages. Deb/RPM packages is the preferred way to [install NDK agents](../../../agent-install-and-ops.md).  
     Goreleaser is optional, but it is a nice tool to build and release Go-based NDK applications in an automated fashion.
 
 ## Meet the `greeter`
@@ -62,7 +62,7 @@ cd ndk-greeter-go
 Newer versions of Containerlab and SR Linux should work as well, but the outputs might be slightly different.
 ///
 
-And then running the deployment script[^10]:
+And then running the deployment script:
 
 ```bash
 ./run.sh deploy-all #(1)!
@@ -153,7 +153,7 @@ This is the project structure used in this tutorial:
 1. Directory to store build artifacts. This directory is ignored by Git.
 2. [Goreleaser](https://goreleaser.com/) config file to build and publish the NDK application. Usually run via CI/CD pipeline.
 3. Directory to store the `greeter` package source code. This is where the application logic is implemented.
-4. Application [configuration file](../../agent.md#application-manager-and-application-configuration-file).
+4. Application [configuration file](../../../agent.md#application-manager-and-application-configuration-file).
 5. Containerlab topology file to assist with the development and testing of the NDK application.
 6. Directory with the application log file.
 7. Directory with the SR Linux log directory to browse the SR Linux applications logs.
@@ -177,7 +177,7 @@ The Application Manager uses the application configuration file to onboard the a
 Refer to the [application configuration][app-config] section to better understand what each field means. Application Manager will look for the `greeter` binary in the `/usr/local/bin/` directory when starting our application.
 
 [greeter-go-repo]: https://github.com/srl-labs/ndk-greeter-go
-[app-config]: ../../agent.md#application-manager-and-application-configuration-file
+[app-config]: ../../../agent.md#application-manager-and-application-configuration-file
 [greeter-yml]: https://github.com/srl-labs/ndk-greeter-go/blob/main/greeter.yml.go.tpl
 
 [^1]: Don't mind a little template magic, it is for the debugging capabilities of the `greeter` app.

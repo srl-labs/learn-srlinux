@@ -103,7 +103,7 @@ See the `ConfigNotification` type? This is what we expect to receive in our app.
 
 Now our configuration notifications are streamed from the NDK to our app. Let's see how we process them to update the app's configuration.
 
-[operations-create-notif-stream]: ../../operations.md#creating-notification-stream
+[operations-create-notif-stream]: ../../../operations.md#creating-notification-stream
 [notif_reg_req_doc]: https://rawcdn.githack.com/nokia/srlinux-ndk-protobufs/v0.2.0/doc/index.html#srlinux.sdk.NotificationRegisterRequest
 [cfg_sub_req_doc]: https://rawcdn.githack.com/nokia/srlinux-ndk-protobufs/v0.2.0/doc/index.html#srlinux.sdk.ConfigSubscriptionRequest
 [notif_stream_resp_doc]: https://rawcdn.githack.com/nokia/srlinux-ndk-protobufs/v0.2.0/doc/index.html#srlinux.sdk.NotificationStreamResponse

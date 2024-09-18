@@ -58,7 +58,6 @@ nav:
                           - Handling Notifications: ndk/guide/dev/go/the-hard-way/handling-notif.md
                           - Processing Config: ndk/guide/dev/go/the-hard-way/processing-config.md
                           - Updating State: ndk/guide/dev/go/the-hard-way/updating-state.md
-                          - Logging: ndk/guide/dev/go/the-hard-way/logging.md
                       - Build & Package: ndk/guide/dev/go/build-and-package.md
                   - Python:
                       - ndk/guide/dev/py/index.md

@@ -148,10 +148,10 @@ Let's see what happens there in the [Notification Stream](notif-stream.md) secti
 
 [main-go]: https://github.com/srl-labs/ndk-greeter-go/blob/main/main.go
 [app-go]: https://github.com/srl-labs/ndk-greeter-go/blob/main/greeter/app.go
-[operations-ndk-mgr-client]: ../../operations.md#creating-ndk-manager-client
-[operations-subscr-to-notif]: ../../operations.md#subscribing-to-notifications
-[operations-handling-state]: ../../operations.md#handling-applications-configuration-and-state
-[operations-register-agent]: ../../operations.md#agent-registration
+[operations-ndk-mgr-client]: ../../../operations.md#creating-ndk-manager-client
+[operations-subscr-to-notif]: ../../../operations.md#subscribing-to-notifications
+[operations-handling-state]: ../../../operations.md#handling-applications-configuration-and-state
+[operations-register-agent]: ../../../operations.md#agent-registration
 [srlinux-ndk-go]: https://github.com/nokia/srlinux-ndk-go
 [agent-reg-resp-doc]: https://rawcdn.githack.com/nokia/srlinux-ndk-protobufs/v0.2.0/doc/index.html#srlinux.sdk.AgentRegistrationResponse
 [gnmic]: https://gnmic.openconfig.net

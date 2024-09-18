@@ -68,10 +68,8 @@ Maybe a quick demo that shows how to interact with `greeter` and get its state o
 
 Let's see how we can develop this app using the `bond` package.
 
-:octicons-arrow-right-24: [Continue with Bond](bond/index.md)
+:octicons-arrow-right-24: [Continue with Bond](with-bond/index.md)
 
 [greeter-go-repo]: https://github.com/srl-labs/ndk-greeter-go
 
 [bond-repo]: https://github.com/srl-labs/bond
-
-[^1]: Don't mind a little template magic, it is for the debugging capabilities of the `greeter` app.

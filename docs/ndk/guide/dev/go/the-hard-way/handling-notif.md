@@ -93,7 +93,7 @@ Let's start with the deletion case. How do we know that the config has been dele
 
 There are two options:
 
-1. We can check the `op` field of the [`ConfigNotification`][config_notif_doc] message. If the `op` field is set to `Delete`, then the object has been deleted. This does not apply for non-presence containers, like our [greeter YANG container](../../agent.md#yang-module), since they are always present.
+1. We can check the `op` field of the [`ConfigNotification`][config_notif_doc] message. If the `op` field is set to `Delete`, then the object has been deleted. This does not apply for non-presence containers, like our [greeter YANG container](../../../agent.md#yang-module), since they are always present.
 2. We can have a look at the `data` field of the [`ConfigNotification`][config_notif_doc] message that contains the embedded [ConfigData][config_data_doc] message. The `ConfigData` message has the `json` field that contains the JSON representation of the config[^10] and if the json string is an empty json object, then the config has been deleted/emptied.  
     This applies to non-presence containers.
 

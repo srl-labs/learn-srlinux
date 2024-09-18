@@ -50,7 +50,7 @@ func main() {
 
 We create the logger before initializing the application so that we can pass it to the application and use it to log the application's state.
 
-Logging from the NDK application is a separate topic that is covered in the [Logging](logging.md) section of this guide.
+Logging from the NDK application is a separate topic that is covered in the [Logging](../with-bond/logging.md) section of the guide that covers the Bond helper package.
 
 ## Context, gRPC Requests and Metadata
 
@@ -92,7 +92,7 @@ The `a.stop()` function is responsible to perform the graceful shutdown of the a
 --8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/v0.1.0/greeter/app.go:app-stop"
 ```
 
-Following the [Graceful Exit](../../operations.md#exiting-gracefully) section we first unregister the agent with the NDK manager and then closing all connections that our app had opened.
+Following the [Graceful Exit](../../../operations.md#exiting-gracefully) section we first unregister the agent with the NDK manager and then closing all connections that our app had opened.
 
 ## Initializing the Application
 
@@ -104,11 +104,5 @@ And finally in the main function we initialize the greeter application and start
 
 This is where the application logic starts to kick in. Let's turn the page and start digging into it in the [next chapter](app-instance.md).
 
-[greeter-go-repo]: https://github.com/srl-labs/ndk-greeter-go
 [runsh]: https://github.com/srl-labs/ndk-greeter-go/blob/main/run.sh
-[greeter-yml]: https://github.com/srl-labs/ndk-greeter-go/blob/main/greeter.yml
 [main-go]: https://github.com/srl-labs/ndk-greeter-go/blob/main/main.go
-[ndk_proto_repo]: https://github.com/nokia/srlinux-ndk-protobufs
-[ndk_go_bindings]: https://github.com/nokia/srlinux-ndk-go
-[go_package_repo]: https://pkg.go.dev/github.com/nokia/srlinux-ndk-go@v0.1.0/ndk
-[cfg_svc_doc]: https://rawcdn.githack.com/nokia/srlinux-ndk-protobufs/v0.2.0/doc/index.html#ndk%2fconfig_service.proto

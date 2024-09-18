@@ -21,7 +21,7 @@ Let's see what's inside the `telemetryAddOrUpdate`:
 --8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/v0.1.0/greeter/state.go:telemetry-add-or-update"
 ```
 
-As we covered in the [Handling application's configuration and state](../../operations.md#handling-applications-configuration-and-state) section, NDK's [Telemetry service][sdk_mgr_telem_svc_doc] provides the RPCs to add/update and delete data from SR Linux's state data store. We initialized the Telemetry service client when we [created](app-instance.md#creating-ndk-clients) the application's instance at the very beginning of this tutorial, and now we use it to modify the state data.
+As we covered in the [Handling application's configuration and state](../../../operations.md#handling-applications-configuration-and-state) section, NDK's [Telemetry service][sdk_mgr_telem_svc_doc] provides the RPCs to add/update and delete data from SR Linux's state data store. We initialized the Telemetry service client when we [created](app-instance.md#creating-ndk-clients) the application's instance at the very beginning of this tutorial, and now we use it to modify the state data.
 
 First we craft the [`TelemetryUpdateRequest`][sdk_mgr_telem_upd_req_doc] that has `TelemetryInfo` message nested in it, which contains the `TelemetryKey` and `TelemetryData` messages. The `TelemetryKey` message contains the `path` field that specifies the path to the state data element we want to update. The `TelemetryData` message contains the `json` field that contains the JSON representation of the data we want to add/update.
 
