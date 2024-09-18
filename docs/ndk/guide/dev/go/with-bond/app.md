@@ -51,7 +51,7 @@ With this little function our application reliably receives its own configuratio
 With the configuration loaded, the app can now perform its business logic. The business logic of the `greeter` app is very simple:
 
 1. Take the `name` a user has configured the app with
-2. Fetch the last-booted-time from the SR Linux state
+2. Fetch the last-booted time from the SR Linux state
 3. Use the two values to compose a greeting message
 
 As you can see, the logic is straightforwards, but it is a good example of how the application can use the configured values along the values received from the SR Linux state.
@@ -62,7 +62,7 @@ As you can see, the logic is straightforwards, but it is a good example of how t
 
 ## Fetching data with gNMI
 
-As we already mentioned, the `greeter` app uses two data points to create the greeting message. The first one is the `name` a user has configured the app with. The second one is the last-booted-time from the SR Linux state. Our app gets the `name` from the configuration, and the last-booted-time we need to fetch from the SR Linux state as this is not part of the app's config.
+As we already mentioned, the `greeter` app uses two data points to create the greeting message. The first one is the `name` a user has configured the app with. The second one is the last-booted time from the SR Linux state. Our app gets the `name` from the configuration, and the last-booted time we need to fetch from the SR Linux state as this is not part of the app's config.
 
 An application developer can choose different ways to fetch data from SR Linux, but since Bond already provides a gNMI client, it might be the easiest way to fetch the data.
 

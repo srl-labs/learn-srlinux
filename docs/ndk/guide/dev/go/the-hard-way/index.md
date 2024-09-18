@@ -29,7 +29,7 @@ This tutorial is based on the simple `greeter` NDK app published at [**`srl-labs
 * And finally publishing state
 
 The `greeter` app adds `/greeter` context to SR Linux and allows users to configure `/greeter/name` value. Greeter will greet the user with a message  
-`👋 Hi ${provided name}, SR Linux was last booted at ${last-booted-time}`  
+`👋 Hi ${provided name}, SR Linux was last booted at ${last-booted}`  
 and publish `/greeter/name` and `/greeter/greeting` values in the state datastore.
 
 Maybe a quick demo that shows how to interact with `greeter` and get its state over gNMI and JSON-RPC is worth a thousand words:

@@ -6,7 +6,7 @@ Now that our application has its config stored in the `ConfigState` struct, we c
 --8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/v0.1.0/greeter/app.go:app-start"
 ```
 
-Greeter' core app logic is to calculate the greeting message that consists of a name and the last-booted-time of SR Linux system.
+Greeter' core app logic is to calculate the greeting message that consists of a name and the last-booted time of SR Linux system.
 
 ```{.go title="greeter/config.go"}
 --8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/v0.1.0/greeter/config.go:process-config"
@@ -14,7 +14,7 @@ Greeter' core app logic is to calculate the greeting message that consists of a 
 
 The `processConfig` function first checks if the `name` field is not an empty string. If it is an empty, it means the config name was either deleted or not configured at all. In this case we set the `ConfigState` struct to an empty value which should result in the empty state in the SR Linux data store.
 
-If `name` is set we proceed with calculating the greeting message. Remember that we need to retrieve the last-booted-time from the SR Linux system. We do this by calling the `getUptime` function.
+If `name` is set we proceed with calculating the greeting message. Remember that we need to retrieve the `last-booted` time value from the SR Linux system. We do this by calling the `getUptime` function.
 
 ```{.go title="greeter/app.go"}
 --8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/v0.1.0/greeter/app.go:get-uptime"
