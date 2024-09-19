@@ -109,5 +109,9 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `✨ deployed to ${{ steps.wrangler-deploy.outputs.deployment-url }} and https://${branchName}.eda-docs.pages.dev`
+              body: `✨ Preview site has been deployed to:
+
+                * https://${branchName}.learn-srlinux.pages.dev
+                * ${{ steps.wrangler-deploy.outputs.deployment-url }}
+                `
               })
