@@ -109,9 +109,9 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `✨ Preview site has been deployed to:
+              body: `🏗 Preview site has been deployed to:
 
-                * https://${branchName}.learn-srlinux.pages.dev
-                * ${{ steps.wrangler-deploy.outputs.deployment-url }}
-                `
+              * https://${branchName}.learn-srlinux.pages.dev
+              * ${{ steps.wrangler-deploy.outputs.deployment-url }}
+              `
               })
