@@ -3,9 +3,9 @@
 In Go, the `main()` function is the entry point of the binary application and is defined in the [`main.go`][main-go][^1] file of our application:
 
 ```{.go .code-scroll-lg}
---8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/use-bond-agent/main.go:pkg-main"
---8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/use-bond-agent/main.go:pkg-main-vars"
---8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/use-bond-agent/main.go:main"
+--8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/main/main.go:pkg-main"
+--8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/main/main.go:pkg-main-vars"
+--8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/main/main.go:main"
 ```
 
 ## Application version
@@ -57,14 +57,14 @@ Logging from the NDK application is a separate topic that is covered in the [Log
 Moving down the `main` function, we create the [context](https://www.ardanlabs.com/blog/2019/09/context-package-semantics-in-go.html) that will control the lifecycle of our greeter application.
 
 ```go
---8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/use-bond-agent/main.go:metadata"
+--8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/main/main.go:metadata"
 ```
 
 And with the context piece out of the way, we are standing in front of the actual NDK application machinery. Let's turn the page and start digging into it.
 
 :octicons-arrow-right-16: [Creating the Bond agent](bond.md).
 
-[runsh]: https://github.com/srl-labs/ndk-greeter-go/blob/use-bond-agent/run.sh
-[main-go]: https://github.com/srl-labs/ndk-greeter-go/blob/use-bond-agent/main.go
+[runsh]: https://github.com/srl-labs/ndk-greeter-go/blob/main/run.sh
+[main-go]: https://github.com/srl-labs/ndk-greeter-go/blob/main/main.go
 
 [^1]: Imports are omitted for brevity.

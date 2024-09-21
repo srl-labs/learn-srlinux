@@ -9,7 +9,7 @@ Bond package is a helper Go package that abstracts the low-level NDK API and ass
 We initialize our bond agent in the [`main.go`][main-go] file by specifying options of the Bond agent and starting it.
 
 ```{.go .code-scroll-lg}
---8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/use-bond-agent/main.go:main-init-bond-agent"
+--8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/main/main.go:main-init-bond-agent"
 ```
 
 We pass the logger instance created earlier to make the Bond agent log its messages to the same destination as the application.
@@ -32,5 +32,5 @@ As you can see, there is a lot that bond does for your application, which otherw
 :octicons-arrow-right-24: [Greeter application](app.md)
 
 [bond-repo]: https://github.com/srl-labs/bond
-[main-go]: https://github.com/srl-labs/ndk-greeter-go/blob/use-bond-agent/main.go
+[main-go]: https://github.com/srl-labs/ndk-greeter-go/blob/main/main.go
 [bond-pkg-start-fn]: https://pkg.go.dev/github.com/srl-labs/bond#Agent.Start

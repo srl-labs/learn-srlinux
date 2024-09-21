@@ -5,13 +5,13 @@
 Let's have a look at how our [`main`][main-go] function ends:
 
 ```{.go title="main.go"}
---8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/use-bond-agent/main.go:main-init-app"
+--8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/main/main.go:main-init-app"
 ```
 
 We initialize the greeter application struct by passing a logger and the pointer to the bond agent instance, and call the `app.Start(ctx)` function. The `Start` function is a place where we start the application's lifecycle.
 
 ```{.go title="greeter/app.go" linenums="1"}
---8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/use-bond-agent/greeter/app.go:app-start"
+--8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/main/greeter/app.go:app-start"
 ```
 
 The `Start` function is composed of the following parts:
@@ -34,14 +34,14 @@ First, our application has to have a structure that would hold its configuration
 And then
 
 ```{.go title="greeter/config.go"}
---8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/use-bond-agent/greeter/config.go:configstate-struct"
+--8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/main/greeter/config.go:configstate-struct"
 ```
 
 And then we need to populate this structure with the configuration that NDK sends our way. Here, again, Bond saves us quite a few cycles by providing us with the full configuration that Bond accumulated in the background via `a.NDKAgent.Notifications.FullConfig` byte slice.  
 We just need to unmarshal this byte slice into the `ConfigState` struct and we will receive the full configuration a user passed for our application via any of the SR Linux interfaces.
 
 ```{.go title="greeter/config.go"}
---8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/use-bond-agent/greeter/config.go:load-greeter-cfg"
+--8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/main/greeter/config.go:load-greeter-cfg"
 ```
 
 With this little function our application reliably receives its own configuration and can perform its business logic based on the configuration passed to it.
@@ -57,7 +57,7 @@ With the configuration loaded, the app can now perform its business logic. The b
 As you can see, the logic is straightforwards, but it is a good example of how the application can use the configured values along the values received from the SR Linux state.
 
 ```{.go title="greeter/config.go"}
---8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/use-bond-agent/greeter/config.go:process-config"
+--8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/main/greeter/config.go:process-config"
 ```
 
 ## Fetching data with gNMI
@@ -67,7 +67,7 @@ As we already mentioned, the `greeter` app uses two data points to create the gr
 An application developer can choose different ways to fetch data from SR Linux, but since Bond already provides a gNMI client, it might be the easiest way to fetch the data.
 
 ```{.go title="greeter/app.go"}
---8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/use-bond-agent/greeter/app.go:get-uptime"
+--8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/main/greeter/app.go:get-uptime"
 ```
 
 Using the `bond.NewGetRequest` we construct a gNMI Get request by providing a path for the `last-booted` state data. Then `a.NDKAgent.GetWithGNMI(getReq)` sends the request to the SR Linux and receives the response.  
@@ -76,7 +76,7 @@ All we have to do is parse the response, extract the last-booted value and calcu
 Now we have all ingredients to compose the greeting message, which we save in the application' `configState` structure:
 
 ```go
---8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/use-bond-agent/greeter/config.go:greeting-msg"
+--8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/main/greeter/config.go:greeting-msg"
 ```
 
 ## Posting app's state
@@ -88,7 +88,7 @@ Right now the greeting message is nothing more than a string value in the applic
 Applications can post their state to SR Linux via NDK, this way the application state becomes visible to SR Linux and therefore the data can be fetched through any of the available interfaces. The greeter app has the `updateState` function defined that does exactly that.
 
 ```{.go title="greeter/state.go"}
---8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/use-bond-agent/greeter/state.go:update-state"
+--8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/main/greeter/state.go:update-state"
 ```
 
 The updateState logic is rather straightforward. We have to convert the application's `configState` structure into a json-serialized byte slice and then use Bond's `UpdateState` function to post it to SR Linux.  
@@ -107,4 +107,4 @@ Now let's see how we can package our app and make it installable on SR Linux.
 :octicons-arrow-right-24: [Building and packaging the application](../build-and-package.md)
 
 [bond-repo]: https://github.com/srl-labs/bond
-[main-go]: https://github.com/srl-labs/ndk-greeter-go/blob/use-bond-agent/main.go
+[main-go]: https://github.com/srl-labs/ndk-greeter-go/blob/main/main.go

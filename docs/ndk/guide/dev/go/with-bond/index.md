@@ -142,7 +142,7 @@ As was [mentioned before][app-config], in order for the NDK application to be in
 The Application Manager uses the application configuration file to onboard the application. Our greeter app comes with the following [`greeter.yml`][greeter-yml] configuration file[^1]:
 
 ```yaml
---8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/use-bond-agent/greeter.yml.go.tpl:snip"
+--8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/main/greeter.yml.go.tpl:snip"
 ```
 
 Refer to the [application configuration][app-config] section to better understand what each field means. Application Manager will look for the `greeter` binary in the `/usr/local/bin/` directory when starting our application.
@@ -154,7 +154,7 @@ Every SR Linux application needs its own schema, this is what makes SR Linux a 1
 We have covered the YANG module structure in the [architecture section](../../../agent.md#yang-module), here is the resulting YANG module of our `greeter` application.
 
 ```{.yang title="yang/greeter.yang"}
---8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/use-bond-agent/yang/greeter.yang"
+--8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/main/yang/greeter.yang"
 ```
 
 With this YANG module loaded in SR Linux, we will extend SR Linux schema with the following nodes:

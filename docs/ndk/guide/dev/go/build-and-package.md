@@ -29,7 +29,7 @@ Thus, with every new app onboarded on the system we require to reload the applic
 That's where the post-install script comes in. Consider the following [`postinstall.sh`][postinstall-sh] script that we ship with the greeter app:
 
 ```bash
---8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/use-bond-agent/postinstall.sh"
+--8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/main/postinstall.sh"
 ```
 
 It does only one thing - reload the application manager - but does it just in time when the app is installed.
@@ -53,8 +53,8 @@ A:srl# /tools system app-management application app_mgr reload
 ```
 
 [goreleaser]: https://goreleaser.com/
-[run-sh]: https://github.com/srl-labs/ndk-greeter-go/blob/use-bond-agent/run.sh
-[goreleaser-yml]: https://github.com/srl-labs/ndk-greeter-go/blob/use-bond-agent/goreleaser.yml
-[cicd-wf]: https://github.com/srl-labs/ndk-greeter-go/blob/use-bond-agent/.github/workflows/cicd.yml
+[run-sh]: https://github.com/srl-labs/ndk-greeter-go/blob/main/run.sh
+[goreleaser-yml]: https://github.com/srl-labs/ndk-greeter-go/blob/main/goreleaser.yml
+[cicd-wf]: https://github.com/srl-labs/ndk-greeter-go/blob/main/.github/workflows/cicd.yml
 [greeter-go-repo]: https://github.com/srl-labs/ndk-greeter-go
-[postinstall-sh]: https://github.com/srl-labs/ndk-greeter-go/blob/use-bond-agent/postinstall.sh
+[postinstall-sh]: https://github.com/srl-labs/ndk-greeter-go/blob/main/postinstall.sh
