@@ -1,5 +1,10 @@
 # SR Linux Lab
 
+<figure>
+  <div class='mxgraph' style='max-width:100%;border:1px solid transparent;margin:0 auto; display:block;' data-mxgraph='{"page":0,"zoom":2,"highlight":"#0000ff","nav":true,"resize":true,"edit":"_blank","url":"https://raw.githubusercontent.com/srl-labs/srlinux-getting-started/main/diagrams/topology.drawio"}'></div>
+  <figcaption>Lab topology</figcaption>
+</figure>
+
 ## SR Linux container image
 
 We believe that "learning by doing" yields the best results. With that in mind we made SR Linux container image available to everybody without any registration or licensing requirements :partying_face:
@@ -121,3 +126,5 @@ The logs of the running container can be displayed with `docker logs <container-
 
 In case of the misconfiguration or runtime errors, container may exit abruptly. In that case it won't appear in the `docker ps` output as this command only shows running containers. Containers which are in the exited status will be part of the `docker ps -a` output.  
 In case your container exits abruptly, check the logs as they typically reveal the cause of termination.
+
+<script type="text/javascript" src="https://viewer.diagrams.net/js/viewer-static.min.js" async></script>

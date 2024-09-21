@@ -67,6 +67,14 @@ h4 {
 } */
 
 /* Table styling */
+
+/* we hide the tr with the th.hide-th class 
+this is needed when we want to use a table without a header
+*/
+tr:has(th.hide-th) {
+  display: none;
+}
+
 .md-typeset table:not([class]) th {
   background-color: #124191;
 }

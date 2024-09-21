@@ -8,9 +8,9 @@ SR Linux packs a lot of unique features that the IP and data center networking t
 
 By adopting the modern software development practices and architectures we made SR Linux answer the requirements of the highly dynamic and programmable networks. The clean slate in front of us allowed us to build a modern software platform without carrying the legacy baggage of the previous generations.
 
-At the same time, the new concepts and paradigms implemented in SR Linux might feel, well, _new_, to a seasoned network engineer knowing nothing better than an industry-standard CLI. To help newcomers to get started with SR Linux we have created this getting started guide that walks you through the basics of SR Linux Network Operating System (NOS) in an interactive and practical way.
+At the same time, the new concepts and paradigms implemented in SR Linux might feel, well, _new_, to a seasoned network engineer who spent years punching commands in the industry-standard CLI. To help newcomers to get started with SR Linux we have invite you on an interactive journey that walks you through the basics of SR Linux Network Operating System (NOS) in a practical way.
 
-The journey starts with deploying a small lab environment that we will use to get familiar with SR Linux and learn the core configuration and operational tasks.
+The journey starts with deploying a small lab environment that we will use to get familiar with various SR Linux concepts and learn the core configuration and operational tasks. If your muscle memory forced you to open a tab to search where to download the SR Linux image, you can close it right now. The lightweight SR Linux container image is free and available to everyone.
 
 :octicons-arrow-right-24: [Deploying a lab](lab.md)
 
@@ -22,7 +22,7 @@ This portal does not substitute but augments the official SR Linux documentation
 2. Short and sweet URLs with the release version being part of the URL
     1. https://doc.srlinux.dev/22-11 for the main documentation pages of SR Linux 22.11 release.
     2. https://doc.srlinux.dev/rn22-11-2 for a direct link to Release Notes.
-3. Network Infrastructure documentation collection - https://bit.ly/iondoc
+3. Nokia Network Infrastructure documentation collection - https://bit.ly/iondoc
 
 ## My DCF Learning Labs
 
