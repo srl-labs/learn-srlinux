@@ -17,4 +17,6 @@ The `Start` function is composed of the following parts:
 3. [Update application's state](#__codelineno-0-11) by with `name` and `greeting` values
 4. [Stop](#__codelineno-0-13:15){ data-proofer-ignore } the application when the context is cancelled
 
+Here the major difference with the Bond-based approach is that we have to manually handle the configuration notifications.
+
 Time to have a closer look at the first part of the `Start` function - receiving configuration notifications with `go a.receiveConfigNotifications(ctx)` function.

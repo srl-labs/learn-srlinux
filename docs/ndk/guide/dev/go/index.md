@@ -56,7 +56,7 @@ The apps logic is intentionally simple, as the goal is introduce the developers 
 * And finally publishing state back to SR Linux datastore
 
 The `greeter` app adds the `/greeter` context to the SR Linux YANG schema and allows users to configure the `/greeter/name` value. Greeter application will greet the user with a message:  
-> `👋 Hi ${provided name}, SR Linux was last booted at ${last-booted}`
+> `👋 Hi ${provided name}, I am SR Linux and my uptime is 108h23m52s!`
 
 and publishes the `/greeter/name` and the `/greeter/greeting` values in the SR Linux' state datastore.
 

@@ -1,76 +1,16 @@
 # Application Entry Point
 
-In Go, the `main()` function is the entry point of the binary application and is defined in the [`main.go`][main-go] file of our application:
+In Go, the `main()` function is the entry point of the binary application and is defined in the [`main.go`][main-go] file of our application. As in the case of Bond-assisted development, we perform the following same steps
 
-```{.go linenums="1"}
---8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/v0.1.0/main.go:pkg-main"
---8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/v0.1.0/main.go:pkg-main-vars"
---8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/v0.1.0/main.go:main"
-```
-
-## Application version
-
-As you can see, the `main` function is rather simple. First, we [handle the `version`](#__codelineno-0-9:16){ data-proofer-ignore } CLI flag to make sure our application can return its version when asked.
-
-Application config has a [`version-command`](index.md#__codelineno-7-4) field that indicates which command needs to be executed to get the application version. In our case, the `version` field is set to `greeter --version` and we just went through the handler of this flag.
-
-In SR Linux CLI we can get the version of the `greeter` app by executing the `greeter --version` command:
-
-```srl
---{ + running }--[  ]--
-A:greeter# show system application greeter
-  +---------+------+---------+-------------+--------------------------+
-  |  Name   | PID  |  State  |   Version   |       Last Change        |
-  +=========+======+=========+=============+==========================+
-  | greeter | 4676 | running | dev-a6f880b | 2023-11-29T21:29:04.243Z |
-  +---------+------+---------+-------------+--------------------------+
-```
-
-/// details | Why the version is `dev-a6f880b`?
-Attentive readers might have noticed that the version of the `greeter` app is `dev-a6f880b` instead of `v0.0.0-` following the [`version` and `commit` variables](#__codelineno-8-3:6){ data-proofer-ignore } values in [`main.go`][main-go] file. This is because we setting the values for these variables at build time using the Go linker flags in the [`run.sh`][runsh] script:
-
-```bash
-LDFLAGS="-s -w -X main.version=dev -X main.commit=$(git rev-parse --short HEAD)"
-```
-
-These variables are then set to the correct values when we build the application with Goreleaser.
-///
-
-## Setting up the Logger
-
-Logging is an important part of any application. It aids the developer in debugging the application and provides valuable information about the application's state for its users.
-
-```go
-func main() {
-    // snip
-    logger := setupLogger()
-    // snip
-}
-```
-
-We create the logger before initializing the application so that we can pass it to the application and use it to log the application's state.
-
-Logging from the NDK application is a separate topic that is covered in the [Logging](../with-bond/logging.md) section of the guide that covers the Bond helper package.
-
-## Context, gRPC Requests and Metadata
-
-Moving down the `main` function, we create the [context](https://www.ardanlabs.com/blog/2019/09/context-package-semantics-in-go.html) that will drive the lifecycle of our greeter application.
-
-Once the context is created we attach the [metadata](https://grpc.io/docs/guides/metadata/) to it. The metadata is a map of key-value pairs that will be sent along with the gRPC requests.
-
-The NDK service uses the metadata to identify the application from which the request was sent.
-
-```go
---8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/v0.1.0/main.go:metadata"
-```
-
-The metadata **must** be attached to the parent context and it should has the `agent_name` key with the value of the application name. The application name in the metadata doesn't have to match anything, but should be unique among all the applications that are registered with the Application Manager.
+* handling the application's version
+* setting up the logger
+* creating the context and appending app metadata
 
 ## Exit Handler
 
-Another important part of the application lifecycle is the exit handler. In the context of the NDK application life cycle the exit handler is a function that is called when the application receives Interrupt or SIGTERM signals.
+Here is the first part that we have to manually implement when not using Bond.
 
-The exit handler is a good place to perform cleanup actions like closing the open connections, releasing resources, etc.
+In the context of the NDK application life cycle the exit handler is a function that is called when the application receives Interrupt or SIGTERM signals. The exit handler is a good place to perform cleanup actions like closing the open connections, releasing resources, etc.
 
 We execute `exitHandler` function passing it the cancel function of the context:
 
@@ -96,7 +36,7 @@ Following the [Graceful Exit](../../../operations.md#exiting-gracefully) section
 
 ## Initializing the Application
 
-And finally in the main function we initialize the greeter application and start it:
+In the end, we initializa the app the same way:
 
 ```go title="main.go"
 --8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/v0.1.0/main.go:main-init-app"
@@ -104,5 +44,5 @@ And finally in the main function we initialize the greeter application and start
 
 This is where the application logic starts to kick in. Let's turn the page and start digging into it in the [next chapter](app-instance.md).
 
-[runsh]: https://github.com/srl-labs/ndk-greeter-go/blob/main/run.sh
-[main-go]: https://github.com/srl-labs/ndk-greeter-go/blob/main/main.go
+[runsh]: https://github.com/srl-labs/ndk-greeter-go/blob/v0.1.0/run.sh
+[main-go]: https://github.com/srl-labs/ndk-greeter-go/blob/v0.1.0/main.go

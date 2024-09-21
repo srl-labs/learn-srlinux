@@ -29,7 +29,8 @@ Our `ConfigState` struct was already marshaled to JSON, so we just need to set t
 
 This will update the state data store with the new values.
 
-Congratulations :partying_face:! You have successfully implemented the greeter application and reached the end of this tutorial. You can now apply the core concepts you learned here to build your own applications that extend SR Linux functionality and tailor it to your needs.
+Congratulations :partying_face:! You have successfully implemented the greeter application with bare NDK Go bindings and reached the end of this tutorial. Using bare NDK Go bindings without the [srl-labs/bond][bond-repo] helper package is not an easy task, therefore most likely you will use Bond to implement your applications.
 
 [sdk_mgr_telem_svc_doc]: https://rawcdn.githack.com/nokia/srlinux-ndk-protobufs/v0.2.0/doc/index.html#srlinux.sdk.SdkMgrTelemetryService
 [sdk_mgr_telem_upd_req_doc]:https://rawcdn.githack.com/nokia/srlinux-ndk-protobufs/v0.2.0/doc/index.html#srlinux.sdk.TelemetryUpdateRequest
+[bond-repo]: https://github.com/srl-labs/bond

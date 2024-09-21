@@ -51,7 +51,7 @@ With this little function our application reliably receives its own configuratio
 With the configuration loaded, the app can now perform its business logic. The business logic of the `greeter` app is very simple:
 
 1. Take the `name` a user has configured the app with
-2. Fetch the last-booted time from the SR Linux state
+2. Fetch the last-booted time from the SR Linux state and compute the uptime of the device
 3. Use the two values to compose a greeting message
 
 As you can see, the logic is straightforwards, but it is a good example of how the application can use the configured values along the values received from the SR Linux state.
@@ -71,13 +71,12 @@ An application developer can choose different ways to fetch data from SR Linux, 
 ```
 
 Using the `bond.NewGetRequest` we construct a gNMI Get request by providing a path for the `last-booted` state data. Then `a.NDKAgent.GetWithGNMI(getReq)` sends the request to the SR Linux and receives the response.  
-All we have to do is parse the response and extract the value.
+All we have to do is parse the response, extract the last-booted value and calculate the uptime by subtracting the last-booted time from the current time.
 
 Now we have all ingredients to compose the greeting message, which we save in the application' `configState` structure:
 
 ```go
-a.configState.Greeting = "👋 Hi " + a.configState.Name +
-    ", SR Linux was last booted at " + uptime
+--8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/use-bond-agent/greeter/config.go:greeting-msg"
 ```
 
 ## Posting app's state
@@ -101,7 +100,7 @@ This will populate the application's state in the SR Linux state and will become
 
 That's it! We have successfully created a simple application that uses SR Linux's [NetOps Development Kit](https://ndk.srlinux.dev) and [srl-labs/bond][bond-repo] library that assists in the development process.
 
-We hope that this guide has helped you understand the high-level steps every application needs to take out in order successfully use NDK to register itself with SR Linux, get its configuration, and update its state.
+We hope that this guide has helped you understand the high-level steps every application needs to take out in order successfully use NDK to register itself with SR Linux, get its configuration, and update its state. You can now apply the core concepts you learned here to build your own applications that extend SR Linux functionality and tailor it to your needs.
 
 Now let's see how we can package our app and make it installable on SR Linux.
 

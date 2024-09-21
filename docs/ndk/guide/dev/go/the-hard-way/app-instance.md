@@ -13,7 +13,9 @@ The `NewApp` function is defined in the [`greeter/app.go`][app-go] file and inst
 --8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/v0.1.0/greeter/app.go:app-struct"
 ```
 
-The `App` struct is the main structure of the greeter application. It holds the application config, state, logger instance, gNMI client and the NDK clients to communicate with the NDK services.
+The `App` struct is the main structure of the greeter application. It is way more complex than the [app struct in the Bond-workflow](../with-bond/app.md), and that is because our app will have to do some leg work, that is done by Bond otherwise.
+
+It holds the application config, state, logger instance, gNMI client and the NDK clients to communicate with the NDK services.
 
 ## Creating the App Instance
 
@@ -78,7 +80,7 @@ When your application needs to read its own config, it can do so by leveraging t
 When the greeter app creates the `greeting` message it uses the following template:
 
 ```bash
-👋 Hi ${name}, SR Linux was last booted at ${last-boot-time}
+👋 Hi ${name}, I am SR Linux and my uptime is ${uptime}!
 ```
 
 Since `name` value belongs to the greeter' application config, we can get this value later with the help of the NDK Notification Client. But the `last-boot-time` value is not part of the greeter app config and we need to get it from the SR Linux configuration. This is where we need greeter to use the management interface.
@@ -146,12 +148,12 @@ Once we initialized the app struct with the necessary clients we go back to the 
 
 Let's see what happens there in the [Notification Stream](notif-stream.md) section.
 
-[main-go]: https://github.com/srl-labs/ndk-greeter-go/blob/main/main.go
-[app-go]: https://github.com/srl-labs/ndk-greeter-go/blob/main/greeter/app.go
+[main-go]: https://github.com/srl-labs/ndk-greeter-go/blob/v0.1.0/main.go
+[app-go]: https://github.com/srl-labs/ndk-greeter-go/blob/v0.1.0/greeter/app.go
 [operations-ndk-mgr-client]: ../../../operations.md#creating-ndk-manager-client
 [operations-subscr-to-notif]: ../../../operations.md#subscribing-to-notifications
 [operations-handling-state]: ../../../operations.md#handling-applications-configuration-and-state
 [operations-register-agent]: ../../../operations.md#agent-registration
 [srlinux-ndk-go]: https://github.com/nokia/srlinux-ndk-go
-[agent-reg-resp-doc]: https://rawcdn.githack.com/nokia/srlinux-ndk-protobufs/v0.2.0/doc/index.html#srlinux.sdk.AgentRegistrationResponse
+[agent-reg-resp-doc]: https://ndk.srlinux.dev/doc/sdk#AgentRegistrationResponse
 [gnmic]: https://gnmic.openconfig.net

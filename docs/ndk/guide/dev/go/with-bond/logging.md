@@ -62,8 +62,8 @@ Once the lab is running, you can see the logs in the console format by opening t
 ❯ tail -5 logs/srl/stdout/greeter.log
 2023-12-05 09:37:13 UTC INF Fetching SR Linux uptime value
 2023-12-05 09:37:14 UTC INF GetResponse: notification:{timestamp:1701769034084642836  update:{path:{elem:{name:"system"}  elem:{name:"information"}  elem:{name:"last-booted"}}  val:{string_val:"2023-12-05T09:34:49.769Z"}}}
-2023-12-05 09:37:14 UTC INF updating: .greeter: {"name":"me","greeting":"👋 Hi me, SR Linux was last booted at 2023-12-05T09:34:49.769Z"}
-2023-12-05 09:37:14 UTC INF Telemetry Request: state:{key:{js_path:".greeter"}  data:{json_content:"{\"name\":\"me\",\"greeting\":\"👋 Hi me, SR Linux was last booted at 2023-12-05T09:34:49.769Z\"}"}}
+2023-12-05 09:37:14 UTC INF updating: .greeter: {"name":"me","greeting":"👋 Hi me, I am SR Linux and my uptime is 108h33m7s!"}
+2023-12-05 09:37:14 UTC INF Telemetry Request: state:{key:{js_path:".greeter"}  data:{json_content:"{\"name\":\"me\",\"greeting\":\"👋 Hi me, I am SR Linux and my uptime is 108h33m7s!\"}"}}
 2023-12-05 09:37:14 UTC INF Telemetry add/update status: kSdkMgrSuccess, error_string: ""
 ```
 
@@ -77,8 +77,8 @@ The log file location is set to `/var/log/greeter/greeter.log` and log format is
 ❯ tail -5 logs/greeter/greeter.log
 {"level":"info","time":"2023-12-05T09:37:13Z","message":"Fetching SR Linux uptime value"}
 {"level":"info","time":"2023-12-05T09:37:14Z","message":"GetResponse: notification:{timestamp:1701769034084642836  update:{path:{elem:{name:\"system\"}  elem:{name:\"information\"}  elem:{name:\"last-booted\"}}  val:{string_val:\"2023-12-05T09:34:49.769Z\"}}}"}
-{"level":"info","time":"2023-12-05T09:37:14Z","message":"updating: .greeter: {\"name\":\"me\",\"greeting\":\"👋 Hi me, SR Linux was last booted at 2023-12-05T09:34:49.769Z\"}"}
-{"level":"info","time":"2023-12-05T09:37:14Z","message":"Telemetry Request: state:{key:{js_path:\".greeter\"}  data:{json_content:\"{\\\"name\\\":\\\"me\\\",\\\"greeting\\\":\\\"👋 Hi me, SR Linux was last booted at 2023-12-05T09:34:49.769Z\\\"}\"}}"}
+{"level":"info","time":"2023-12-05T09:37:14Z","message":"updating: .greeter: {\"name\":\"me\",\"greeting\":\"👋 Hi me, I am SR Linux and my uptime is 108h33m7s!\"}"}
+{"level":"info","time":"2023-12-05T09:37:14Z","message":"Telemetry Request: state:{key:{js_path:\".greeter\"}  data:{json_content:\"{\\\"name\\\":\\\"me\\\",\\\"greeting\\\":\\\"👋 Hi me, I am SR Linux and my uptime is 108h33m7s!\\\"}\"}}"}
 {"level":"info","time":"2023-12-05T09:37:14Z","message":"Telemetry add/update status: kSdkMgrSuccess, error_string: \"\""}
 ```
 

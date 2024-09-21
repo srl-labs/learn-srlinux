@@ -85,10 +85,10 @@ Look at that, the `greeting` value is not there. That's because the `greeting` i
 --{ + candidate shared default }--[ greeter ]--
 A:greeter# info from state
     name "Learn SR Linux Reader"
-    greeting "👋 Hi Learn SR Linux Reader, SR Linux was last booted at 2023-11-29T21:28:53.282Z"
+    greeting "👋 Hi Learn SR Linux Reader, I am SR Linux and my uptime is 108h33m7s!"
 ```
 
-As advertised, the greeter app greets us with a message that includes the `name` value we've set and the last booted time of the SR Linux node. Should you change the `name` value and commit, you will see the new `greeting` message.
+As advertised, the greeter app greets us with a message that includes the `name` value we've set, and the uptime of the SR Linux node. Should you change the `name` value and commit the configuration, you will see the new `greeting` message.
 
 Now let's go and see how this app is written, starting with the project structure.
 
