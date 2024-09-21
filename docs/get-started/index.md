@@ -6,11 +6,11 @@ comments: true
 
 SR Linux packs a lot of unique features that the IP and data center networking teams can get excited about. Some of the features are truly new to the networking domain and make the Network OS a perfect fit for the new generation of deployments.
 
-To make SR Linux answer the requirements of the highly dynamic and programmable networks we had to adopt the modern software development practices and architectures. The clean slate in front of us allowed us to build a modern software platform without carrying the legacy baggage of the previous generations.
+By adopting the modern software development practices and architectures we made SR Linux answer the requirements of the highly dynamic and programmable networks. The clean slate in front of us allowed us to build a modern software platform without carrying the legacy baggage of the previous generations.
 
-At the same time, the new concepts and paradigms implemented in SR Linux might feel, well, _new_, to a seasoned network engineer knowing nothing better than an _industry-standard_ CLI. To help newcomers to get started with SR Linux we have created this getting started guide that walks you through the basics of SR Linux Network Operating System (NOS) in an interactive and practical way.
+At the same time, the new concepts and paradigms implemented in SR Linux might feel, well, _new_, to a seasoned network engineer knowing nothing better than an industry-standard CLI. To help newcomers to get started with SR Linux we have created this getting started guide that walks you through the basics of SR Linux Network Operating System (NOS) in an interactive and practical way.
 
-The journey starts with deploying a small lab environment that we will use to get familiar with SR Linux CLI, and learn the core configuration and operational tasks.
+The journey starts with deploying a small lab environment that we will use to get familiar with SR Linux and learn the core configuration and operational tasks.
 
 :octicons-arrow-right-24: [Deploying a lab](lab.md)
 
