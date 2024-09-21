@@ -74,7 +74,7 @@ greeter:
 
     The YANG modules are searched for in the directories specified by the `source-directories` property.
 
-7. The source directories where to search for the YANG modules.
+7. The source directories where to search for the YANG modules. The `/opt/greeter/yang` directory should contain a YANG module with the `greeter` name.
 
 ///details | Complete list of config files parameters
 

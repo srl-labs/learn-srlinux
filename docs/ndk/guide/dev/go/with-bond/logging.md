@@ -2,7 +2,7 @@
 
 Application logs are essential for debugging, troubleshooting, and monitoring. NDK apps are no exception. In this section we explain how we set up logging for NDK applications based on the `greeter` example.
 
-There are three different how NDK app can log messages:
+There are three different ways how NDK app can log messages:
 
 1. By creating its own log file.
 2. By logging to the stdout/stderr.
@@ -46,12 +46,9 @@ We configure our logger to write to two destinations:
 
 1. To a file with log rotation policy in the structured JSON format when the application is running in production mode.
 2. To `stdout` with the `console` format when the application is running in debug mode.
+3. To syslog facility
 
-With this setup we show two modes of logging that can be used in the NDK applications.
-
-/// note | Syslog
-Syslog-based logging examples will follow soon.
-///
+With this setup we show the three modes of logging that can be used by the NDK applications.
 
 ### Stdout log
 
@@ -65,8 +62,8 @@ Once the lab is running, you can see the logs in the console format by opening t
 ❯ tail -5 logs/srl/stdout/greeter.log
 2023-12-05 09:37:13 UTC INF Fetching SR Linux uptime value
 2023-12-05 09:37:14 UTC INF GetResponse: notification:{timestamp:1701769034084642836  update:{path:{elem:{name:"system"}  elem:{name:"information"}  elem:{name:"last-booted"}}  val:{string_val:"2023-12-05T09:34:49.769Z"}}}
-2023-12-05 09:37:14 UTC INF updating: .greeter: {"name":"me","greeting":"👋 Hi me, SR Linux was last booted at 2023-12-05T09:34:49.769Z"}
-2023-12-05 09:37:14 UTC INF Telemetry Request: state:{key:{js_path:".greeter"}  data:{json_content:"{\"name\":\"me\",\"greeting\":\"👋 Hi me, SR Linux was last booted at 2023-12-05T09:34:49.769Z\"}"}}
+2023-12-05 09:37:14 UTC INF updating: .greeter: {"name":"me","greeting":"👋 Hi me, I am SR Linux and my uptime is 108h33m7s!"}
+2023-12-05 09:37:14 UTC INF Telemetry Request: state:{key:{js_path:".greeter"}  data:{json_content:"{\"name\":\"me\",\"greeting\":\"👋 Hi me, I am SR Linux and my uptime is 108h33m7s!\"}"}}
 2023-12-05 09:37:14 UTC INF Telemetry add/update status: kSdkMgrSuccess, error_string: ""
 ```
 
@@ -80,8 +77,8 @@ The log file location is set to `/var/log/greeter/greeter.log` and log format is
 ❯ tail -5 logs/greeter/greeter.log
 {"level":"info","time":"2023-12-05T09:37:13Z","message":"Fetching SR Linux uptime value"}
 {"level":"info","time":"2023-12-05T09:37:14Z","message":"GetResponse: notification:{timestamp:1701769034084642836  update:{path:{elem:{name:\"system\"}  elem:{name:\"information\"}  elem:{name:\"last-booted\"}}  val:{string_val:\"2023-12-05T09:34:49.769Z\"}}}"}
-{"level":"info","time":"2023-12-05T09:37:14Z","message":"updating: .greeter: {\"name\":\"me\",\"greeting\":\"👋 Hi me, SR Linux was last booted at 2023-12-05T09:34:49.769Z\"}"}
-{"level":"info","time":"2023-12-05T09:37:14Z","message":"Telemetry Request: state:{key:{js_path:\".greeter\"}  data:{json_content:\"{\\\"name\\\":\\\"me\\\",\\\"greeting\\\":\\\"👋 Hi me, SR Linux was last booted at 2023-12-05T09:34:49.769Z\\\"}\"}}"}
+{"level":"info","time":"2023-12-05T09:37:14Z","message":"updating: .greeter: {\"name\":\"me\",\"greeting\":\"👋 Hi me, I am SR Linux and my uptime is 108h33m7s!\"}"}
+{"level":"info","time":"2023-12-05T09:37:14Z","message":"Telemetry Request: state:{key:{js_path:\".greeter\"}  data:{json_content:\"{\\\"name\\\":\\\"me\\\",\\\"greeting\\\":\\\"👋 Hi me, I am SR Linux and my uptime is 108h33m7s!\\\"}\"}}"}
 {"level":"info","time":"2023-12-05T09:37:14Z","message":"Telemetry add/update status: kSdkMgrSuccess, error_string: \"\""}
 ```
 
@@ -95,7 +92,7 @@ To setup syslog logging for the greeter app, we use the `github.com/RackSec/srsl
 --8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/main/main.go:syslog-logger"
 ```
 
-Our app will write messages to the `local7` facility[^10] with the `ndk-greeter-go` tag. The tag is later used by the logging subsystem to route messages to the correct log file.
+Our app will write messages to the `local7` facility[^1] with the `ndk-greeter-go` tag. The tag is later used by the logging subsystem to route messages to the correct log file.
 
 Finally, we add our syslog writer to the multiwriter that is used by zerolog logger to write to multiple destinations.
 
@@ -148,4 +145,4 @@ Now when our app logs anything, besides the `stdout` and manually set up file lo
 2023-12-06T20:42:34.829257+00:00 greeter ndk-greeter-go[9185]: {"level":"info","caller":"/root/srl-labs/ndk-greeter-go/greeter/state.go:49","time":"2023-12-06T20:42:34Z","message":"Telemetry add/update status: kSdkMgrSuccess, error_string: \"\""}
 ```
 
-[^10]: Native SR Linux apps write to `local6` facility
+[^1]: Native SR Linux apps write to `local6` facility

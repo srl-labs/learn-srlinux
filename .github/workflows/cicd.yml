@@ -72,7 +72,8 @@ jobs:
 
   publish-docs:
     runs-on: ubuntu-22.04
-    needs: docs-test
+    env:
+      BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -91,11 +92,26 @@ jobs:
           docker run --env CI=true --env MKDOCS_GIT_COMMITTERS_APIKEY=${{ secrets.GITHUB_TOKEN }} -v $(pwd):/docs --user $(id -u):$(id -g) --entrypoint mkdocs ghcr.io/srl-labs/mkdocs-material-insiders:$MKDOCS_MATERIAL_VER build
 
       - name: Publish to Cloudflare Pages
-        uses: cloudflare/pages-action@v1
+        uses: cloudflare/wrangler-action@v3
+        id: wrangler-deploy
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: 62e7f50db0ad5b34dbf1fb9b0ed2ef81
-          projectName: learn-srlinux
-          directory: site
-          # Optional: Enable this if you want to have GitHub Deployments triggered
-          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+          command: pages deploy site --project-name=learn-srlinux --branch=${{ env.BRANCH_NAME }}
+
+      - name: Add deploy comment to PR
+        uses: actions/github-script@v7
+        if: github.event_name == 'pull_request'
+        with:
+          script: |
+            const branchName = process.env.BRANCH_NAME.replace(/\./g, '-');
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `🏗 Preview site has been deployed to:
+
+              * https://${branchName}.learn-srlinux.pages.dev
+              * ${{ steps.wrangler-deploy.outputs.deployment-url }}
+              `
+              })

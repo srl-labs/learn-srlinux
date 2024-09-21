@@ -3,7 +3,7 @@
 Recall that our program's entrypoint [finishes](main.md#initializing-the-application) with initializing the app struct and calling the `app.Start(ctx)` function. The `Start` function is a place where we start the application's lifecycle.
 
 ```{.go title="greeter/app.go"}
---8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/main/greeter/app.go:app-start"
+--8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/v0.1.0/greeter/app.go:app-start"
 ```
 
 The `Start` function is composed of the following parts:
@@ -16,5 +16,7 @@ The `Start` function is composed of the following parts:
 2. [Process the configuration](#__codelineno-0-9) by computing the `greeting` value
 3. [Update application's state](#__codelineno-0-11) by with `name` and `greeting` values
 4. [Stop](#__codelineno-0-13:15){ data-proofer-ignore } the application when the context is cancelled
+
+Here the major difference with the Bond-based approach is that we have to manually handle the configuration notifications.
 
 Time to have a closer look at the first part of the `Start` function - receiving configuration notifications with `go a.receiveConfigNotifications(ctx)` function.

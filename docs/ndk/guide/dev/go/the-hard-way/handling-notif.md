@@ -3,7 +3,7 @@
 Now that we have a notification stream up and running, we can start receiving and handling Config notifications from the NDK. We are back again in the `receiveConfigNotifications` function where range over the `configStream` channel and receive notifications from the NDK.
 
 ```{.go title="greeter/config.go"}
---8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/main/greeter/config.go:rcv-cfg-notif"
+--8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/v0.1.0/greeter/config.go:rcv-cfg-notif"
 ```
 
 For every received [`NotificationStreamResponse`][notif_stream_resp_doc] from the `configStream` channel we:
@@ -63,7 +63,7 @@ While in our example we only had one notification with "actual" config change, t
 The `handleConfigNotifications` function is responsible for handling "important" notifications until the "commit end" marker is received. That way we only handle notifications that directly relate to the configuration and discard the marker notifications.
 
 ```{.go title="greeter/config.go"}
---8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/main/greeter/config.go:buffer-cfg-notif"
+--8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/v0.1.0/greeter/config.go:buffer-cfg-notif"
 ```
 
 Pay attention to the [`cfgNotif := n.GetConfig()`](#__codelineno-4-7) call. Since our [`NotificationStreamResponse`][notif_stream_resp_doc] embeds the [`Notification`][notif_doc] message, we need to extract the `Config` message from it by calling `n.GetConfig()`. In Go bindings, the Notification is the interface, with the `GetXXX` methods being the getters for the underlying message type. The [`GetConfig`][get-config] method returns the [`Config Notification`][config_notif_doc] message if the underlying message is of the `Config` type.
@@ -79,7 +79,7 @@ By handling the config notifications we mean reading the configuration updates r
 The `handleGreeterConfig` function is responsible for handling the received notifications.
 
 ```{.go title="greeter/config.go"}
---8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/main/greeter/config.go:handle-greeter-cfg"
+--8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/v0.1.0/greeter/config.go:handle-greeter-cfg"
 ```
 
 In this function we consider two cases:
@@ -93,14 +93,14 @@ Let's start with the deletion case. How do we know that the config has been dele
 
 There are two options:
 
-1. We can check the `op` field of the [`ConfigNotification`][config_notif_doc] message. If the `op` field is set to `Delete`, then the object has been deleted. This does not apply for non-presence containers, like our [greeter YANG container](../../agent.md#yang-module), since they are always present.
+1. We can check the `op` field of the [`ConfigNotification`][config_notif_doc] message. If the `op` field is set to `Delete`, then the object has been deleted. This does not apply for non-presence containers, like our [greeter YANG container](../../../agent.md#yang-module), since they are always present.
 2. We can have a look at the `data` field of the [`ConfigNotification`][config_notif_doc] message that contains the embedded [ConfigData][config_data_doc] message. The `ConfigData` message has the `json` field that contains the JSON representation of the config[^10] and if the json string is an empty json object, then the config has been deleted/emptied.  
     This applies to non-presence containers.
 
 Since our `greeter` container is a non-presence conatainer, in our code we use the 2nd method and check if the data field is empty in the received notification:
 
 ```{.go title="greeter/config.go"}
---8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/main/greeter/config.go:delete-case"
+--8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/v0.1.0/greeter/config.go:delete-case"
 ```
 
 An empty config means that we need to erase the `name` and `greeting` values of the [`ConfigState`](app-instance.md#app-config-and-state) struct. The empty values will then be populated in the state datastore.
@@ -110,7 +110,7 @@ An empty config means that we need to erase the `name` and `greeting` values of 
 If the config is not empty, this means that it has been updated or created. In this case we need to update the [`ConfigState`](app-instance.md#app-config-and-state) struct our App struct uses to store the greeter values.
 
 ```{.go title="greeter/config.go"}
---8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/main/greeter/config.go:non-delete-case"
+--8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/v0.1.0/greeter/config.go:non-delete-case"
 ```
 
 We unmarshal the received configuration update to the [`ConfigState`](app-instance.md#app-config-and-state) struct. This will update the struct fields with the values from the received notification.
@@ -124,7 +124,7 @@ This indicates that the full commit set has been streamed and we can start using
 The receiving end of the `receivedCh` channel is all the way back in the `Start` function after receiving the message from this channel indicates that we can start [processing the config](processing-config.md).
 
 ```{.go title="greeter/app.go" hl_lines="6"}
---8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/main/greeter/app.go:app-start"
+--8<-- "https://raw.githubusercontent.com/srl-labs/ndk-greeter-go/v0.1.0/greeter/app.go:app-start"
 ```
 
 [notif_stream_resp_doc]: https://rawcdn.githack.com/nokia/srlinux-ndk-protobufs/v0.2.0/doc/index.html#srlinux.sdk.NotificationStreamResponse

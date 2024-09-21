@@ -15,12 +15,18 @@ The agent installation procedure can be carried out in different ways:
 
 1. manual copy of files via `scp` or similar tools
 2. automated files delivery via configuration management tools (Ansible, etc.)
-3. creating an `rpm` package for the agent and its files and installing the package on SR Linux
+3. creating an `deb` package for the agent and its files and installing the package on SR Linux
 
-The first two options are easy to execute, but they are a bit more involved as the installers need to maintain the remote paths for the copy commands. When using the `rpm` option, though, it becomes less cumbersome to install the package. All the installers deal with is a single `.rpm` file and a copy command.  
-Of course, the build process of the `rpm` package is still required, and we would like to explain this process in detail.
+The first two options are easy to execute, but they are a bit more involved as the installers need to maintain the remote paths for the copy commands. When using the `deb` option, though, it becomes less cumbersome to install the package. All the installers deal with is a single `.deb` file and a copy command.  
+Of course, the build process of the `deb` package is still required, and we would like to explain this process in detail.
 
-## RPM package
+## Packaging the NDK application
+
+/// admonition | Deb or RPM?
+Prior to 24.3 release SR Linux used an rpm-based base Linux image, therefore the RPM package was used to distribute the NDK applications.
+
+Starting from the release 24.3.1 SR Linux switched to Debian as its base distribution, so the `deb` package is used to distribute the NDK applications from that moment on.
+///
 
 One of the easiest ways to create an rpm, deb, or apk package is to use the [nFPM][nFPM] tool - a simple, 0-dependencies packager.
 
@@ -41,7 +47,7 @@ The file named `ndkDemo.yml` with the following contents will instruct nFPM how 
 ```yaml
 name: "ndkDemo"       # name of the go package
 arch: "amd64"         # architecture you are using 
-version: "v1.0.0"     # version of this rpm package
+version: "v1.0.0"     # version of this package
 maintainer: "John Doe <john@doe.com>"
 description: Sample NDK agent # description of a package
 vendor: "JD Corp"     # optional information about the creator of the package
@@ -59,7 +65,7 @@ contents:                              # contents to add to the package
 
 ### Running nFPM
 
-When nFPM configuration and NDK agent files are present, proceed with building an `rpm` package.
+When nFPM configuration and NDK agent files are present, proceed with building an `deb` package.
 
 Consider the following file layout:
 
@@ -74,24 +80,24 @@ Consider the following file layout:
 1 directory, 4 files
 ```
 
-With these files present we can build an RPM package using the containerized nFPM image like that:
+With these files present we can build a Deb package using the containerized nFPM image like that:
 
 ```bash
-docker run --rm -v $PWD:/tmp -w /tmp goreleaser/nfpm package \
+docker run --rm -v $PWD:/tmp -w /tmp ghcr.io/goreleaser/nfpm:v2.40.0 package \
     --config /tmp/nfpm.yml \
     --target /tmp \
-    --packager rpm
+    --packager deb
 ```
 
-This command will create `ndkDemo-1.0.0.x86_64.rpm` file in the current directory that can be copied over to the SR Linux system for installation.
+This command will create `ndkDemo-1.0.0.x86_64.deb` file in the current directory that can be copied over to the SR Linux system for installation.
 
-### Installing RPM
+### Installing Deb package
 
-Delivering the available rpm package to a fleet of SR Linux boxes can be done with any configuration management tools. For demo purposes, we will utilize the `scp` utility:
+Delivering the available deb package to a fleet of SR Linux boxes can be done with any configuration management tools. For demo purposes, we will utilize the `scp` utility:
 
 ```bash
-# this example copies the rpm via scp command to /tmp dir
-scp ndkDemo-1.0.0.x86_64.rpm admin@<srlinux-mgmt-address>:/tmp
+# this example copies the deb via scp command to /tmp dir
+scp ndkDemo-1.0.0.x86_64.deb admin@<srlinux-mgmt-address>:/tmp
 ```
 
 Once the package has been delivered to the SR Linux system, it is ready to be installed. First, we login to SR Linux CLI and drill down to the Linux shell:
@@ -99,60 +105,50 @@ Once the package has been delivered to the SR Linux system, it is ready to be in
 ```
 ssh admin@<srlinux-address>
 
-admin@clab-srl-srl's password: 
-Using configuration file(s): []
 Welcome to the srlinux CLI.
 Type 'help' (and press <ENTER>) if you need any help using this.
 --{ running }--[  ]--
 A:srl# bash
 ```
 
-Once in the bash shell, install the package with `yum install` or `rpm`:
+Once in the bash shell, install the package with `dpkg`:
 
 ```bash
-sudo rpm -U /tmp/ndkDemo-1.0.0.x86_64.rpm
+sudo dpkg -i /tmp/ndkDemo-1.0.0.x86_64.deb
 ```
-
-!!!tip
-    To check if the package was installed, issue `rpm -qa | grep ndkDemo`
-
-    ```bash
-    admin@srl ~]$ rpm -qa | grep ndkDemo
-    ndkDemo-1.0.0-1.x86_64
-    ```
 
 During the package installation, the agent related files are copied over to the relevant paths as stated in the nFPM config file:
 
-```bash
-# check the executable location
-[admin@srl ~]$ ls -la /usr/local/bin/ | grep ndkDemo
--rw-r--r-- 1 root root    12312 Nov  4 11:28 ndkDemo
+1. check the executable location
 
-# check YANG modules dir is present
-[admin@srl ~]$ ls -la /opt/ndkDemo/yang/
-total 8
-drwxr-xr-x 2 root root 4096 Nov  4 12:58 .
-drwxr-xr-x 3 root root 4096 Nov  4 12:53 ..
--rw-r--r-- 1 root root    0 Nov  4 11:28 ndkDemo.yang
+    ```bash
+    [admin@srl ~]$ ls -la /usr/local/bin/ | grep ndkDemo
+    -rw-r--r-- 1 root root    12312 Nov  4 11:28 ndkDemo
+    ```
 
-# check ndkDemo config file is present
-[admin@srl ~]$ ls -la /etc/opt/srlinux/appmgr/
-total 16
-drwxr-xr-x+  2 root    root    4096 Nov  4 12:58 .
-drwxrwxrwx+ 10 srlinux srlinux 4096 Nov  4 12:53 ..
--rw-r--r--+  1 root    root       0 Nov  4 11:28 ndkDemo.yml
-```
+2. check YANG modules dir is present
+
+    ```
+    [admin@srl ~]$ ls -la /opt/ndkDemo/yang/
+    total 8
+    drwxr-xr-x 2 root root 4096 Nov  4 12:58 .
+    drwxr-xr-x 3 root root 4096 Nov  4 12:53 ..
+    -rw-r--r-- 1 root root    0 Nov  4 11:28 ndkDemo.yang
+    ```
+
+3. check ndkDemo config file is present
+
+    ```bash
+    [admin@srl ~]$ ls -la /etc/opt/srlinux/appmgr/
+    total 16
+    drwxr-xr-x+  2 root    root    4096 Nov  4 12:58 .
+    drwxrwxrwx+ 10 srlinux srlinux 4096 Nov  4 12:53 ..
+    -rw-r--r--+  1 root    root       0 Nov  4 11:28 ndkDemo.yml
+    ```
 
 All the agent components are available by the paths specified in the nFPM configuration file.
 
-!!!note
-    To update the SR Linux NDK app, the package has to be removed first
-    ```bash
-    sudo yum remove ndkDemo-1.0.0 # using yum
-    sudo rpm -e ndkDemo-1.0.0     # using rpm
-    ```
-
-Congratulations, the agent has been installed successfully.
+Congratulations, the agent has been installed successfully. Now, we need to nudge the App Manager to load the agent.
 
 ## Loading the agent
 
