@@ -16,6 +16,23 @@ Containerlab is an open source project that provides a CLI for orchestrating and
 
 The extremely low footprint of Containerlab and YAML-based topology definition made it a perfect fit for the SR Linux-based labs.
 
+/// admonition | SR Linux versioning scheme
+    type: subtle-note
+SR Linux's release cycle consists of the three major releases per year that are released in March, July, and November. Consequently, the versioning scheme is also based on the release date and follows the following pattern:
+
+**XX.YY.Z**, where:
+
+- XX - Year of the release
+- YY - Month of the release
+- Z - Release number
+
+XX.YY together form the major release version.
+
+Take a look at a particular SR Linux release number - **24.7.2** - this is the second minor release in the 24.7 major series. The year of the release is 2024 and the first major release (24.7.1) happened in July 2024.
+
+The last major release of the year - XX.10 - is considered the long term release and will get security and bug fixes longer than the other releases.
+///
+
 ## Lab prerequisites
 
 You are minutes away from deploying your first SR Linux lab using containerlab. But first, you need to [install containerlab](https://containerlab.dev/install/) and Docker on any Linux system, which can be as easy as running a single installation command[^2]:
@@ -32,7 +49,9 @@ Make sure, that your Linux host satisfies the following requirements:
 
 ## Deploying a lab
 
-Everything is ready for the lab deployment. We are going to spin up this lovely topology with two leaf and one spine switches making up our tiny fabric with two clients connected:
+Everything is ready for the lab deployment. We are going to spin up this lovely topology with two leaf and one spine switches making up our tiny fabric with two clients connected.
+
+The getting started tutorial uses SR Linux 24.7.2 version.
 
 <figure>
   <div class='mxgraph' style='max-width:100%;border:1px solid transparent;margin:0 auto; display:block;' data-mxgraph='{"page":0,"zoom":2,"highlight":"#0000ff","nav":true,"resize":true,"edit":"_blank","url":"https://raw.githubusercontent.com/srl-labs/srlinux-getting-started/main/diagrams/topology.drawio"}'></div>
@@ -58,9 +77,9 @@ In less than a minute, you should have the lab running with the summary table of
 +---+---------+--------------+------------------------------------+---------------+---------+----------------+----------------------+
 | 1 | client1 | 9b3955f9ab50 | ghcr.io/srl-labs/network-multitool | linux         | running | 172.20.20.8/24 | 2001:172:20:20::8/64 |
 | 2 | client2 | 50d068413361 | ghcr.io/srl-labs/network-multitool | linux         | running | 172.20.20.4/24 | 2001:172:20:20::4/64 |
-| 3 | leaf1   | f1643c11603b | ghcr.io/nokia/srlinux:23.10.1      | nokia_srlinux | running | 172.20.20.7/24 | 2001:172:20:20::7/64 |
-| 4 | leaf2   | fb50f174cb73 | ghcr.io/nokia/srlinux:23.10.1      | nokia_srlinux | running | 172.20.20.6/24 | 2001:172:20:20::6/64 |
-| 5 | spine1  | 8162d45caac9 | ghcr.io/nokia/srlinux:23.10.1      | nokia_srlinux | running | 172.20.20.5/24 | 2001:172:20:20::5/64 |
+| 3 | leaf1   | f1643c11603b | ghcr.io/nokia/srlinux:24.7.2       | nokia_srlinux | running | 172.20.20.7/24 | 2001:172:20:20::7/64 |
+| 4 | leaf2   | fb50f174cb73 | ghcr.io/nokia/srlinux:24.7.2       | nokia_srlinux | running | 172.20.20.6/24 | 2001:172:20:20::6/64 |
+| 5 | spine1  | 8162d45caac9 | ghcr.io/nokia/srlinux:24.7.2       | nokia_srlinux | running | 172.20.20.5/24 | 2001:172:20:20::5/64 |
 +---+---------+--------------+------------------------------------+---------------+---------+----------------+----------------------+
 ```
 
