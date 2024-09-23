@@ -128,7 +128,48 @@ In case of the misconfiguration or runtime errors, container may exit abruptly. 
 In case your container exits abruptly, check the logs as they typically reveal the cause of termination.
 ///
 
-Now that the lab is ready, let's start exploring the SR Linux by meeting its CLI first.
+## Connecting to the SR Linux nodes
+
+Now that the lab is ready, we can connect to the nodes directly from the host system using the node names as seen in the table above. Let' connect to the `leaf1` node.
+
+```{.bash .no-select}
+ssh leaf1 #(1)!
+```
+
+1. Containerlab automatically creates a `/etc/hosts` to map the node names to the IP addresses and creates an ssh config entry with the default username - `admin` - associated with the SR Linux node names, hence we can simply omit the username in our ssh command.
+
+    If you have any ssh keys on your host, containerlab will provision them to the SR Linux container so that the login would be possible without a password, but if the key is not present, you will be prompted for the password, which is `NokiaSrl1!` by default.
+
+<div class="embed-result">
+```{.srl .no-select .no-copy}
+Warning: Permanently added 'leaf1' (ED25519) to the list of known hosts.
+................................................................
+:                  Welcome to Nokia SR Linux!                  :
+:              Open Network OS for the NetOps era.             :
+:                                                              :
+:    This is a freely distributed official container image.    :
+:                      Use it - Share it                       :
+:                                                              :
+: Get started: https://learn.srlinux.dev                       :
+: Container:   https://go.srlinux.dev/container-image          :
+: Docs:        https://doc.srlinux.dev/24-7                    :
+: Rel. notes:  https://doc.srlinux.dev/rn24-7-2                :
+: YANG:        https://yang.srlinux.dev/v24.7.2                :
+: Discord:     https://go.srlinux.dev/discord                  :
+: Contact:     https://go.srlinux.dev/contact-sales            :
+................................................................
+
+Using configuration file(s): ['/home/admin/.srlinuxrc']
+Welcome to the srlinux CLI.
+Type 'help' (and press <ENTER>) if you need any help using this.
+
+--{ running }--[  ]--
+A:leaf1#
+
+```
+</div>
+
+Alright, we are in, let's get familiar with the SR Linux CLI!
 
 :octicons-arrow-right-24: [Get to know SR Linux CLI](cli.md)
 

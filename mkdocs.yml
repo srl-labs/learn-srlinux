@@ -7,7 +7,7 @@ nav:
       - CLI: get-started/cli.md
       - Interfaces: get-started/interface.md
       - Network Instances: get-started/network-instance.md
-      - IGP: get-started/igp.md
+      # - IGP: get-started/igp.md
       - BGP: get-started/bgp.md
   - Management:
       - mgmt/index.md
