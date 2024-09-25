@@ -23,15 +23,15 @@ The first thing you will see when logged into SR Linux is its default two-line p
 
 The prompt' picture title reads "default", because it is highly customizable. For the purpose of this guide, we will use the default prompt and leave prompt customization for later. The annotations in the picture provide a brief explanation of each part of the prompt, and we provide a more detailed through the rest of this guide.
 
-## Getting around CLI
+## Help
 
 When you first log into an unknown OS, you want to know what commands are available to you. In SR Linux, there are several contex-aware help commands and key bindings that can help you navigate the CLI.
 
 Hitting the <kbd>?</kbd> in the CLI will list all available **local** commands:
-
+<!-- --8<-- [start:local-in-running] -->
 ```srl
 --{ running }--[  ]--
-A:leaf1# <pressed ? character>
+A:leaf1# <pressed ? key>
 Local commands:
   acl               Top level container for configuration and operational state related to access control lists (ACLs)
   bfd               Context to configure BFD parameters and report BFD sessions state
@@ -46,6 +46,7 @@ Local commands:
 
 *** Not all commands are listed, press '?' again to see all options ***
 ```
+<!-- --8<-- [end:local-in-running] -->
 
 Local commands are actual configuration elements available in the present working context. See this `[  ]` in the prompt? That means the user is in root context, and local commands that are available in the `running` mode for the root context are listed.
 
@@ -53,7 +54,7 @@ If you press <kbd>?</kbd> again, you will see all available commands, local and 
 
 ```srl
 --{ running }--[  ]--
-A:leaf1# <pressed ? character> <pressed ? character again>
+A:leaf1# <pressed ? key> <pressed ? key again>
 Local commands:
   acl               Top level container for configuration and operational state related to access control lists (ACLs)
   bfd               Context to configure BFD parameters and report BFD sessions state
@@ -100,7 +101,7 @@ SR Linux CLI has three main modes that a user can be in:
 
 ### Running
 
-When a user logs into SR Linux, they start in the `running` mode. This is the mode in which the user can use operational and show commands, view configuration and perform actions via `/tools` commands, but they cannot perform any configuration changes.
+When a user logs into SR Linux, they start in the `running` mode. This is the mode in which the user can use operational and show commands, view configuration and perform actions via `/tools` commands, but they **can not** perform any configuration changes.
 
 /// admonition | Similar to...
     type: subtle-note
@@ -112,6 +113,8 @@ As said, in this mode a user can execute operational and show commands. To give 
 /// tab | `ping`
 
 ```srl
+Ping is an operational command.
+
 --{ running }--[  ]--
 A:leaf1# ping network-instance mgmt 172.20.20.1
 Using network instance mgmt
@@ -145,4 +148,200 @@ Free Memory          : 59331625 kB
 
 ### Candidate
 
-The `candidate` mode is the mode in which the user can perform configuration changes in the candidate datastore. To enter this mode, type `enter candidate`
+The `candidate` mode is the mode in which a user performs configuration changes in the candidate datastore. To enter this mode use the `enter` global command and provide the mode as an argument.
+
+```srl title="Enter candidate mode from running mode"
+--{ running }--[  ]--
+A:leaf1# enter candidate
+
+--{ candidate shared default }--[  ]--
+A:leaf1#
+```
+
+You can immediately notice how the prompt changed. Now it shows the following information:
+
+* `candidate` - the mode in which the user is in
+* `shared` - the type of the candidate datastore is shared[^1]
+* `default` - the name of the candidate datastore
+
+We will show you how to perform configuration changes when we get to the [Interfaces](interface.md) section.
+
+### State
+
+The last mode we are going to meet is the `state` mode. This mode is similar to the `running` mode as the user can view configuration, execute operational and show commands.  
+But in addition to that, the user can also view the **state** information, that is the values that are non-configurable, but are calculated by the system.
+
+Think about counters, like interface statistics, or the system uptime, or BGP peering state. These are state information and these values are accessible in the `state` mode.
+
+```srl title="Enter candidate mode from running mode"
+--{ running }--[  ]--
+A:leaf1# enter state
+
+--{ state }--[  ]--
+A:leaf1#
+```
+
+/// admonition | Changing between CLI modes
+    type: subtle-note
+Typing `enter <target-mode>` anywhere in the CLI will change the current mode to the target mode.
+///
+
+## Navigation and Contexts
+
+Upon logging into SR Linux, you start in the root context, as indicated by the `[  ]` part of prompt. Using the CLI [help](#help) commands, you can explore what commands and contexts are available to you from your current context.
+
+/// admonition | SR Linux is a fully modelled Network OS
+    type: subtle-note
+Since SR Linux Network OS operates on a 100% YANG-modelled infrastructure, its CLI strictly follows the YANG model and the [YANG model](../yang/index.md) is a tree-like hierarchical structure.
+///
+
+As shown in the Help section before, you can list the local commands available in the current context using <kbd>?</kbd> key. For example, in the root context of the running mode you get the following:
+
+--8<-- "docs/get-started/cli.md:local-in-running"
+
+### Entering contexts
+
+What you see in the list of the local commands are **contexts** that you can enter by typing the name of the context. For example, if you want to enter the `interface` context, you can do so by typing `interface`:
+
+-{{ diagram(url='srl-labs/srlinux-getting-started/main/diagrams/get-started.drawio', title='', page=3) }}-
+
+If you click <kbd>TAB</kbd> or <kbd>Space</kbd> after typing `interface` the CLI will prompt you with the `<name>` key, indicating that the `interface` is a list element and you need to provide the interface name as an argument.
+
+-{{ diagram(url='srl-labs/srlinux-getting-started/main/diagrams/get-started.drawio', title='', page=4) }}-
+
+Clicking <kbd>TAB</kbd> again will show you the configured interfaces present in the system in the autosuggestion window:
+
+-{{ diagram(url='srl-labs/srlinux-getting-started/main/diagrams/get-started.drawio', title='', page=5) }}-
+
+Let's select `mgmt0` or type it in and press <kbd>Enter</kbd> to enter the `interface mgmt0` context.
+
+```srl
+--{ running }--[  ]--
+A:leaf1# interface mgmt0
+
+--{ running }--[ interface mgmt0 ]--
+A:leaf1#
+```
+
+The prompt changed to show the current context - `[ interface mgmt0 ]`. Recall, that SR Linux CLI is context-aware, therefore using the <kbd>?</kbd> key now will show you the different local commands, as you are standing in a different current context.
+
+```srl
+--{ running }--[ interface mgmt0 ]--
+A:leaf1# <pressed ? key>
+Local commands:
+  admin-state*      The configured, desired state of the interface
+  description*      A user-configured description of the interface
+  ethernet
+  lag               Container for options related to LAG
+  loopback-mode*    Loopback mode of the port
+  mtu*              Port MTU in bytes including ethernet overhead but excluding 4-bytes FCS
+  qos
+  sflow             Context to configure sFlow parameters
+  subinterface      The list of subinterfaces (logical interfaces) associated with a physical interface
+  tpid*             Optionally set the tag protocol identifier field (TPID) that
+  transceiver
+  vlan-tagging*     When set to true the interface is allowed to accept frames with one or more VLAN tags
+```
+
+You're again present with a list of local commands, but this time you can spot an asterisk (`*`) next to some of the commands. These are the stub contexts (leafs and leaf-lists) that you can not enter to.
+
+Let's go one level deeper by entering into the `subinterface` context of our `mgmt0` interface.
+
+By typing `subinterface` and pressing <kbd>TAB</kbd> you will see autosuggested subinterface index `0` automatically selected. This is because `mgmt0` interface has only one subinterface configured and it is `0`[^2]. By clicking <kbd>TAB</kbd> after again you will accept the suggestion and hitting <kbd>Enter</kbd> will enter the `subinterface 0` context.
+
+```srl title="Accept suggested subinterface index with TAB key"
+--{ running }--[ interface mgmt0 ]--
+A:leaf1# subinterface 0
+```
+
+Now the prompt changed to show the current context - `[ interface mgmt0 subinterface 0 ]`.
+
+```srl
+--{ running }--[ interface mgmt0 subinterface 0 ]--
+A:leaf1#
+```
+
+### Exiting contexts
+
+To exit from the current context use `exit` command, that takes an optional argument of `to`. Consider the following example where we are in the `interface mgmt0 subinterface 0` context and we want to exit one step above to the `interface mgmt0` context.
+
+```srl title="<code>exit</code> brings you one level up in the context hierarchy"
+--{ running }--[ interface mgmt0 subinterface 0 ]--
+A:leaf1# exit
+
+--{ running }--[ interface mgmt0 ]--
+A:leaf1#
+```
+
+If you want to exit to a specific parent context from the current one, you can leverage `exit to` variant:
+
+```srl
+--{ running }--[ interface mgmt0 subinterface 0 ]--
+A:leaf1# exit to <context>
+                  interface
+                  root     
+```
+
+The autosuggestion window will list all parent contexts (`interface`, `root`) that you can exit to from your current context.
+
+And lastly, you can also navigate to whatever context from any other context by providing the absolute path to the target context. The absolute path starts with `/`. The example below will switch the context from `interface mgmt0 subinterface 0` to `system information`.
+
+```srl
+--{ running }--[ interface mgmt0 subinterface 0 ]--
+A:leaf1# / system information
+
+--{ running }--[ system information ]--
+A:leaf1#
+```
+
+### Command scope
+
+When you're in a context, your commands are scoped to that context. For example, if we are currently sitting in the `[ interface mgmt0 subinterface 0 ]` context, then the `tree` command that prints the tree of available child elements will start from our present context:
+
+```srl
+--{ running }--[ interface mgmt0 subinterface 0 ]--
+A:leaf1# tree
+subinterface
++-- type
++-- description
++-- admin-state
++-- ip-mtu
++-- l2-mtu
++-- ipv4
+|  +-- admin-state
+# clipped
+```
+
+If you want to change the context of a given command you provide the context as an argument. Using the same `tree` command we can list the available child elements of the `system information` context by providing the absolute path to the target context:
+
+```srl
+--{ running }--[ interface mgmt0 subinterface 0 ]--
+A:leaf1# tree /system information
+information
++-- contact
++-- location
+```
+
+Even `show` commands that we will explore later are context-aware. For example, within our `[ interface mgmt0 subinterface 0 ]` context, the `show version` command that every NOS has will yield the error:
+
+```srl
+--{ running }--[ interface mgmt0 subinterface 0 ]--
+A:leaf1# show version
+Parsing error: Unknown token 'version'. Options are ['#', '..', '/', '>', '>>', 'all', 'brief', 'detail', 'queue-detail', '|', '}']
+```
+
+And that is because in the current context there is no `version` command that `show` can execute. The `version` show report belongs to the root context, so to successfully execute it we need to be in the root context, or provide the fully-qualified-context-path:
+
+```srl
+--{ running }--[ interface mgmt0 subinterface 0 ]--
+A:leaf1# show / version
+----------------------------------------------------------------------------------------------------------------------------------------------
+Hostname             : leaf1
+Chassis Type         : 7220 IXR-D2L
+Part Number          : Sim Part No.
+Serial Number        : Sim Serial No.
+# clipped
+```
+
+[^1]: For the sake of simplicity, we will not go into the details of the candidate datastore types in the quickstart. Refer to the official documentation for more information.
+[^2]: We will cover the interface/subinterface model in more detail later.
