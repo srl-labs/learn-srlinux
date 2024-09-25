@@ -1,7 +1,7 @@
 # Always-ON SR Linux Instance
 
 <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/hellt/drawio-js@main/embed2.js" async></script>
-It is extremely easy and hassle free to run SR Linux, thanks to the [public container image](get-started.md#getting-the-image) and topology builder tool - [containerlab](https://containerlab.srlinux.dev).
+It is extremely easy and hassle free to run SR Linux, thanks to the [public container image](get-started/lab.md#sr-linux-container-image-and-containerlab) and topology builder tool - [containerlab](https://containerlab.srlinux.dev).
 
 But wouldn't it be nice to have an SR Linux instance running in the cloud open for everyone to tinker with? We think it would, so we created an **Always-ON SR Linux** instance that we invite you to try out.
 

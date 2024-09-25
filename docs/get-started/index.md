@@ -12,6 +12,13 @@ At the same time, the new concepts and paradigms implemented in SR Linux might f
 
 The journey starts with deploying a small lab environment that we will use to get familiar with various SR Linux concepts and learn the core configuration and operational tasks. If your muscle memory forced you to open a tab to search where to download the SR Linux image, you can close it right now. The lightweight SR Linux container image is free and available to everyone.
 
+/// admonition | SR Linux version
+    type: warning
+This getting started tutorial is based on **SR Linux 24.7.2** version and will adapt to newer releases over time. If you are using a different version, you may see slight differences in the command outputs.
+
+Let us know in the comments, or in our [Discord](https://discord.gg/tZvgjQ6PZf), if you would notice discrepancies.
+///
+
 :octicons-arrow-right-24: [Deploying a lab](lab.md)
 
 ## Documentation

@@ -19,10 +19,7 @@ SR Linux CLI is highly customizable, you can change the prompt, add new commands
 
 The first thing you will see when logged into SR Linux is its default two-line prompt and a CLI bottom toolbar.
 
-<figure>
-  <div class='mxgraph' style='max-width:100%;border:1px solid transparent;margin:0 auto; display:block;' data-mxgraph='{"page":0,"zoom":2,"highlight":"#0000ff","nav":true,"resize":true,"edit":"_blank","url":"https://raw.githubusercontent.com/srl-labs/srlinux-getting-started/main/diagrams/get-started.drawio"}'></div>
-  <figcaption>Default SR Linux prompt</figcaption>
-</figure>
+-{{ diagram(url='srl-labs/srlinux-getting-started/main/diagrams/get-started.drawio', title='Default SR Linux prompt', page=0) }}-
 
 The prompt' picture title reads "default", because it is highly customizable. For the purpose of this guide, we will use the default prompt and leave prompt customization for later. The annotations in the picture provide a brief explanation of each part of the prompt, and we provide a more detailed through the rest of this guide.
 

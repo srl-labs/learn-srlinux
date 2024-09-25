@@ -289,7 +289,7 @@ Then let's see what happens if the second uplink goes down.
 
 ## Off-box testing
 
-Although it is absolutely possible to test Event Handler scripts using [containerized SR Linux image](../../../../get-started.md), it makes a lot of sense to test the script off-box.
+Although it is absolutely possible to test Event Handler scripts using [containerized SR Linux image](../../../../get-started/lab.md#sr-linux-container-image-and-containerlab), it makes a lot of sense to test the script off-box.
 
 Since scripts are provided with a known input JSON structure, we can pass it to a script's `main()` function as if it was provided by the Event Manager itself. Consider the following code snippet that is part of the opergroup.py script we just walked through:
 

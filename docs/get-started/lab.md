@@ -51,8 +51,6 @@ Make sure, that your Linux host satisfies the following requirements:
 
 Everything is ready for the lab deployment. We are going to spin up this lovely topology with two leaf and one spine switches making up our tiny fabric with two clients connected.
 
-The getting started tutorial uses SR Linux 24.7.2 version.
-
 -{{ diagram(url='srl-labs/srlinux-getting-started/main/diagrams/topology.drawio', title='Lab Topology', page=0) }}-
 
 How do we deploy it? Enter in some directory where the lab is about to be cloned and run this one-liner:
