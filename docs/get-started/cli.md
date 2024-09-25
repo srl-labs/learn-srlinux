@@ -73,6 +73,23 @@ Global commands, as the name implies, are available in any context. They are not
 
 ### Suggestions and completions
 
+Something that you will notice when hitting <kbd>TAB</kbd> is the auto-suggestion form that is common in powerful shells like zsh/fish but was not available in any other NOS CLI until now.
+
+-{{ diagram(url='srl-labs/srlinux-getting-started/main/diagrams/get-started.drawio', title='', page=1) }}-
+
+The suggestion popup shows global and local commands available in the current context. In other words, it is context aware.  
+Since we are still sitting in the root context (`[  ]` indicates that), the suggestion popup shows all available commands in the root context.
+
+You can use the arrow keys (<kbd><-</kbd><kbd>-></kbd>, etc) to navigate the suggestions and press <kbd>ENTER</kbd> to select a suggestion.
+
+-{{ diagram(url='srl-labs/srlinux-getting-started/main/diagrams/get-started.drawio', title='', page=2) }}-
+
+Besides the suggestions, SR Linux comes with the smart autocompletion system. Again, something that modern shells offer you on *nix systems. When you start typing a command, the CLI will suggest the next command right in the command line using the same context-aware suggestions.
+
+And if you are a fast typer, autocompletion engine will try to fix typos for you whenever it can.
+
+-{{ video(url='https://gitlab.com/rdodin/pics/-/wikis/uploads/d8f7d0644fa6c26c88f9251396b6fe04/completion-1.mp4') }}-
+
 ## CLI modes
 
 SR Linux CLI has three main modes that a user can be in:
