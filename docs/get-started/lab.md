@@ -53,10 +53,7 @@ Everything is ready for the lab deployment. We are going to spin up this lovely 
 
 The getting started tutorial uses SR Linux 24.7.2 version.
 
-<figure>
-  <div class='mxgraph' style='max-width:100%;border:1px solid transparent;margin:0 auto; display:block;' data-mxgraph='{"page":0,"zoom":2,"highlight":"#0000ff","nav":true,"resize":true,"edit":"_blank","url":"https://raw.githubusercontent.com/srl-labs/srlinux-getting-started/main/diagrams/topology.drawio"}'></div>
-  <figcaption>Lab topology</figcaption>
-</figure>
+-{{ diagram(url='srl-labs/srlinux-getting-started/main/diagrams/topology.drawio', title='Lab Topology', page=0) }}-
 
 How do we deploy it? Enter in some directory where the lab is about to be cloned and run this one-liner:
 

@@ -213,13 +213,14 @@ plugins:
   - meta
   - glightbox
   - macros:
-      j2_block_start_string: "[[[%"
-      j2_block_end_string: "%]]]"
-      j2_variable_start_string: "[[["
-      j2_variable_end_string: "]]]"
+      j2_block_start_string: "-{{%"
+      j2_block_end_string: "%}}-"
+      j2_variable_start_string: "-{{"
+      j2_variable_end_string: "}}-"
       # include_yaml:
       #   - macros/vars.yml
       include_dir: macros
+      module_name: macros/main
   - blog:
       blog_dir: blog
       post_url_date_format: yyyy
