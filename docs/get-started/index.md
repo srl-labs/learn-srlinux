@@ -36,8 +36,3 @@ This portal does not substitute but augments the official SR Linux documentation
 More than just a lab service, **My DCF Learning Labs** offers lab exercises complete with inline instructions and solutions, giving you everything you need in one easy-to-use browser-based application - access multiple lab types and exercises to develop your SR Linux skills.
 
 [Learn more](https://www.nokia.com/networks/training/dcf/my-dcf-learning-labs/?utm_source=Learn+SR+Linux) about My DCF Learning Labs and [watch a tutorial](https://www.youtube.com/watch?v=ycDNLoYrdko), or [request your free access now](https://forms.office.com/e/x8d1P1rdNt).
-
-[^1]: Centos 7.3+ has a 3.x kernel and won't be able to run SR Linux container images newer than v22.11.
-[^2]: for example [gnmic](https://gnmic.openconfig.net)
-[^3]: The labs referenced on this site are deployed with containerlab unless stated otherwise
-[^4]: Prior to SR Linux v23.3 users had to mount a topology file for a container to start.

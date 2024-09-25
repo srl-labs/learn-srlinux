@@ -327,7 +327,8 @@ Even `show` commands that we will explore later are context-aware. For example, 
 ```srl
 --{ running }--[ interface mgmt0 subinterface 0 ]--
 A:leaf1# show version
-Parsing error: Unknown token 'version'. Options are ['#', '..', '/', '>', '>>', 'all', 'brief', 'detail', 'queue-detail', '|', '}']
+Parsing error: Unknown token 'version'.
+Options are ['#', '..', '/', '>', '>>', 'all', 'brief', 'detail', 'queue-detail', '|', '}']
 ```
 
 And that is because in the current context there is no `version` command that `show` can execute. The `version` show report belongs to the root context, so to successfully execute it we need to be in the root context, or provide the fully-qualified-context-path:
@@ -335,7 +336,7 @@ And that is because in the current context there is no `version` command that `s
 ```srl
 --{ running }--[ interface mgmt0 subinterface 0 ]--
 A:leaf1# show / version
-----------------------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------
 Hostname             : leaf1
 Chassis Type         : 7220 IXR-D2L
 Part Number          : Sim Part No.
