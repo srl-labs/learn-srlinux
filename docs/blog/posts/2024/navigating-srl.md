@@ -8,7 +8,7 @@ authors:
     - aninda
     - vivek
 links:
-  - Get Started With SR Linux: ../../../get-started/index.md
+  - Get Started With SR Linux: get-started/index.md
 ---
 
 # Navigating SR Linux
