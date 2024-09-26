@@ -7,6 +7,8 @@ tags:
 authors:
     - aninda
     - vivek
+links:
+  - Get Started With SR Linux: ../../../get-started/index.md
 ---
 
 # Navigating SR Linux
@@ -14,6 +16,8 @@ authors:
 SR Linux (aka SRL), released back in 2021, is a new operating system from Nokia, designed to power data center fabrics, with network automation no longer being treated as a second-class citizen. SR Linux is built from the ground up using YANG, which is a modeling language describing how data is structured. As an operator, this is enables you to view the entire structure as a schema tree (which we will see shortly).
 
 Like any new operating system, there is a learning curve. In the past, I have had to learn several new operating systems (having originally started with Cisco IOS), including Cisco IOS-XE/NXOS, Arista EOS, Cumulus NCLU/NVUE, Juniper Junos and now, Nokia SR Linux. In general, I have always followed the same methodology in learning - learn by building something relatable. Since SR Linux focuses on data center fabrics, we're going to build something a little relatable to that. Let's dive in.
+
+<small>This is a condensed version of a larger [SR Linux Getting Started Guide](../../../get-started/index.md).</small>
 
 <!-- more -->
 

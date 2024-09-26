@@ -8,7 +8,7 @@ comments: true
 
 Over the past years the industry has seen numerous attempts to sacrifice the CLI to the SDN and/or automation gods. We believe that CLI is here to stay, and we must evolve it and make it powerful, modern, programmable, and highly customizable.
 
-With the ambitious goal of making SR Linux CLI the pinnacle of the text-based interfaces, we knew it would look different from the traditional CLI. But fear not, the powers that come with SR Linux CLI outweigh the little effort it takes to make your fingers type new commands.
+With the ambitious goal of making SR Linux CLI the pinnacle of the text-based interfaces, we knew it would look different from the traditional CLI. But fear not, the powers that come with SR Linux CLI outweigh the little effort it takes to make your fingers memorize new commands.
 
 /// admonition | Highly customizable CLI
     type: subtle-note
@@ -17,7 +17,7 @@ SR Linux CLI is highly customizable, you can change the prompt, add new commands
 
 ## Prompt
 
-The first thing you will see when logged into SR Linux is its default two-line prompt and a CLI bottom toolbar.
+The first thing you will see when logged into SR Linux is its default two-line prompt and a CLI status toolbar.
 
 -{{ diagram(url='srl-labs/srlinux-getting-started/main/diagrams/get-started.drawio', title='Default SR Linux prompt', page=0) }}-
 
@@ -25,7 +25,7 @@ The prompt' picture title reads "default", because it is highly customizable. Fo
 
 ## Help
 
-When you first log into an unknown OS, you want to know what commands are available to you. In SR Linux, there are several contex-aware help commands and key bindings that can help you navigate the CLI.
+When you first log into an unknown OS, you want to know what commands are available to you. In SR Linux, there are several context-aware help commands and key bindings that can help you navigate the CLI.
 
 Hitting the <kbd>?</kbd> in the CLI will list all available **local** commands:
 <!-- --8<-- [start:local-in-running] -->
@@ -343,6 +343,379 @@ Part Number          : Sim Part No.
 Serial Number        : Sim Serial No.
 # clipped
 ```
+
+## `info` command
+
+The `info` command is your swiss army knife when you are in the CLI jungles. You would use it to get both configuration and state information available on the SR Linux device. Let's see how it works.
+
+While we are in the running mode, lets go once again to the `mgmt0` interface context:
+
+```srl
+--{ running }--[  ]--
+A:leaf1# interface mgmt0
+
+--{ running }--[ interface mgmt0 ]--
+A:leaf1#
+```
+
+Now let's run the `info` command:
+
+```srl
+--{ running }--[ interface mgmt0 ]--
+A:leaf1# info
+    admin-state enable
+    subinterface 0 {
+        admin-state enable
+        ip-mtu 1500
+        ipv4 {
+            admin-state enable
+            dhcp-client {
+            }
+        }
+        ipv6 {
+            admin-state enable
+            dhcp-client {
+            }
+        }
+    }
+```
+
+Look at that, we just listed the running configuration of the `mgmt0` interface.  
+Which brings us to the conclusion #1: In _running_ CLI mode, the `info` command shows the running configuration of the current context.
+
+What happens, if we switch to the `state` mode right from the `interface mgmt0` context and run the `info` command there?
+
+```srl
+--{ running }--[ interface mgmt0 ]--
+A:leaf1# enter state
+
+--{ state }--[ interface mgmt0 ]--
+A:leaf1# info
+    admin-state enable
+    mtu 1514
+    ifindex 1077952510
+    oper-state up
+    last-change "2024-09-25T14:28:40.810Z (21 hours ago)"
+    statistics {
+        in-packets 622
+        in-octets 63571
+        in-unicast-packets 231
+        in-broadcast-packets 36
+        in-multicast-packets 141
+        in-discarded-packets 211
+        in-error-packets 3
+        in-fcs-error-packets 0
+# clipped
+    }
+    sflow {
+        admin-state disable
+    }
+```
+
+Nice, way more information, and that is because the `info` command returns state elements of the current context (and its children) when executed in the `state` CLI mode.
+
+/// admonition | SR Linux State = configuration + state
+    type: tip
+It is important to remember, that unlike SR OS, in SR Linux the state contains both configuration and state values. Hence when you execute the `info` command in the `state` CLI mode, you will see configuration values such as `admin-state` and `mtu` and also state values such as `oper-state`, and `statistics`.
+///
+
+### from
+
+Even though `info` behaves differently depending on the CLI mode, you don't need to always switch the CLI mode, as the `info` command can take it as an argument. For example, here is how we can list the configuration of the `mgmt0` interface without leaving the `state` mode:
+
+```srl
+--{ state }--[ interface mgmt0 ]--
+A:leaf1# info from running
+    admin-state enable
+    subinterface 0 {
+        admin-state enable
+        ip-mtu 1500
+        ipv4 {
+            admin-state enable
+            dhcp-client {
+            }
+        }
+        ipv6 {
+            admin-state enable
+            dhcp-client {
+            }
+        }
+    }
+```
+
+### depth
+
+There was a lot of information when we ran `info` while in the `state` mode. If we want to limit the depth of the output, we can use the `depth` argument. For example, if we want to see only the state the immediate children elements of the `mgmt0` interface, we can use the `depth` argument with a value of 1:
+
+```srl
+--{ state }--[ interface mgmt0 ]--
+A:leaf1# info depth 1
+    admin-state enable
+    mtu 1514
+    ifindex 1077952510
+    oper-state up
+    last-change "2024-09-25T14:28:40.810Z (21 hours ago)"
+    statistics {
+        in-packets 775
+        in-octets 77949
+        in-unicast-packets 375
+        in-broadcast-packets 36
+        in-multicast-packets 142
+        in-discarded-packets 219
+        in-error-packets 3
+        in-fcs-error-packets 0
+        out-packets 449
+        out-octets 77452
+        out-mirror-octets 0
+        out-unicast-packets 397
+        out-broadcast-packets 6
+        out-multicast-packets 46
+        out-discarded-packets 0
+        out-error-packets 0
+        out-mirror-packets 0
+        carrier-transitions 1
+    }
+    traffic-rate {
+        in-bps 1466
+        out-bps 1400
+    }
+    ethernet {
+        port-speed 1G
+        hw-mac-address 02:42:AC:14:14:03
+    }
+    subinterface 0 {
+        admin-state enable
+        ip-mtu 1500
+        name mgmt0.0
+        ifindex 1077936129
+        oper-state up
+        last-change "2024-09-25T14:28:40.810Z (21 hours ago)"
+    }
+    sflow {
+        admin-state disable
+    }
+```
+
+### with context
+
+Another useful argument to the `info` command is context argument that is the last element of the command. It allows you to specify the context from which you want to retrieve the information. It would be not cool to first ask you to move in a certain context to retrieve the information from.
+
+Thus, you can simply provide the target context as the last argument to the `info` command. And you can combine it with the `from` and `depth` arguments as well.
+
+```srl
+--{ state }--[ interface mgmt0 ]--
+A:leaf1# info from running /system banner
+    system {
+        banner {
+            login-banner "................................................................
+:                  Welcome to Nokia SR Linux!                  :
+:              Open Network OS for the NetOps era.             :
+:                                                              :
+:    This is a freely distributed official container image.    :
+:                      Use it - Share it                       :
+:                                                              :
+: Get started: https://learn.srlinux.dev                       :
+: Container:   https://go.srlinux.dev/container-image          :
+: Docs:        https://doc.srlinux.dev/24-7                    :
+: Rel. notes:  https://doc.srlinux.dev/rn24-7-2                :
+: YANG:        https://yang.srlinux.dev/v24.7.2                :
+: Discord:     https://go.srlinux.dev/discord                  :
+: Contact:     https://go.srlinux.dev/contact-sales            :
+................................................................
+"
+        }
+    }
+```
+
+## Output modifiers
+
+Output modifiers allow you to process the output of the commands (such as `info` output) and modify it. They should be provided after the command and after the pipe - <kbd>|</kbd> - key.
+
+### more
+
+Inspired by the Linux, SR Linux does not paginate the output by default. Instead, a user should apply the `| more` modifier if they wish to paginate the output.
+
+Can be useful when you want to see the large output of the `info` or `show` command in a single screen:
+
+```srl
+--{ state }--[ interface mgmt0 ]--
+A:leaf1# info | more
+    admin-state enable
+    mtu 1514
+    ifindex 1077952510
+    oper-state up
+    last-change "2024-09-25T14:28:40.810Z (21 hours ago)"
+    statistics {
+        in-packets 983
+        in-octets 98381
+        in-unicast-packets 582
+        in-broadcast-packets 36
+        in-multicast-packets 142
+        in-discarded-packets 220
+        in-error-packets 3
+        in-fcs-error-packets 0
+        out-packets 598
+        out-octets 107162
+        out-mirror-octets 0
+        out-unicast-packets 546
+        out-broadcast-packets 6
+        out-multicast-packets 46
+        out-discarded-packets 0
+        out-error-packets 0
+        out-mirror-packets 0
+--More--
+```
+
+The output will stop filling up the available height of the terminal, waiting for a user to press on of the following:
+
+* <kbd>Enter</kbd> - to advance a line
+* <kbd>Space</kbd> - to advance a page
+* <kbd>Ctrl+C</kbd> - to close the paginator
+
+### as
+
+Another important modifier is the `as` modifier that allows you to transform the output to a different format:
+
+* yaml
+* json
+* table
+
+It is primarily used with the `info` output. For example, if you want to convert the configuration of a certain context to the YAML or JSON format, you can use the `as` modifier:
+
+/// tab | JSON
+
+```srl
+--{ running }--[ interface mgmt0 ]--
+A:leaf1# info | as json
+{
+  "name": "mgmt0",
+  "admin-state": "enable",
+  "subinterface": [
+    {
+      "index": 0,
+      "admin-state": "enable",
+      "ip-mtu": 1500,
+      "ipv4": {
+        "admin-state": "enable",
+        "dhcp-client": {
+        }
+      },
+      "ipv6": {
+        "admin-state": "enable",
+        "dhcp-client": {
+        }
+      }
+    }
+  ]
+}
+```
+
+///
+/// tab | YAML
+
+```srl
+--{ running }--[ interface mgmt0 ]--
+A:leaf1# info | as yaml
+---
+name: mgmt0
+admin-state: enable
+subinterface:
+  - index: 0
+    admin-state: enable
+    ip-mtu: 1500
+    ipv4:
+      admin-state: enable
+      dhcp-client:
+    ipv6:
+      admin-state: enable
+      dhcp-client:
+```
+
+///
+
+### grep/head/tail/wc
+
+Of course, you can use the common Linux utilities like `grep`, `head`, `tail` and `wc`. We leverage the underlying Debian 12 Linux distribution where these utilities are available.
+
+### jq and yq
+
+We have also baked in the powerful `jq` and `yq` tools to the SR Linux CLI so that you can transform, query, and modify the output of the `info` command and create your own custom outputs.
+
+## Show commands
+
+It is hard to imagine a Network CLI without the `show` command. When the `info` command outputs the raw, most details config or state of a particular context, effectively dumping the whole datastore, the `show` command produces the output that is meant to be more human-readable. Like a table output with information potentially pulled from different contexts.
+
+SR Linux comes with a good number of `show` commands, some of them we [documented in the CLI section](../cli/show-commands/index.md) of this portal. A `show` command is essentially a small CLI program that talks to SR Linux management core and parses the output into a desired format.
+
+Naturally, the first command you execute on a system is the `show version` command. But mind that the `show` command is context-aware, so if you're in the context other than the root, you will have to specify the context:
+
+```srl
+--{ running }--[ interface mgmt0 ]--
+A:leaf1# show /version
+--------------------------------------------------
+Hostname             : leaf1
+Chassis Type         : 7220 IXR-D2L
+Part Number          : Sim Part No.
+Serial Number        : Sim Serial No.
+System HW MAC Address: 1A:7C:02:FF:00:00
+OS                   : SR Linux
+Software Version     : v24.7.2
+Build Number         : 319-g64b71941f7
+Architecture         : x86_64
+Last Booted          : 2024-09-25T14:28:32.826Z
+Total Memory         : 72379371 kB
+Free Memory          : 48025562 kB
+--------------------------------------------------
+```
+
+SR Linux show commands follow the same schema as the contexts follow. This makes the mental map of SR Linux schema much easier, as you can use the `show` command in front of the path that you used to enter the context.
+
+Let's look at the example where we use the `show interface` command:
+
+```srl
+--{ running }--[  ]--
+A:leaf1# show interface mgmt0
+===========================================================================================================================================
+mgmt0 is up, speed 1G, type None
+  mgmt0.0 is up
+    Network-instances:
+      * Name: mgmt (ip-vrf)
+    Encapsulation   : null
+    Type            : None
+    IPv4 addr    : 172.20.20.3/24 (dhcp, preferred)
+    IPv6 addr    : 2001:172:20:20::3/64 (dhcp, preferred)
+    IPv6 addr    : fe80::42:acff:fe14:1403/64 (link-layer, preferred)
+-------------------------------------------------------------------------------------------------------------------------------------------
+=============================================================================
+```
+
+Note, how after the `show` command we provide the context in the same way as we would use to enter into the interface context. The same schema applies to the `show` command.
+
+Another, more elaborated example is showing the `bgp` summary of the management network instance:
+
+```srl
+--{ running }--[  ]--
+A:leaf1# show network-instance mgmt protocols bgp summary
+```
+
+It doesn't yield any output, since we don't have any BGP sessions configured, but it is a good example of how the show command follows the same schema, because to enter into the bgp context for configuration we would type the following:
+
+```srl
+--{ running }--[  ]--
+A:leaf1# enter candidate
+
+--{ candidate shared default }--[  ]--
+A:leaf1# network-instance mgmt protocols bgp
+
+--{ * candidate shared default }--[ network-instance mgmt protocols bgp ]--
+A:leaf1#
+```
+
+_Konsequent, praktisch, gut._
+
+Now you have a good primer on the SR Linux CLI and ready to start using it to configure, monitor, and troubleshoot your network.
+
+:octicons-arrow-right-24: [SR Linux Interfaces](interface.md)
 
 [^1]: For the sake of simplicity, we will not go into the details of the candidate datastore types in the quickstart. Refer to the official documentation for more information.
 [^2]: We will cover the interface/subinterface model in more detail later.

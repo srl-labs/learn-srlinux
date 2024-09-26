@@ -8,7 +8,7 @@ SR Linux packs a lot of unique features that the IP and data center networking t
 
 By adopting the modern software development practices and architectures we made SR Linux answer the requirements of the highly dynamic and programmable networks. The clean slate in front of us allowed us to build a modern software platform without carrying the legacy baggage of the previous generations.
 
-At the same time, the new concepts and paradigms implemented in SR Linux might feel, well, _new_, to a seasoned network engineer who spent years punching commands in the industry-standard CLI. To help newcomers to get started with SR Linux we have invite you on an interactive journey that walks you through the basics of SR Linux Network Operating System (NOS) in a practical way.
+At the same time, the new concepts and paradigms implemented in SR Linux might feel, well, _new_, to a seasoned network engineer who spent years punching commands in the industry-standard CLI. To help newcomers to get started with SR Linux we invite you on an interactive journey that walks you through the basics of SR Linux Network Operating System (NOS) in a practical way.
 
 The journey starts with deploying a small lab environment that we will use to get familiar with various SR Linux concepts and learn the core configuration and operational tasks. If your muscle memory forced you to open a tab to search where to download the SR Linux image, you can close it right now. The lightweight SR Linux container image is free and available to everyone.
 
@@ -16,10 +16,12 @@ The journey starts with deploying a small lab environment that we will use to ge
     type: warning
 This getting started tutorial is based on **SR Linux 24.7.2** version and will adapt to newer releases over time. If you are using a different version, you may see slight differences in the command outputs.
 
-Let us know in the comments, or in our [Discord](https://discord.gg/tZvgjQ6PZf), if you would notice discrepancies.
+Let us know in the comments, or in our [Discord](https://discord.gg/tZvgjQ6PZf), if you would notice any discrepancies.
 ///
 
-:octicons-arrow-right-24: [Deploying a lab](lab.md)
+:octicons-arrow-right-24: [**Deploying a lab**](lab.md)
+
+If instead of following this in-depth getting started guide you prefer to cut corners and quickly skim through the basics, you can check out the [Navigating SR Linux blog post](../blog/posts/2024/navigating-srl.md) that introduces the SR Linux concepts in a condensed format.
 
 ## Documentation
 
