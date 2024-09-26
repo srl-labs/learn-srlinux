@@ -306,7 +306,8 @@ markdown_extensions:
       user: srl-labs
       repo: learn-srlinux
   - pymdownx.mark
-  - pymdownx.smartsymbols
+  - pymdownx.smartsymbols:
+      fractions: false
   - pymdownx.snippets:
       check_paths: true
       url_download: true

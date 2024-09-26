@@ -17,35 +17,37 @@ Like any new operating system, there is a learning curve. In the past, I have ha
 
 <!-- more -->
 
-This topology is deployed using Containerlab with the following topology file:
+This topology is deployed using [Containerlab](https://containerlab.dev) with the following topology file:
 
 ```yaml title="navigating-srlinux.clab.yml"
-name: navigating-srlinux
+name: nav-srl
 
 topology:
   nodes:
     spine1:
       kind: nokia_srlinux
-      image: ghcr.io/nokia/srlinux
+      image: ghcr.io/nokia/srlinux:24.7.2
     spine2:
       kind: nokia_srlinux
-      image: ghcr.io/nokia/srlinux
+      image: ghcr.io/nokia/srlinux:24.7.2
     leaf1:
       kind: nokia_srlinux
-      image: ghcr.io/nokia/srlinux
+      image: ghcr.io/nokia/srlinux:24.7.2
     leaf2:
       kind: nokia_srlinux
-      image: ghcr.io/nokia/srlinux
+      image: ghcr.io/nokia/srlinux:24.7.2
     h1:
       kind: linux
-      image: networkop/host:ifreload
-      binds:
-        - hosts/h1_interfaces:/etc/network/interfaces
+      image: ghcr.io/srl-labs/network-multitool
+      exec:
+        - ip link set address 00:c1:ab:00:00:01 dev eth1
+        - ip addr add 172.16.10.1/24 dev eth1
     h2:
       kind: linux
-      image: networkop/host:ifreload
-      binds:
-        - hosts/h2_interfaces:/etc/network/interfaces
+      image: ghcr.io/srl-labs/network-multitool
+      exec:
+        - ip link set address 00:c1:ab:00:00:02 dev eth1
+        - ip addr add 172.16.20.1/24 dev eth1
   links:
     - endpoints: ["leaf1:e1-1", "spine1:e1-1"]
     - endpoints: ["leaf1:e1-2", "spine2:e1-1"]
@@ -59,7 +61,7 @@ By the end of this, you should be able to:
 
 1. Navigate and understand the configuration structure of SR Linux.
 2. Understand the concept of a network instance on SRL, instantiate a default network instance and configure and validate Layer 3 functionality such as IPv4 addressing on an interface.
-3. Configure and validate basic Layer 2 functionality with SR Linux's concept of tagged/untagged interfaces and a MAC-VRF, while also  associating IRB interfaces for Layer 3 host services.
+3. Configure and validate basic Layer 2 functionality with SR Linux's concept of tagged/untagged interfaces and a MAC-VRF, while also associating IRB interfaces for Layer 3 host services.
 4. Configure and validate a routing protocol such as BGP to exchange IPv4 network reachability information and achieve the end goal of host h1 communicating with h2.
 
 ## CLI modes in SR Linux and first look
@@ -70,29 +72,32 @@ SR Linux has three major CLI modes available for navigation (and a fourth which 
 2. **Candidate** - this is the configuration mode where you can modify configuration. From the running mode, you can go into the candidate mode using the command *enter candidate*. This puts you in a shared configuration mode which other users can enter and modify the configuration as well. Alternatively, a user can enter the *exclusive* candidate mode using *enter candidate exclusive*, which locks out all other users from making changes or the *private* candidate mode using *enter candidate private*, which allows multiple users to enter the candidate mode but only commits your changes.
 3. **State** - this is similar to the running state but can show you additional *state*, including statistics for interfaces, as an example.
 
-While *tools* is not technically a state, it facilitates important functionality such as clearing interface statistics or clearing BGP neighbors, as examples.
+While *tools* is not technically a CLI mode, it facilitates important functionality such as clearing interface statistics or clearing BGP neighbors, as examples.
 
-With the containerlab topology deployed using *containerlab deploy -t [topology filename]*, it can be inspected to confirm the IP addressing for the nodes (in case static IP addresses are not provided as part of the topology file):
+With the containerlab topology deployed using `containerlab deploy -t [topology filename]`, it can be inspected to confirm the IP addressing for the nodes (in case static IP addresses are not provided as part of the topology file):
 
+```shell
+$ containerlab inspect -t navigating-srlinux.clab.yml
++---+---------------------+--------------+------------------------------------+---------------+---------+-----------------+----------------------+
+| # |        Name         | Container ID |               Image                |     Kind      |  State  |  IPv4 Address   |     IPv6 Address     |
++---+---------------------+--------------+------------------------------------+---------------+---------+-----------------+----------------------+
+| 1 | clab-nav-srl-h1     | 71c9b9d54fd4 | ghcr.io/srl-labs/network-multitool | linux         | running | 172.20.20.7/24  | 2001:172:20:20::7/64 |
+| 2 | clab-nav-srl-h2     | 1913b02d0bd0 | ghcr.io/srl-labs/network-multitool | linux         | running | 172.20.20.12/24 | 2001:172:20:20::c/64 |
+| 3 | clab-nav-srl-leaf1  | 8960a0944372 | ghcr.io/nokia/srlinux:24.7.2       | nokia_srlinux | running | 172.20.20.9/24  | 2001:172:20:20::9/64 |
+| 4 | clab-nav-srl-leaf2  | d45cad84bd27 | ghcr.io/nokia/srlinux:24.7.2       | nokia_srlinux | running | 172.20.20.11/24 | 2001:172:20:20::b/64 |
+| 5 | clab-nav-srl-spine1 | 777d4093244c | ghcr.io/nokia/srlinux:24.7.2       | nokia_srlinux | running | 172.20.20.8/24  | 2001:172:20:20::8/64 |
+| 6 | clab-nav-srl-spine2 | d6bba1f1668a | ghcr.io/nokia/srlinux:24.7.2       | nokia_srlinux | running | 172.20.20.10/24 | 2001:172:20:20::a/64 |
++---+---------------------+--------------+------------------------------------+---------------+---------+-----------------+----------------------+
 ```
-root@ubuntu:~/aninchat/labs# containerlab inspect -t navigating-srlinux.yml
-INFO[0000] Parsing & checking topology file: navigating-srlinux.yml
-+---+--------------------------------+--------------+-------------------------+---------------+---------+----------------+----------------------+
-| # |              Name              | Container ID |          Image          |     Kind      |  State  |  IPv4 Address  |     IPv6 Address     |
-+---+--------------------------------+--------------+-------------------------+---------------+---------+----------------+----------------------+
-| 1 | clab-navigating-srlinux-h1     | 6d90131555ed | networkop/host:ifreload | linux         | running | 172.20.20.7/24 | 2001:172:20:20::7/64 |
-| 2 | clab-navigating-srlinux-h2     | 052583a98583 | networkop/host:ifreload | linux         | running | 172.20.20.6/24 | 2001:172:20:20::6/64 |
-| 3 | clab-navigating-srlinux-leaf1  | 5725dd434083 | ghcr.io/nokia/srlinux   | nokia_srlinux | running | 172.20.20.5/24 | 2001:172:20:20::5/64 |
-| 4 | clab-navigating-srlinux-leaf2  | e0dbd6a16219 | ghcr.io/nokia/srlinux   | nokia_srlinux | running | 172.20.20.3/24 | 2001:172:20:20::3/64 |
-| 5 | clab-navigating-srlinux-spine1 | fb1bea805455 | ghcr.io/nokia/srlinux   | nokia_srlinux | running | 172.20.20.4/24 | 2001:172:20:20::4/64 |
-| 6 | clab-navigating-srlinux-spine2 | 70fa0c289239 | ghcr.io/nokia/srlinux   | nokia_srlinux | running | 172.20.20.2/24 | 2001:172:20:20::2/64 |
-+---+--------------------------------+--------------+-------------------------+---------------+---------+----------------+----------------------+
+
+Let's login to leaf1 using the node name as shown in the table above:
+
+```shell
+ssh admin@clab-nav-srl-leaf1
 ```
 
-Let's login to leaf1:
-
-```
-root@ubuntu:~/aninchat/labs# ssh admin@172.20.20.5
+<div class="embed-result">
+```{.no-copy .no-select}
 ................................................................
 :                  Welcome to Nokia SR Linux!                  :
 :              Open Network OS for the NetOps era.             :
@@ -103,50 +108,57 @@ root@ubuntu:~/aninchat/labs# ssh admin@172.20.20.5
 : Get started: https://learn.srlinux.dev                       :
 : Container:   https://go.srlinux.dev/container-image          :
 : Docs:        https://doc.srlinux.dev/24-7                    :
-: Rel. notes:  https://doc.srlinux.dev/rn24-7-1                :
-: YANG:        https://yang.srlinux.dev/release/v24.7.1        :
+: Rel. notes:  https://doc.srlinux.dev/rn24-7-2                :
+: YANG:        https://yang.srlinux.dev/release/v24.7.2        :
 : Discord:     https://go.srlinux.dev/discord                  :
 : Contact:     https://go.srlinux.dev/contact-sales            :
 ................................................................
 
-(admin@172.20.20.5) Password:
-Last login: Thu Sep 19 12:02:16 2024 from 172.20.20.1
-Using configuration file(s): ['/home/admin/.srlinuxrc']
 Welcome to the srlinux CLI.
 Type 'help' (and press <ENTER>) if you need any help using this.
 
 --{ running }--[  ]--
 A:leaf1#
-```
-
-Once logged in, the user in placed in the running mode, indicated by *running* within curly brackets. Following this, square brackets indicate the current hierarchy (or the present working context) of the user - when this is empty, it implies that you are in the root hierarhcy. Users can move to a specific hierarchy as needed, giving them the ability to view configuration or state only from that context/hierarchy. For example, using *interface ethernet1/1*, you can move to the interface ethernet1/1 hierarchy, and all info/show commands are now specific to this context only, as shown below.
 
 ```
+</div>
+
+Once logged in, the user in placed in the running mode, indicated by `{ running }` in the prompt. Following this, square brackets indicate the current hierarchy (or the present working context) of the user - when this is empty, it implies that you are in the root hierarchy. Users can move to a specific hierarchy as needed, giving them the ability to view configuration or state only from that context/hierarchy. For example, using `interface ethernet1/1`, you can move to the interface ethernet1/1 hierarchy, and all info/show commands are now specific to this context only, as shown below.
+
+```
+
 --{ running }--[  ]--
 A:leaf1# interface ethernet-1/1
 
 --{ running }--[ interface ethernet-1/1 ]--
 A:leaf1# show
-==================================================================================================================================================================================
+==================================================
+
 ethernet-1/1 is up, speed 25G, type None
-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-==================================================================================================================================================================================
+--------------------------------------------------
+
+==================================================
 
 --{ running }--[ interface ethernet-1/1 ]--
+
 ```
 
-***
-> **Note:** The present working context or hierarhcy will always be shown within square brackets [] after the CLI mode of the prompt.
-***
+/// admonition | Present working context
+    type: subtle-note
+The present working context or hierarchy will always be shown within square brackets `[ ]` after the CLI mode of the prompt.
+///
 
 In general, operational commands can be divided into two major categories:
 
 1. Commands that show you the configuration of different objects in the system (like an interface, for example).
 2. Commands that show you the state of different objects in the system (again, like an interface, for example).
 
-With SR Linux, configuration can be viewed using *info* commands while state can be viewed using *show* commands. We'll use these more extensively in the following sections, however, Containerlab does some minimal bootstrapping of the node as part of launching it and thus, as an example below, the *info system lldp* displays the LLDP configuration and *show system lldp neighbor* displays discovered LLDP neighbors on leaf1.
+With SR Linux, configuration can be viewed using `info` command when in the CLI is in `running` or `candidate` mode, while state can be viewed using `info` command in the `state` CLI mode and `show` commands. We'll use these more extensively in the following sections.  
+Containerlab does some minimal bootstrapping of the node as part of launching it and thus, as an example below, the `info system lldp` displays the LLDP configuration and `show system lldp neighbor` displays discovered LLDP neighbors on leaf1.
 
-```
+/// tab | LLDP config
+`info` command shows configuration of the `system lldp` context since the CLI is in `running` mode.
+```srl
 --{ running }--[  ]--
 A:leaf1# info system lldp
     system {
@@ -154,7 +166,12 @@ A:leaf1# info system lldp
             admin-state enable
         }
     }
+```
 
+///
+/// tab | LLDP state
+
+```srl
 --{ running }--[  ]--
 A:leaf1# show system lldp neighbor
   +--------------+-------------------+----------------------+---------------------+------------------------+----------------------+---------------+
@@ -163,13 +180,16 @@ A:leaf1# show system lldp neighbor
   | ethernet-1/1 | 1A:E8:04:FF:00:00 | spine1               | 1A:E8:04:FF:00:00   | 17 hours ago           | 6 seconds ago        | ethernet-1/1  |
   | ethernet-1/2 | 1A:7B:05:FF:00:00 | spine2               | 1A:7B:05:FF:00:00   | 17 hours ago           | 5 seconds ago        | ethernet-1/1  |
   +--------------+-------------------+----------------------+---------------------+------------------------+----------------------+---------------+
+
 ```
+
+///
 
 ## Configuring Layer 3 interfaces
 
-We're back on leaf1 and in the running mode. From here, let's enter the candidate mode with *enter candidate*.
+We're back on leaf1 and in the running mode. From here, let's enter the candidate mode with `enter candidate`.
 
-```
+```srl
 --{ running }--[  ]--
 A:leaf1# enter candidate
 
@@ -177,24 +197,24 @@ A:leaf1# enter candidate
 A:leaf1#
 ```
 
-SR Linux can be configured using flat *set* commands (similar to Junos) or by moving into a specific hierarchy configuring different parameters relevant to that hierarchy. Interfaces in SR Linux, like Junos, are defined as physical interfaces with one or more subinterfaces (units, in Junos terminology) with a set of physical properties for the physical interface and logical properties for the subinterfaces. As an example, *mtu* is a physical property that can be configured for the physical interface, while *ip mtu* is a logical property configured under a subinterface.
+SR Linux can be configured using flat `set` commands (similar to Junos) or by moving into a specific hierarchy configuring different parameters relevant to that hierarchy. Interfaces in SR Linux, like Junos, are defined as physical interfaces with one or more subinterfaces (units, in Junos terminology) with a set of physical properties for the physical interface and logical properties for the subinterfaces. As an example, `mtu` is a physical property that can be configured for the physical interface, while `ip mtu` is a logical property configured under a subinterface.
 
-```
+```text
 interfaces {
- interface-name {
-     physical-properties;
-     [...]
-     subinterface <> {
-     logical-properties;
-     [...]
-     }
- }
+  interface-name {
+   physical-properties;
+    [...]
+    subinterface <> {
+      logical-properties;
+      [...]
+    }
+  }
 }
 ```
 
-With a YANG data model, SR Linux requires operators to be specific about their intent and by default, nothing is enabled in the OS. The user controls exactly what they want on the system. This is why you will see most objects assosicated with an *admin-state*. Let's configure Ethernet1/1 on leaf1 as a Layer 3 interface now using flat *set* commands.
+Being a fully YANG-modelled at its core, SR Linux requires operators to be specific about their intent and by default, nothing is enabled in the OS. The user controls exactly what they want on the system. This is why you will see most objects associated with an `admin-state`. Let's configure Ethernet1/1 on leaf1 as a Layer 3 interface now using flat `set` commands.
 
-```
+```srl
 --{ candidate shared default }--[  ]--
 A:leaf1# set interface ethernet-1/1 admin-state enable
 
@@ -207,9 +227,11 @@ A:leaf1# set interface ethernet-1/1 subinterface 0 ipv4 address 198.51.100.0/31
 
 Changes to the configuration in candidate mode must be explicitly committed similar to Junos or Cisco IOS-XR. However, it is important to provide the user a view to check changes and also, validate changes that were made, potentially alerting the user of any unmet dependencies.
 
-The command *diff* displays a diff of the changes in the system specific to the hierarchy the user is in. Thus, the easiest way to view all diffs, regardless of where you are in the system, is using *diff /* (with */* indicating the root of the tree). Changes can be validated using the *commit validate* command and then committed using the *commit* command. The two most common ways of using this are *commit now* which commits any pending changes and moves the user back into running mode and *commit stay* which commits the changes but stays in candidate mode. Let's go ahead and view a diff of our changes and then commit them.
+The `diff` command displays a diff of the changes in the system specific to the hierarchy the user is in. Thus, the easiest way to view all diffs, regardless of where you are in the system, is using `diff /` (with `/` indicating the root of the tree). Changes can be validated using the `commit validate` command and then committed using the `commit` command.
 
-```diff
+The two most common ways of using this are `commit now` which commits any pending changes and moves the user back into running mode and `commit stay` which commits the changes but stays in candidate mode. Let's go ahead and view a diff of our changes and then commit them.
+
+```srl
 --{ * candidate shared default }--[  ]--
 A:leaf1# diff /
       interface ethernet-1/1 {
@@ -227,9 +249,9 @@ A:leaf1# commit stay
 All changes have been committed. Starting new transaction.
 ```
 
-With these changes in place, let's look at the state of the interface with *show interface ethernet-1/1*.
+With these changes in place, let's look at the state of the interface with `show interface ethernet-1/1`.
 
-```
+```srl
 --{ + candidate shared default }--[  ]--
 A:leaf1# show interface ethernet-1/1
 ==================================================================================================================================================================================
@@ -243,9 +265,11 @@ ethernet-1/1 is up, speed 25G, type None
 ==================================================================================================================================================================================
 ```
 
-While the physical interface is up, the subinterface (ethernet-1/1.0) is down. The reason *no-ip-config* can be slightly misleading; it simply indicates that the subinterface is unaware of any configuration for it, because no address family is administratively up. This can be quickly fixed by setting the admin-state for IPv4 to *enable* as well, as shown below. Once this is down, the subinterface comes up.
+While the physical interface is up, the subinterface (ethernet-1/1.0) is reported down. The down reason reads *no-ip-config* and it simply means that the subinterface has not been configured with any IP address family. How come, you may ask?
 
-```
+Recall, that SR Linux wants an operator to clearly indicate what needs to be enabled and doesn't do things on its own. Hence while we configured the IPv4 address on an interface, we did not enable this address family. This can be quickly fixed by setting the admin-state for IPv4 to `enable` as well, as shown below. Once this is done, the subinterface comes up.
+
+```srl
 --{ + candidate shared default }--[  ]--
 A:leaf1# set interface ethernet-1/1 subinterface 0 ipv4 admin-state enable
 
@@ -267,16 +291,16 @@ ethernet-1/1 is up, speed 25G, type None
 
 With ethernet-1/1 configured, let's take the opportunity to configure ethernet-1/2 using hierarchical configuration. In candidate mode, we can move into a specific hierarchy as follows (using interface ethernet-1/2 as an example):
 
-```
+```srl
 --{ +* candidate shared default }--[  ]--
 A:leaf1# interface ethernet-1/2
 
 --{ +* candidate shared default }--[ interface ethernet-1/2 ]--
 ```
 
-From here, a *?* displays configuration options specific to this hierarchy only.
+From here, a <kbd>?</kbd> displays configuration options specific to this hierarchy only.
 
-```
+```srl
 --{ +* candidate shared default }--[ interface ethernet-1/2 ]--
 A:leaf1#
 Local commands:
@@ -295,7 +319,7 @@ Local commands:
 
 Let's finish the configuration for this interface as well now, as shown below.
 
-```
+```srl
 --{ +* candidate shared default }--[  ]--
 A:leaf1# interface ethernet-1/2
 
@@ -322,30 +346,35 @@ All changes have been committed. Leaving candidate mode.
 A:leaf1# /
 
 --{ + running }--[  ]--
+A:leaf1#
 ```
 
-***
-> Note: it is important to note that after committing a change and exiting back to running mode, the present working context does not change to root by default. To go back to root, you can use the forward slash symbol (/).
-***
+/// admonition | Note
+    type: subtle-note
+It is important to note that after committing a change and exiting back to running mode, the present working context does not change to root by default. To go back to root, you can use the forward slash symbol `/`.
+///
 
 ## Network instances in SR Linux
 
 ### The default network instance
 
-On SR Linux, network instances are virtual forwarding instances (tables), with their own set of interfaces and virtual forwarding tables. By default, a network instance called *mgmt* is created which isolates the management interface of the node. Outside of this, there are three types of network instances:
+On SR Linux, network instances are virtual forwarding instances (tables), with their own set of interfaces and virtual forwarding tables. By default, a network instance called `mgmt` is created which isolates the management interface of the node. Outside of this, there are two types of network instances:
 
 1. **IP VRF** - a network instance of type *ip-vrf* creates its own IP routing table, no different from how an IP VRF is created on Cisco/Arista/Juniper devices.
 2. **MAC VRF** - a network instance of type *mac-vrf* creates its own bridging table and associated broadcast domains, based on the interfaces added to it. This can be thought of as an instantiation of a virtual switch within the node.
-3. **Default** - there can be only one default network-instance. This is analagous to the global routing table on Cisco/Arista devices or inet.0 on Junos devices.
 
-Since there is no default network instance on SR Linux by default, there is no global routing table and no connectivity even though point-to-point addresses have been configured. This is an interesting paradigm shift - us network engineers typically work the base assumption that the default routing table is just there. With SR Linux, all intent is defined by the user, even something as simple as a default (global) routing table (network instance). Let's configure this now, as shown below, using leaf1 as a reference.
+/// admonition | Default network instance
+    type: subtle-note
+There is a special IP-VRF network instance named **Default** that is analogous to the global routing table on Cisco/Arista devices or inet.0 on Junos devices.  
+As a consequence, there can only be one network instance of named `default` in the system.
+///
 
-```
+Since there is no default network instance defined in the SR Linux's factory config, there is no global routing table and no connectivity even though point-to-point addresses have been configured.  
+This is an interesting paradigm shift - us network engineers typically work the base assumption that the default routing table is just there. With SR Linux, all intent is defined by the user, even something as simple as a default (global) routing table (network instance). Let's configure this now, as shown below, using leaf1 as a reference.
+
+```srl
 --{ + running }--[  ]--
 A:leaf1# enter candidate
-
---{ + candidate shared default }--[  ]--
-A:leaf1# set network-instance default type default
 
 --{ +* candidate shared default }--[  ]--
 A:leaf1# set network-instance default interface ethernet-1/1.0
@@ -356,7 +385,6 @@ A:leaf1# set network-instance default interface ethernet-1/2.0
 --{ +* candidate shared default }--[  ]--
 A:leaf1# diff /
 +     network-instance default {
-+         type default
 +         interface ethernet-1/1.0 {
 +         }
 +         interface ethernet-1/2.0 {
@@ -368,9 +396,11 @@ A:leaf1# commit now
 All changes have been committed. Leaving candidate mode.
 ```
 
-All interconnections between the leafs and the spines are configured in a similar fashion using /31 IPv4 addresses and mapped to the default network instance. This routing table can now be viewed using the running mode command *show network-instance default route-table all*.
+Note, how we combined the Default network instance creation with the placement of the ethernet interfaces in a single command.
 
-```
+All interconnections between the leafs and the spines are configured in a similar fashion using `/31` IPv4 addresses and mapped to the default network instance. This routing table can now be viewed using the running mode command show network-instance default route-table all`.
+
+```srl
 --{ + running }--[  ]--
 A:leaf1# show network-instance default route-table all
 ------------------------------------------------------------------------------------------------------------------------------
@@ -402,17 +432,15 @@ IPv4 prefixes with active ECMP routes: 0
 ------------------------------------------------------------------------------------------------------------------------------
 ```
 
-We can confirm that the nodes can talk to each other by using the *ping* tool (and specifying that the default network-instance is to be used for it) and testing reachability, as shown below from the perspective of leaf1 and leaf2, once all nodes have been configured with their respective point-to-point IPv4 addresses.
+We can confirm that the nodes can talk to each other by using the `ping` operational command (and specifying that the default network-instance is to be used for it) and testing reachability, as shown below from the perspective of leaf1 and leaf2, once all nodes have been configured with their respective point-to-point IPv4 addresses.
 
-```
+```srl
 --{ + running }--[  ]--
 A:leaf1# ping network-instance default 198.51.100.1
 Using network instance default
 PING 198.51.100.1 (198.51.100.1) 56(84) bytes of data.
 64 bytes from 198.51.100.1: icmp_seq=1 ttl=64 time=4.12 ms
 64 bytes from 198.51.100.1: icmp_seq=2 ttl=64 time=3.73 ms
-64 bytes from 198.51.100.1: icmp_seq=3 ttl=64 time=3.91 ms
-^CCommand execution aborted : 'ping network-instance default 198.51.100.1'
 
 --{ + running }--[  ]--
 A:leaf1# ping network-instance default 198.51.100.3
@@ -420,8 +448,6 @@ Using network instance default
 PING 198.51.100.3 (198.51.100.3) 56(84) bytes of data.
 64 bytes from 198.51.100.3: icmp_seq=1 ttl=64 time=84.1 ms
 64 bytes from 198.51.100.3: icmp_seq=2 ttl=64 time=2.86 ms
-64 bytes from 198.51.100.3: icmp_seq=3 ttl=64 time=3.86 ms
-^CCommand execution aborted : 'ping network-instance default 198.51.100.3'
 
 --{ + running }--[  ]--
 A:leaf2# ping network-instance default 198.51.100.5
@@ -429,8 +455,6 @@ Using network instance default
 PING 198.51.100.5 (198.51.100.5) 56(84) bytes of data.
 64 bytes from 198.51.100.5: icmp_seq=1 ttl=64 time=17.2 ms
 64 bytes from 198.51.100.5: icmp_seq=2 ttl=64 time=4.16 ms
-64 bytes from 198.51.100.5: icmp_seq=3 ttl=64 time=3.71 ms
-^CCommand execution aborted : 'ping network-instance default 198.51.100.5'
 
 --{ + running }--[  ]--
 A:leaf2# ping network-instance default 198.51.100.7
@@ -439,14 +463,13 @@ PING 198.51.100.7 (198.51.100.7) 56(84) bytes of data.
 64 bytes from 198.51.100.7: icmp_seq=1 ttl=64 time=29.9 ms
 64 bytes from 198.51.100.7: icmp_seq=2 ttl=64 time=4.00 ms
 64 bytes from 198.51.100.7: icmp_seq=3 ttl=64 time=4.13 ms
-^CCommand execution aborted : 'ping network-instance default 198.51.100.7'
 ```
 
 ### MAC VRFs for Layer 2 bridging
 
-A MAC VRF, in SR Linux, is another type of network instance, that instantiates a virtual switch with a bridge/switching table, storing MAC addresses and their required forwarding instructions. This is how Layer 2 services attach themselves to the node, with the MAC VRF facilitating Layer 2 forwarding. The logic behind Layer 2 interfaces is the same - however, the subinterface is instantiated as a *bridged* type instead of an address family such as IPv4. In our case, ethernet-1/3 on leaf1 is connected to server s1. Let's configure this first.
+A MAC VRF, in SR Linux, is another type of network instance, that instantiates a virtual switch with a bridge/switching table, storing MAC addresses and their required forwarding instructions. This is how Layer 2 services attach themselves to the node, with the MAC VRF facilitating Layer 2 forwarding. The logic behind Layer 2 interfaces is the same - however, the subinterface is instantiated as a *bridged* type instead of an address family such as IPv4. In our case, ethernet-1/3 on leaf1 is connected to host `h1`. Let's configure this first.
 
-```
+```srl
 --{ + candidate shared default }--[  ]--
 A:leaf1# set interface ethernet-1/3 admin-state enable
 
@@ -457,11 +480,18 @@ A:leaf1# set interface ethernet-1/3 vlan-tagging false
 A:leaf1# set interface ethernet-1/3 subinterface 0 type bridged
 ```
 
-Breaking this down - the *vlan-tagging* parameter controls whether the physical interface expects tagged traffic or not. Since this is set to false, only untagged traffic is accepted on any subinterface and any tagged traffic is discarded. If the Layer 2 interface is expected to handle untagged and tagged traffic, then the *vlan-tagging* parameter can be set to true and additional subinterfaces can be configured with a tagged VLAN ID while the untagged subinterface can be configured as *set interface [intf-num] subinterface [subintf-num] vlan encap untagged*. Again, this is a bit of a paradigm shift between more traditional network operating systems and SR Linux - traditionally, untagged interfaces are categorized as *access* interfaces, defined with a specific VLAN ID using commands such as *switchport access vlan [vlan-num]*. On SR Linux, the untagged VLAN is irrelevant since the forwarding of traffic is controlled purely by which interfaces are attached to the same MAC VRF (which acts as the bridge domain) rather than a VLAN identifier.
+Breaking this down - the `vlan-tagging` parameter controls whether the physical interface expects tagged traffic or not. Since this is set to false, only untagged traffic is accepted on any subinterface and any tagged traffic is discarded. If the Layer 2 interface is expected to handle untagged and tagged traffic, then the `vlan-tagging` parameter can be set to true and additional subinterfaces can be configured with a tagged VLAN ID while the untagged subinterface can be configured as `set interface [intf-num] subinterface [subintf-num] vlan encap untagged`.
+
+Again, this is a bit of a paradigm shift between more traditional network operating systems and SR Linux - traditionally, untagged interfaces are categorized as *access* interfaces, defined with a specific VLAN ID using commands such as `switchport access vlan [vlan-num]`. On SR Linux, the untagged VLAN is irrelevant since the forwarding of traffic is controlled purely by which interfaces are attached to the same MAC VRF (which acts as the bridge domain) rather than a VLAN identifier.
+
+/// admonition | VLANs on SR Linux
+    type: subtle-note
+For a deep dive on VLANs on SR Linux topic, please see the [VLANs on SR Linux](srl-vlans.md) blog post.
+///
 
 On its own, this interface is doing nothing - it must be attached to a MAC VRF in order to participate in active Layer 2 forwarding. So, let's create a new network instance of type *mac-vrf* next and attach ethernet-1/3 to it.
 
-```
+```srl
 --{ + candidate shared default }--[  ]--
 A:leaf1# set network-instance macvrf1 type mac-vrf
 
@@ -472,9 +502,9 @@ A:leaf1# set network-instance macvrf1 admin-state enable
 A:leaf1# set network-instance macvrf1 interface ethernet-1/3.0
 ```
 
-Our goal is to provide inter-subnet connectivity for these servers so an IRB interface is created next. This is similar to Junos where the interface naming convention follows irb*x*, where *x* is the IRB number. The IRB interface is associated to the MAC VRF, tying it into the bridge domain hosted by that MAC VRF. This is shown below, using leaf1 as a reference for server s1's connectivity (remember to add the IRB interface in the default network instance).
+Our goal is to provide inter-subnet connectivity for these servers so an IRB interface is created next. This is similar to Junos where the interface naming convention follows irb*x*, where *x* is the IRB number. The IRB interface is associated to the MAC VRF, tying it into the bridge domain hosted by that MAC VRF. This is shown below, using leaf1 as a reference for host h1's connectivity (remember to add the IRB interface in the default network instance).
 
-```
+```srl
 --{ + candidate shared default }--[  ]--
 A:leaf1# set interface irb1 admin-state enable
 
@@ -498,17 +528,15 @@ A:leaf1# commit now
 All changes have been committed. Leaving candidate mode.
 ```
 
-Once these changes are committed, the server s1 can ping its gateway (the IRB interface on leaf1), and we can confirm that IP address is succesfully resolved to a MAC address using the *show arpnd arp-entries* command. You can also view the MAC address table using the *show network-instance default bridge-table mac-table all* command, as shown below. Remember that the switching table is instantiated as part of the MAC VRF and thus, the network-instance used must be the MAC VRF in question.
+Once these changes are committed, the server s1 can ping its gateway (the IRB interface on leaf1), and we can confirm that IP address is successfully resolved to a MAC address using the `show arpnd arp-entries` command. You can also view the MAC address table using the `show network-instance default bridge-table mac-table all` command, as shown below. Remember that the switching table is instantiated as part of the MAC VRF and thus, the network-instance used must be the MAC VRF in question.
 
-```
+```srl
 --{ + running }--[  ]--
 A:leaf1# ping network-instance default 172.16.10.1
 Using network instance default
 PING 172.16.10.1 (172.16.10.1) 56(84) bytes of data.
 64 bytes from 172.16.10.1: icmp_seq=1 ttl=64 time=4.25 ms
 64 bytes from 172.16.10.1: icmp_seq=2 ttl=64 time=2.03 ms
-64 bytes from 172.16.10.1: icmp_seq=3 ttl=64 time=1.89 ms
-^CCommand execution aborted : 'ping network-instance default 172.16.10.1'
 
 --{ + running }--[  ]--
 A:leaf1# show arpnd arp-entries ipv4-address 172.16.10.1
@@ -550,9 +578,10 @@ Total Irb Vrrps                :    0 Total    0 Active
 
 ## Configuring BGP in SR Linux
 
-Since we want BGP for the global routing table, it needs to be configured for the default network instance. This implies that all configuration for BGP will be under the *network-instance default* hierarchy. The configuration for BGP is fairly straightforward, following similar logic as any other vendor. A peer-group is created to group together common attributes for the peering. In addition to this, by default, eBGP in SR Linux does not export or import any routes. Explicit policies must be configured for this (included in the configuration below). This behavior can be changed using the *protocols bgp ebgp-default-policy* option.
+Since we want BGP for the global routing table, it needs to be configured for the default network instance. This implies that all configuration for BGP will be under the `network-instance default` hierarchy. The configuration for BGP is fairly straightforward, following similar logic as any other vendor. A peer-group is created to group together common attributes for the peering.  
+In addition to this, by default, eBGP in SR Linux does not export or import any routes as per the internet routing best practices and [RFC 8121](https://datatracker.ietf.org/doc/html/rfc8212). Explicit policies must be configured for this (included in the configuration below). This behavior can be changed using the `protocols bgp ebgp-default-policy` option.
 
-```
+```{.srl .code-scroll-lg}
 --{ + running }--[  ]--
 A:leaf1# enter candidate
 
@@ -606,12 +635,12 @@ All changes have been committed. Leaving candidate mode.
 The above configuration does the following:
 
 1. It sets the ASN and router ID for the local node.
-2. It enables the IPv4 unicast AFI/SAFI by setting the *admin-state* to *enable*.
-3. It creates a peer-group called *spine-underlay* and sets several common parameters for this group, including the peer ASN and an import/export policy that controls which routes are exported to neighbors and which routes are imported from neighbors. These policies are created using the *routing-policy* hierarchy.
+2. It enables the IPv4 unicast AFI/SAFI by setting the `admin-state` to enable.
+3. It creates a peer-group called `spine-underlay` and sets several common parameters for this group, including the peer ASN and an import/export policy that controls which routes are exported to neighbors and which routes are imported from neighbors. These policies are created using the `routing-policy` hierarchy.
 
 Once all peers are configured in a similar fashion, leaf1 and leaf2 establish eBGP peering with spine1 and spine2, as shown below.
 
-```
+```srl
 --{ + running }--[  ]--
 A:leaf1# show network-instance default protocols bgp neighbor
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -649,9 +678,9 @@ Summary:
 0 dynamic peers
 ```
 
-The routes advertised by a node can be viewed using the *advertised-routes* option. In our case, leaf1 should be advertising the 172.16.10.0/24 prefix and leaf2 should be advertising the 172.16.20.0/24 prefix to the spines. This is confirmed as shown below.
+The routes advertised by a node can be viewed using the `advertised-routes` option. In our case, leaf1 should be advertising the `172.16.10.0/24` prefix and leaf2 should be advertising the `172.16.20.0/24` prefix to the spines. This is confirmed as shown below.
 
-```
+```{.srl .code-scroll-lg}
 --{ + running }--[  ]--
 A:leaf1# show network-instance default protocols bgp neighbor 198.51.100.1 advertised-routes ipv4
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -693,9 +722,9 @@ Origin codes: i=IGP, e=EGP, ?=incomplete
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ```
 
-Eventually, each leaf will receive the other leaf's advertised route and install it in the default network-instance routing table. This can be confirmed using the *show network-instance default route-table ipv4-unicast [summary|prefix]* command.
+Eventually, each leaf will receive the other leaf's advertised route and install it in the default network-instance routing table. This can be confirmed using the `show network-instance default route-table ipv4-unicast [summary|prefix]` command.
 
-```
+```srl
 --{ + running }--[  ]--
 A:leaf1# show network-instance default route-table ipv4-unicast prefix 172.16.20.0/24
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -729,10 +758,10 @@ IPv4 unicast route table of network instance default
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ```
 
-With the routes correctly programmed, server s1 can communicate with s2, confirming that our end network state is achieved.
+With the routes correctly programmed, hosts h1 can communicate with h2, confirming that our end network state is achieved.
 
 ```
-root@s1:~# ping 172.16.20.2
+root@h1:~# ping 172.16.20.2
 PING 172.16.20.1 (172.16.20.1) 56(84) bytes of data.
 64 bytes from 172.16.20.2: icmp_seq=1 ttl=61 time=1.48 ms
 64 bytes from 172.16.20.2: icmp_seq=2 ttl=61 time=0.996 ms
@@ -752,7 +781,7 @@ Learning new technology can be hard. It's in our nature to avoid change when old
 
 The automation-friendly nature of SR Linux is no joke. Any output can be reinterpreted in YAML or JSON (or even as a table dumping specific fields only for an easier CLI view of the data).
 
-```
+```srl
 --{ + running }--[  ]--
 A:leaf1# show network-instance default route-table ipv4-unicast prefix 172.16.20.0/24 | as yaml
 ---
@@ -801,7 +830,7 @@ A:leaf1# show network-instance default route-table ipv4-unicast prefix 172.16.20
 
 ### Watching for changes
 
-With the *watch* command, you can watch for changes in state. For example, changes to BGP neighbor state or interface statistics (by default, this runs every 2s).
+With the `watch` command, you can watch for changes in state. For example, changes to BGP neighbor state or interface statistics (by default, this runs every 2s).
 
 ```
 --{ + running }--[  ]--
@@ -832,3 +861,5 @@ Every 2.0s: info from state interface ethernet-1/1 statistics                   
         }
     }
 ```
+
+There are many more cool and unique features of SR Linux that we covered in our tutorials, blogs, and videos. Stay tuned for more content and join our [community](https://discord.gg/tZvgjQ6PZf) to get involved.
