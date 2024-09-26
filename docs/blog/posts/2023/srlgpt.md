@@ -75,9 +75,9 @@ Additionally, in today's release we only support using OpenAI's LLM and you must
 
 ### Installing SR Linux GPT NDK Application
 
-[[[% import 'macros.html' as macros %]]]
-[[[ macros.srl_version('23.7.1') ]]]
-[[[ macros.clab_version('0.48.2') ]]]
+-{{% import 'macros.html' as macros %}}-
+-{{ macros.srl_version('23.7.1') }}-
+-{{ macros.clab_version('0.48.2') }}-
 
 OK, so to demonstrate SR Linux GPT app we will use Containerlab (min version 0.47.1) and spin up a very simple single node SR Linux topology:
 

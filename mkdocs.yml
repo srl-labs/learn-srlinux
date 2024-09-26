@@ -1,7 +1,14 @@
 site_name: Learn SR Linux
 nav:
   - Home: index.md
-  - Get Started: get-started.md
+  - Get Started:
+      - get-started/index.md
+      - Lab: get-started/lab.md
+      - CLI: get-started/cli.md
+      - Interfaces: get-started/interface.md
+      - Network Instances: get-started/network-instance.md
+      # - IGP: get-started/igp.md
+      - BGP: get-started/bgp.md
   - Management:
       - mgmt/index.md
       - CLI:
@@ -167,6 +174,7 @@ theme:
     - navigation.top
     # - navigation.instant # removed until code selection are fixed https://github.com/squidfunk/mkdocs-material/issues/5066
     - navigation.tabs
+    - navigation.sections
     - search.suggest
     - content.code.annotate
     - content.code.copy
@@ -205,13 +213,14 @@ plugins:
   - meta
   - glightbox
   - macros:
-      j2_block_start_string: "[[[%"
-      j2_block_end_string: "%]]]"
-      j2_variable_start_string: "[[["
-      j2_variable_end_string: "]]]"
+      j2_block_start_string: "-{{%"
+      j2_block_end_string: "%}}-"
+      j2_variable_start_string: "-{{"
+      j2_variable_end_string: "}}-"
       # include_yaml:
       #   - macros/vars.yml
       include_dir: macros
+      module_name: macros/main
   - blog:
       blog_dir: blog
       post_url_date_format: yyyy
@@ -297,7 +306,8 @@ markdown_extensions:
       user: srl-labs
       repo: learn-srlinux
   - pymdownx.mark
-  - pymdownx.smartsymbols
+  - pymdownx.smartsymbols:
+      fractions: false
   - pymdownx.snippets:
       check_paths: true
       url_download: true
