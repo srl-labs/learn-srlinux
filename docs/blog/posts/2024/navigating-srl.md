@@ -773,7 +773,7 @@ PING 172.16.20.1 (172.16.20.1) 56(84) bytes of data.
 rtt min/avg/max/mdev = 0.996/1.153/1.475/0.191 ms
 ```
 
-## Closing thoughts and random coolnes with SR Linux
+## Closing thoughts and random coolness with SR Linux
 
 Learning new technology can be hard. It's in our nature to avoid change when old is comfortable. Unfortunately, the one constant with technology is that it evolves. Designs change. What might be considered efficient and ideal in the past may no longer be so today. SR Linux is no different. It's foreign until it's not. There's a reason it's different - it was built to cater to the changing demands of how network infrastructure is built and operated, ensuring that automation is no longer a second-class citizen. This also implies that if you take the time to learn it, the rewards make you far richer.
 
