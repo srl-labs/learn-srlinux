@@ -2,8 +2,6 @@
 Mkdocs-macros module
 """
 
-from jinja2 import BaseLoader, Environment
-
 
 def define_env(env):
     """
@@ -22,20 +20,17 @@ def define_env(env):
         if not url.startswith("http"):
             url = "https://raw.githubusercontent.com/" + url
 
-        diagram_tmpl = """
+        diagram_tmpl = f"""
 <figure>
     <div class='mxgraph'
             style='max-width:100%;border:1px solid transparent;margin:0 auto; display:block; box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1); border-radius: 0.25rem;'
-            data-mxgraph='{"page":{{ page }},"zoom":{{ zoom }},"highlight":"#0000ff","nav":true,"resize":true,"edit":"_blank","url":"{{ url }}"}'>
+            data-mxgraph='{{"page":{page},"zoom":{zoom},"highlight":"#0000ff","nav":true,"resize":true,"edit":"_blank","url":"{url}"}}'>
     </div>
-    {% if title %}
-    <figcaption>{{ title }}</figcaption>
-    {% endif %}
+    {f"<figcaption>{title}</figcaption>" if title else ""}
 </figure>
 """
 
-        template = Environment(loader=BaseLoader()).from_string(diagram_tmpl)
-        return template.render(url=url, page=page, title=title, zoom=zoom)
+        return diagram_tmpl
 
     @env.macro
     def video(url):
@@ -43,11 +38,10 @@ def define_env(env):
         HTML5 video macro
         """
 
-        video_tmpl = """
+        video_tmpl = f"""
 <video style="overflow: hidden; box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1); border-radius: 0.25rem;" width="100%" controls playsinline>
-    <source src="{{ url }}" type="video/mp4">
+    <source src="{url}" type="video/mp4">
 </video>
 """
 
-        template = Environment(loader=BaseLoader()).from_string(video_tmpl)
-        return template.render(url=url)
+        return video_tmpl
