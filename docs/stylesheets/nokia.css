@@ -402,4 +402,61 @@ div.highlight:hover .md-code__nav {
   background-color: #9e9e9e;
 }
 
-/* END subtle-question admonition styles */
+/* END thin scrollbar styles */
+
+/* START subtle-question admonition styles */
+/* First unset all rules that break Chrome styling */
+.md-typeset pre>code,
+.md-search__scrollwrap,
+.md-sidebar__scrollwrap {
+  scrollbar-color: unset;
+  scrollbar-width: unset;
+}
+
+.md-typeset pre>code:hover,
+.md-search__scrollwrap:hover,
+.md-sidebar__scrollwrap:focus-within,
+.md-sidebar__scrollwrap:hover {
+  scrollbar-color: unset;
+}
+
+.md-tooltip2__inner {
+  scrollbar-width: unset;
+}
+
+/* Wrap new scrollbar properties in @supports rule for browsers without `::-webkit-scrollbar-*` support */
+/* This way chrome won't override `::-webkit-scrollbar-*` selectors */
+/* https://developer.chrome.com/docs/css-ui/scrollbar-styling */
+@supports not selector(::-webkit-scrollbar) {
+
+  .md-typeset pre>code,
+  .md-search__scrollwrap,
+  .md-sidebar__scrollwrap {
+    scrollbar-color: var(--md-default-fg-color--lighter) #0000;
+    scrollbar-width: thin;
+  }
+
+  .md-typeset pre>code:hover,
+  .md-search__scrollwrap:hover,
+  .md-sidebar__scrollwrap:focus-within,
+  .md-sidebar__scrollwrap:hover {
+    scrollbar-color: var(--md-accent-fg-color) #0000;
+  }
+
+  .md-tooltip2__inner {
+    scrollbar-width: thin;
+  }
+}
+
+/* Restore hover color for Chrome */
+@supports selector(::-webkit-scrollbar) {
+
+  .md-typeset pre>code:hover::-webkit-scrollbar-thumb,
+  .md-search__scrollwrap:hover::-webkit-scrollbar-thumb,
+  .md-sidebar__scrollwrap:focus-within::-webkit-scrollbar-thumb,
+  .md-sidebar__scrollwrap:hover::-webkit-scrollbar-thumb {
+    background-color: var(--md-accent-fg-color);
+  }
+}
+
+/* END thin scrollbar styles */
