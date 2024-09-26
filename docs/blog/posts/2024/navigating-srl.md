@@ -13,7 +13,7 @@ links:
 
 # Navigating SR Linux
 
-SR Linux (aka SRL), released back in 2021, is a new operating system from Nokia, designed to power data center fabrics, with network automation no longer being treated as a second-class citizen. SR Linux is built from the ground up using YANG, which is a modeling language describing how data is structured. As an operator, this is enables you to view the entire structure as a schema tree (which we will see shortly).
+SR Linux (aka SRL), released back in 2021, is a new operating system from Nokia, designed to power data center fabrics, with network automation no longer being treated as a second-class citizen. SR Linux is built from the ground up using YANG, which is a modeling language describing how data is structured. As an operator, this enables you to view the entire structure as a schema tree (which we will see shortly).
 
 Like any new operating system, there is a learning curve. In the past, I have had to learn several new operating systems (having originally started with Cisco IOS), including Cisco IOS-XE/NXOS, Arista EOS, Cumulus NCLU/NVUE, Juniper Junos and now, Nokia SR Linux. In general, I have always followed the same methodology in learning - learn by building something relatable. Since SR Linux focuses on data center fabrics, we're going to build something a little relatable to that. Let's dive in.
 
@@ -70,7 +70,7 @@ By the end of this, you should be able to:
 
 ## CLI modes in SR Linux and first look
 
-SR Linux has three major CLI modes available for navigation (and a fourth which is more of a tool, ironically, called *tool*). These modes are:
+SR Linux has three major CLI modes available for navigation (and a fourth which is more of a tool, ironically, called *tools*). These modes are:
 
 1. **Running** - this is similar to the enable mode (in Cisco/Arista world) or the operational mode (Juniper Junos). In this mode, you can view the running/active configuration, but you cannot add/remove/modify any configuration.  
 2. **Candidate** - this is the configuration mode where you can modify configuration. From the running mode, you can go into the candidate mode using the command *enter candidate*. This puts you in a shared configuration mode which other users can enter and modify the configuration as well. Alternatively, a user can enter the *exclusive* candidate mode using *enter candidate exclusive*, which locks out all other users from making changes or the *private* candidate mode using *enter candidate private*, which allows multiple users to enter the candidate mode but only commits your changes.
