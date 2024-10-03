@@ -12,10 +12,20 @@ At the same time, the new concepts and paradigms implemented in SR Linux might f
 
 The journey starts with deploying a small lab environment that we will use to get familiar with various SR Linux concepts and learn the core configuration and operational tasks. If your muscle memory forced you to open a tab to search where to download the SR Linux image, you can close it right now. The lightweight SR Linux container image is free and available to everyone.
 
-/// admonition | SR Linux version
+/// admonition | SR Linux release numbering convention and the version used in this guide
     type: warning
-This getting started tutorial is based on **SR Linux 24.7.2** version and will adapt to newer releases over time. If you are using a different version, you may see slight differences in the command outputs.
+SR Linux uses the following release numbering convention:
 
+* The major release number uses the last two digits of the year in which it is released.
+    For example, the 2024 releases use the major release number 24.x.
+* The minor release number uses the month number in which the feature release was initially made available.  
+    For example, a feature release made available in March 2024 has the release number 24.3, where 3 indicates the third month. The minor release number remains fixed even if the minor release is delayed past the end of the intended month.
+* In addition, the final number appended at the end of the release number indicates the maintenance release.  
+    For example, the first iteration of a release will be appended with x.x.1 as in 24.3.1. The second iteration of a release will be appended with x.x.2 as in 24.3.2, and so on.
+
+The last minor release of the year (e.g 24.10) - is considered the long term release and will get security and bug fixes longer than the other minor releases in the same major release.
+
+This getting started tutorial is based on **SR Linux 24.7.2** version and will adapt to newer releases over time. If you are using a different version, you may see slight differences in the command outputs.  
 Let us know in the comments, or in our [Discord](https://discord.gg/tZvgjQ6PZf), if you would notice any discrepancies.
 ///
 

@@ -16,23 +16,6 @@ Containerlab is an open source project that provides a CLI for orchestrating and
 
 The extremely low footprint of Containerlab and YAML-based topology definition made it a perfect fit for the SR Linux-based labs.
 
-/// admonition | SR Linux versioning scheme
-    type: subtle-note
-SR Linux's release cycle consists of the three major releases per year that are released in March, July, and November. Consequently, the versioning scheme is also based on the release date and follows the following pattern:
-
-**XX.YY.Z**, where:
-
-- XX - Year of the release
-- YY - Month of the release
-- Z - Release number
-
-XX.YY together form the major release version.
-
-Take a look at a particular SR Linux release number - **24.7.2** - this is the second minor release in the 24.7 major series. The year of the release is 2024 and the first major release (24.7.1) happened in July 2024.
-
-The last major release of the year - XX.10 - is considered the long term release and will get security and bug fixes longer than the other releases.
-///
-
 ## Lab prerequisites
 
 You are minutes away from deploying your first SR Linux lab using containerlab. But first, you need to [install containerlab](https://containerlab.dev/install/) and Docker on any Linux system, which can be as easy as running a single installation command[^2]:
