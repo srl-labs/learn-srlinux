@@ -80,6 +80,7 @@ nav:
           - Releases:
               - ndk/releases/index.md
               - 0.2: ndk/releases/0.2.md
+              - 0.3: ndk/releases/0.3.md
       - Ansible:
           - ansible/index.md
           - nokia.srlinux collection:
