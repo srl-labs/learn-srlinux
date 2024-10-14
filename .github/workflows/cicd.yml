@@ -92,8 +92,10 @@ jobs:
           docker run --env CI=true --env MKDOCS_GIT_COMMITTERS_APIKEY=${{ secrets.GITHUB_TOKEN }} -v $(pwd):/docs --user $(id -u):$(id -g) --entrypoint mkdocs ghcr.io/srl-labs/mkdocs-material-insiders:$MKDOCS_MATERIAL_VER build
 
       - name: Publish to Cloudflare Pages
-        uses: cloudflare/wrangler-action@v3.8.0
+        uses: cloudflare/wrangler-action@v3
         id: wrangler-deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: 62e7f50db0ad5b34dbf1fb9b0ed2ef81
