@@ -18,7 +18,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Login to GitHub Container Registry
-        uses: docker/login-action@v1
+        uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -81,7 +81,7 @@ jobs:
           fetch-depth: 0 # needed for commit authors plugin
 
       - name: Login to GitHub Container Registry
-        uses: docker/login-action@v1
+        uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -92,7 +92,7 @@ jobs:
           docker run --env CI=true --env MKDOCS_GIT_COMMITTERS_APIKEY=${{ secrets.GITHUB_TOKEN }} -v $(pwd):/docs --user $(id -u):$(id -g) --entrypoint mkdocs ghcr.io/srl-labs/mkdocs-material-insiders:$MKDOCS_MATERIAL_VER build
 
       - name: Publish to Cloudflare Pages
-        uses: cloudflare/wrangler-action@v3
+        uses: cloudflare/wrangler-action@v3.8.0
         id: wrangler-deploy
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
