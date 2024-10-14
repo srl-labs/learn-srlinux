@@ -104,7 +104,7 @@ The end goal of this post is to ensure that server s1 can communicate with both 
 
 ## Reviewing the asymmetric routing model
 
-When routing between VNIs, in a VXLAN fabric, there are two major routing models that can be used - asymmetric and symmetric. Asymmetric routing, which is the focus of this post, uses a *`bridge-route-bridge`* model, implying that the ingress leaf bridges the packet into the Layer 2 domain, routes it from one VLAN/VNI to another and then bridges the packet across the VXLAN fabric to the destination.
+When routing between VNIs, in a VXLAN fabric, there are two major routing models that can be used - asymmetric and symmetric. Asymmetric routing, which is the focus of this post, uses a `bridge-route-bridge` model, implying that the ingress leaf bridges the packet into the Layer 2 domain, routes it from one VLAN/VNI to another and then bridges the packet across the VXLAN fabric to the destination.
 
 Such a design naturally implies that both the source and the destination IRBs (and the corresponding Layer 2 domains and bridge tables) must exist on all leafs hosting servers that need to communicate with each other. While this increases the operational state on the leafs themselves (ARP state and MAC address state is stored everywhere), it does offer configuration and operational simplicity.
 
@@ -120,7 +120,7 @@ The underlay of the fabric includes the physically connected point-to-point inte
 
 /// tab | leaf1
 
-```srl
+```{.srl .code-scroll-lg}
 --{ + running }--[  ]--
 A:leaf1# info interface ethernet-1/{1,2}
     interface ethernet-1/1 {
@@ -153,7 +153,7 @@ A:leaf1# info interface ethernet-1/{1,2}
 
 /// tab | leaf2
 
-```srl
+```{.srl .code-scroll-lg}
 --{ + running }--[  ]--
 A:leaf2# info interface ethernet-1/{1,2}
     interface ethernet-1/1 {
@@ -186,7 +186,7 @@ A:leaf2# info interface ethernet-1/{1,2}
 
 /// tab | leaf3
 
-```srl
+```{.srl .code-scroll-lg}
 --{ + running }--[  ]--
 A:leaf3# info interface ethernet-1/{1,2}
     interface ethernet-1/1 {
@@ -219,7 +219,7 @@ A:leaf3# info interface ethernet-1/{1,2}
 
 /// tab | leaf4
 
-```srl
+```{.srl .code-scroll-lg}
 --{ + running }--[  ]--
 A:leaf4# info interface ethernet-1/{1,2}
     interface ethernet-1/1 {
@@ -252,7 +252,7 @@ A:leaf4# info interface ethernet-1/{1,2}
 
 /// tab | spine1
 
-```srl
+```{.srl .code-scroll-lg}
 A:spine1# info interface ethernet-1/{1..4}
     interface ethernet-1/1 {
         admin-state enable
@@ -308,7 +308,7 @@ A:spine1# info interface ethernet-1/{1..4}
 
 /// tab | spine2
 
-```srl
+```{.srl .code-scroll-lg}
 A:spine2# info interface ethernet-1/{1..4}
     interface ethernet-1/1 {
         admin-state enable
@@ -382,7 +382,7 @@ The BGP configuration from all nodes is shown below:
 
 /// tab | leaf1
 
-```srl
+```{.srl .code-scroll-lg}
 --{ + running }--[  ]--
 A:leaf1# info network-instance default protocols bgp
     network-instance default {
@@ -424,14 +424,13 @@ A:leaf1# info network-instance default protocols bgp
             }
         }
     }
---{ + running }--[  ]--
 ```
 
 ///
 
 /// tab | leaf2
 
-```srl
+```{.srl .code-scroll-lg}
 --{ + running }--[  ]--
 A:leaf2# info network-instance default protocols bgp
     network-instance default {
@@ -473,14 +472,13 @@ A:leaf2# info network-instance default protocols bgp
             }
         }
     }
---{ + running }--[  ]--
 ```
 
 ///
 
 /// tab | leaf3
 
-```srl
+```{.srl .code-scroll-lg}
 --{ + running }--[  ]--
 A:leaf3# info network-instance default protocols bgp
     network-instance default {
@@ -522,14 +520,13 @@ A:leaf3# info network-instance default protocols bgp
             }
         }
     }
---{ + running }--[  ]--
 ```
 
 ///
 
 /// tab | leaf4
 
-```srl
+```{.srl .code-scroll-lg}
 --{ + running }--[  ]--
 A:leaf4# info network-instance default protocols bgp
     network-instance default {
@@ -571,14 +568,13 @@ A:leaf4# info network-instance default protocols bgp
             }
         }
     }
---{ + running }--[  ]--
 ```
 
 ///
 
 /// tab | spine1
 
-```srl
+```{.srl .code-scroll-lg}
 --{ running }--[  ]--
 A:spine1# info network-instance default protocols bgp
     network-instance default {
@@ -629,14 +625,13 @@ A:spine1# info network-instance default protocols bgp
             }
         }
     }
---{ + running }--[  ]--
 ```
 
 ///
 
 /// tab | spine2
 
-```srl
+```{.srl .code-scroll-lg}
 --{ + running }--[  ]--
 A:spine2# info network-instance default protocols bgp
     network-instance default {
@@ -687,7 +682,6 @@ A:spine2# info network-instance default protocols bgp
             }
         }
     }
---{ + running }--[  ]--
 ```
 
 ///
@@ -709,7 +703,7 @@ The configuration of the routing policies used for export and import of BGP rout
 
 /// tab | leaf1
 
-```srl
+```{.srl .code-scroll-lg}
 --{ + running }--[  ]--
 A:leaf1# info routing-policy policy spine-*
     routing-policy {
@@ -771,7 +765,7 @@ A:leaf1# info routing-policy policy spine-*
 
 /// tab | spine1
 
-```srl
+```{.srl .code-scroll-lg}
 --{ running }--[  ]--
 A:spine1# info routing-policy policy leaf-*
     routing-policy {
@@ -858,7 +852,7 @@ With BGP configured, we can start to deploy the connectivity to the servers and 
 
 /// tab | leaf1
 
-```srl
+```{.srl .code-scroll-lg}
 --{ + running }--[  ]--
 A:leaf1# info interface ethernet-1/3
     interface ethernet-1/3 {
@@ -877,7 +871,7 @@ A:leaf1# info interface ethernet-1/3
 
 /// tab | leaf2
 
-```srl
+```{.srl .code-scroll-lg}
 --{ + running }--[  ]--
 A:leaf2# info interface ethernet-1/3
     interface ethernet-1/3 {
@@ -889,7 +883,7 @@ A:leaf2# info interface ethernet-1/3
 --{ + running }--[  ]--
 ```
 
-```srl
+```{.srl .code-scroll-lg}
 --{ + running }--[  ]--
 A:leaf2# info interface lag1
     interface lag1 {
@@ -910,7 +904,7 @@ A:leaf2# info interface lag1
 --{ + running }--[  ]--
 ```
 
-```srl
+```{.srl .code-scroll-lg}
 --{ + running }--[  ]--
 A:leaf2# info system network-instance protocols evpn
     system {
@@ -939,7 +933,7 @@ A:leaf2# info system network-instance protocols evpn
 
 /// tab | leaf3
 
-```srl
+```{.srl .code-scroll-lg}
 --{ + running }--[  ]--
 A:leaf3# info interface ethernet-1/3
     interface ethernet-1/3 {
@@ -951,7 +945,7 @@ A:leaf3# info interface ethernet-1/3
 --{ + running }--[  ]--
 ```
 
-```srl
+```{.srl .code-scroll-lg}
 A:leaf3# info interface lag1
     interface lag1 {
         admin-state enable
@@ -971,7 +965,7 @@ A:leaf3# info interface lag1
 --{ + running }--[  ]--
 ```
 
-```srl
+```{.srl .code-scroll-lg}
 --{ + running }--[  ]--
 A:leaf3# info system network-instance protocols evpn
     system {
@@ -1000,7 +994,7 @@ A:leaf3# info system network-instance protocols evpn
 
 /// tab | leaf4
 
-```srl
+```{.srl .code-scroll-lg}
 --{ + running }--[  ]--
 A:leaf4# info interface ethernet-1/3
     interface ethernet-1/3 {
@@ -1021,7 +1015,7 @@ On each leaf, VXLAN tunnel-interfaces are created next. In this case, two logica
 
 /// tab | leaf1
 
-```srl
+```{.srl .code-scroll-lg}
 A:leaf1# info tunnel-interface *
     tunnel-interface vxlan1 {
         vxlan-interface 1 {
@@ -1043,7 +1037,7 @@ A:leaf1# info tunnel-interface *
 
 /// tab | leaf2
 
-```srl
+```{.srl .code-scroll-lg}
 --{ + running }--[  ]--
 A:leaf2# info tunnel-interface *
     tunnel-interface vxlan1 {
@@ -1060,7 +1054,7 @@ A:leaf2# info tunnel-interface *
 
 /// tab | leaf3
 
-```srl
+```{.srl .code-scroll-lg}
 --{ + running }--[  ]--
 A:leaf3# info tunnel-interface *
     tunnel-interface vxlan1 {
@@ -1077,7 +1071,7 @@ A:leaf3# info tunnel-interface *
 
 /// tab | leaf4
 
-```srl
+```{.srl .code-scroll-lg}
 --{ + running }--[  ]--
 A:leaf4# info tunnel-interface *
     tunnel-interface vxlan1 {
@@ -1104,7 +1098,7 @@ IRBs are deployed using an anycast, distributed gateway model, implying that all
 
 /// tab | leaf1
 
-```srl
+```{.srl .code-scroll-lg}
 --{ + running }--[  ]--
 A:leaf1# info interface irb0
     interface irb0 {
@@ -1167,7 +1161,7 @@ A:leaf1# info interface irb0
 
 /// tab | leaf2
 
-```srl
+```{.srl .code-scroll-lg}
 --{ + running }--[  ]--
 A:leaf2# info interface irb0
     interface irb0 {
@@ -1199,14 +1193,13 @@ A:leaf2# info interface irb0
             }
         }
     }
---{ + running }--[  ]--
 ```
 
 ///
 
 /// tab | leaf3
 
-```srl
+```{.srl .code-scroll-lg}
 --{ + running }--[  ]--
 A:leaf2# info interface irb0
     interface irb0 {
@@ -1238,14 +1231,13 @@ A:leaf2# info interface irb0
             }
         }
     }
---{ + running }--[  ]--
 ```
 
 ///
 
 /// tab | leaf4
 
-```srl
+```{.srl .code-scroll-lg}
 --{ + running }--[  ]--
 A:leaf2# info interface irb0
     interface irb0 {
@@ -1341,7 +1333,7 @@ Finally, MAC VRFs are created on the leafs to create a broadcast domain and corr
 
 /// tab | leaf1
 
-```srl
+```{.srl .code-scroll-lg}
 --{ + running }--[  ]--
 A:leaf1# info network-instance macvrf*
     network-instance macvrf1 {
@@ -1410,7 +1402,7 @@ A:leaf1# info network-instance macvrf*
 
 /// tab | leaf2
 
-```srl
+```{.srl .code-scroll-lg}
 --{ + running }--[  ]--
 A:leaf2# info network-instance macvrf1
     network-instance macvrf1 {
@@ -1450,7 +1442,7 @@ A:leaf2# info network-instance macvrf1
 
 /// tab | leaf3
 
-```srl
+```{.srl .code-scroll-lg}
 --{ + running }--[  ]--
 A:leaf3# info network-instance macvrf1
     network-instance macvrf1 {
@@ -1490,7 +1482,7 @@ A:leaf3# info network-instance macvrf1
 
 /// tab | leaf4
 
-```srl
+```{.srl .code-scroll-lg}
 --{ + running }--[  ]--
 A:leaf4# info network-instance macvrf*
     network-instance macvrf1 {
@@ -1565,7 +1557,7 @@ When the hosts come online, they typically send a GARP to ensure there is no dup
 
 On leaf1, we can confirm that it has learnt the IP-to-MAC binding for server s1 (locally attached) and s3 (attached to remote leaf, leaf4).
 
-```srl
+```{.srl .code-scroll-lg}
 A:leaf1# show arpnd arp-entries interface irb0
 +-------------------+-------------------+-----------------+-------------------+-------------------------------------+------------------------------------------------------------------------+
 |     Interface     |   Subinterface    |    Neighbor     |      Origin       |         Link layer address          |                                 Expiry                                 |
@@ -1581,7 +1573,7 @@ A:leaf1# show arpnd arp-entries interface irb0
 
 The ARP entry for host s3 (172.16.20.3) is learnt via the EVPN Type-2 MAC+IP route received from leaf4, as shown below.
 
-```srl
+```{.srl .code-scroll-lg}
 --{ + running }--[  ]--
 A:leaf1# show network-instance default protocols bgp routes evpn route-type 2 ip-address 172.16.20.3 detail
 ---------------------------------------------------------------------------------------------------------------------------
@@ -1643,7 +1635,7 @@ Received paths     : 1
 
 This is an important step for asymmetric routing. Consider a situation where server s1 wants to communicate with s3. When the IP packet hits leaf1, it will attempt to resolve the destination IP address via an ARP request, as it is directly attached locally (via the `irb.20` interface), as shown below.
 
-```srl
+```{.srl .code-scroll-lg}
 --{ + running }--[  ]--
 A:leaf1# show network-instance default route-table ipv4-unicast prefix 172.16.20.0/24
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -1657,9 +1649,6 @@ IPv4 unicast route table of network instance default
 | 172.16.20.0/24            | 10    | local      | net_inst_mgr         | True     | default  | 0       | 0          | 172.16.20.254   | irb0.20         |                 |                      |
 |                           |       |            |                      |          |          |         |            | (direct)        |                 |                 |                      |
 +---------------------------+-------+------------+----------------------+----------+----------+---------+------------+-----------------+-----------------+-----------------+----------------------+
----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---{ + running }--[  ]--
 ```
 
 Since this IRB interface exists on leaf4 as well, the ARP reply will be consumed by it, never reaching leaf1, and thus, creating a failure in the ARP process. To circumvent this problem associated with an anycast, distributed IRB model, the EVPN Type-2 MAC+IP routes are used to populate the ARP cache. In addition to this, optionally, this EVPN-learnt ARP entry can also be used to inject a host route (/32 for IPv4 and /128 for IPv6) into the routing table using the `arp host-route populate evpn` configuration option (as discussed earlier). Since this is enabled in our case, we can confirm that the route 172.16.20.3/32 exists in the routing table, inserted by the arp_nd_mgr process:
@@ -1678,9 +1667,6 @@ IPv4 unicast route table of network instance default
 | 172.16.20.3/32            | 10    | arp-nd     | arp_nd_mgr           | True     | default  | 0       | 1          | 172.16.20.3     | irb0.20         |                 |                      |
 |                           |       |            |                      |          |          |         |            | (direct)        |                 |                 |                      |
 +---------------------------+-------+------------+----------------------+----------+----------+---------+------------+-----------------+-----------------+-----------------+----------------------+
----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---{ + running }--[  ]--
 ```
 
 /// note
@@ -1696,7 +1682,7 @@ Since s1 is in the same subnet as s2, when communicating with s2, s1 will try to
 
 Once this ARP process completes, host s1 generates an ICMP request (since we are testing communication between hosts using the `ping` tool). When this IP packet arrives on leaf1, it does a routing lookup (since the destination MAC address is owned by itself) and this routing lookup will either hit the 172.16.10.0/24 prefix or the more-specific 172.16.10.2/32 prefix (installed from the ARP entry via the EVPN Type-2 MAC+IP route), as shown below. Since this is a directly attached route, it is further resolved into a MAC address via the ARP table and then the packet is bridged towards the destination. This MAC address points to an Ethernet Segment, which in turn resolves into VTEPs 192.0.2.12 and 192.0.2.13.
 
-```srl
+```{.srl .code-scroll-lg}
 A:leaf1# show network-instance default route-table ipv4-unicast route 172.16.10.2
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 IPv4 unicast route table of network instance default
@@ -1713,7 +1699,7 @@ IPv4 unicast route table of network instance default
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ```
 
-```srl
+```{.srl .code-scroll-lg}
 --{ + candidate shared default }--[  ]--
 A:leaf1# show arpnd arp-entries interface irb0 ipv4-address 172.16.10.2
 +------------------+------------------+-----------------+------------------+-----------------------------------+--------------------------------------------------------------------+
@@ -1726,7 +1712,7 @@ A:leaf1# show arpnd arp-entries interface irb0 ipv4-address 172.16.10.2
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ```
 
-```srl
+```{.srl .code-scroll-lg}
 --{ + candidate shared default }--[  ]--
 A:leaf1# show network-instance macvrf1 bridge-table mac-table mac AA:C1:AB:11:BE:88
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -1744,7 +1730,7 @@ Hold down time remaining: N/A
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ```
 
-```srl
+```{.srl .code-scroll-lg}
 --{ + candidate shared default }--[  ]--
 A:leaf1# show tunnel-interface vxlan1 vxlan-interface 1 bridge-table unicast-destinations destination | grep -A 7 "Ethernet Segment Destinations"
 Ethernet Segment Destinations
@@ -1763,7 +1749,7 @@ A packet capture of the in-flight packet (as leaf1 sends it to spine1) is shown 
 
 The communication between host s1 and s3 follows a similar pattern - the packet is received in macvrf1, mapped VNI 10010, and since the destination MAC address is the anycast MAC address owned by leaf1, it is then routed locally into VNI 10020 (since `irb0.20` is locally attached) and then bridged across to the destination, as confirmed below:
 
-```srl
+```{.srl .code-scroll-lg}
 --{ + running }--[  ]--
 A:leaf1# show network-instance default route-table ipv4-unicast route 172.16.20.3
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -1781,7 +1767,7 @@ IPv4 unicast route table of network instance default
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ```
 
-```srl
+```{.srl .code-scroll-lg}
 --{ + running }--[  ]--
 A:leaf1# show network-instance * bridge-table mac-table mac AA:C1:AB:9F:EF:E2
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
