@@ -9,7 +9,7 @@ authors:
 
 # Asymmetric routing with SR Linux in EVPN VXLAN fabrics
 
-This post dives deeper into the asymmetric routing model on SR Linux.  
+This post dives deeper into the asymmetric routing model[^1] for EVPN VXLAN fabrics on SR Linux.  
 The topology in use is a 3-stage Clos fabric with BGP EVPN and VXLAN, with
 
 * server `s1` single-homed to `leaf1`
@@ -20,11 +20,11 @@ Servers s1 and s2 are in the same subnet, 172.16.10.0/24 while s3 is in a differ
 
 The physical topology is shown below:
 
-![](https://gitlab.com/aninchat1/images/-/wikis/uploads/1d3750d935d534973fc913e3a3a68c49/srlinux-asymmetric-1.png){.img-shadow}
+![](https://gitlab.com/aninchat1/images/-/wikis/uploads/1d3750d935d534973fc913e3a3a68c49/srlinux-asymmetric-1.png)
 
 <!-- more -->
 
-The Containerlab topology file used for this is shown below:
+The [Containerlab](https://containerlab.dev) topology file used for this is shown below:
 
 ```{.yaml .code-scroll-lg}
 name: srlinux-asymmetric-routing
@@ -83,8 +83,11 @@ topology:
     - endpoints: ["leaf4:e1-3", "s3:eth1"]
 ```
 
-/// admonition | Credentials
+/// admonition | Notes
     type: subtle-note
+<h4>SR Linux version</h4>
+Configuration snippets and outputs in this post are based on SR Linux 24.7.1.
+<h4>Credentials</h4>
 As usual, Nokia SR Linux nodes can be accessed with `admin:NokiaSrl1!` credentials and the host nodes use `user:multit00l`.
 ///
 
@@ -107,12 +110,13 @@ The end goal of this post is to ensure that server s1 can communicate with both 
 When routing between VNIs, in a VXLAN fabric, there are two major routing models that can be used - asymmetric and symmetric. Asymmetric routing, which is the focus of this post, uses a `bridge-route-bridge` model, implying that the ingress leaf bridges the packet into the Layer 2 domain, routes it from one VLAN/VNI to another and then bridges the packet across the VXLAN fabric to the destination. The *asymmetry* is in the the number of lookups needed on the ingress and the egress leafs - on the ingress leaf, a MAC lookup, an IP lookup and then another MAC lookup is performed while on the egress leaf, only a MAC lookup is performed.
 
 /// note
-Asymmetric and symmetric routing models are defined in RFC 9135.
+Asymmetric and symmetric routing models are defined in [RFC 9135](https://datatracker.ietf.org/doc/html/rfc9135).
 ///
 
-Such a design naturally implies that both the source and the destination IRBs (and the corresponding Layer 2 domains and bridge tables) must exist on all leafs hosting servers that need to communicate with each other. While this increases the operational state on the leafs themselves (ARP state and MAC address state is stored everywhere), it does offer operational simplicity. This is because unlike symmetric routing, there is no concept of a `L3VNI` here, which keeps the routing complexity to a minimum, and analogous to traditional inter-VLAN routing, only with a VXLAN-encapsulation, in this case. No additional VLANs/VNIs need to be configured (for L3VNIs, which are typically mapped per IP VRF), making this a simpler solution to implement and operate. The obvious drawbacks of this approach, however, is that VLANs/VNIs cannot be scoped to specific leafs only - they must exist across all leafs that want to participate in inter-VNI routing.
+Such a design naturally implies that both the source and the destination IRBs (and the corresponding Layer 2 domains and bridge tables) must exist on all leafs hosting servers that need to communicate with each other. While this increases the operational state on the leafs themselves (ARP state and MAC address state is stored everywhere), it does offer operational simplicity.  
+This is because unlike symmetric routing, there is no concept of a `L3VNI` here, which keeps the routing complexity to a minimum, and analogous to traditional inter-VLAN routing, only with a VXLAN-encapsulation, in this case. No additional VLANs/VNIs need to be configured (for L3VNIs, which are typically mapped per IP VRF), making this a simpler solution to implement and operate. The obvious drawbacks of this approach, however, is that VLANs/VNIs cannot be scoped to specific leafs only - they must exist across all leafs that want to participate in inter-VNI routing, which contributes to the scalability considerations.
 
-![](https://gitlab.com/aninchat1/images/-/wikis/uploads/f93957318e62633db1c8603dbef57b69/srlinux-asymmetric-2.png){.img-shad}
+![](https://gitlab.com/aninchat1/images/-/wikis/uploads/f93957318e62633db1c8603dbef57b69/srlinux-asymmetric-2.png)
 
 ## Configuration walkthrough
 
@@ -699,7 +703,7 @@ The BGP configuration defines a peer-group called `spine` on the leafs and `leaf
 
 The following packet capture also confirms the MP-BGP capabilities exchanged with the BGP OPEN messages, where both IPv4 unicast and L2VPN EVPN capabilities are advertised:
 
-![](https://gitlab.com/aninchat1/images/-/wikis/uploads/a55a3e47da51d29386b372c2a1a790ee/srlinux-asymmetric-3.png){.img-shadow}
+![](https://gitlab.com/aninchat1/images/-/wikis/uploads/a55a3e47da51d29386b372c2a1a790ee/srlinux-asymmetric-3.png)
 
 ### Routing policies for the underlay and overlay
 
@@ -841,7 +845,7 @@ A:spine1# info routing-policy policy leaf-*
 
 ///
 
-/// admonition | CLI Ranges
+/// admonition | CLI Wildcards
     type: tip
 Similar to how ranges can be used to pull configuration state from multiple interfaces as an example, in this case a wildcard `*` is used to select multiple routing-policies. The wildcard `spine-*` matches both policies named `spine-import` and `spine-export`.
 ///
@@ -1647,13 +1651,13 @@ IPv4 unicast route table of network instance default
 +---------------------------+-------+------------+----------------------+----------+----------+---------+------------+-----------------+-----------------+-----------------+----------------------+
 ```
 
-Since this IRB interface exists on leaf4 as well, the ARP reply will be consumed by it, never reaching leaf1, and thus, creating a failure in the ARP process. To circumvent this problem associated with an anycast, distributed IRB model, the EVPN Type-2 MAC+IP routes are used to populate the ARP cache. 
+Since this IRB interface exists on leaf4 as well, the ARP reply will be consumed by it, never reaching leaf1, and thus, creating a failure in the ARP process. To circumvent this problem associated with an anycast, distributed IRB model, the EVPN Type-2 MAC+IP routes are used to populate the ARP cache.
 
 Let's consider two flows to understand the data plane forwarding in such a design - server s1 communicating with s2 (same subnet) and s1 communicating with s3 (different subnet).
 
 Since s1 is in the same subnet as s2, when communicating with s2, s1 will try to resolve its IP address directly via an ARP request. This is received on leaf1 and leaked to the CPU via `irb0.10`. Since L2 proxy-arp is not enabled, the `arp_nd_mgr` process picks up the ARP request and responds back using its own anycast gateway MAC address while suppressing the ARP request from being flooded in the fabric. A packet capture of this ARP reply is shown below.
 
-![](https://gitlab.com/aninchat1/images/-/wikis/uploads/bc7ebec1d9e45487dead1d77849f09c2/srlinux-asymmetric-4.png){.img-shadow}
+![](https://gitlab.com/aninchat1/images/-/wikis/uploads/bc7ebec1d9e45487dead1d77849f09c2/srlinux-asymmetric-4.png)
 
 Once this ARP process completes, host s1 generates an ICMP request (since we are testing communication between hosts using the `ping` tool). When this IP packet arrives on leaf1, it does a routing lookup (since the destination MAC address is owned by itself) and this routing lookup hits the 172.16.10.0/24 entry, as shown below. Since this is a directly attached route, it is further resolved into a MAC address via the ARP table and then the packet is bridged towards the destination. This MAC address points to an Ethernet Segment, which in turn resolves into VTEPs 192.0.2.12 and 192.0.2.13.
 
@@ -1671,9 +1675,6 @@ IPv4 unicast route table of network instance default
 | 172.16.10.0/24         | 4     | local      | net_inst_mgr         | True     | default  | 0       | 0          | 172.16.10.254 | irb0.10       |               |                  |
 |                        |       |            |                      |          |          |         |            | (direct)      |               |               |                  |
 +------------------------+-------+------------+----------------------+----------+----------+---------+------------+---------------+---------------+---------------+------------------+
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---{ + running }--[  ]--
 ```
 
 ```{.srl .code-scroll-lg}
@@ -1717,12 +1718,11 @@ Ethernet Segment Destinations
 +===============================+===================+========================+=============================+
 | 00:00:11:11:11:11:11:11:23:23 | 322085950259      | 192.0.2.12, 192.0.2.13 | 1(1/0)                      |
 +-------------------------------+-------------------+------------------------+-----------------------------+
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ```
 
 A packet capture of the in-flight packet (as leaf1 sends it to spine1) is shown below, which confirms that the packet ICMP request is VXLAN-encapsulated with a VNI of 10010. It also confirms that because of the L3 proxy-arp approach to suppressing ARPs in an EVPN VXLAN fabric, the source MAC address in the inner Ethernet header is the anycast gateway MAC address.
 
-![](https://gitlab.com/aninchat1/images/-/wikis/uploads/2aba126b6ddb1c4c37d4be11d125c1c6/srlinux-asymmetric-5.png){.img-shadow}
+![](https://gitlab.com/aninchat1/images/-/wikis/uploads/2aba126b6ddb1c4c37d4be11d125c1c6/srlinux-asymmetric-5.png)
 
 The communication between host s1 and s3 follows a similar pattern - the packet is received in macvrf1, mapped VNI 10010, and since the destination MAC address is the anycast MAC address owned by leaf1, it is then routed locally into VNI 10020 (since `irb0.20` is locally attached) and then bridged across to the destination, as confirmed below:
 
@@ -1740,9 +1740,6 @@ IPv4 unicast route table of network instance default
 | 172.16.20.0/24         | 5     | local      | net_inst_mgr         | True     | default  | 0       | 0          | 172.16.20.254 | irb0.20       |               |                  |
 |                        |       |            |                      |          |          |         |            | (direct)      |               |               |                  |
 +------------------------+-------+------------+----------------------+----------+----------+---------+------------+---------------+---------------+---------------+------------------+
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
---{ + running }--[  ]--
 ```
 
 ```{.srl .code-scroll-lg}
@@ -1770,10 +1767,12 @@ Notice how the previous output used a wildcard for the network-instance name ins
 
 The following packet capture confirms that the in-flight packet has been routed on the ingress leaf itself (leaf1) and the VNI, in the VXLAN header, is 10020.
 
-![](https://gitlab.com/aninchat1/images/-/wikis/uploads/4dad44354646d9f1c32a73d88c8f7da8/srlinux-asymmetric-6.png){.img-shadow}
+![](https://gitlab.com/aninchat1/images/-/wikis/uploads/4dad44354646d9f1c32a73d88c8f7da8/srlinux-asymmetric-6.png)
 
 ## Summary
 
 Asymmetric routing uses a `bridge-route-bridge` model where the packet, from the source, is bridged into the ingress leaf's L2 domain, routed into the destination VLAN/VNI and the bridged across the VXLAN fabric to the destination.
 
 Such a model requires the existence of both source and destination IRBs and L2 bridge domains (and L2 VNIs) to exist on all leafs that want to participate in routing between the VNIs. While this is operationally simpler, it does add additional state since all leafs will have to maintain all IP-to-MAC bindings (in the ARP table) and all MAC addresses in the bridge table.
+
+[^1]: Asymmetric and Symmetric routing models are covered in [RFC 9135](https://datatracker.ietf.org/doc/html/rfc9135)
