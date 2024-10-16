@@ -104,7 +104,11 @@ The end goal of this post is to ensure that server s1 can communicate with both 
 
 ## Reviewing the asymmetric routing model
 
-When routing between VNIs, in a VXLAN fabric, there are two major routing models that can be used - asymmetric and symmetric. Asymmetric routing, which is the focus of this post, uses a `bridge-route-bridge` model, implying that the ingress leaf bridges the packet into the Layer 2 domain, routes it from one VLAN/VNI to another and then bridges the packet across the VXLAN fabric to the destination.
+When routing between VNIs, in a VXLAN fabric, there are two major routing models that can be used - asymmetric and symmetric. Asymmetric routing, which is the focus of this post, uses a `bridge-route-bridge` model, implying that the ingress leaf bridges the packet into the Layer 2 domain, routes it from one VLAN/VNI to another and then bridges the packet across the VXLAN fabric to the destination. The *asymmetry* is in the the number of lookups needed on the ingress and the egress leafs - on the ingress leaf, a MAC lookup, an IP lookup and then another MAC lookup is performed while on the egress leaf, only a MAC lookup is performed.
+
+/// note
+Asymmetric and symmetric routing models are defined in RFC 9135.
+///
 
 Such a design naturally implies that both the source and the destination IRBs (and the corresponding Layer 2 domains and bridge tables) must exist on all leafs hosting servers that need to communicate with each other. While this increases the operational state on the leafs themselves (ARP state and MAC address state is stored everywhere), it does offer configuration and operational simplicity.
 
@@ -842,7 +846,7 @@ A:spine1# info routing-policy policy leaf-*
 Similar to how ranges can be used to pull configuration state from multiple interfaces as an example, in this case a wildcard `*` is used to select multiple routing-policies. The wildcard `spine-*` matches both policies named `spine-import` and `spine-export`.
 ///
 
-### Host connectivity and ESI LAG
+### Host connectivity and LAG Ethernet Segment (ESI LAG)
 
 With BGP configured, we can start to deploy the connectivity to the servers and configure the necessary VXLAN constructs for end-to-end connectivity. The interfaces, to the servers, are configured as untagged interfaces. Since host s2 is multi-homed to leaf2 and leaf3, this segment is configured as an ESI LAG. This includes:
 
@@ -1116,8 +1120,6 @@ A:leaf1# info interface irb0
                     host-route {
                         populate dynamic {
                         }
-                        populate evpn {
-                        }
                     }
                     evpn {
                         advertise dynamic {
@@ -1140,8 +1142,6 @@ A:leaf1# info interface irb0
                     learn-unsolicited true
                     host-route {
                         populate dynamic {
-                        }
-                        populate evpn {
                         }
                     }
                     evpn {
@@ -1179,8 +1179,6 @@ A:leaf2# info interface irb0
                     host-route {
                         populate dynamic {
                         }
-                        populate evpn {
-                        }
                     }
                     evpn {
                         advertise dynamic {
@@ -1216,8 +1214,6 @@ A:leaf2# info interface irb0
                     proxy-arp true
                     host-route {
                         populate dynamic {
-                        }
-                        populate evpn {
                         }
                     }
                     evpn {
@@ -1255,8 +1251,6 @@ A:leaf2# info interface irb0
                     host-route {
                         populate dynamic {
                         }
-                        populate evpn {
-                        }
                     }
                     evpn {
                         advertise dynamic {
@@ -1279,8 +1273,6 @@ A:leaf2# info interface irb0
                     learn-unsolicited true
                     host-route {
                         populate dynamic {
-                        }
-                        populate evpn {
                         }
                     }
                     evpn {
@@ -1306,15 +1298,15 @@ There is a lot going on here, so let's breakdown some of the configuration optio
 
 `anycast-gw anycast-gw-mac [mac-address]`
 
-:   The MAC address configured with this option is the anycast gateway MAC address and is associated to the IP address for that subinterface. If this is ommitted, the anycast gateway MAC address is auto-derived from the VRRP MAC address group range.
+:   The MAC address configured with this option is the anycast gateway MAC address and is associated to the IP address for that subinterface. If this is ommitted, the anycast gateway MAC address is auto-derived from the VRRP MAC address group range, as specified in RFC 9135..
 
 `arp learn-unsolicited [true|false]`
 
 :   This enables the node to learn the IP-to-MAC binding from any ARP packet and not just ARP requests.
 
-`arp host-route populate [dynamic|static|evpn]`
+`arp host-route populate dynamic`
 
-:   This enables the node to insert a host route (/32 for IPv4 and /128 for IPv6) in the routing table from dynaimc, static or EVPN-learnt ARP entries.
+:   This enables the node to insert a host route (/32 for IPv4 and /128 for IPv6) in the routing table from dynaimc ARP entries.
 
 `arp evpn advertise [dynamic|static]`
 
@@ -1328,7 +1320,7 @@ Finally, MAC VRFs are created on the leafs to create a broadcast domain and corr
 * The corresponding IRB subinterface is bound to the MAC VRF using the `interface` configuration option.
 * The VXLAN tunnel subinterface is bound to the MAC VRF using the `vxlan-interface` configuration option.
 * BGP EVPN learning is enabled for the MAC VRF using the `protocols bgp-evpn` hierarchy and the MAC VRF is bound to an EVI (EVPN virtual instance).
-* The `ecmp` configuration option determines how many VTEPs can be considered for load-balancing by the local VTEP (more on this in the validation section).
+* The `ecmp` configuration option determines how many VTEPs can be considered for load-balancing by the local VTEP (more on this in the validation section). This is for overlay ECMP in relation to remote multihomed hosts (for multihoming aliasing).
 * Route distinguishers and route targets are configured for the MAC VRF using the `protocols bgp-vpn` hierarchy.
 
 /// tab | leaf1
@@ -1547,6 +1539,10 @@ A:leaf4# info network-instance macvrf*
     }
 ```
 
+///
+
+/// note
+If needed, route distinguishers can be auto-derived as well by simply omitting the `bgp-vpn bgp-instance [instance-number] route-distinguisher` configuration option.
 ///
 
 This completes the configuration walkthrough section of this post. Next, we'll cover the control plane and data plane validation.
