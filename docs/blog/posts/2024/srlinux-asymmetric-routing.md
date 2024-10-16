@@ -110,7 +110,7 @@ When routing between VNIs, in a VXLAN fabric, there are two major routing models
 Asymmetric and symmetric routing models are defined in RFC 9135.
 ///
 
-Such a design naturally implies that both the source and the destination IRBs (and the corresponding Layer 2 domains and bridge tables) must exist on all leafs hosting servers that need to communicate with each other. While this increases the operational state on the leafs themselves (ARP state and MAC address state is stored everywhere), it does offer configuration and operational simplicity.
+Such a design naturally implies that both the source and the destination IRBs (and the corresponding Layer 2 domains and bridge tables) must exist on all leafs hosting servers that need to communicate with each other. While this increases the operational state on the leafs themselves (ARP state and MAC address state is stored everywhere), it does offer operational simplicity. This is because unlike symmetric routing, there is no concept of a `L3VNI` here, which keeps the routing complexity to a minimum, and analogous to traditional inter-VLAN routing, only with a VXLAN-encapsulation, in this case. No additional VLANs/VNIs need to be configured (for L3VNIs, which are typically mapped per IP VRF), making this a simpler solution to implement and operate. The obvious drawbacks of this approach, however, is that VLANs/VNIs cannot be scoped to specific leafs only - they must exist across all leafs that want to participate in inter-VNI routing.
 
 ![](https://gitlab.com/aninchat1/images/-/wikis/uploads/f93957318e62633db1c8603dbef57b69/srlinux-asymmetric-2.png){.img-shad}
 
@@ -1647,28 +1647,7 @@ IPv4 unicast route table of network instance default
 +---------------------------+-------+------------+----------------------+----------+----------+---------+------------+-----------------+-----------------+-----------------+----------------------+
 ```
 
-Since this IRB interface exists on leaf4 as well, the ARP reply will be consumed by it, never reaching leaf1, and thus, creating a failure in the ARP process. To circumvent this problem associated with an anycast, distributed IRB model, the EVPN Type-2 MAC+IP routes are used to populate the ARP cache. In addition to this, optionally, this EVPN-learnt ARP entry can also be used to inject a host route (/32 for IPv4 and /128 for IPv6) into the routing table using the `arp host-route populate evpn` configuration option (as discussed earlier). Since this is enabled in our case, we can confirm that the route 172.16.20.3/32 exists in the routing table, inserted by the arp_nd_mgr process:
-
-```
---{ + running }--[  ]--
-A:leaf1# show network-instance default route-table ipv4-unicast prefix 172.16.20.3/32
----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-IPv4 unicast route table of network instance default
----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-+---------------------------+-------+------------+----------------------+----------+----------+---------+------------+-----------------+-----------------+-----------------+----------------------+
-|          Prefix           |  ID   | Route Type |     Route Owner      |  Active  |  Origin  | Metric  |    Pref    | Next-hop (Type) |    Next-hop     | Backup Next-hop |   Backup Next-hop    |
-|                           |       |            |                      |          | Network  |         |            |                 |    Interface    |     (Type)      |      Interface       |
-|                           |       |            |                      |          | Instance |         |            |                 |                 |                 |                      |
-+===========================+=======+============+======================+==========+==========+=========+============+=================+=================+=================+======================+
-| 172.16.20.3/32            | 10    | arp-nd     | arp_nd_mgr           | True     | default  | 0       | 1          | 172.16.20.3     | irb0.20         |                 |                      |
-|                           |       |            |                      |          |          |         |            | (direct)        |                 |                 |                      |
-+---------------------------+-------+------------+----------------------+----------+----------+---------+------------+-----------------+-----------------+-----------------+----------------------+
-```
-
-/// note
-
-The `arp host-route populate evpn` configuration option is purely a design choice. Since a routing lookup is based on the longest-prefix-match logic (where the longest prefix wins), the existence of the host routes ensure that when there is a routing lookup for the destination, the host route is selected instead of falling back to the subnet route, which relies on ARP resolution, making the forwarding process more efficient. However, this also implies that a host route is created for every EVPN-learnt ARP entry, which can lead to a large routing table, potentially creating an issue in large-scale fabrics.
-///
+Since this IRB interface exists on leaf4 as well, the ARP reply will be consumed by it, never reaching leaf1, and thus, creating a failure in the ARP process. To circumvent this problem associated with an anycast, distributed IRB model, the EVPN Type-2 MAC+IP routes are used to populate the ARP cache. 
 
 Let's consider two flows to understand the data plane forwarding in such a design - server s1 communicating with s2 (same subnet) and s1 communicating with s3 (different subnet).
 
@@ -1676,9 +1655,10 @@ Since s1 is in the same subnet as s2, when communicating with s2, s1 will try to
 
 ![](https://gitlab.com/aninchat1/images/-/wikis/uploads/bc7ebec1d9e45487dead1d77849f09c2/srlinux-asymmetric-4.png){.img-shadow}
 
-Once this ARP process completes, host s1 generates an ICMP request (since we are testing communication between hosts using the `ping` tool). When this IP packet arrives on leaf1, it does a routing lookup (since the destination MAC address is owned by itself) and this routing lookup will either hit the 172.16.10.0/24 prefix or the more-specific 172.16.10.2/32 prefix (installed from the ARP entry via the EVPN Type-2 MAC+IP route), as shown below. Since this is a directly attached route, it is further resolved into a MAC address via the ARP table and then the packet is bridged towards the destination. This MAC address points to an Ethernet Segment, which in turn resolves into VTEPs 192.0.2.12 and 192.0.2.13.
+Once this ARP process completes, host s1 generates an ICMP request (since we are testing communication between hosts using the `ping` tool). When this IP packet arrives on leaf1, it does a routing lookup (since the destination MAC address is owned by itself) and this routing lookup hits the 172.16.10.0/24 entry, as shown below. Since this is a directly attached route, it is further resolved into a MAC address via the ARP table and then the packet is bridged towards the destination. This MAC address points to an Ethernet Segment, which in turn resolves into VTEPs 192.0.2.12 and 192.0.2.13.
 
 ```{.srl .code-scroll-lg}
+--{ + running }--[  ]--
 A:leaf1# show network-instance default route-table ipv4-unicast route 172.16.10.2
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 IPv4 unicast route table of network instance default
@@ -1688,11 +1668,12 @@ IPv4 unicast route table of network instance default
 |                        |       |            |                      |          | Network  |         |            |    (Type)     |   Interface   |  hop (Type)   |    Interface     |
 |                        |       |            |                      |          | Instance |         |            |               |               |               |                  |
 +========================+=======+============+======================+==========+==========+=========+============+===============+===============+===============+==================+
-| 172.16.10.2/32         | 8     | arp-nd     | arp_nd_mgr           | True     | default  | 0       | 1          | 172.16.10.2   | irb0.10       |               |                  |
+| 172.16.10.0/24         | 4     | local      | net_inst_mgr         | True     | default  | 0       | 0          | 172.16.10.254 | irb0.10       |               |                  |
 |                        |       |            |                      |          |          |         |            | (direct)      |               |               |                  |
 +------------------------+-------+------------+----------------------+----------+----------+---------+------------+---------------+---------------+---------------+------------------+
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--{ + running }--[  ]--
 ```
 
 ```{.srl .code-scroll-lg}
@@ -1756,11 +1737,12 @@ IPv4 unicast route table of network instance default
 |                        |       |            |                      |          | Network  |         |            |    (Type)     |   Interface   |  hop (Type)   |    Interface     |
 |                        |       |            |                      |          | Instance |         |            |               |               |               |                  |
 +========================+=======+============+======================+==========+==========+=========+============+===============+===============+===============+==================+
-| 172.16.20.3/32         | 10    | arp-nd     | arp_nd_mgr           | True     | default  | 0       | 1          | 172.16.20.3   | irb0.20       |               |                  |
+| 172.16.20.0/24         | 5     | local      | net_inst_mgr         | True     | default  | 0       | 0          | 172.16.20.254 | irb0.20       |               |                  |
 |                        |       |            |                      |          |          |         |            | (direct)      |               |               |                  |
 +------------------------+-------+------------+----------------------+----------+----------+---------+------------+---------------+---------------+---------------+------------------+
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--{ + running }--[  ]--
 ```
 
 ```{.srl .code-scroll-lg}
