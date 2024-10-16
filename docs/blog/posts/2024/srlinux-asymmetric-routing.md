@@ -5,6 +5,9 @@ tags:
     - evpn
 authors:
     - aninda
+links:
+    - EVPN Multihoming tutorial: tutorials/evpn-mh/basics/index.md
+    - Basic L2 EVPN tutorial: tutorials/l2evpn/intro.md
 ---
 
 # Asymmetric routing with SR Linux in EVPN VXLAN fabrics
