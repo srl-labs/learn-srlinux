@@ -380,7 +380,7 @@ On the other hand, you can also provide a contiguous range of numbers by using `
 Check out a separate post on [CLI Ranges and Wildcards](../2023/cli-ranges.md).
 ///
 
-Remember, by default, there is no global routing instance/table in SR Linux. A `network-instance` of type `default` must be configured and these interfaces, including the `system0` interface need to be added to this network instance for point-to-point connectivity.
+Remember, by default, there is no global routing instance/table in SR Linux. A `network-instance` with named `default` must be configured and these interfaces, including the `system0` interface need to be added to this network instance for point-to-point connectivity.
 
 ### Underlay and overlay BGP
 
@@ -1302,7 +1302,7 @@ There is a lot going on here, so let's breakdown some of the configuration optio
 
 `anycast-gw anycast-gw-mac [mac-address]`
 
-:   The MAC address configured with this option is the anycast gateway MAC address and is associated to the IP address for that subinterface. If this is ommitted, the anycast gateway MAC address is auto-derived from the VRRP MAC address group range, as specified in RFC 9135..
+:   The MAC address configured with this option is the anycast gateway MAC address and is associated to the IP address for that subinterface. If this is omitted, the anycast gateway MAC address is auto-derived from the VRRP MAC address group range, as specified in RFC 9135..
 
 `arp learn-unsolicited [true|false]`
 
@@ -1310,7 +1310,7 @@ There is a lot going on here, so let's breakdown some of the configuration optio
 
 `arp host-route populate dynamic`
 
-:   This enables the node to insert a host route (/32 for IPv4 and /128 for IPv6) in the routing table from dynaimc ARP entries.
+:   This enables the node to insert a host route (/32 for IPv4 and /128 for IPv6) in the routing table from dynamic ARP entries.
 
 `arp evpn advertise [dynamic|static]`
 
