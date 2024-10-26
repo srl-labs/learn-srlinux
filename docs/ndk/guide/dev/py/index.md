@@ -1,6 +1,7 @@
 # Python Development Environment
 
-/// warning "Work in progress"
+/// admonition | Work in progress
+    type: warning
 This tutorial might be outdated. Please check Go tutorial for the latest updates until this version is updated.
 ///
 
