@@ -14,9 +14,10 @@ Since NDK is versioned with `v0`, we may introduce non backwards compatible chan
 
 The following table shows the mapping between SR Linux and NDK releases:
 
-| NDK Release      | SR Linux Release[^10] | Comments |
-| ---------------- | --------------------- | -------- |
-| [v0.2.0](0.2.md) | 23.10.1               |          |
-| [v0.3.0](0.3.md) | 24.3.1                |          |
+| NDK Release      | SR Linux Release[^1] | Comments |
+| ---------------- | -------------------- | -------- |
+| [v0.2.0](0.2.md) | 23.10.1              |          |
+| [v0.3.0](0.3.md) | 24.3.1               |          |
+| [v0.4.0](0.4.md) | 24.10.1              |          |
 
-[^10]: SR Linux release where NDK changes were introduced.
+[^1]: SR Linux release where NDK changes were introduced.

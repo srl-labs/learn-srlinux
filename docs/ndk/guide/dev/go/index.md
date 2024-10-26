@@ -32,9 +32,19 @@ The toolchain that can be used to develop and build Go-based NDK apps consists o
     Goreleaser is optional, but it is a nice tool to build and release Go-based NDK applications in an automated fashion.
 
 ## Bond or no Bond?
+<!-- --8<-- [start:bond-intro] -->
+The [**`srl-labs/bond`**][bond-repo] package is a helper Go [package][bond-pkg] that abstracts the low-level NDK API and assists in the development of the NDK applications. It is a wrapper around the NDK gRPC services with utility functions that were designed to provide a more pleasant development experience.
 
-The [**`srl-labs/bond`**][bond-repo] package is a helper Go package that abstracts the low-level NDK API and assists in the development of the NDK applications. It is a wrapper around the NDK gRPC services with utility functions that were designed to provide a more pleasant development experience.
+Bond takes care of the following tasks:
 
+* registering the NDK agent with the NDK server
+* creation of NDK gRPC clients for the NDK services
+* creation of gNMI client to interact with SR Linux gNMI server and providing the GetWithGNMI method to
+* receiving the notifications from the NDK services
+* aggregating configuration notifications and forwarding the aggregated config to the NDK application
+* handling of the NDK application graceful shutdown
+
+<!-- --8<-- [end:bond-intro] -->
 Since using `bond` is optional, we provide two documentation sets for a basic NDK app development:
 
 1. With Bond - a development workflow that leverages [bond][bond-repo] package.
@@ -73,3 +83,4 @@ Let's see how we can develop this app using the `bond` package.
 [greeter-go-repo]: https://github.com/srl-labs/ndk-greeter-go
 
 [bond-repo]: https://github.com/srl-labs/bond
+[bond-pkg]: https://pkg.go.dev/github.com/srl-labs/bond
