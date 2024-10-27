@@ -1,5 +1,7 @@
 ---
 comments: true
+tags:
+  - cli
 ---
 
 # SR Linux CLI

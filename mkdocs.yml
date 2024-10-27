@@ -92,6 +92,9 @@ nav:
               - config: ansible/collection/config.md
               - validate: ansible/collection/validate.md
               - cli: ansible/collection/cli.md
+      - CLI:
+          - cli/index.md
+          - Wildcards and ranages: blog/posts/2023/cli-ranges.md
   - Tutorials:
       # - SR Linux tutorials: tutorials/about.md
       - tutorials/index.md
@@ -313,8 +316,8 @@ markdown_extensions:
   - pymdownx.smartsymbols:
       fractions: false
   - pymdownx.snippets:
-      check_paths: true
-      url_download: true
+      # check_paths: true
+      # url_download: true
   - pymdownx.superfences:
       custom_fences:
         - name: mermaid
