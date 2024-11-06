@@ -119,7 +119,7 @@ nodes: {
 
 In the snippet above, the `my-stratup-config.json` is expected to be found next to the topology file.
 
-For SR Linux nodes, the startup file must contain the full configuration of a node in a JSON format as found in `/etc/opt/srlinux/config.json` on SR Linux filesystem.
+For SR Linux nodes, the startup file can be provided in a JSON format (as found in `/etc/opt/srlinux/config.json` on SR Linux filesystem) or in the CLI format[^3].
 
 #### TLS Certificates
 
@@ -251,3 +251,4 @@ nodes: {
 
 [^1]: https://developers.google.com/protocol-buffers/docs/text-format-spec
 [^2]: full specification of a Node element is contained in the [topology proto file](https://github.com/openconfig/kne/blob/v0.1.9/proto/topo.proto#L46-L84).
+[^3]: Support for the CLI-styled configs has been added in https://github.com/srl-labs/srl-controller/pull/37
