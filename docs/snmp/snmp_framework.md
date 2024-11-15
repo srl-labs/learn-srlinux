@@ -1,0 +1,627 @@
+---
+comments: true
+title: User defined SNMP MIBs and Traps
+---
+
+# Customizing SNMP MIBs and Traps in SRLinux
+
+In version 24.10, SRLinux introduces a customizable SNMP framework allowing users to define their own SNMP MIBs and traps.
+This same framework powers SRLinux's built-in MIBs and traps, offering flexibility to tailor SNMP functionalities to specific requirements.
+
+The framework utilizes:
+
+* Mapping files (YAML): To define MIB tables and traps.
+* Conversion scripts (uPython): To process data from the management server and expose it via SNMP.
+
+## SRLinux Built-In MIBs
+
+Built-in MIB mappings are defined in the configuration file:
+
+```
+/opt/srlinux/snmp/snmp_files_config.yaml
+```
+
+Example configuration
+
+```yaml
+table-definitions:
+  - scripts/snmpv2_mib.yaml
+  - scripts/if_mib.yaml
+  - scripts/timetra_bgp.yaml
+trap-definitions:
+  - scripts/rfc3418_traps.yaml
+  - scripts/timetra_bgp_traps.yaml
+```
+
+### Example: if_mib.yaml
+
+The `if_mib.yaml` file maps interface-related data to standard MIB tables such as `ifTable`, `ifXTable`, and `ifStackTable`. Below is an overview of its structure:
+
+Configuration Highlights:
+
+`paths`: Specifies the gNMI paths for retrieving data. Use ... for recursion (e.g., /interface/...).
+`python-script`: References the uPython script (if_mib.py) used for data conversion.
+`tables`: Lists MIB tables, their structure, and their OIDs.
+`scalars`: Defines scalar OIDs.
+
+Each table definition has the following fields:
+
+* `name`: Specifies the name of the SNMP table. This is used for identification and reference in the SNMP configuration.
+* `enabled`: Determines whether the table is active (true) or inactive (false).
+* `oid`: The base Object Identifier (OID) for the table. All rows and columns in the table are extensions of this base OID.
+* `indexes`: Indexes uniquely identify rows in the table. Each index maps a specific OID to a value that differentiates rows. A list of column definitions that serve as unique identifiers for rows.
+    * `name`: The name of the index column.
+    * `oid`: The OID for the index.
+    * `syntax`: The data type of the index value.
+* `columns`: Columns represent attributes or properties for each row in the table. Each column is defined with an OID and a data type.
+    * `name`: The name of the column.
+    * `oid`: The OID for the column.
+    * `syntax`: The data type of the column's value.
+    * `binary`: (optional) Indicates if the value is base64-encoded.
+    * `enabled`: (optional) Enables or disables the column.
+
+The `syntax` field in SNMP table and scalar definitions specifies the data type of the OID value. Each data type maps to a specific ASN.1 type, defining how the data is represented and transmitted in SNMP operations. Below is a detailed explanation of the supported data types.
+
+* `octet string`: Represents a sequence of octets (bytes). Commonly used for textual information (e.g., names, descriptions) or raw binary data. E.g: `ifDescr`.
+* `integer / integer32`: Represents a signed 32-bit integer. Used for numeric attributes like counters, states, or enumerations. E.g: `ifType`, `ifAdminStatus`, `ifOperStatus`.
+* `unsigned / unsigned32`: Represents an unsigned 32-bit integer. E.g: values that should not be negative like counts or identifiers.
+* `counter / counter32`: Represents a counter that increments over time and wraps back to 0 when it exceeds the maximum value (4,294,967,295). E.g: `ifInOctets`, `ifOutOctets`.
+* `counter64`: Represents a 64-bit counter for high-capacity devices or metrics with large values. E.g: `ifHCInOctets`, `ifHCOutOctets`.
+* `gauge / gauge32`: Represents a non-negative integer that can increase or decrease but cannot wrap. E.g `ifSpeed`.
+* `timeticks`: Represents time in hundredths of a second since a device was last initialized or restarted. E.g: `ifLastChange`.
+* `ipaddress`: Represents an IPv4 address as a 32-bit value. Stored and transmitted in network byte order (big-endian).
+* `object identifier`: Represents an OID as a series of numbers identifying objects or properties in the SNMP tree.
+* `bits`: Represents a sequence of bits, often used to define flags or multiple binary states.
+
+```yaml
+paths:
+  - /interface/
+  - /interface/ethernet
+  - /interface/lag
+  - /interface/statistics
+  - /interface/transceiver
+  - /interface/subinterface/
+  - /interface/subinterface/statistics
+python-script: if_mib.py
+enabled: true
+debug: false
+tables:
+  - name: ifTable
+    enabled: true
+    oid: 1.3.6.1.2.1.2.2
+    indexes:
+      - name: ifIndex
+        oid: 1.3.6.1.2.1.2.2.1.1
+        syntax: integer
+    columns:
+      - name: ifIndex
+        oid: 1.3.6.1.2.1.2.2.1.1
+        syntax: integer
+      - name: ifDescr
+        oid: 1.3.6.1.2.1.2.2.1.2
+        syntax: octet string
+      - name: ifType
+        oid: 1.3.6.1.2.1.2.2.1.3
+        syntax: integer
+      - name: ifMtu
+        oid: 1.3.6.1.2.1.2.2.1.4
+        syntax: integer
+      - name: ifSpeed
+        oid: 1.3.6.1.2.1.2.2.1.5
+        syntax: gauge32
+      - name: ifPhysAddress
+        oid: 1.3.6.1.2.1.2.2.1.6
+        syntax: octet string
+        binary: true
+      - name: ifAdminStatus
+        oid: 1.3.6.1.2.1.2.2.1.7
+        syntax: integer
+      - name: ifOperStatus
+        oid: 1.3.6.1.2.1.2.2.1.8
+        syntax: integer
+      - name: ifLastChange
+        oid: 1.3.6.1.2.1.2.2.1.9
+        syntax: timeticks
+      - name: ifInOctets
+        oid: 1.3.6.1.2.1.2.2.1.10
+        syntax: counter32
+      - name: ifInUcastPkts
+        oid: 1.3.6.1.2.1.2.2.1.11
+        syntax: counter32
+      - name: ifInNUcastPkts
+        oid: 1.3.6.1.2.1.2.2.1.12
+        syntax: counter32
+      - name: ifInDiscards
+        oid: 1.3.6.1.2.1.2.2.1.13
+        syntax: counter32
+      - name: ifInErrors
+        oid: 1.3.6.1.2.1.2.2.1.14
+        syntax: counter32
+      - name: ifInUnknownProtos
+        oid: 1.3.6.1.2.1.2.2.1.15
+        syntax: counter32
+      - name: ifOutOctets
+        oid: 1.3.6.1.2.1.2.2.1.16
+        syntax: counter32
+      - name: ifOutUcastPkts
+        oid: 1.3.6.1.2.1.2.2.1.17
+        syntax: counter32
+      - name: ifOutNUcastPkts
+        oid: 1.3.6.1.2.1.2.2.1.18
+        syntax: counter32
+      - name: ifOutDiscards
+        oid: 1.3.6.1.2.1.2.2.1.19
+        syntax: counter32
+      - name: ifOutErrors
+        oid: 1.3.6.1.2.1.2.2.1.20
+        syntax: counter32
+      - name: ifOutQLen
+        oid: 1.3.6.1.2.1.2.2.1.21
+        syntax: gauge32
+      - name: ifSpecific
+        oid: 1.3.6.1.2.1.2.2.1.22
+        syntax: object identifier
+  - name: ifXTable
+    enabled: true
+    oid: 1.3.6.1.2.1.31.1.1
+    augment: ifTable
+    columns:
+      - name: ifName
+        oid: 1.3.6.1.2.1.31.1.1.1.1
+        syntax: octet string
+      - name: ifInMulticastPkts
+        oid: 1.3.6.1.2.1.31.1.1.1.2
+        syntax: counter32
+      - name: ifInBroadcastPkts
+        oid: 1.3.6.1.2.1.31.1.1.1.3
+        syntax: counter32
+      - name: ifOutMulticastPkts
+        oid: 1.3.6.1.2.1.31.1.1.1.4
+        syntax: counter32
+      - name: ifOutBroadcastPkts
+        oid: 1.3.6.1.2.1.31.1.1.1.5
+        syntax: counter32
+      - name: ifHcInOctets
+        oid: 1.3.6.1.2.1.31.1.1.1.6
+        syntax: counter64
+      - name: ifHcInUcastPkts
+        oid: 1.3.6.1.2.1.31.1.1.1.7
+        syntax: counter64
+      - name: ifHcInMulticastPkts
+        oid: 1.3.6.1.2.1.31.1.1.1.8
+        syntax: counter64
+      - name: ifHcInBroadcastPkts
+        oid: 1.3.6.1.2.1.31.1.1.1.9
+        syntax: counter64
+      - name: ifHcOutOctets
+        oid: 1.3.6.1.2.1.31.1.1.1.10
+        syntax: counter64
+      - name: ifHcOutUcastPkts
+        oid: 1.3.6.1.2.1.31.1.1.1.11
+        syntax: counter64
+      - name: ifHcOutMulticastPkts
+        oid: 1.3.6.1.2.1.31.1.1.1.12
+        syntax: counter64
+      - name: ifHcOutBroadcastPkts
+        oid: 1.3.6.1.2.1.31.1.1.1.13
+        syntax: counter64
+      - name: ifLinkUpDownTrapEnable
+        oid: 1.3.6.1.2.1.31.1.1.1.14
+        syntax: integer
+      - name: ifHighSpeed
+        oid: 1.3.6.1.2.1.31.1.1.1.15
+        syntax: gauge32
+      - name: ifPromiscuousMode
+        oid: 1.3.6.1.2.1.31.1.1.1.16
+        syntax: integer
+      - name: ifConnectorPresent
+        oid: 1.3.6.1.2.1.31.1.1.1.17
+        syntax: integer
+      - name: ifAlias
+        oid: 1.3.6.1.2.1.31.1.1.1.18
+        syntax: octet string
+      - name: ifCounterDiscontinuityTime
+        oid: 1.3.6.1.2.1.31.1.1.1.19
+        syntax: timeticks
+  - name: ifStackTable
+    enabled: true
+    oid: 1.3.6.1.2.1.31.1.2
+    indexes:
+      - name: ifStackHigherLayer
+        oid: 1.3.6.1.2.1.31.1.2.1.1
+        syntax: integer
+      - name: ifStackLowerLayer
+        oid: 1.3.6.1.2.1.31.1.2.1.2
+        syntax: integer
+    columns:
+      - name: ifStackStatus
+        oid: 1.3.6.1.2.1.31.1.2.1.3
+        syntax: integer
+scalars:
+  - name: ifNumber
+    enabled: true
+    oid: 1.3.6.1.2.1.2.1
+    syntax: integer
+  - name: ifTableLastChange
+    enabled: true
+    oid: 1.3.6.1.2.1.31.1.5
+    syntax: timeticks
+```
+
+## Creating Custom MIBs
+
+Users can create custom MIB definitions following these steps:
+
+1. Define the Mapping File: Use YAML to specify paths, tables, scalars, and their structure.
+2. Write the Conversion Script: Implement a `snmp_main` function in uPython that processes the input JSON and generates SNMP objects.
+3. Add the mapping file to the list of table-definitions under `/etc/opt/srlinux/snmp/snmp_files_config.yaml`
+
+### Input JSON Format
+
+The Python script receives data in JSON format, including global SNMP information and gNMI path results.
+
+```json
+{
+  "_snmp_info_": {
+    "boottime": "2024-11-11T16:42:44Z",
+    "datetime": "2024-11-15T19:23:29Z",
+    "debug": true,
+    "is-cold-boot": false,
+    "network-instance": "mgmt",
+    "platform-type": "7220 IXR-D2",
+    "script": "if_mib.yaml",
+    "sysobjectid": "1.3.6.1.4.1.6527.1.20.22",
+    "sysuptime": 35524500,
+    "paths": [
+      "/interface",
+      "/interface/ethernet",
+      "/interface/lag",
+      "/interface/statistics",
+      "/interface/transceiver",
+      "/interface/subinterface",
+      "/interface/subinterface/statistics"
+    ],
+    "scalars": [
+      "ifNumber",
+      "ifTableLastChange"
+    ],
+    "tables": [
+      "ifTable",
+      "ifXTable",
+      "ifStackTable"
+    ]
+  },
+  "interface": [
+    {
+      "name": "ethernet-1/1",
+      "admin-state": "enable",
+      "forwarding-complex": 0,
+      "forwarding-mode": "store-and-forward",
+      "ifindex": 16382,
+      "last-change": "2024-11-11T16:42:50.815Z",
+      "linecard": 1,
+      "loopback-mode": "none",
+      "mtu": 9232,
+      "oper-state": "up",
+      "tpid": "srl_nokia-interfaces-vlans:TPID_0X8100",
+      "vlan-tagging": false,
+      "ethernet": {
+        "dac-link-training": false,
+        "hw-mac-address": "1A:5E:00:FF:00:01",
+        "lacp-port-priority": 32768,
+        "port-speed": "25G"
+      },
+      "statistics": {
+        "carrier-transitions": 0,
+        "in-broadcast-packets": 0,
+        "in-discarded-packets": 0,
+        "in-error-packets": 0,
+        "in-fcs-error-packets": 0,
+        "in-multicast-packets": 11946,
+        "in-octets": 2103314,
+        "in-packets": 11946,
+        "in-unicast-packets": 0,
+        "out-broadcast-packets": 0,
+        "out-discarded-packets": 0,
+        "out-error-packets": 0,
+        "out-mirror-octets": 0,
+        "out-mirror-packets": 0,
+        "out-multicast-packets": 11842,
+        "out-octets": 2096034,
+        "out-packets": 11842,
+        "out-unicast-packets": 0
+      },
+      "transceiver": {
+        "ddm-events": true,
+        "forward-error-correction": "disabled",
+        "oper-down-reason": "not-present",
+        "oper-state": "down",
+        "tx-laser": false
+      }
+    },
+    {
+      ...
+    }
+}
+```
+
+### Output JSON Format
+
+The script should output JSON containing tables and scalars.
+
+```json
+{
+  "tables": {
+    "ifTable": [
+      {
+        "path": "/interface[name=ethernet-1/1]",
+        "objects": {
+          "ifIndex": 16382,
+          "ifDescr": "ethernet-1/1",
+          "ifType": 6,
+          "ifMtu": 9232,
+          "ifSpeed": 4294967295,
+          "ifPhysAddress": "0x1A5E00FF0001",
+          "ifAdminStatus": 1,
+          "ifOperStatus": 1,
+          "ifLastChange": 600,
+          "ifInOctets": 2103314,
+          "ifInUcastPkts": 0,
+          "ifInNUcastPkts": 11946,
+          "ifInDiscards": 0,
+          "ifInErrors": 0,
+          "ifInUnknownProtos": 0,
+          "ifOutOctets": 2096034,
+          "ifOutUcastPkts": 0,
+          "ifOutNUcastPkts": 11842,
+          "ifOutDiscards": 0,
+          "ifOutErrors": 0,
+          "ifOutQLen": 0,
+          "ifSpecific": "0.0"
+        }
+      },
+      {
+        ...
+      }
+    ]
+  },
+  "scalars": {
+    "ifNumber": 58,
+    "ifTableLastChange": 600
+  }
+}
+```
+
+### uPython script
+
+The script entry point is a function called `snmp_main` that takes a JSON string as input and returns a JSON string.
+
+```python
+def snmp_main(in_json_str: str) -> str:
+```
+
+See the built-in scripts as examples.
+The `utilities.py` file contains some useful helper functions to perform various checks and common type conversions.
+
+## SRLinux Built-In Traps
+
+Traps are defined similarly to MIBs but include additional parameters for triggers and variable bindings.
+
+### Example: rfc3418_traps.yaml
+
+Configuration Highlights:
+
+* `triggers`: Specifies paths that trigger the trap.
+* `context`: Additional paths to fetch data for the trap.
+* `data`: Defines variable bindings included in the trap.
+
+```yaml
+python-script: rfc3418_traps.py
+enabled: true
+debug: false
+traps:
+  - name: coldStart
+    enabled: true
+    oid: 1.3.6.1.6.3.1.1.5.1
+    startup: true
+    triggers:
+      - /platform/chassis/last-booted
+  - name: warmStart
+    enabled: true
+    oid: 1.3.6.1.6.3.1.1.5.2
+    startup: true
+    triggers:
+      - /platform/chassis/last-booted
+  - name: linkDown
+    enabled: true
+    oid: 1.3.6.1.6.3.1.1.5.3
+    triggers:
+      - /interface/oper-state
+      - /interface/subinterface/oper-state
+    context:
+      - /interface
+      - /interface/subinterface
+    data:
+      - indexes:
+          - name: ifIndex
+            syntax: integer
+        objects:
+          - name: ifIndex
+            oid: 1.3.6.1.2.1.2.2.1.1
+            syntax: integer
+          - name: ifAdminStatus
+            oid: 1.3.6.1.2.1.2.2.1.7
+            syntax: integer
+          - name: ifOperStatus
+            oid: 1.3.6.1.2.1.2.2.1.8
+            syntax: integer
+          - name: ifName
+            enabled: true
+            oid: 1.3.6.1.2.1.31.1.1.1.1
+            syntax: octet string
+            optional: true
+  - name: linkUp
+    enabled: true
+    oid: 1.3.6.1.6.3.1.1.5.4
+    triggers:
+      - /interface/oper-state
+      - /interface/subinterface/oper-state
+    context:
+      - /interface
+      - /interface/subinterface
+    data:
+      - indexes:
+          - name: ifIndex
+            syntax: integer
+        objects:
+          - name: ifIndex
+            oid: 1.3.6.1.2.1.2.2.1.1
+            syntax: integer
+          - name: ifAdminStatus
+            oid: 1.3.6.1.2.1.2.2.1.7
+            syntax: integer
+          - name: ifOperStatus
+            oid: 1.3.6.1.2.1.2.2.1.8
+            syntax: integer
+          - name: ifName
+            enabled: true
+            oid: 1.3.6.1.2.1.31.1.1.1.1
+            syntax: octet string
+            optional: true
+  - name: authenticationFailure
+    enabled: true
+    hardcoded: true
+    oid: 1.3.6.1.6.3.1.1.5.5
+```
+
+## Creating Custom Traps
+
+To define custom traps:
+
+1. Write a YAML Mapping File: Define the trap triggers, contexts, and variable bindings.
+2. Implement the Conversion Script: Process trigger events and generate trap data in the `snmp_main` function.
+3. Add the mapping file to the list of trap-definitions under `/etc/opt/srlinux/snmp/snmp_files_config.yaml`
+
+### Input JSON Format
+
+The Python script receives a JSON object containing trap triggers and context data.
+
+```json
+{
+  "_snmp_info_": {
+    "boottime": "2024-11-11T16:42:44Z",
+    "datetime": "2024-11-15T21:30:25Z",
+    "debug": true,
+    "is-cold-boot": false,
+    "network-instance": "mgmt",
+    "platform-type": "7220 IXR-D2",
+    "script": "rfc3418_traps.yaml",
+    "sysobjectid": "1.3.6.1.4.1.6527.1.20.22",
+    "sysuptime": 36286100,
+    "trigger": "/interface[name=ethernet-1/1]",
+    "paths": [
+      "/interface[name=ethernet-1/1]",
+      "/interface[name=ethernet-1/1]/subinterface"
+    ]
+  },
+  "_trap_info_": [
+    {
+      "name": "linkDown",
+      "new-value": "up",
+      "old-value": "down",
+      "trigger": "/interface/oper-state",
+      "xpath": "/interface[name=ethernet-1/1]/oper-state"
+    },
+    {
+      "name": "linkUp",
+      "new-value": "up",
+      "old-value": "down",
+      "trigger": "/interface/oper-state",
+      "xpath": "/interface[name=ethernet-1/1]/oper-state"
+    }
+  ],
+  "interface": [
+    {
+      "name": "ethernet-1/1",
+      "admin-state": "enable",
+      "forwarding-complex": 0,
+      "forwarding-mode": "store-and-forward",
+      "ifindex": 16382,
+      "last-change": "2024-11-15T21:30:25.701Z",
+      "linecard": 1,
+      "loopback-mode": "none",
+      "mtu": 9232,
+      "oper-state": "up",
+      "tpid": "srl_nokia-interfaces-vlans:TPID_0X8100",
+      "vlan-tagging": false,
+      "subinterface": [
+        {
+          "index": 0,
+          "admin-state": "disable",
+          "ifindex": 1,
+          "ip-mtu": 1500,
+          "last-change": "2024-11-15T21:24:47.797Z",
+          "name": "ethernet-1/1.0",
+          "oper-down-reason": "admin-disabled",
+          "oper-state": "down",
+          "type": "routed"
+        }
+      ]
+    }
+  ]
+}
+```
+
+### Output JSON Format
+
+The script should return a list of traps.
+
+```json
+{
+  "traps": [
+    {
+      "trap": "linkUp",
+      "path": "/interface[name=ethernet-1/1]",
+      "indexes": {
+        "ifIndex": 16382
+      },
+      "objects": {
+        "ifIndex": 16382,
+        "ifAdminStatus": 1,
+        "ifOperStatus": 1,
+        "ifName": "ethernet-1/1"
+      }
+    }
+  ]
+}
+```
+
+### uPython script
+
+The script entry point is a function called `snmp_main` that takes a JSON string as input and returns a JSON string.
+
+```python
+def snmp_main(in_json_str: str) -> str:
+```
+
+See the built-in scripts as examples.
+The `utilities.py` file contains some useful helper functions to perform various checks and common type conversions.
+
+### Directory Structure for Custom Files
+
+Place user-defined files under `/etc/opt/srlinux/snmp`.
+
+Changes to mapping files and scripts are not automatically picked up by the SNMP server,
+a restart of the SNMP server is required.
+
+```
+A:srl1# /tools system app-management application snmp_server-mgmt restart
+```
+
+### Debugging and Troubleshooting
+
+Debug files are generated in /tmp/snmp_debug/$NETWORK_INSTANCE:
+
+* Input/Output Logs: Check `.json_input`, `.json_output`, `.console` and `.error` files for debugging script execution.
+  The `.console` files contain anything printed by the scripts and the `.error` files contain mapping and scripts errors.
+* Path Data: Inspect debug outputs for issues in path retrieval.
