@@ -417,8 +417,32 @@ The uPython script receives data in JSON format, including global SNMP informati
       }
     },
     {
+      "name": "ethernet-1/10",
+      "admin-state": "disable",
+      "forwarding-complex": 0,
+      "forwarding-mode": "store-and-forward",
+      "ifindex": 311294,
+      "last-change": "2024-11-11T16:42:47.867Z",
+      "linecard": 1,
+      "loopback-mode": "none",
+      "oper-down-reason": "port-admin-disabled",
+      "oper-state": "down",
+      "ethernet": {
+        "dac-link-training": false,
+        "hw-mac-address": "1A:5E:00:FF:00:0A",
+        "port-speed": "25G"
+      },
+      "transceiver": {
+        "ddm-events": false,
+        "forward-error-correction": "disabled",
+        "oper-down-reason": "not-present",
+        "oper-state": "down",
+        "tx-laser": false
+      }
+    },
+    {
       // ...
-    }
+    },
 }
 ```
 
