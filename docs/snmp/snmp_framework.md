@@ -38,114 +38,12 @@ trap-definitions:
 
 The table definition YAML file describes the framework components used to define a particular MIB table. Take the `if_mib.yaml` file for example, it maps interface-related data to standard MIB tables such as `ifTable`, `ifXTable`, and `ifStackTable`.
 
-You can list the contents of this file with `cat /opt/srlinux/snmp/scripts/if_mib.yaml` command and at the end of this section, and to help us document the fields of the table definition file let us also provide a short snippet from this file:
-
-```{.yaml .code-scroll-lg}
-paths:
-    - /interface/
-    - /interface/ethernet
-    - /interface/lag
-python-script: if_mib.py
-enabled: true
-tables:
-    - name:    ifTable
-      enabled: true
-      oid:     1.3.6.1.2.1.2.2
-      indexes:
-            - name:   ifIndex
-              oid:    1.3.6.1.2.1.2.2.1.1
-              syntax: integer
-      columns:
-            - name:   ifIndex
-              oid:    1.3.6.1.2.1.2.2.1.1
-              syntax: integer
-            - name:   ifDescr
-              oid:    1.3.6.1.2.1.2.2.1.2
-              syntax: octet string
-    - name:    ifXTable
-      enabled: true
-      oid:     1.3.6.1.2.1.31.1.1
-      augment: ifTable
-      columns:
-            - name:   ifName
-              oid:    1.3.6.1.2.1.31.1.1.1.1
-              syntax: octet string
-            - name:   ifInMulticastPkts
-              oid:    1.3.6.1.2.1.31.1.1.1.2
-              syntax: counter32
-    - name:    ifStackTable
-      enabled: true
-      oid:     1.3.6.1.2.1.31.1.2
-      indexes:
-            - name:    ifStackHigherLayer
-              oid:     1.3.6.1.2.1.31.1.2.1.1 
-              syntax:  integer
-            - name:    ifStackLowerLayer
-              oid:     1.3.6.1.2.1.31.1.2.1.2
-              syntax:  integer
-      columns:
-            - name:    ifStackStatus
-              oid:     1.3.6.1.2.1.31.1.2.1.3
-              syntax:   integer
-scalars:
-    - name:     ifNumber
-      enabled:  true
-      oid:      1.3.6.1.2.1.2.1
-      syntax:   integer
-    - name:     ifTableLastChange
-      enabled:  true
-      oid:      1.3.6.1.2.1.31.1.5
-      syntax:   timeticks
-```
-
-The table definition file has the following important top level fields:
-
-* `paths`: Specifies the gNMI paths for retrieving data.
-* `python-script`: References the uPython script used for data conversion.
-* `tables`: Lists MIB tables, their structure, and their OIDs.
-* `scalars`: Defines scalar OIDs.
-
-Under the `tables` key you find the list of MIB table definitions, where each table has the following structure:
-
-* `name`: Specifies the name of the SNMP table. This is used for identification and reference in the SNMP configuration.
-* `enabled`: Determines whether the table is active (true) or inactive (false).
-* `oid`: The base Object Identifier (OID) for the table. All rows and columns in the table are extensions of this base OID.
-* `augment`: **TODO: add description**
-* `indexes`: Indexes uniquely identify rows in the table. Each index maps a specific OID to a value that differentiates rows. A list of column definitions that serve as unique identifiers for rows.
-    * `name`: The name of the index column.
-    * `oid`: The OID for the index.
-    * `syntax`: The data type of the index value.
-* `columns`: Columns represent attributes or properties for each row in the table. Each column is defined with an OID and a data type.
-    * `name`: The name of the column.
-    * `oid`: The OID for the column.
-    * `syntax`: The data type of the column's value.
-    * `binary`: (optional) Indicates if the value is base64-encoded.
-    * `enabled`: (optional) Enables or disables the column.
-
-The `syntax` field in SNMP table and scalar definitions specifies the data type of the OID value. Each data type maps to a specific ASN.1 type, defining how the data is represented and transmitted in SNMP operations. Below is a detailed explanation of the supported data types.
-
-* `octet string`: Represents a sequence of octets (bytes). Commonly used for textual information (e.g., names, descriptions) or raw binary data. E.g: `ifDescr`.
-* `integer / integer32`: Represents a signed 32-bit integer. Used for numeric attributes like counters, states, or enumerations. E.g: `ifType`, `ifAdminStatus`, `ifOperStatus`.
-* `unsigned / unsigned32`: Represents an unsigned 32-bit integer. E.g: values that should not be negative like counts or identifiers.
-* `counter / counter32`: Represents a counter that increments over time and wraps back to 0 when it exceeds the maximum value (4,294,967,295). E.g: `ifInOctets`, `ifOutOctets`.
-* `counter64`: Represents a 64-bit counter for high-capacity devices or metrics with large values. E.g: `ifHCInOctets`, `ifHCOutOctets`.
-* `gauge / gauge32`: Represents a non-negative integer that can increase or decrease but cannot wrap. E.g `ifSpeed`.
-* `timeticks`: Represents time in hundredths of a second since a device was last initialized or restarted. E.g: `ifLastChange`.
-* `ipaddress`: Represents an IPv4 address as a 32-bit value. Stored and transmitted in network byte order (big-endian).
-* `object identifier`: Represents an OID as a series of numbers identifying objects or properties in the SNMP tree.
-* `bits`: Represents a sequence of bits, often used to define flags or multiple binary states.
+You can list the contents of this file with `cat /opt/srlinux/snmp/scripts/if_mib.yaml` command and we provide it here for reference:
 
 /// details | `if_mib.yaml` definition file
     type: subtle-note
 
 ```yaml
-###########################################################################
-# Description:
-#
-# Copyright (c) 2024 Nokia
-###########################################################################
-# yaml-language-server: $schema=../table_definition_schema.json
-
 #- This is the mapping for interfaces and subinterfaces. It defines MIB tables ifTable, ifXTable and ifStackTable.
 paths:
     - /interface/
@@ -323,6 +221,46 @@ scalars:
 
 ///
 
+The table definition file has the following important top level fields:
+
+* `paths`: Specifies the gNMI paths for retrieving data.
+* `python-script`: References the uPython script used for data conversion.
+* `tables`: Lists MIB tables, their structure, and their OIDs.
+* `scalars`: Defines scalar OIDs.
+
+Under the `tables` key you find the list of MIB table definitions, where each table has the following structure:
+
+* `name`: Specifies the name of the SNMP table. This is used for identification and reference in the SNMP configuration.
+* `enabled`: Determines whether the table is active (true) or inactive (false).
+* `oid`: The base Object Identifier (OID) for the table. All rows and columns in the table are extensions of this base OID.
+* `indexes`: Indexes uniquely identify rows in the table. Each index maps a specific OID to a value that differentiates rows. A list of column definitions that serve as unique identifiers for rows.
+    * `name`: The name of the index column.
+    * `oid`: The OID for the index.
+    * `syntax`: The data type of the index value.
+* `columns`: Columns represent attributes or properties for each row in the table. Each column is defined with an OID and a data type.
+    * `name`: The name of the column.
+    * `oid`: The OID for the column.
+    * `syntax`: The data type of the column's value.
+    * `binary`: (optional) Indicates if the value is base64-encoded.
+    * `enabled`: (optional) Enables or disables the column.
+
+The `syntax` field in SNMP table and scalar definitions specifies the data type of the OID value. Each data type maps to a specific ASN.1 type, defining how the data is represented and transmitted in SNMP operations. Below is a detailed explanation of the supported data types.
+
+/// details | Data Types
+    type: subtle-note
+
+* `octet string`: Represents a sequence of octets (bytes). Commonly used for textual information (e.g., names, descriptions) or raw binary data. E.g: `ifDescr`.
+* `integer / integer32`: Represents a signed 32-bit integer. Used for numeric attributes like counters, states, or enumerations. E.g: `ifType`, `ifAdminStatus`, `ifOperStatus`.
+* `unsigned / unsigned32`: Represents an unsigned 32-bit integer. E.g: values that should not be negative like counts or identifiers.
+* `counter / counter32`: Represents a counter that increments over time and wraps back to 0 when it exceeds the maximum value (4,294,967,295). E.g: `ifInOctets`, `ifOutOctets`.
+* `counter64`: Represents a 64-bit counter for high-capacity devices or metrics with large values. E.g: `ifHCInOctets`, `ifHCOutOctets`.
+* `gauge / gauge32`: Represents a non-negative integer that can increase or decrease but cannot wrap. E.g `ifSpeed`.
+* `timeticks`: Represents time in hundredths of a second since a device was last initialized or restarted. E.g: `ifLastChange`.
+* `ipaddress`: Represents an IPv4 address as a 32-bit value. Stored and transmitted in network byte order (big-endian).
+* `object identifier`: Represents an OID as a series of numbers identifying objects or properties in the SNMP tree.
+* `bits`: Represents a sequence of bits, often used to define flags or multiple binary states.
+///
+
 ## Creating Custom MIBs
 
 Users can create custom MIB definitions following these steps:
@@ -333,7 +271,9 @@ Users can create custom MIB definitions following these steps:
 
 ### Input JSON Format
 
-Recall, that SNMP framework is powered by the underlying SR Linux's gNMI infrastructure. The `paths` you define in the table mapping file will retrieve the data that the conversion script will work on to create the SNMP MIB tables.
+Recall, that SNMP framework is powered by the underlying SR Linux's gNMI infrastructure. The `paths` you define in the table mapping file will retrieve the data that the conversion script will work on to create the SNMP MIB tables.  
+
+A thing to note is that the `paths` you define in the mapping file are non-recursive; this means that the returned data will be limited to the immediate children of the path you specify. To recursively retrieve data from a path, add `...` to the end of the path, e.g. `/interface/ethernet/...`.
 
 The uPython script receives data in JSON format, including global SNMP information and the gNMI query results. Here is an example of a payload the `if_mib.py` script receives.
 
@@ -510,39 +450,7 @@ Traps are defined with the mapping files that look similar to the MIB ones, but 
 
 ### Trap definitions
 
-The trap definition YAML file has exactly the same top level elements as the table definition file but instead of `tables` the file contains `traps` top-level key. To help you map the terms with the actual contents, lets have a look at the excerpt of the `/opt/srlinux/snmp/scripts/rfc3418_traps.yaml` that defines the traps as per RFC 3418:
-
-```yaml
-python-script: rfc3418_traps.py
-enabled: true
-traps:
-    - name:    linkDown
-      enabled: true
-      oid:     1.3.6.1.6.3.1.1.5.3
-      triggers:
-          - /interface/oper-state
-          - /interface/subinterface/oper-state
-      context:
-          - /interface
-          - /interface/subinterface
-      data:
-          - indexes:
-                - name:     ifIndex
-                  syntax:   integer
-            objects:
-                - name:     ifIndex
-                  oid:      1.3.6.1.2.1.2.2.1.1
-                  syntax:   integer
-                - name:     ifAdminStatus
-                  oid:      1.3.6.1.2.1.2.2.1.7
-                  syntax:   integer
-```
-
-Besides the common `name`, `enabled` and `oid` fields, the `traps` object has the following fields:
-
-* `triggers`: Specifies paths that trigger the trap.
-* `context`: Additional paths to fetch data for the trap.
-* `data`: Defines variable bindings included in the trap.
+The trap definition YAML file has exactly the same top level elements as the table definition file but instead of `tables` the file contains `traps` top-level key. Here is the contents of the `/opt/srlinux/snmp/scripts/rfc3418_traps.yaml` mapping file that defines the traps as per RFC 3418:
 
 /// details | `rfc3418_traps.yaml` definition file
     type: subtle-note
@@ -627,6 +535,12 @@ traps:
 ```
 
 ///
+
+Besides the common `name`, `enabled` and `oid` fields, the `traps` object has the following fields:
+
+* `triggers`: Specifies paths that trigger the trap.
+* `context`: Additional paths to fetch data for the trap.
+* `data`: Defines variable bindings included in the trap.
 
 ## Creating Custom Traps
 
