@@ -94,6 +94,16 @@ title: Programmability
 
     <small>:material-progress-wrench: Tutorials coming soon...</small>
 
+- :material-emoticon-devil:{ .lg .middle } **Program SNMP MIBs and Traps**
+
+    ---
+
+    We have gNMI, we have JSON-RPC, we have NETCONF, we have CLI with JSON and YAML outputs, but you kept asking for SNMP...
+
+    Alright, here is your SNMP, but fully programmable!
+
+    [:octicons-arrow-right-24: SNMP Framework](../snmp/snmp_framework.md)
+
 </div>
 
 [scraplipy-srl]: https://github.com/scrapli/scrapli_community/tree/main/scrapli_community/nokia/srlinux
