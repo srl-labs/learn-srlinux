@@ -269,6 +269,11 @@ Users can create custom MIB definitions following these steps:
 2. Write the Conversion Script: Implement a `snmp_main` function in uPython that processes the input JSON and generates SNMP objects.
 3. Add the mapping file to the list of table-definitions under `/etc/opt/srlinux/snmp/snmp_files_config.yaml`
 
+/// admonition | Builtin vs Custom SNMP files and their location
+    type: subtle-note
+The user-defined MIB definitions and table/trap files with the associated scripts are stored in `/etc/opt/srlinux/snmp` directory, while the built-in MIB definitions are stored in `/opt/srlinux/snmp` directory.
+///
+
 ### Input JSON Format
 
 Recall, that SNMP framework is powered by the underlying SR Linux's gNMI infrastructure. The `paths` you define in the table mapping file will retrieve the data that the conversion script will work on to create the SNMP MIB tables.  
@@ -679,138 +684,33 @@ Debug files are generated in `/tmp/snmp_debug/$NETWORK_INSTANCE`:
 Let's add a custom SNMP MIB to SR Linux at **runtime**, no feature requests, no software upgrades,
 let it be a gRPC server SNMP MIB 🤪.
 
-1. Add a new table definition under `/etc/opt/srlinux/snmp/scripts/grpc_mib.yaml`
+### Table definition
+
+Add a new table definition under `/etc/opt/srlinux/snmp/scripts/grpc_mib.yaml`
 
 This MIB has a single index `gRPCServerName` and 6 columns; the gRPC server network instance, its admin and operational states, the number of accepted and rejected RPCs as well as the last time an RPC was accepted.
 
 All these fields can be mapped from leaves that can be found under the xpath `/system/grpc-server/...`
 
-```yaml
-###########################################################################
-# Description:
-#
-# Copyright (c) 2024 Nokia
-###########################################################################
-# yaml-language-server: $schema=../table_definition_schema.json
-paths:
-    - /system/grpc-server/...
-python-script: grpc_mib.py
-enabled: true
-debug: true
-tables:
-    - name:    gRPCServerTable
-      enabled: true
-      oid:     1.3.6.1.4.1.6527.115.114.108.105.110.117.120
-      indexes:
-            - name:   gRPCServerName
-              oid:    1.3.6.1.4.1.6527.115.114.108.105.110.117.120.1.1
-              syntax: octet string
-      columns:
-            - name:   grpcServerNetworkInstance
-              oid:    1.3.6.1.4.1.6527.115.114.108.105.110.117.120.1.2
-              syntax: octet string
-            - name:   grpcServerAdminState
-              oid:    1.3.6.1.4.1.6527.115.114.108.105.110.117.120.1.3
-              syntax: integer
-            - name:   grpcServerOperState
-              oid:    1.3.6.1.4.1.6527.115.114.108.105.110.117.120.1.4
-              syntax: integer
-            - name:   grpcServerAccessRejects
-              oid:    1.3.6.1.4.1.6527.115.114.108.105.110.117.120.1.5
-              syntax: integer
-            - name:   grpcServerAccessAccepts
-              oid:    1.3.6.1.4.1.6527.115.114.108.105.110.117.120.1.6
-              syntax: integer
-            - name:   grpcServerLastAccessAccept
-              oid:    1.3.6.1.4.1.6527.115.114.108.105.110.117.120.1.7
-              syntax: timeticks
+```{.yaml .code-scroll-lg}
+--8<-- "https://raw.githubusercontent.com/srl-labs/srl-snmp-framework-lab/refs/heads/main/grpc_mib.yaml"
 ```
 
-2. The YAML file points to a python script called `grpc_mib.py`. It must be placed in the same directory as the `grpc_mib.yaml` file.
+### Python script
+
+The YAML file points to a python script called `grpc_mib.py`. It must be placed in the same directory as the `grpc_mib.yaml` file.
 
 The script is fairly simple; grabs the JSON input, set some global SNMP information such as the box boot time (useful for calculating time ticks values).
 After that, it iterates over the list of gRPC servers in the input JSON and set each server's columns values (with the correct format) in the prepared output dict.
 Finally it returns the output dict as a JSON blob.
 
-```python
-#!/usr/bin/python
-###########################################################################
-# Description:
-#
-# Copyright (c) 2024 Nokia
-###########################################################################
-
-import json
-
-import utilities
-
-SERVERADMINSTATUS_UP   = 1
-SERVERADMINSTATUS_DOWN = 2
-
-IFOPERSTATUS_UP        = 1
-IFOPERSTATUS_DOWN      = 2
-
-# maps the gNMI admin status value to its corresponding SNMP value
-def convertAdminStatus(value: str):
-    if value is not None:
-        if value == 'enable':
-            return SERVERADMINSTATUS_UP
-        elif value == 'disable':
-            return SERVERADMINSTATUS_DOWN
-
-# maps the gNMI oper status value to its corresponding SNMP value
-def convertOperStatus(value: str):
-    if value is not None:
-        if value == 'up':
-            return IFOPERSTATUS_UP
-        elif value == 'down':
-            return IFOPERSTATUS_DOWN
-
-#
-# main routine
-#
-def snmp_main(in_json_str: str) -> str:
-    in_json = json.loads(in_json_str)
-
-    del in_json_str
-
-    # read in general info from the snmp server
-    snmp_info = in_json.get('_snmp_info_')
-    utilities.process_snmp_info(snmp_info)
-
-    # prepare the output dict
-    output = {"tables": {"gRPCServerTable": []}}
-
-    # Iterate over all grpc-server instances
-    grpc_servers = in_json.get("system", {}).get("grpc-server", [])
-    for server in grpc_servers:
-        # Extract required fields
-        name = server.get("name", "")
-        statistics = server.get("statistics", {})
-        access_rejects = statistics.get("access-rejects", 0)
-        access_accepts = statistics.get("access-accepts", 0)
-        # Grab the last-access-accept timestamp
-        ts = utilities.parse_rfc3339_date(statistics.get("last-access-accept", 0))
-        # Convert it to timeTicks from boottime
-        last_access_accept = utilities.convertUnixTimeStampInTimeticks(ts)
-
-        # Append the object to the output
-        output["tables"]["gRPCServerTable"].append({
-            "objects": {
-                "gRPCServerName": name,
-                "grpcServerNetworkInstance": server.get("network-instance", ""),
-                "grpcServerAdminState": convertAdminStatus(server.get("admin-state", "")),
-                "grpcServerOperState": convertOperStatus(server.get("oper-state")),
-                "grpcServerAccessRejects": access_rejects,
-                "grpcServerAccessAccepts": access_accepts,
-                "grpcServerLastAccessAccept": last_access_accept
-            }
-        })
-
-    return json.dumps(output)
+```{.python .code-scroll-lg}
+--8<-- "https://raw.githubusercontent.com/srl-labs/srl-snmp-framework-lab/refs/heads/main/grpc_mib.py"
 ```
 
-3. Reference the YAML mapping file in the user's `snmp_files_config.yaml` so that the SNMP server picks it up
+### Custom MIBs file
+
+Reference the YAML mapping file in the user's `snmp_files_config.yaml` so that the SNMP server picks it up
 
 ```shell
 cat /etc/opt/srlinux/snmp/snmp_files_config.yaml
@@ -819,9 +719,11 @@ table-definitions:
   - scripts/grpc_mib.yaml
 ```
 
-4. Restart the SNMP server process
+### SNMP server restart
 
-```
+Restart the SNMP server process for it to pick up the new custom MIB definitions.
+
+```srl
 --{ + running }--[  ]--
 A:srl1# /tools system app-management application snmp_server-mgmt restart
 /system/app-management/application[name=snmp_server-mgmt]:
@@ -831,7 +733,7 @@ A:srl1# /tools system app-management application snmp_server-mgmt restart
     Application 'snmp_server-mgmt' was restarted
 ```
 
-5. Test your new MIB
+And test your new MIB
 
 ```shell
 $ snmpwalk -v2c -c public clab-snmp-srl1 1.3.6.1.4.1.6527.115
@@ -847,3 +749,7 @@ iso.3.6.1.4.1.6527.115.114.108.105.110.117.120.1.7.4.109.103.109.116 = Timeticks
 Have a look at `/tmp/snmp_debug` to see the input and output JSON blobs.
 
 There you have it: A user-defined SNMP MIB added to SR Linux at **runtime**, no feature request, no software upgrade needed.
+
+### Lab
+
+We create [a lab](https://github.com/srl-labs/srl-snmp-framework-lab) that implements this custom gRPC server MIB that you can deploy locally or in Codespaces to try it out.
