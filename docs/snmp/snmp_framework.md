@@ -269,6 +269,11 @@ Users can create custom MIB definitions following these steps:
 2. Write the Conversion Script: Implement a `snmp_main` function in uPython that processes the input JSON and generates SNMP objects.
 3. Add the mapping file to the list of table-definitions under `/etc/opt/srlinux/snmp/snmp_files_config.yaml`
 
+/// admonition | Builtin vs Custom SNMP files and their location
+    type: subtle-note
+The user-defined MIB definitions and table/trap files with the associated scripts are stored in `/etc/opt/srlinux/snmp` directory, while the built-in MIB definitions are stored in `/opt/srlinux/snmp` directory.
+///
+
 ### Input JSON Format
 
 Recall, that SNMP framework is powered by the underlying SR Linux's gNMI infrastructure. The `paths` you define in the table mapping file will retrieve the data that the conversion script will work on to create the SNMP MIB tables.  
@@ -744,3 +749,7 @@ iso.3.6.1.4.1.6527.115.114.108.105.110.117.120.1.7.4.109.103.109.116 = Timeticks
 Have a look at `/tmp/snmp_debug` to see the input and output JSON blobs.
 
 There you have it: A user-defined SNMP MIB added to SR Linux at **runtime**, no feature request, no software upgrade needed.
+
+### Lab
+
+We create [a lab](https://github.com/srl-labs/srl-snmp-framework-lab) that implements this custom gRPC server MIB that you can deploy locally or in Codespaces to try it out.
