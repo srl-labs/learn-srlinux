@@ -114,9 +114,9 @@ In the example below, the module is stuffed with multiple updates, replaces and 
 
 Config module uses JSON-RPC interface of SR Linux, and in particular, its [`Set` method](../../tutorials/programmability/json-rpc/basics.md#set). Upon receiving the Set method, SR Linux opens a private named candidate configuration and applies the operations in the  following order:
 
-1. updates
+1. deletes
 2. replaces
-3. deletes
+3. updates
 
 Note, that the operations that are part of the module's task are not committed independently, they are applied strictly together in the "all or nothing" fashion. When we say that the operations are applied in that order, we mean that changes get applied to the candidate configuration in that order. No commit happens just yet.
 
