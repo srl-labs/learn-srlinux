@@ -612,13 +612,18 @@ All switch interfaces are configured with the `vlan-tagging` **not enabled**, wh
 
 Let's see how this configuration affects the traffic between the clients by running our pinger script:
 
-```diff
-❯ ./ping.sh all
+```{.bash .no-select}
+sudo ./ping.sh all
+```
+
+<div class="embed-result">
+```{.diff .no-select .no-copy}
 + Ping to 10.1.0.2 (no tag) was successful.
 + Ping to 10.1.1.2 (single tag VID: 10) was successful.
 + Ping to 10.1.2.2 (single tag VID: 11) was successful.
 + Ping to 10.1.3.2 (double tag outer VID: 12, inner VID: 13) was successful.
 ```
+</div>
 
 Hey, all pings succeeded! And this is because this happened:
 
@@ -630,7 +635,7 @@ When the parent interface has not enabled `vlan-tagging`, all the incoming frame
 
 Let's now enable `vlan-tagging` on the `ethernet-1/1` interface of both SR Linux switches. To automate the configuration we leverage [gnmic](https://gnmic.openconfig.net) in the CLI mode and run the following command:
 
-```bash
+```{.bash .no-select}
 ./set-iface.sh single-tag
 ```
 
@@ -661,13 +666,18 @@ A:srl1# info interface ethernet-1/1
 
 This command enables `vlan-tagging` on the `ethernet-1/1` interface and configures a single-tagged VLAN with ID `10` on the `ethernet-1/1.0` subinterface. Re-run the pinger to see how this affects our setup:
 
-```diff
-❯ ./ping.sh all
+```{.bash .no-select}
+sudo ./ping.sh all
+```
+
+<div class="embed-result">
+```{.diff .no-select .no-copy}
 - Ping to 10.1.0.2 (no tag) failed.
 + Ping to 10.1.1.2 (single tag VID: 10) was successful.
 - Ping to 10.1.2.2 (single tag VID: 11) failed.
 - Ping to 10.1.3.2 (double tag outer VID: 12, inner VID: 13) failed.
 ```
+</div>
 
 Well, entirely different picture now:
 
@@ -717,13 +727,18 @@ A:srl1# info interface ethernet-1/1
 
 Running the pinger:
 
-```diff
-❯ ./ping.sh all
+```{.bash .no-select}
+sudo ./ping.sh all
+```
+
+<div class="embed-result">
+```{.diff .no-select .no-copy}
 - Ping to 10.1.0.2 (no tag) failed.
 + Ping to 10.1.1.2 (single tag VID: 10) was successful.
 + Ping to 10.1.2.2 (single tag VID: 11) was successful.
 + Ping to 10.1.3.2 (double tag outer VID: 12, inner VID: 13) was successful.
 ```
+</div>
 
 Let's look at the packet diagram to see what happened:
 
@@ -738,7 +753,7 @@ But frames without VLAN tags will be dropped, since they don't match the configu
 One last for today. Let's configure the `ethernet-1/1` interface of both SR Linux switches with the `untagged` VLAN encapsulation type. This configuration will accept only untagged frames and will drop all the tagged frames. Let's apply this configuration:
 
 ```bash
-❯ ./set-iface.sh untagged
+./set-iface.sh untagged
 ```
 
 ///details | Interface configuration
@@ -767,13 +782,18 @@ A:srl1# info interface ethernet-1/1
 
 Running the pinger:
 
-```diff
-❯ ./ping.sh all
+```{.bash .no-select}
+sudo ./ping.sh all
+```
+
+<div class="embed-result">
+```{.diff .no-select .no-copy}
 + Ping to 10.1.0.2 (no tag) was successful.
 - Ping to 10.1.1.2 (single tag VID: 10) failed.
 - Ping to 10.1.2.2 (single tag VID: 11) failed.
 - Ping to 10.1.3.2 (double tag outer VID: 12, inner VID: 13) failed.
 ```
+</div>
 
 Let's look at the packet diagram to see what happened:
 
