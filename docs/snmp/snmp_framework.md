@@ -1,20 +1,19 @@
----
+script ---
 comments: true
 ---
 
-# Customizing SNMP MIBs and Traps in SR Linux
+# Customizing SNMP MIBs for Gets and Traps in SR Linux
 
-In version 24.10.1, SR Linux introduces a customizable SNMP framework allowing users to define their own SNMP MIBs and traps.
-This same framework powers [SR Linux's built-in MIBs and traps](https://documentation.nokia.com/srlinux/24-10/books/system-mgmt/snmp.html), offering flexibility to tailor SNMP functionalities to specific requirements.
+SR Linux version 24.10.1 introduces a customizable SNMP framework allowing you to define your own SNMP management information bases (MIBs) for gets and traps. This same framework powers [SR Linux's built-in MIBs and traps](https://documentation.nokia.com/srlinux/24-10/books/system-mgmt/snmp.html), offering flexibility that customizes SNMP MIBs to the specific requirements for your network.
 
-The framework utilizes:
+The framework defines:
 
-* Mapping files (YAML): To define MIB tables and traps.
-* Conversion scripts ([uPython](https://micropython.org/)): To process data from the management server and expose it via SNMP.
+* Mapping files (YAML): To define MIB tables and object identifiers (OIDs).
+* Conversion scripts ([uPython](https://micropython.org/)): To process data from the management server via gNMI and convert it for SNMP.
 
-## SR Linux Built-In MIBs
+## SR Linux Built-In MIBs for Gets
 
-Built-in MIB mappings are defined in the configuration file available on the SR Linux's filesystem:
+Built-in MIB mappings are defined in the configuration file available on the SR Linux's file system:
 
 ```bash
 cat /opt/srlinux/snmp/snmp_files_config.yaml
@@ -34,13 +33,15 @@ trap-definitions:
 ```
 </div>
 
-### Table definitions
+A simple list of supported OIDs for monitoring is in `/etc/opt/srlinux/snmp/numbers.txt`, and a detailed list with script information is in `/etc/opt/srlinux/snmp/exportOids` when an `access-group` is configured. These files are created at runtime when the SNMP server is started.
+
+### Table Definitions
 
 The table definition YAML file describes the framework components used to define a particular MIB table. Take the `if_mib.yaml` file for example, it maps interface-related data to standard MIB tables such as `ifTable`, `ifXTable`, and `ifStackTable`.
 
-You can list the contents of this file with `cat /opt/srlinux/snmp/scripts/if_mib.yaml` command and we provide it here for reference:
+You can list the contents of this file with `cat /opt/srlinux/snmp/scripts/if_mib.yaml` and it is below for reference:
 
-/// details | `if_mib.yaml` definition file
+/// details | `if_mib.yaml` Definition File
     type: subtle-note
 
 ```yaml
@@ -224,15 +225,15 @@ scalars:
 The table definition file has the following important top level fields:
 
 * `paths`: Specifies the gNMI paths for retrieving data.
-* `python-script`: References the uPython script used for data conversion.
+* `python-script`: References the Python script used for data conversion.
 * `tables`: Lists MIB tables, their structure, and their OIDs.
 * `scalars`: Defines scalar OIDs.
 
-Under the `tables` key you find the list of MIB table definitions, where each table has the following structure:
+You can see the list of MIB table definitions in the `tables` list, where each table has the following structure:
 
 * `name`: Specifies the name of the SNMP table. This is used for identification and reference in the SNMP configuration.
-* `enabled`: Determines whether the table is active (true) or inactive (false).
-* `oid`: The base Object Identifier (OID) for the table. All rows and columns in the table are extensions of this base OID.
+* `enabled`: Defines whether the table is active (true) or inactive (false).
+* `oid`: The base OID for the table. All rows and columns in the table are extensions of this base OID.
 * `indexes`: Indexes uniquely identify rows in the table. Each index maps a specific OID to a value that differentiates rows. A list of column definitions that serve as unique identifiers for rows.
     * `name`: The name of the index column.
     * `oid`: The OID for the index.
@@ -263,24 +264,24 @@ The `syntax` field in SNMP table and scalar definitions specifies the data type 
 
 ## Creating Custom MIBs
 
-Users can create custom MIB definitions following these steps:
+You can create custom MIB definitions following these steps:
 
-1. Define the Mapping File: Use YAML to specify paths, tables, scalars, and their structure.
-2. Write the Conversion Script: Implement a `snmp_main` function in uPython that processes the input JSON and generates SNMP objects.
-3. Add the mapping file to the list of table-definitions under `/etc/opt/srlinux/snmp/snmp_files_config.yaml`
+1. Define the mapping file: Specify paths, tables, scalars, and their structure in YAML.
+2. Write the conversion script: Implement a `snmp_main` function in Python that processes the input JSON and generates SNMP objects.
+3. Add the mapping file to the list of table definitions under `/etc/opt/srlinux/snmp/snmp_files_config.yaml`.
 
-/// admonition | Builtin vs Custom SNMP files and their location
+/// admonition | Location of Built-in and Custom SNMP Framework Files
     type: subtle-note
-The user-defined MIB definitions and table/trap files with the associated scripts are stored in `/etc/opt/srlinux/snmp` directory, while the built-in MIB definitions are stored in `/opt/srlinux/snmp` directory.
+The user-defined MIB definitions and files with the associated scripts are stored in `/etc/opt/srlinux/snmp` directory, while the built-in MIB definitions are stored in `/opt/srlinux/snmp` directory.
 ///
 
 ### Input JSON Format
 
-Recall, that SNMP framework is powered by the underlying SR Linux's gNMI infrastructure. The `paths` you define in the table mapping file will retrieve the data that the conversion script will work on to create the SNMP MIB tables.  
+The SNMP framework is powered by the underlying SR Linux's gNMI infrastructure. The `paths` you define in the table mapping file will retrieve the data that the conversion script will use to create the SNMP MIB tables.
 
-A thing to note is that the `paths` you define in the mapping file are non-recursive; this means that the returned data will be limited to the immediate children of the path you specify. To recursively retrieve data from a path, add `...` to the end of the path, e.g. `/interface/ethernet/...`.
+Note that the `paths` you define in the mapping file are non-recursive; this means that the returned data will be limited to the immediate children of the path you specify. To recursively retrieve data from a path, add `...` to the end of the path, e.g. `/interface/ethernet/...`.
 
-The uPython script receives data in JSON format, including global SNMP information and the gNMI query results. Here is an example of a payload the `if_mib.py` script receives.
+The Python script receives data in JSON format, including global SNMP information and the gNMI query results. Here is an example of a payload the `if_mib.py` script receives.
 
 ```{.json .code-scroll-lg}
 {
@@ -393,7 +394,7 @@ The uPython script receives data in JSON format, including global SNMP informati
 
 ### Output JSON Format
 
-The script should output JSON containing tables and scalars.
+The script outputs JSON containing tables and scalars.
 
 ```{.json .code-scroll-lg}
 {
@@ -438,7 +439,7 @@ The script should output JSON containing tables and scalars.
 }
 ```
 
-### uPython script
+### Python Script
 
 The script entry point is a function called `snmp_main` that takes a JSON string as input and returns a JSON string.
 
@@ -446,16 +447,17 @@ The script entry point is a function called `snmp_main` that takes a JSON string
 def snmp_main(in_json_str: str) -> str:
 ```
 
-See the built-in scripts as examples.
-The `/opt/srlinux/snmp/scripts/utilities.py` contains some useful helper functions to perform various checks and common type conversions.
+Refer to the built-in scripts as examples. The `/opt/srlinux/snmp/scripts/utilities.py` script contains some useful helper functions to perform various checks and common type conversions.
 
 ## SR Linux Built-In Traps
 
-Traps are defined with the mapping files that look similar to the MIB ones, but include additional parameters for triggers and variable bindings. As we've seen in the beginning of this document, the traps mapping files are listed in the global `/opt/srlinux/snmp/snmp_files_config.yaml`.
+Traps are defined with mapping files that look similar to the MIB files, but include additional parameters for triggers and variable bindings. As you have seen in the beginning of this document, the traps mapping files are listed in the global `/opt/srlinux/snmp/snmp_files_config.yaml`.
 
-### Trap definitions
+A list of OIDs available for traps is in `/etc/opt/srlinux/snmp/installedTraps` when a `trap-group` is configured. This file is created at runtime when the SNMP server is started.
 
-The trap definition YAML file has exactly the same top level elements as the table definition file but instead of `tables` the file contains `traps` top-level key. Here is the contents of the `/opt/srlinux/snmp/scripts/rfc3418_traps.yaml` mapping file that defines the traps as per RFC 3418:
+### Trap Definitions
+
+The trap definition YAML file has exactly the same top level elements as the table definition file but instead of `tables` the file contains `traps` top-level list. Here is the contents of the `/opt/srlinux/snmp/scripts/rfc3418_traps.yaml` mapping file that defines the traps as per RFC 3418:
 
 /// details | `rfc3418_traps.yaml` definition file
     type: subtle-note
@@ -551,9 +553,9 @@ Besides the common `name`, `enabled` and `oid` fields, the `traps` object has th
 
 To define custom traps:
 
-1. Write a YAML Mapping File: Define the trap triggers, contexts, and variable bindings.
-2. Implement the Conversion Script: Process trigger events and generate trap data in the `snmp_main` function.
-3. Add the mapping file to the list of trap-definitions under `/etc/opt/SR Linux/snmp/snmp_files_config.yaml`
+1. Define the mapping file: Define the trap triggers, contexts, and variable bindings in YAML.
+2. Write the conversion script: Implement trigger events and generate trap data in the `snmp_main` function.
+3. Add the mapping file to the list of trap-definitions under `/etc/opt/SR Linux/snmp/snmp_files_config.yaml`.
 
 ### Input JSON Format
 
@@ -627,7 +629,7 @@ The Python script receives a JSON object containing trap triggers and context da
 
 ### Output JSON Format
 
-The script should return a list of traps.
+The script returns a list of traps.
 
 ```{.json .code-scroll-lg}
 {
@@ -649,7 +651,7 @@ The script should return a list of traps.
 }
 ```
 
-### uPython script
+### Python Script
 
 The script entry point is a function called `snmp_main` that takes a JSON string as input and returns a JSON string.
 
@@ -657,71 +659,70 @@ The script entry point is a function called `snmp_main` that takes a JSON string
 def snmp_main(in_json_str: str) -> str:
 ```
 
-See the built-in scripts as examples.
-The `/opt/srlinux/snmp/scripts/utilities.py` file contains some useful helper functions to perform various checks and common type conversions.
+Refer to the built-in scripts as examples.  The `/opt/srlinux/snmp/scripts/utilities.py` script contains some useful helper functions to perform various checks and common type conversions.
 
 ## Directory Structure for Custom Files
 
-Place user-defined files under `/etc/opt/srlinux/snmp`.
+Place user-defined files in `/etc/opt/srlinux/snmp`.
 
-Changes to mapping files and scripts are not automatically picked up by the SNMP server,
-a restart of the SNMP server is required.
+Changes to mapping files and scripts are not automatically read by the SNMP server, a restart of the SNMP server is required.
 
 ```srl
+--{ + running }--[  ]--
 A:srl1# /tools system app-management application snmp_server-mgmt restart
 ```
 
 ## Debugging and Troubleshooting
 
-Debug files are generated in `/tmp/snmp_debug/$NETWORK_INSTANCE`:
+Debug files are generated in `/tmp/snmp_debug/$NETWORK_INSTANCE` when `debug: true` is set in the YAML configuration file.
 
-* Input/Output Logs: Check `.json_input`, `.json_output`, `.console` and `.error` files for debugging script execution.
-  The `.console` files contain anything printed by the scripts and the `.error` files contain mapping and scripts errors.
-* Path Data: Inspect debug outputs for issues in path retrieval.
+* Input/output logs: Check `.json_input`, `.json_output`, `.console` and `.error` files for debugging script execution.  The `.console` files contain output printed by the scripts and the `.error` files contain mapping and scripts errors.
+* Path data: Inspect debug outputs for issues in path retrieval.
 
 ## Example: gRPCServer MIB
 
-Let's add a custom SNMP MIB to SR Linux at **runtime**, no feature requests, no software upgrades,
-let it be a gRPC server SNMP MIB 🤪.
+Let's add a custom SNMP MIB to SR Linux at **runtime**, no feature requests, no software upgrades, by creating a gRPC server SNMP MIB 🤪.
 
-### Table definition
+### Table Definition
 
-Add a new table definition under `/etc/opt/srlinux/snmp/scripts/grpc_mib.yaml`
+Add a new table definition under `/etc/opt/srlinux/snmp/scripts/grpc_mib.yaml`.
 
-This MIB has a single index `gRPCServerName` and 6 columns; the gRPC server network instance, its admin and operational states, the number of accepted and rejected RPCs as well as the last time an RPC was accepted.
+This MIB has a single index `gRPCServerName` and 6 columns; the gRPC server network instance, its admin and operational states, the number of accepted and rejected RPCs and the last time an RPC was accepted.
 
-All these fields can be mapped from leaves that can be found under the xpath `/system/grpc-server/...`
+All of these fields can be mapped from leafs that are found under the XPath `/system/grpc-server/...`
 
 ```{.yaml .code-scroll-lg}
 --8<-- "https://raw.githubusercontent.com/srl-labs/srl-snmp-framework-lab/refs/heads/main/grpc_mib.yaml"
 ```
 
-### Python script
+### Python Script
 
-The YAML file points to a python script called `grpc_mib.py`. It must be placed in the same directory as the `grpc_mib.yaml` file.
+The YAML file references a Python script called `grpc_mib.py`. It must be placed in the same directory as the `grpc_mib.yaml` file.
 
-The script is fairly simple; grabs the JSON input, set some global SNMP information such as the box boot time (useful for calculating time ticks values).
-After that, it iterates over the list of gRPC servers in the input JSON and set each server's columns values (with the correct format) in the prepared output dict.
-Finally it returns the output dict as a JSON blob.
+The script is fairly simple; it grabs the JSON input and sets some global SNMP information such as the system boot time (useful for calculating time ticks values).  After that, it iterates over the list of gRPC servers in the input JSON and set each server's columns values (with the correct format) in the prepared output dict.  Finally it returns the output dict as a JSON blob.
 
 ```{.python .code-scroll-lg}
 --8<-- "https://raw.githubusercontent.com/srl-labs/srl-snmp-framework-lab/refs/heads/main/grpc_mib.py"
 ```
 
-### Custom MIBs file
+### Custom MIBs File
 
-Reference the YAML mapping file in the user's `snmp_files_config.yaml` so that the SNMP server picks it up
+Reference to the YAML mapping file in the your `snmp_files_config.yaml` so that the SNMP server loads it.
 
-```shell
+```bash
 cat /etc/opt/srlinux/snmp/snmp_files_config.yaml
+```
 
+<div class="embed-result">
+```yaml
 table-definitions:
   - scripts/grpc_mib.yaml
 ```
+</div>
 
-### SNMP server restart
+### SNMP Server Restart
 
-Restart the SNMP server process for it to pick up the new custom MIB definitions.
+Restart the SNMP server process for it to load the new custom MIB definitions.
 
 ```srl
 --{ + running }--[  ]--
@@ -733,9 +734,9 @@ A:srl1# /tools system app-management application snmp_server-mgmt restart
     Application 'snmp_server-mgmt' was restarted
 ```
 
-And test your new MIB
+And test your new MIB.
 
-```shell
+```bash
 $ snmpwalk -v2c -c public clab-snmp-srl1 1.3.6.1.4.1.6527.115
 
 iso.3.6.1.4.1.6527.115.114.108.105.110.117.120.1.2.4.109.103.109.116 = STRING: "mgmt"                            # <-- grpcServerNetworkInstance
@@ -748,8 +749,12 @@ iso.3.6.1.4.1.6527.115.114.108.105.110.117.120.1.7.4.109.103.109.116 = Timeticks
 
 Have a look at `/tmp/snmp_debug` to see the input and output JSON blobs.
 
-There you have it: A user-defined SNMP MIB added to SR Linux at **runtime**, no feature request, no software upgrade needed.
+There you have it: a user-defined SNMP MIB added to SR Linux at **runtime**, no feature request, no software upgrade needed.
 
-### Lab
+### Lab Example
 
-We create [a lab](https://github.com/srl-labs/srl-snmp-framework-lab) that implements this custom gRPC server MIB that you can deploy locally or in Codespaces to try it out.
+We created [a lab](https://github.com/srl-labs/srl-snmp-framework-lab) that implements this custom gRPC server MIB that you can deploy locally or in Codespaces to try it out.
+
+### Conclusion
+
+The SR Linux customizable SNMP framework allows you to define your own SNMP MIBs for gets and traps that customize SNMP functionalities to specific requirements.
