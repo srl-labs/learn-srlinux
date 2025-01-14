@@ -79,7 +79,7 @@ title: Programmability
 
     [:octicons-arrow-right-24: Documentation](../ansible/index.md)
 
-- :octicons-terminal-24:{ .lg .middle } **Screen scraping**
+- :octicons-terminal-24:{ .lg .middle } **Screen Scraping**
 
     ---
 
@@ -94,13 +94,13 @@ title: Programmability
 
     <small>:material-progress-wrench: Tutorials coming soon...</small>
 
-- :material-emoticon-devil:{ .lg .middle } **Program SNMP MIBs and Traps**
+- :material-emoticon-devil:{ .lg .middle } **Custom SNMP MIBs for Gets and Traps**
 
     ---
 
-    We have gNMI, we have JSON-RPC, we have NETCONF, we have CLI with JSON and YAML outputs, but you kept asking for SNMP...
+    We have gNMI, we have JSON-RPC, we have NETCONF, we have a CLI with JSON and YAML outputs, but if you are still using SNMP...
 
-    Alright, here is your SNMP, but fully programmable!
+    We have SNMP, and it's fully programmable to define custom MIBs!
 
     [:octicons-arrow-right-24: SNMP Framework](../snmp/snmp_framework.md)
 
