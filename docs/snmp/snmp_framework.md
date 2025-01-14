@@ -1,4 +1,4 @@
-script ---
+---
 comments: true
 ---
 
@@ -755,6 +755,6 @@ There you have it: a user-defined SNMP MIB added to SR Linux at **runtime**, no 
 
 We created [a lab](https://github.com/srl-labs/srl-snmp-framework-lab) that implements this custom gRPC server MIB that you can deploy locally or in Codespaces to try it out.
 
-### Conclusion
+## Conclusion
 
 The SR Linux customizable SNMP framework allows you to define your own SNMP MIBs for gets and traps that customize SNMP functionalities to specific requirements.
