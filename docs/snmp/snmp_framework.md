@@ -555,7 +555,7 @@ To define custom traps:
 
 1. Define the mapping file: Define the trap triggers, contexts, and variable bindings in YAML.
 2. Write the conversion script: Implement trigger events and generate trap data in the `snmp_main` function.
-3. Add the mapping file to the list of trap-definitions under `/etc/opt/SR Linux/snmp/snmp_files_config.yaml`.
+3. Add the mapping file to the list of trap-definitions under `/etc/opt/srlinux/snmp/snmp_files_config.yaml`.
 
 ### Input JSON Format
 
