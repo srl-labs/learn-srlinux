@@ -736,7 +736,9 @@ A:srl1# /tools system app-management application snmp_server-mgmt restart
     Application 'snmp_server-mgmt' was restarted
 ```
 
-And test your new MIB.
+### Test Your New MIB
+
+You can test your new MIB using tools like `snmpwalk`.
 
 ```bash
 $ snmpwalk -v2c -c public clab-snmp-srl1 1.3.6.1.4.1.6527.115
@@ -932,7 +934,9 @@ A:srl1# /tools system app-management application snmp_server-mgmt restart
     Application 'snmp_server-mgmt' was restarted
 ```
 
-And test your new traps by sending them from SR Linux.
+### Test Your New Traps
+
+Test your new traps by sending them from SR Linux.
 
 ```srl
 --{ running }--[  ]--
