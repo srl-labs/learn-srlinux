@@ -16,7 +16,7 @@ The framework defines:
 Built-in MIB mappings are defined in the configuration file available on the SR Linux's file system:
 
 ```bash
-cat /opt/srlinux/snmp/snmp_files_config.yaml
+# cat /opt/srlinux/snmp/snmp_files_config.yaml
 ```
 
 <div class="embed-result">
@@ -268,7 +268,7 @@ You can create custom MIB definitions following these steps:
 
 1. Define the mapping file: Specify paths, tables, scalars, and their structure in YAML.
 2. Write the conversion script: Implement a `snmp_main` function in Python that processes the input JSON and generates SNMP objects.
-3. Add the mapping file to the list of table definitions under `/etc/opt/srlinux/snmp/snmp_files_config.yaml`.
+3. Add the mapping file to the list of table definitions to `/etc/opt/srlinux/snmp/snmp_files_config.yaml`.
 
 /// admonition | Location of Built-in and Custom SNMP Framework Files
     type: subtle-note
@@ -288,7 +288,7 @@ The Python script receives data in JSON format, including global SNMP informatio
   "_snmp_info_": {
     "boottime": "2024-11-11T16:42:44Z",
     "datetime": "2024-11-15T19:23:29Z",
-    "debug": true,
+    "debug": false,
     "is-cold-boot": false,
     "network-instance": "mgmt",
     "platform-type": "7220 IXR-D2",
@@ -555,7 +555,7 @@ To define custom traps:
 
 1. Define the mapping file: Define the trap triggers, contexts, and variable bindings in YAML.
 2. Write the conversion script: Implement trigger events and generate trap data in the `snmp_main` function.
-3. Add the mapping file to the list of trap-definitions under `/etc/opt/SR Linux/snmp/snmp_files_config.yaml`.
+3. Add the mapping file to the list of trap definitions to `/etc/opt/SR Linux/snmp/snmp_files_config.yaml`.
 
 ### Input JSON Format
 
@@ -668,7 +668,7 @@ Place user-defined files in `/etc/opt/srlinux/snmp`.
 Changes to mapping files and scripts are not automatically read by the SNMP server, a restart of the SNMP server is required.
 
 ```srl
---{ + running }--[  ]--
+--{ running }--[  ]--
 A:srl1# /tools system app-management application snmp_server-mgmt restart
 ```
 
@@ -676,6 +676,8 @@ A:srl1# /tools system app-management application snmp_server-mgmt restart
 
 Debug files are generated in `/tmp/snmp_debug/$NETWORK_INSTANCE` when `debug: true` is set in the YAML configuration file.
 
+* For MIBs: check `/etc/opt/srlinux/snmp/exportOids` for your OIDs and make sure an `access-group` is configured.
+* For traps: check `/etc/opt/srlinux/snmp/installedTraps` for your traps and make sure a `trap-group` is configured. 
 * Input/output logs: Check `.json_input`, `.json_output`, `.console` and `.error` files for debugging script execution.  The `.console` files contain output printed by the scripts and the `.error` files contain mapping and scripts errors.
 * Path data: Inspect debug outputs for issues in path retrieval.
 
@@ -685,7 +687,7 @@ Let's add a custom SNMP MIB to SR Linux at **runtime**, no feature requests, no 
 
 ### Table Definition
 
-Add a new table definition under `/etc/opt/srlinux/snmp/scripts/grpc_mib.yaml`.
+Add a new table definition to `/etc/opt/srlinux/snmp/scripts/grpc_mib.yaml`.
 
 This MIB has a single index `gRPCServerName` and 6 columns; the gRPC server network instance, its admin and operational states, the number of accepted and rejected RPCs and the last time an RPC was accepted.
 
@@ -707,10 +709,10 @@ The script is fairly simple; it grabs the JSON input and sets some global SNMP i
 
 ### Custom MIBs File
 
-Reference to the YAML mapping file in the your `snmp_files_config.yaml` so that the SNMP server loads it.
+Reference the YAML mapping file in the your `snmp_files_config.yaml` so that the SNMP server loads it.
 
 ```bash
-cat /etc/opt/srlinux/snmp/snmp_files_config.yaml
+# cat /etc/opt/srlinux/snmp/snmp_files_config.yaml
 ```
 
 <div class="embed-result">
@@ -725,7 +727,7 @@ table-definitions:
 Restart the SNMP server process for it to load the new custom MIB definitions.
 
 ```srl
---{ + running }--[  ]--
+--{ running }--[  ]--
 A:srl1# /tools system app-management application snmp_server-mgmt restart
 /system/app-management/application[name=snmp_server-mgmt]:
     Application 'snmp_server-mgmt' was killed with signal 9
@@ -747,14 +749,291 @@ iso.3.6.1.4.1.6527.115.114.108.105.110.117.120.1.6.4.109.103.109.116 = INTEGER: 
 iso.3.6.1.4.1.6527.115.114.108.105.110.117.120.1.7.4.109.103.109.116 = Timeticks: (44659000) 5 days, 4:03:10.00  # <-- grpcServerLastAccessAccept
 ```
 
-Have a look at `/tmp/snmp_debug` to see the input and output JSON blobs.
+Have a look at `/tmp/snmp_debug` to see the input and output JSON blobs when `debug: true` is set in the YAML configuration file.
 
 There you have it: a user-defined SNMP MIB added to SR Linux at **runtime**, no feature request, no software upgrade needed.
 
-### Lab Example
+## Example: gRPCServer Traps
 
-We created [a lab](https://github.com/srl-labs/srl-snmp-framework-lab) that implements this custom gRPC server MIB that you can deploy locally or in Codespaces to try it out.
+Similar to the SNMP MIB, let's add custom SNMP traps to SR Linux at **runtime**, no feature requests, no software upgrades, by creating a gRPC server SNMP trap 🤪. Traps are independant from MIBs and do not need a corresponding MIB that is used for SNMP gets.
+
+### Trap Definitions
+
+Add a new trap definitions to `/etc/opt/srlinux/snmp/scripts/grpc_traps.yaml`.
+
+Two traps are defined:
+
+* gRPCServerDown: sent when a gRPC server goes down.
+* gRPCServerUp: sent when a gRPC server comes up, including at startup.
+
+Both of these traps are triggered from the `/system/grpc-server/oper-state` XPath.
+
+```{.yaml .code-scroll-lg}
+python-script: grpc_traps.py
+enabled: true
+debug: false
+traps:
+    - name:    gRPCServerDown
+      enabled: true
+      oid:     1.3.6.1.4.1.6527.115.114.108.105.110.117.122
+      triggers:
+          - /system/grpc-server/oper-state
+      data:
+          - objects: # this object is a scalar, does not use an index
+                - name: gRPCServerName
+                  oid:  1.3.6.1.4.1.6527.115.114.108.105.110.117.120.1.1
+                  syntax: octet string
+    - name:    gRPCServerUp
+      enabled: true
+      startup: true
+      oid:     1.3.6.1.4.1.6527.115.114.108.105.110.117.123
+      triggers:
+          - /system/grpc-server/oper-state
+      data:
+          - objects: # this object is a scalar, does not use an index
+                - name: gRPCServerName
+                  oid:  1.3.6.1.4.1.6527.115.114.108.105.110.117.120.1.1
+                  syntax: octet string
+```
+
+### Python Script
+
+The YAML file references a Python script called `grpc_traps.py`. It must be placed in the same directory as the `grpc_mib.yaml` file.
+
+The script is fairly simple; it grabs the JSON input and looks for the gRPC server name to add as a variable binding. You can add additional variable bindings to traps that are relevant if you want, but in this case we only need one for the server name. Finally it returns the output dict as a JSON blob.
+
+```{.python .code-scroll-lg}
+###########################################################################
+# Description:
+#
+# Copyright (c) 2025 Nokia
+###########################################################################
+
+import json
+from collections import OrderedDict
+
+import utilities
+
+# list of traps that will be echoed back to the
+traps_list_db: list = []
+
+IFOPERSTATUS_UP             = 1
+IFOPERSTATUS_DOWN           = 2
+IFOPERSTATUS_TESTING        = 3
+IFOPERSTATUS_UNKNOWN        = 4
+
+def convertOperStatus(value: str) -> int:
+    if value is not None:
+        if value == 'up':
+            return IFOPERSTATUS_UP
+        elif value == 'down' or value == 'testing' : # RFC2863 section 3.1.15
+            return IFOPERSTATUS_DOWN
+    return IFOPERSTATUS_UNKNOWN
+
+
+def store_value_in_json(json_obj:dict, name:str, value) -> None:
+    if value is not None:
+        json_obj[name] = value
+
+
+def gRPCServerUpgRPCServerDownTrap(system: list, trap: dict) -> None:
+    trap_name = trap.get('name')
+    if trap_name is not None:
+        row = OrderedDict()
+        objects = OrderedDict()
+
+        objects["gRPCServerName"] = system["grpc-server"][0]["name"]
+
+        row['trap'] = trap_name
+        row['indexes'] = OrderedDict()  # no indexes to report
+        row['objects'] = objects
+        traps_list_db.append(row)
+
+
+#
+# main routine
+#
+def snmp_main(in_json_str: str) -> str:
+    global traps_list_db
+
+    in_json = json.loads(in_json_str)
+
+    del in_json_str
+
+    # read in general info from the snmp server
+    snmp_info = in_json.get('_snmp_info_')
+    utilities.process_snmp_info(snmp_info)
+
+    # read in info about the traps that will be triggered in this request (depending on the trigger)
+    trap_info = in_json.get('_trap_info_')
+
+    # read in context data
+    system = in_json.get('system', [])
+
+    del in_json
+
+    for trap in trap_info:
+        name = trap['name']
+        trigger = trap['trigger']
+        #print(f'do trap {name} for {trigger}')
+
+        if utilities.is_simulated_trap():
+            if name == 'gRPCServerDown':
+                gRPCServerUpgRPCServerDownTrap(system, trap)
+            elif name == 'gRPCServerUp':
+                gRPCServerUpgRPCServerDownTrap(system, trap)
+            else:
+                raise ValueError(f'Unknown trap {name} with trigger {trigger}')
+
+        else:
+            if name == 'gRPCServerDown':
+                gRPCServerUpgRPCServerDownTrap(system, trap)
+            elif name == 'gRPCServerUp':
+                gRPCServerUpgRPCServerDownTrap(system, trap)
+            else:
+                raise ValueError(f'Unknown trap {name} with trigger {trigger}')
+
+    response:dict = {}
+
+    response['traps'] = traps_list_db
+
+    del system, traps_list_db
+
+    return json.dumps(response)
+
+```
+
+### Custom Traps File
+
+Reference the YAML mapping file in the your `snmp_files_config.yaml` so that the SNMP server loads it.
+
+```bash
+# cat /etc/opt/srlinux/snmp/snmp_files_config.yaml
+```
+
+<div class="embed-result">
+```yaml
+trap-definitions:
+  - scripts/grpc_traps.yaml
+```
+</div>
+
+### SNMP Server Restart
+
+Restart the SNMP server process for it to load the new custom traps.
+
+```srl
+--{ running }--[  ]--
+A:srl1# /tools system app-management application snmp_server-mgmt restart
+/system/app-management/application[name=snmp_server-mgmt]:
+    Application 'snmp_server-mgmt' was killed with signal 9
+
+/system/app-management/application[name=snmp_server-mgmt]:
+    Application 'snmp_server-mgmt' was restarted
+```
+
+And test your new traps by sending them from SR Linux.
+
+```srl
+--{ running }--[  ]--
+A:srl1# /tools system snmp trap gRPCServerDown force trigger "/system/grpc-server[name=mgmt]/oper-state"
+/:
+    Trap gRPCServerDown was sent
+
+--{ running }--[  ]--
+A:srl1# /tools system snmp trap gRPCServerUp force trigger "/system/grpc-server[name=mgmt]/oper-state"
+/:
+    Trap gRPCServerUp was sent
+```
+
+You can see the traps being received on a Unix host using tools like `snmptrapd`.
+
+```bash
+# snmptrapd -f -Lo
+NET-SNMP version 5.9.1
+2025-01-22 16:29:49 srlinux.example.com [UDP: [192.168.0.12]:54880->[192.168.0.10]:162]:
+DISMAN-EVENT-MIB::sysUpTimeInstance = Timeticks: (540800) 1:30:08.00 # <-- sysUpTime
+SNMPv2-MIB::snmpTrapOID.0 = OID: SNMPv2-SMI::enterprises.6527.115.114.108.105.110.117.122 # <-- gRPCServerDown
+SNMPv2-SMI::enterprises.6527.115.114.108.105.110.117.120.1.1.0 = STRING: "mgmt" # <-- gRPCServerName
+2025-01-22 16:29:56 srlinux.example.com [UDP: [192.168.0.12]:54880->[192.168.0.10]:162]:
+DISMAN-EVENT-MIB::sysUpTimeInstance = Timeticks: (541500) 1:30:15.00 # <-- sysUpTime
+SNMPv2-MIB::snmpTrapOID.0 = OID: SNMPv2-SMI::enterprises.6527.115.114.108.105.110.117.123 # <-- gRPCServerUp
+SNMPv2-SMI::enterprises.6527.115.114.108.105.110.117.120.1.1.0 = STRING: "mgmt" # <-- gRPCServerName
+```
+
+Have a look at `/tmp/snmp_debug` to see the input and output JSON blobs when `debug: true` is set in the YAML configuration file.
+
+### Input JSON Blob
+
+```bash
+# cat /tmp/snmp_debug/mgmt/grpc_traps.json_input
+```
+
+<div class="embed-result">
+```{.json .code-scroll-lg}
+// comments will be removed before sending to the python-script
+{
+        "_snmp_info_":  {
+                "boottime":     "2025-01-22T19:59:41Z",
+                "datetime":     "2025-01-22T21:29:56Z",
+                "debug":        true,
+                "is-cold-boot": false,
+                "is-forced-trap":       true,
+                "is-simulated-trap":    true,
+                "network-instance":     "mgmt",
+                "platform-type":        "7220 IXR-D2L",
+                "script":       "grpc_traps.yaml",
+                "sysobjectid":  "1.3.6.1.4.1.6527.1.20.26",
+                "sysuptime":    541500,
+                "trigger":      "/system/grpc-server[name=mgmt]/oper-state",
+                "paths":        ["/system/grpc-server[name=mgmt]/oper-state"]
+        },
+        "_trap_info_":  [{
+                        "name": "gRPCServerUp",
+                        "current-value":        "up",
+                        "simulated-value":      "up",
+                        "startup":      true,
+                        "trigger":      "/system/grpc-server/oper-state",
+                        "xpath":        "/system/grpc-server[name=mgmt]/oper-state"
+                }],
+        "system":       {
+                "grpc-server":  [{
+                                // Path:        "/system/grpc-server[name=mgmt]"
+                                "name": "mgmt",
+                                "oper-state":   "up"
+                        }]
+        }
+}
+```
+</div>
+
+### Output JSON Blob
+
+```bash
+# cat /tmp/snmp_debug/mgmt/grpc_traps.json_output
+```
+
+<div class="embed-result">
+```{.json .code-scroll-lg}
+{
+        "traps":        [{
+                        "trap": "gRPCServerUp",
+                        "indexes":      {
+                        },
+                        "objects":      {
+                                "gRPCServerName":       "mgmt"
+                        }
+                }]
+}
+```
+</div>
+
+There you have it: user-defined SNMP traps added to SR Linux at **runtime**, no feature request, no software upgrade needed.
+
+## MIB and Trap Lab Example
+
+We created [a lab](https://github.com/srl-labs/srl-snmp-framework-lab) that implements this custom gRPC server MIB and traps that you can deploy locally or in Codespaces to try it out.
 
 ## Conclusion
 
-The SR Linux customizable SNMP framework allows you to define your own SNMP MIBs for gets and traps that customize SNMP functionalities to specific requirements.
+The SR Linux customizable SNMP framework allows you to define your own SNMP MIBs for gets and traps that customize SNMP functionalities to your specific requirements at **runtime**, no feature request, no software upgrade needed.
