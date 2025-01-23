@@ -713,12 +713,12 @@ The script is fairly simple; it grabs the JSON input and sets some global SNMP i
 
 Reference the YAML mapping file in the your `snmp_files_config.yaml` so that the SNMP server loads it.
 
-```bash
+```{.bash .no-select}
 cat /etc/opt/srlinux/snmp/snmp_files_config.yaml
 ```
 
 <div class="embed-result">
-```yaml
+```{.yaml .no-copy .no-select}
 table-definitions:
   - scripts/grpc_mib.yaml
 ```
@@ -755,7 +755,7 @@ snmpwalk -v 2c -c public snmp-srl 1.3.6.1.4.1.6527.115 #(1)!
     ```
 
 <div class="embed-result">
-```
+```{.text .no-select .no-copy}
 iso.3.6.1.4.1.6527.115.114.108.105.110.117.120.1.2.4.109.103.109.116 = STRING: "mgmt"                            # <-- grpcServerNetworkInstance
 iso.3.6.1.4.1.6527.115.114.108.105.110.117.120.1.3.4.109.103.109.116 = INTEGER: 1                                # <-- gRPCServerAdminState
 iso.3.6.1.4.1.6527.115.114.108.105.110.117.120.1.4.4.109.103.109.116 = INTEGER: 1                                # <-- grpcServerOperState
@@ -923,12 +923,12 @@ def snmp_main(in_json_str: str) -> str:
 
 Reference the YAML mapping file in the your `snmp_files_config.yaml` so that the SNMP server loads it.
 
-```bash
+```{.bash .no-select}
 cat /etc/opt/srlinux/snmp/snmp_files_config.yaml
 ```
 
 <div class="embed-result">
-```yaml
+```{.yaml .no-copy .no-select}
 trap-definitions:
   - scripts/grpc_traps.yaml
 ```
@@ -983,12 +983,12 @@ Have a look at `/tmp/snmp_debug` to see the input and output JSON blobs when `de
 
 #### Input JSON Blob
 
-```bash
+```{.bash .no-select}
 cat /tmp/snmp_debug/mgmt/grpc_traps.json_input
 ```
 
 <div class="embed-result">
-```{.json .code-scroll-lg}
+```{.json .code-scroll-lg .no-copy}
 // comments will be removed before sending to the python-script
 {
         "_snmp_info_":  {
@@ -1027,12 +1027,12 @@ cat /tmp/snmp_debug/mgmt/grpc_traps.json_input
 
 #### Output JSON Blob
 
-```bash
+```{.bash .no-select}
 cat /tmp/snmp_debug/mgmt/grpc_traps.json_output
 ```
 
 <div class="embed-result">
-```{.json .code-scroll-lg}
+```{.json .no-copy .no-select}
 {
         "traps":        [{
                         "trap": "gRPCServerUp",
