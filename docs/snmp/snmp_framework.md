@@ -681,11 +681,13 @@ Debug files are generated in `/tmp/snmp_debug/$NETWORK_INSTANCE` when `debug: tr
 * Input/output logs: Check `.json_input`, `.json_output`, `.console` and `.error` files for debugging script execution.  The `.console` files contain output printed by the scripts and the `.error` files contain mapping and scripts errors.
 * Path data: Inspect debug outputs for issues in path retrieval.
 
-## Example: gRPCServer MIB
+## Examples
+
+### gRPCServer MIB
 
 Let's add a custom SNMP MIB to SR Linux at **runtime**, no feature requests, no software upgrades, by creating a gRPC server SNMP MIB 🤪.
 
-### Table Definition
+#### Table Definition
 
 Add a new table definition to `/etc/opt/srlinux/snmp/scripts/grpc_mib.yaml`.
 
@@ -697,7 +699,7 @@ All of these fields can be mapped from leafs that are found under the XPath `/sy
 --8<-- "https://raw.githubusercontent.com/srl-labs/srl-snmp-framework-lab/refs/heads/main/grpc_mib.yaml"
 ```
 
-### Python Script
+#### Python Script
 
 The YAML file references a Python script called `grpc_mib.py`. It must be placed in the same directory as the `grpc_mib.yaml` file.
 
@@ -707,7 +709,7 @@ The script is fairly simple; it grabs the JSON input and sets some global SNMP i
 --8<-- "https://raw.githubusercontent.com/srl-labs/srl-snmp-framework-lab/refs/heads/main/grpc_mib.py"
 ```
 
-### Custom MIBs File
+#### Custom MIBs File
 
 Reference the YAML mapping file in the your `snmp_files_config.yaml` so that the SNMP server loads it.
 
@@ -722,7 +724,7 @@ table-definitions:
 ```
 </div>
 
-### SNMP Server Restart
+#### SNMP Server Restart
 
 Restart the SNMP server process for it to load the new custom MIB definitions.
 
@@ -736,13 +738,16 @@ A:srl1# /tools system app-management application snmp_server-mgmt restart
     Application 'snmp_server-mgmt' was restarted
 ```
 
-### Test Your New MIB
+#### Test Your New MIB
 
 You can test your new MIB using tools like `snmpwalk`.
 
-```bash
-$ snmpwalk -v2c -c public clab-snmp-srl1 1.3.6.1.4.1.6527.115
+```{.bash .no-select}
+snmpwalk -v2c -c public clab-snmp-srl1 1.3.6.1.4.1.6527.115
+```
 
+<div class="embed-result">
+```
 iso.3.6.1.4.1.6527.115.114.108.105.110.117.120.1.2.4.109.103.109.116 = STRING: "mgmt"                            # <-- grpcServerNetworkInstance
 iso.3.6.1.4.1.6527.115.114.108.105.110.117.120.1.3.4.109.103.109.116 = INTEGER: 1                                # <-- gRPCServerAdminState
 iso.3.6.1.4.1.6527.115.114.108.105.110.117.120.1.4.4.109.103.109.116 = INTEGER: 1                                # <-- grpcServerOperState
@@ -750,16 +755,17 @@ iso.3.6.1.4.1.6527.115.114.108.105.110.117.120.1.5.4.109.103.109.116 = INTEGER: 
 iso.3.6.1.4.1.6527.115.114.108.105.110.117.120.1.6.4.109.103.109.116 = INTEGER: 3                                # <-- grpcServerAccessAccepts
 iso.3.6.1.4.1.6527.115.114.108.105.110.117.120.1.7.4.109.103.109.116 = Timeticks: (44659000) 5 days, 4:03:10.00  # <-- grpcServerLastAccessAccept
 ```
+</div>
 
 Have a look at `/tmp/snmp_debug` to see the input and output JSON blobs when `debug: true` is set in the YAML configuration file.
 
 There you have it: a user-defined SNMP MIB added to SR Linux at **runtime**, no feature request, no software upgrade needed.
 
-## Example: gRPCServer Traps
+### gRPCServer Traps
 
 Similar to the SNMP MIB, let's add custom SNMP traps to SR Linux at **runtime**, no feature requests, no software upgrades, by creating a gRPC server SNMP trap 🤪. Traps are independant from MIBs and do not need a corresponding MIB that is used for SNMP gets.
 
-### Trap Definitions
+#### Trap Definitions
 
 Add a new trap definitions to `/etc/opt/srlinux/snmp/scripts/grpc_traps.yaml`.
 
@@ -798,7 +804,7 @@ traps:
                   syntax: octet string
 ```
 
-### Python Script
+#### Python Script
 
 The YAML file references a Python script called `grpc_traps.py`. It must be placed in the same directory as the `grpc_mib.yaml` file.
 
@@ -905,7 +911,7 @@ def snmp_main(in_json_str: str) -> str:
 
 ```
 
-### Custom Traps File
+#### Custom Traps File
 
 Reference the YAML mapping file in the your `snmp_files_config.yaml` so that the SNMP server loads it.
 
@@ -920,7 +926,7 @@ trap-definitions:
 ```
 </div>
 
-### SNMP Server Restart
+#### SNMP Server Restart
 
 Restart the SNMP server process for it to load the new custom traps.
 
@@ -934,7 +940,7 @@ A:srl1# /tools system app-management application snmp_server-mgmt restart
     Application 'snmp_server-mgmt' was restarted
 ```
 
-### Test Your New Traps
+#### Test Your New Traps
 
 Test your new traps by sending them from SR Linux.
 
@@ -967,7 +973,7 @@ SNMPv2-SMI::enterprises.6527.115.114.108.105.110.117.120.1.1.0 = STRING: "mgmt" 
 
 Have a look at `/tmp/snmp_debug` to see the input and output JSON blobs when `debug: true` is set in the YAML configuration file.
 
-### Input JSON Blob
+#### Input JSON Blob
 
 ```bash
 # cat /tmp/snmp_debug/mgmt/grpc_traps.json_input
@@ -1011,7 +1017,7 @@ Have a look at `/tmp/snmp_debug` to see the input and output JSON blobs when `de
 ```
 </div>
 
-### Output JSON Blob
+#### Output JSON Blob
 
 ```bash
 # cat /tmp/snmp_debug/mgmt/grpc_traps.json_output
