@@ -16,7 +16,7 @@ The framework defines:
 Built-in MIB mappings are defined in the configuration file available on the SR Linux's file system:
 
 ```bash
-# cat /opt/srlinux/snmp/snmp_files_config.yaml
+cat /opt/srlinux/snmp/snmp_files_config.yaml
 ```
 
 <div class="embed-result">
@@ -555,7 +555,7 @@ To define custom traps:
 
 1. Define the mapping file: Define the trap triggers, contexts, and variable bindings in YAML.
 2. Write the conversion script: Implement trigger events and generate trap data in the `snmp_main` function.
-3. Add the mapping file to the list of trap definitions to `/etc/opt/SR Linux/snmp/snmp_files_config.yaml`.
+3. Add the mapping file to the list of trap definitions to `/etc/opt/srlinux/snmp/snmp_files_config.yaml`.
 
 ### Input JSON Format
 
@@ -677,7 +677,7 @@ A:srl1# /tools system app-management application snmp_server-mgmt restart
 Debug files are generated in `/tmp/snmp_debug/$NETWORK_INSTANCE` when `debug: true` is set in the YAML configuration file.
 
 * For MIBs: check `/etc/opt/srlinux/snmp/exportOids` for your OIDs and make sure an `access-group` is configured.
-* For traps: check `/etc/opt/srlinux/snmp/installedTraps` for your traps and make sure a `trap-group` is configured. 
+* For traps: check `/etc/opt/srlinux/snmp/installedTraps` for your traps and make sure a `trap-group` is configured.
 * Input/output logs: Check `.json_input`, `.json_output`, `.console` and `.error` files for debugging script execution.  The `.console` files contain output printed by the scripts and the `.error` files contain mapping and scripts errors.
 * Path data: Inspect debug outputs for issues in path retrieval.
 
@@ -712,7 +712,7 @@ The script is fairly simple; it grabs the JSON input and sets some global SNMP i
 Reference the YAML mapping file in the your `snmp_files_config.yaml` so that the SNMP server loads it.
 
 ```bash
-# cat /etc/opt/srlinux/snmp/snmp_files_config.yaml
+cat /etc/opt/srlinux/snmp/snmp_files_config.yaml
 ```
 
 <div class="embed-result">
