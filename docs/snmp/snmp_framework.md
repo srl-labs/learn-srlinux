@@ -15,12 +15,12 @@ The framework defines:
 
 Built-in MIB mappings are defined in the configuration file available on the SR Linux's file system:
 
-```bash
+```{.bash .no-select}
 cat /opt/srlinux/snmp/snmp_files_config.yaml
 ```
 
 <div class="embed-result">
-```yaml
+```{.yaml .no-copy .no-select}
 table-definitions:
   - scripts/snmpv2_mib.yaml
   - scripts/if_mib.yaml
@@ -33,7 +33,7 @@ trap-definitions:
 ```
 </div>
 
-A simple list of supported OIDs for monitoring is in `/etc/opt/srlinux/snmp/numbers.txt`, and a detailed list with script information is in `/etc/opt/srlinux/snmp/exportOids` when an `access-group` is configured. These files are created at runtime when the SNMP server is started.
+A simple list of supported OIDs for monitoring is in `/etc/opt/srlinux/snmp/numbers.txt`, and a detailed list with script information is in `/etc/opt/srlinux/snmp/exportedOids` when an `/ system snmp access-group` is configured. These files are created at runtime when the SNMP server is started.
 
 ### Table Definitions
 
@@ -676,8 +676,8 @@ A:srl1# /tools system app-management application snmp_server-mgmt restart
 
 Debug files are generated in `/tmp/snmp_debug/$NETWORK_INSTANCE` when `debug: true` is set in the YAML configuration file.
 
-* For MIBs: check `/etc/opt/srlinux/snmp/exportOids` for your OIDs and make sure an `access-group` is configured.
-* For traps: check `/etc/opt/srlinux/snmp/installedTraps` for your traps and make sure a `trap-group` is configured.
+* For MIBs: check `/etc/opt/srlinux/snmp/exportedOids` for your OIDs and make sure an `/ system snmp access-group` is configured.
+* For traps: check `/etc/opt/srlinux/snmp/installedTraps` for your traps and make sure a `/ system snmp trap-group` is configured.
 * Input/output logs: Check `.json_input`, `.json_output`, `.console` and `.error` files for debugging script execution.  The `.console` files contain output printed by the scripts and the `.error` files contain mapping and scripts errors.
 * Path data: Inspect debug outputs for issues in path retrieval.
 
@@ -743,8 +743,16 @@ A:srl1# /tools system app-management application snmp_server-mgmt restart
 You can test your new MIB using tools like `snmpwalk`.
 
 ```{.bash .no-select}
-snmpwalk -v2c -c public clab-snmp-srl1 1.3.6.1.4.1.6527.115
+snmpwalk -v 2c -c public snmp-srl 1.3.6.1.4.1.6527.115 #(1)!
 ```
+
+1. If you do not have `snmpwalk` CLI installed, you can use the docker container and setup a handy alias:
+
+    ```{.bash .no-select}
+    alias snmpwalk='sudo docker run --network clab \
+    -i ghcr.io/hellt/net-snmp-tools:5.9.4-r0 \
+    snmpwalk -O n'
+    ```
 
 <div class="embed-result">
 ```
@@ -916,7 +924,7 @@ def snmp_main(in_json_str: str) -> str:
 Reference the YAML mapping file in the your `snmp_files_config.yaml` so that the SNMP server loads it.
 
 ```bash
-# cat /etc/opt/srlinux/snmp/snmp_files_config.yaml
+cat /etc/opt/srlinux/snmp/snmp_files_config.yaml
 ```
 
 <div class="embed-result">
@@ -976,7 +984,7 @@ Have a look at `/tmp/snmp_debug` to see the input and output JSON blobs when `de
 #### Input JSON Blob
 
 ```bash
-# cat /tmp/snmp_debug/mgmt/grpc_traps.json_input
+cat /tmp/snmp_debug/mgmt/grpc_traps.json_input
 ```
 
 <div class="embed-result">
@@ -1020,7 +1028,7 @@ Have a look at `/tmp/snmp_debug` to see the input and output JSON blobs when `de
 #### Output JSON Blob
 
 ```bash
-# cat /tmp/snmp_debug/mgmt/grpc_traps.json_output
+cat /tmp/snmp_debug/mgmt/grpc_traps.json_output
 ```
 
 <div class="embed-result">
