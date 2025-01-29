@@ -136,7 +136,7 @@ With this configuration in place we've built the following layout of basic L3 EV
 
 ## Verification
 
-To verify L3 EVPN configuration we can start with checking the BGP VPN status and checking that RT value is auto-derived from the EVI we set. And RD value is set manually to the same value on both leafs.
+To verify L3 EVPN configuration we can start with checking the BGP VPN status and checking that RD value is auto-derived from the EVI we set. And RT value is set manually to the same value on both leafs.
 
 ```srl
 A:leaf1# show network-instance tenant-1 protocols bgp-vpn bgp-instance 1
