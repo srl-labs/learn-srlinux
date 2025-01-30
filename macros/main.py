@@ -45,3 +45,17 @@ def define_env(env):
 """
 
         return video_tmpl
+    
+    @env.macro
+    def youtube(url):
+        """
+        Youtube video macro
+        """
+
+        yt_tmpl = f"""
+<div class="iframe-container" >
+<iframe style="box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1); border-radius: 0.25rem;" src="{url}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+</div>
+"""
+
+        return yt_tmpl
