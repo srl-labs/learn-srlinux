@@ -20,7 +20,7 @@ When it comes to the tools and libraries, we have to rely on the open source com
 
 Today we wanted to share the results of a recent collaboration between the SR Linux and [Pydantify](https://pydantify.github.io/pydantify/) teams that led to the creation of the [Pydantic SR Linux](https://github.com/srl-labs/pydantic-srlinux/) experimental project.
 
--{{youtube(url='https://www.youtube.com/watch?v=oClamTj4LiY')}}-
+-{{youtube(url='https://www.youtube.com/embed/oClamTj4LiY')}}-
 
 **Pydantic SR Linux** is a collection of Pydantic models generated with Pydantify from the SR Linux YANG models. Using this python package a network automation engineer can easily create configuration payloads using strictly typed objects without dropping down to the runtime text templating.
 
