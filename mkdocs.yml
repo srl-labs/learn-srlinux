@@ -327,7 +327,12 @@ markdown_extensions:
   - pymdownx.blocks.admonition
   - pymdownx.blocks.definition
   - pymdownx.blocks.details
-  - pymdownx.blocks.html
+  - pymdownx.blocks.html:
+      custom:
+        - tag: td
+          mode: block
+        - tag: th
+          mode: block
   - pymdownx.tasklist:
       custom_checkbox: true
   - pymdownx.tilde

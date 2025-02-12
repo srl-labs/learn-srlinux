@@ -1,6 +1,7 @@
-MKDOCS_VER = 9.5.35
+MKDOCS_VER = 9.6.1
 # insiders version/tag https://github.com/srl-labs/mkdocs-material-insiders/pkgs/container/mkdocs-material-insiders
-MKDOCS_INS_VER = 9.5.35-insiders-4.53.13-hellt
+# when changing the version, update the version in the cicd.yml file
+MKDOCS_INS_VER = 9.6.1-insiders-4.53.15-hellt
 
 .PHONY: docs
 docs:

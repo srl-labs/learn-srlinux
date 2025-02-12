@@ -24,6 +24,20 @@ Today we wanted to share the results of a recent collaboration between the SR Li
 
 **Pydantic SR Linux** is a collection of Pydantic models generated with Pydantify from the SR Linux YANG models. Using this python package a network automation engineer can easily create configuration payloads using strictly typed objects without dropping down to the runtime text templating.
 
-In essence, this allows dealing with configuration management in a more reliable, maintainable and verifiable way. Consider the [examples](https://github.com/srl-labs/pydantic-srlinux/tree/main/example) in the project's repository to see how it works.
+In essence, this allows dealing with configuration management in a more reliable, maintainable and verifiable way.
 
-The Pydantic SR Linux project is an experimental project and we are looking forward to your feedback. If you want to see these models generated automatically for each release - please let us know here in the comments or in our [Discord](https://discord.gg/tZvgjQ6PZf).
+After we created the Pydantic SR Linux prototype, a few issues popped up around some modelling gaps Pydantify had. In less than two weeks Urs and Dan rectified most of these issues and kicked off Pydantify 0.8.0 release.
+
+With the new Pydantify version I have regenerated the pydantic SR Linux models and created another tutorial that demonstrates how you can progressively enhance your configuration management with Pydantic SR Linux.
+
+Taking it step by step, we first parametrized our script and introduced functions that take care of the narrow parts of the configuration.
+
+Then we added custom classes and convenience methods to make our code more composable.
+
+Finally we added tests and set off to create a bigger automation example that creates the ISIS network with loopback prefix exchange.
+
+-{{youtube(url='https://www.youtube.com/embed/CM3sT55zwt0')}}-
+
+Consider the [examples](https://github.com/srl-labs/pydantic-srlinux/tree/main/example) in the project's repository to see the code in action.
+
+> The Pydantic SR Linux project is an experimental project and we are looking forward to your feedback. If you want to see these models generated automatically for each release - please let us know here in the comments or in our [Discord](https://discord.gg/tZvgjQ6PZf).
