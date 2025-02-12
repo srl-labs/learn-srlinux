@@ -26,6 +26,16 @@
   --nokia-get-started-hover-btn-color: #124191;
 }
 
+.md-grid {
+  /* a slightly increased width for the main content ~1300px */
+  max-width: 65rem;
+}
+
+.md-post--excerpt {
+  /* a slightly increased width for the main content ~1300px */
+  max-width: 40rem;
+}
+
 body,
 input {
   font-weight: 300;
