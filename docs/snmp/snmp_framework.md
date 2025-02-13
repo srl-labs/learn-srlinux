@@ -785,26 +785,34 @@ Two traps are defined:
 Both of these traps are triggered from the `/system/grpc-server/oper-state` XPath.
 
 ```{.yaml .code-scroll-lg}
+# yaml-language-server: $schema=../trap_definition_schema.json
 python-script: grpc_traps.py
 enabled: true
 debug: false
 traps:
-    - name:    gRPCServerDown
-      enabled: true
-      oid:     1.3.6.1.4.1.6527.115.114.108.105.110.117.122
+    - name:       gRPCServerDown
+      enabled:    true
+      startup:    true
+      oid:        1.3.6.1.4.1.6527.115.114.108.105.110.117.122
+      enterprise: 1.3.6.1.4.1.6527.1.20
       triggers:
           - /system/grpc-server/oper-state
+      context:
+          - /system/grpc-server/...
       data:
           - objects: # this object is a scalar, does not use an index
                 - name: gRPCServerName
                   oid:  1.3.6.1.4.1.6527.115.114.108.105.110.117.120.1.1
                   syntax: octet string
-    - name:    gRPCServerUp
-      enabled: true
-      startup: true
-      oid:     1.3.6.1.4.1.6527.115.114.108.105.110.117.123
+    - name:       gRPCServerUp
+      enabled:    true
+      startup:    true
+      oid:        1.3.6.1.4.1.6527.115.114.108.105.110.117.123
+      enterprise: 1.3.6.1.4.1.6527.1.20
       triggers:
           - /system/grpc-server/oper-state
+      context:
+          - /system/grpc-server/...
       data:
           - objects: # this object is a scalar, does not use an index
                 - name: gRPCServerName
@@ -827,40 +835,44 @@ The script is fairly simple; it grabs the JSON input and looks for the gRPC serv
 
 import json
 from collections import OrderedDict
+import re
 
 import utilities
 
-# list of traps that will be echoed back to the
+# list of traps that will be echoed back to the client
 traps_list_db: list = []
 
-IFOPERSTATUS_UP             = 1
-IFOPERSTATUS_DOWN           = 2
-IFOPERSTATUS_TESTING        = 3
-IFOPERSTATUS_UNKNOWN        = 4
+def parseGrpcServerKeys(xpath: str):
+    # retrieve the name of the grpc-server from the xpath
+    name_pattern = re.compile(r'[^\]]+\[([^\[\]=]+?)=([^\]]+)\]')
+    matches = name_pattern.match(xpath)
+    if matches is not None:
+        return matches.group(2)
+    return None
 
-def convertOperStatus(value: str) -> int:
-    if value is not None:
-        if value == 'up':
-            return IFOPERSTATUS_UP
-        elif value == 'down' or value == 'testing' : # RFC2863 section 3.1.15
-            return IFOPERSTATUS_DOWN
-    return IFOPERSTATUS_UNKNOWN
+def gRPCServerUpgRPCServerUpDownTrap(grpc_servers:list, trap: dict, value) -> None:
+    filter_key = parseGrpcServerKeys(trap.get('xpath', ''))
+    if filter_key is None:
+        raise ValueError(f"Can't look for a grpc-server without an xpath")
 
+    # loop over all grpc-servers, filter the ones that match the xpath
+    for server in grpc_servers:
+        server_name = server.get('name', '')  # key
+        if server_name != filter_key:
+            continue
 
-def store_value_in_json(json_obj:dict, name:str, value) -> None:
-    if value is not None:
-        json_obj[name] = value
+        # only report the grpc-servers that have the correct oper-state (unless force flag was used)
+        if not utilities.is_forced_simulated_trap():
+            oper_state = server.get('oper-state', '')
+            if value is not None and oper_state != value:
+                continue
 
-
-def gRPCServerUpgRPCServerDownTrap(system: list, trap: dict) -> None:
-    trap_name = trap.get('name')
-    if trap_name is not None:
         row = OrderedDict()
         objects = OrderedDict()
 
-        objects["gRPCServerName"] = system["grpc-server"][0]["name"]
+        objects['gRPCServerName'] = server_name
 
-        row['trap'] = trap_name
+        row['trap'] = trap.get('name', '')
         row['indexes'] = OrderedDict()  # no indexes to report
         row['objects'] = objects
         traps_list_db.append(row)
@@ -874,49 +886,36 @@ def snmp_main(in_json_str: str) -> str:
 
     in_json = json.loads(in_json_str)
 
-    del in_json_str
-
     # read in general info from the snmp server
     snmp_info = in_json.get('_snmp_info_')
     utilities.process_snmp_info(snmp_info)
 
-    # read in info about the traps that will be triggered in this request (depending on the trigger)
-    trap_info = in_json.get('_trap_info_')
+    # read in info about the traps that will be triggered in this request (depending on the trigger) 
+    trap_info = in_json.get('_trap_info_', [])
 
-    # read in context data
-    system = in_json.get('system', [])
+    system = in_json.get('system', {})
+    grpc_servers = system.get('grpc-server', [])
 
-    del in_json
-
+    # loop over all traps in this request
     for trap in trap_info:
-        name = trap['name']
-        trigger = trap['trigger']
-        #print(f'do trap {name} for {trigger}')
-
-        if utilities.is_simulated_trap():
-            if name == 'gRPCServerDown':
-                gRPCServerUpgRPCServerDownTrap(system, trap)
-            elif name == 'gRPCServerUp':
-                gRPCServerUpgRPCServerDownTrap(system, trap)
-            else:
-                raise ValueError(f'Unknown trap {name} with trigger {trigger}')
-
+        name = trap.get('name', '')
+        trigger = trap.get('trigger', '')
+        newValue = trap.get('new-value', '')
+        
+        if name == 'gRPCServerDown':
+            if newValue == 'down' or utilities.is_forced_simulated_trap():
+                gRPCServerUpgRPCServerUpDownTrap(grpc_servers, trap, newValue)
+        elif name == 'gRPCServerUp':
+            if newValue == 'up' or utilities.is_forced_simulated_trap():
+                gRPCServerUpgRPCServerUpDownTrap(grpc_servers, trap, newValue)
         else:
-            if name == 'gRPCServerDown':
-                gRPCServerUpgRPCServerDownTrap(system, trap)
-            elif name == 'gRPCServerUp':
-                gRPCServerUpgRPCServerDownTrap(system, trap)
-            else:
-                raise ValueError(f'Unknown trap {name} with trigger {trigger}')
+            raise ValueError(f'Unknown trap {name} with trigger {trigger}')
 
     response:dict = {}
 
     response['traps'] = traps_list_db
 
-    del system, traps_list_db
-
     return json.dumps(response)
-
 ```
 
 #### Custom Traps File
@@ -966,16 +965,19 @@ A:srl1# /tools system snmp trap gRPCServerUp force trigger "/system/grpc-server[
 
 You can see the traps being received on a Unix host using tools like `snmptrapd`.
 
-```bash
+```{.text .no-select .no-copy}
 # snmptrapd -f -Lo
 NET-SNMP version 5.9.1
-2025-01-22 16:29:49 srlinux.example.com [UDP: [192.168.0.12]:54880->[192.168.0.10]:162]:
-DISMAN-EVENT-MIB::sysUpTimeInstance = Timeticks: (540800) 1:30:08.00 # <-- sysUpTime
+2025-02-13 16:02:28 srlinux.example.com [UDP: [192.168.0.12]:59562->[192.168.0.10]:162]:
+DISMAN-EVENT-MIB::sysUpTimeInstance = Timeticks: (68600) 0:11:26.00 # <-- sysUpTime
 SNMPv2-MIB::snmpTrapOID.0 = OID: SNMPv2-SMI::enterprises.6527.115.114.108.105.110.117.122 # <-- gRPCServerDown
+SNMPv2-MIB::snmpTrapEnterprise.0 = OID: SNMPv2-SMI::enterprises.6527.1.20 # <-- Nokia private enterprise number
 SNMPv2-SMI::enterprises.6527.115.114.108.105.110.117.120.1.1.0 = STRING: "mgmt" # <-- gRPCServerName
-2025-01-22 16:29:56 srlinux.example.com [UDP: [192.168.0.12]:54880->[192.168.0.10]:162]:
-DISMAN-EVENT-MIB::sysUpTimeInstance = Timeticks: (541500) 1:30:15.00 # <-- sysUpTime
+
+2025-02-13 16:02:33 srlinux.example.com [UDP: [192.168.0.12]:59562->[192.168.0.10]:162]:
+DISMAN-EVENT-MIB::sysUpTimeInstance = Timeticks: (69100) 0:11:31.00 # <-- sysUpTime
 SNMPv2-MIB::snmpTrapOID.0 = OID: SNMPv2-SMI::enterprises.6527.115.114.108.105.110.117.123 # <-- gRPCServerUp
+SNMPv2-MIB::snmpTrapEnterprise.0 = OID: SNMPv2-SMI::enterprises.6527.1.20 # <-- Nokia private enterprise number
 SNMPv2-SMI::enterprises.6527.115.114.108.105.110.117.120.1.1.0 = STRING: "mgmt" # <-- gRPCServerName
 ```
 
@@ -992,24 +994,29 @@ cat /tmp/snmp_debug/mgmt/grpc_traps.json_input
 // comments will be removed before sending to the python-script
 {
         "_snmp_info_":  {
-                "boottime":     "2025-01-22T19:59:41Z",
-                "datetime":     "2025-01-22T21:29:56Z",
+                "boottime":     "2025-02-13T20:51:02Z",
+                "datetime":     "2025-02-13T21:02:33Z",
                 "debug":        true,
                 "is-cold-boot": false,
-                "is-forced-trap":       true,
-                "is-simulated-trap":    true,
                 "network-instance":     "mgmt",
                 "platform-type":        "7220 IXR-D2L",
                 "script":       "grpc_traps.yaml",
                 "sysobjectid":  "1.3.6.1.4.1.6527.1.20.26",
-                "sysuptime":    541500,
-                "trigger":      "/system/grpc-server[name=mgmt]/oper-state",
-                "paths":        ["/system/grpc-server[name=mgmt]/oper-state"]
+                "sysuptime":    69100,
+                "trigger":      "/system/grpc-server[name=mgmt]",
+                "paths":        ["/system/grpc-server[name=mgmt]/..."]
         },
         "_trap_info_":  [{
+                        "name": "gRPCServerDown",
+                        "new-value":    "up",
+                        "old-value":    "down",
+                        "startup":      true,
+                        "trigger":      "/system/grpc-server/oper-state",
+                        "xpath":        "/system/grpc-server[name=mgmt]/oper-state"
+                }, {
                         "name": "gRPCServerUp",
-                        "current-value":        "up",
-                        "simulated-value":      "up",
+                        "new-value":    "up",
+                        "old-value":    "down",
                         "startup":      true,
                         "trigger":      "/system/grpc-server/oper-state",
                         "xpath":        "/system/grpc-server[name=mgmt]/oper-state"
@@ -1018,7 +1025,30 @@ cat /tmp/snmp_debug/mgmt/grpc_traps.json_input
                 "grpc-server":  [{
                                 // Path:        "/system/grpc-server[name=mgmt]"
                                 "name": "mgmt",
-                                "oper-state":   "up"
+                                "admin-state":  "enable",
+                                "default-tls-profile":  false,
+                                "max-concurrent-streams":       65535,
+                                "metadata-authentication":      true,
+                                "network-instance":     "mgmt",
+                                "oper-state":   "up",
+                                "port": 57400,
+                                "rate-limit":   65000,
+                                "session-limit":        20,
+                                "timeout":      7200,
+                                "tls-profile":  "clab-profile",
+                                "yang-models":  "native",
+                                "gnmi": {
+                                        "commit-confirmed-timeout":     0,
+                                        "commit-save":  false,
+                                        "include-defaults-in-config-only-responses":    false
+                                },
+                                "services":     ["gnmi", "gnoi", "gnsi", "gribi", "p4rt"],
+                                "source-address":       ["::"],
+                                "trace-options":        ["request", "response", "common"],
+                                "unix-socket":  {
+                                        "admin-state":  "enable",
+                                        "socket-path":  "/opt/srlinux/var/run/sr_grpc_server_mgmt"
+                                }
                         }]
         }
 }
