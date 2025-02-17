@@ -30,7 +30,7 @@ Have you seen power Linux users swiftly typing in `gcb new-branch` or `k get po`
 
 Aliases in SR Linux can be used to substitute a long command and can even be customized to take in arguments to have an ultimate CLI experience.
 
-While we are working on an in-depth blog post about aliases, check out the [Hackathon exercise around aliases]() to learn more about them, you'll love them!
+While we are working on an in-depth blog post about aliases, check out the [Hackathon exercise around aliases](https://github.com/nokia/SReXperts/tree/main/hackathon/activities/srlinux-b-cli-aliasing) to learn more about them, you'll love them!
 
 ## Wildcards and ranges
 
