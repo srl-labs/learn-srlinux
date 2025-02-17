@@ -28,6 +28,7 @@ nav:
               - Mirroring: cli/show-commands/mirroring.md
               - DHCP Relay: cli/show-commands/dhcp-relay.md
               - TACACS: cli/show-commands/tacacs.md
+          - Wildcards and ranges: blog/posts/2023/cli-ranges.md
       - SNMP:
           - SNMP Framework: snmp/snmp_framework.md
 
@@ -92,9 +93,9 @@ nav:
               - config: ansible/collection/config.md
               - validate: ansible/collection/validate.md
               - cli: ansible/collection/cli.md
-      - CLI:
-          - cli/index.md
-          - Wildcards and ranages: blog/posts/2023/cli-ranges.md
+      - CLI Plugins:
+          - cli/plugins/index.md
+          - Getting started: cli/plugins/getting-started.md
   - Tutorials:
       # - SR Linux tutorials: tutorials/about.md
       - tutorials/index.md
@@ -164,7 +165,7 @@ repo_name: srl-labs/learn-srlinux
 repo_url: https://github.com/srl-labs/learn-srlinux
 edit_uri: edit/main/docs/
 site_url: "https://learn.srlinux.dev/"
-copyright: Copyright &copy; 2021-2023 Nokia
+copyright: Copyright &copy; 2021-2025 Nokia
 theme:
   name: material
   custom_dir: docs/overrides
