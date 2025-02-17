@@ -13,7 +13,7 @@ Countless times I've been in a situation where I needed to share my terminal wit
 
 Either I exhausted my networking foo and needed help from a colleague, or I was the one who was asked to help. In both cases, the problem was the same - how to **quickly**, **securely**[^1] and **effortlessly** share the terminal with someone else.
 
-The problem is not new and there are many options on the table. From installing a VPN software and sharing the credentials, through zero-trust solutions like [teleport](https://goteleport.com/), to using a simple SSH tunnel. All of these solutions are great, but they require some setup and configuration. And sometimes you just want to share your terminal with someone without going through the hassle of setting up a VPN or a zero-trust solution.
+The problem is not new and there are many options on the table. From installing a VPN software and sharing the credentials, through zero-trust solutions like Teleport, to using a simple SSH tunnel. All of these solutions are great, but they require some setup and configuration. And sometimes you just want to share your terminal with someone without going through the hassle of setting up a VPN or a zero-trust solution.
 
 The [sshx.io](https://sshx.io) open-source service that [just](https://twitter.com/ekzhang1/status/1721288674204131523) popped out offers a simple solution to this problem.
 
