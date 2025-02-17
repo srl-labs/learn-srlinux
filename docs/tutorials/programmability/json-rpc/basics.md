@@ -16,7 +16,7 @@ title: JSON-RPC Basics
 | **Main ref documents**      | [JSON-RPC Configuration][json-cfg-guide], [JSON-RPC Management][json-mgmt-guide]             |
 | **Version information**[^1] | [`srlinux:23.10.1`][srlinux-container], [`containerlab:0.48.6`][clab-install]                |
 | **Authors**                 | Roman Dodin [:material-twitter:][rd-twitter] [:material-linkedin:][rd-linkedin]              |
-| **Discussions**             | [:material-twitter: Twitter][twitter-share] · [:material-linkedin: LinkedIn][linkedin-share] |
+| **Discussions**             | [:material-twitter: Twitter][twitter-share]                                                  |
 
 [rd-linkedin]: https://linkedin.com/in/rdodin
 [rd-twitter]: https://twitter.com/ntdvps
@@ -26,7 +26,6 @@ title: JSON-RPC Basics
 [srlinux-container]: https://github.com/nokia/srlinux-container-image
 [clab-install]: https://containerlab.dev/install/
 [twitter-share]: https://twitter.com/ntdvps/status/1600261024719917057
-[linkedin-share]: https://www.linkedin.com/feed/update/urn:li:activity:7006028123045548033/
 
 As of release 23.10.1, Nokia SR Linux Network OS employs three fully modeled management interfaces:
 
