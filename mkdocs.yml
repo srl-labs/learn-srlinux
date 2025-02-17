@@ -317,8 +317,8 @@ markdown_extensions:
   - pymdownx.smartsymbols:
       fractions: false
   - pymdownx.snippets:
-      # check_paths: true
-      # url_download: true
+      check_paths: true
+      url_download: true
   - pymdownx.superfences:
       custom_fences:
         - name: mermaid
