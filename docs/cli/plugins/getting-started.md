@@ -516,17 +516,11 @@ class Plugin(CliPlugin):
         return data
 ```
 
-To create the data structure, we use the `Data` class from the `srlinux.data` module. The constructor of this class takes in a schema and returns an empty Data object that is modeled after the schema.
+To create the data structure, we use the `Data` class from the `srlinux.data` module. The constructor of this class takes in a schema and returns an empty Data object that is modeled after the schema. Once we created the Data object from a schema, we need to instantiate the `uptime` container that encloses our fields. We do this with the `create` method like so:
 
-Here is a reminder of the schema we defined earlier:
+This two-step process is visualized in the following diagram:
 
--{{ diagram(url='srl-labs/uptime-cli-plugin/main/diagrams/cli.drawio', title='Schema for the uptime command', page=1) }}-
-
-Once we created the Data object from a schema, we need to instantiate the `uptime` container that encloses our fields. We do this with the `create` method like so:
-
-```python
-uptime_container = data.uptime.create()
-```
+-{{ diagram(url='srl-labs/uptime-cli-plugin/main/diagrams/cli.drawio', title='Creating the Data object and initializing the container', page=2) }}-
 
 What we want now is to populate the `uptime_container` Data object fields with the values:
 
