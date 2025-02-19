@@ -2,7 +2,9 @@
 comments: true
 ---
 
-<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/hellt/drawio-js@main/embed2.js" async></script>
+# Routing
+
+<script type="text/javascript" src="https://viewer.diagrams.net/js/viewer-static.min.js" async></script>
 
 Prior to any MPLS configuration, we need to set up routing in the network core. Configuration of interfaces and IGP is the core task explained in this section.
 
@@ -12,7 +14,7 @@ Let's start with basic interfaces configuration following this diagram:
 
 <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:2,&quot;zoom&quot;:3,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/srl-labs/learn-srlinux/diagrams/mpls-ldp.drawio&quot;}"></div>
 
-The below config snippets configure regular `Ethernet-1/1`, `Ethernet-1/2` and a special loopback [`system0`](../../../kb/ifaces.md#system) interfaces.
+The below config snippets configure regular `Ethernet-1/1`, `Ethernet-1/2` and a special loopback `system0` interfaces.
 
 === "srl1"
     ```srl
