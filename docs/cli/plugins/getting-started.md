@@ -28,6 +28,13 @@ Last Booted: 2025-02-15T16:23:47.956Z
 
 Nothing sophisticated, yet it provides a good starting point for you to get familiar with the most important building blocks of the CLI plugin development. The full code is available in the [uptime-cli-plugin](https://github.com/srl-labs/uptime-cli-plugin) repository.
 
+/// details | Video tutorial
+    type: subtle-note
+For the fans of the video format:
+
+-{{youtube(url='https://www.youtube.com/embed/NtBnldprxLE')}}-
+///
+
 ## Setting up the environment
 
 Spending some time on setting up the dev environment will greatly simplify code navigation and debugging. To assist you with the environment setup, our repo features a small script with some helper functions.  
@@ -414,7 +421,7 @@ You can find the leaf that contains the last booted time by browsing the SR Linu
 
 1. Using the CLI
 
-    /// tab | `info flat from state` with `grep`
+    /// tab | `tree flat from state` with `grep`
     An efficient way to find the needed leaf if you know some keywords is to use the `info flat from state` command and pipe it to `grep`.  
     Since we know that we are looking for the time when the SR Linux system was last booted, we could use something like this:
 
