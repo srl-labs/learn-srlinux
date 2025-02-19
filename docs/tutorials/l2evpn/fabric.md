@@ -2,7 +2,10 @@
 comments: true
 ---
 
-<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/hellt/drawio-js@main/embed2.js" async></script>
+# Fabric configuration
+
+<script type="text/javascript" src="https://viewer.diagrams.net/js/viewer-static.min.js" async></script>
+
 Prior to configuring EVPN based overlay, a routing protocol needs to be deployed in the fabric to advertise the reachability of all the leaf VXLAN Termination End Point (VTEP) addresses throughout the IP fabric.
 
 With SR Linux, the following routing protocols can be used in the underlay:
@@ -19,7 +22,7 @@ Let's start with configuring the IP interfaces on the inter-switch links to ensu
 
 <div class='mxgraph' style='max-width:100%;border:1px solid transparent;margin:0 auto; display:block;' data-mxgraph='{"page":2,"zoom":2,"highlight":"#0000ff","nav":true,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/srl-labs/learn-srlinux/diagrams/quickstart.drawio"}'></div>
 
-On each leaf and spine we will bring up the relevant [interface](../../kb/ifaces.md) and address its routed [subinterface](../../kb/ifaces.md#subinterfaces) to achieve L3 connectivity.
+On each leaf and spine we will bring up the relevant [interface](../../get-started/interface.md) and address its routed subinterface to achieve L3 connectivity.
 
 We begin with connecting to the CLI of our nodes via SSH[^1]:
 
@@ -28,7 +31,7 @@ We begin with connecting to the CLI of our nodes via SSH[^1]:
 ssh clab-evpn01-leaf1
 ```
 
-Then on each node we enter into [candidate configuration mode](../../kb/cfgmgmt.md#configuration-modes) and proceed with the relevant interfaces' configuration.
+Then on each node we enter into [candidate configuration mode](../../get-started/cli.md#cli-modes) and proceed with the relevant interfaces' configuration.
 
 Let's witness the step by step process of an interface configuration on a `leaf1` switch with providing the paste-able snippets for the rest of the nodes
 
@@ -151,7 +154,7 @@ ethernet-1/1 is up, speed 10G, type None
 ====================================================
 ```
 
-At this moment, the configured interfaces can not be used as they are not yet associated with any [network instance](../../kb/netwinstance.md). Below we are placing the interfaces to the network-instance `default` that is created automatically by SR Linux.
+At this moment, the configured interfaces can not be used as they are not yet associated with any [network instance](../../get-started/network-instance.md). Below we are placing the interfaces to the network-instance `default` that is created automatically by SR Linux.
 
 /// tab | leaf1 & leaf2
 
@@ -466,7 +469,7 @@ routing-policy {
 
 As we will create a IBGP based EVPN control plane at a later stage, we need to configure loopback addresses for our leaf devices so that they can build an IBGP peering over those interfaces.
 
-In the context of the VXLAN data plane, a special kind of a loopback needs to be created - [`system0`](../../kb/ifaces.md#system) interface.
+In the context of the VXLAN data plane, a special kind of a loopback needs to be created - `system0` interface.
 
 /// info
 The `system0.0` interface hosts the loopback address used to originate and typically

@@ -2,7 +2,10 @@
 comments: true
 ---
 
-<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/hellt/drawio-js@main/embed2.js" async></script>
+# EVPN configuration
+
+<script type="text/javascript" src="https://viewer.diagrams.net/js/viewer-static.min.js" async></script>
+
 Ethernet Virtual Private Network (EVPN), along with Virtual eXtensible LAN (VXLAN), is a technology that allows Layer 2 and Layer 3 traffic to be tunneled across an IP
 network.
 
@@ -133,7 +136,7 @@ Next we are configuring the interfaces from the leaf switches to the correspondi
 
 <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph='{"page":6,"zoom":2,"highlight":"#0000ff","nav":true,"check-visible-state":true,"resize":true,"url":"https://raw.githubusercontent.com/srl-labs/learn-srlinux/diagrams/quickstart.drawio"}'></div>
 
-Configuration of an access interface is nothing special, we already [configured leaf-spine interfaces](fabric.md#leaf-spine-interfaces) at the fabric configuration stage, so the steps are all familiar. The only detail worth mentioning here is that we have to indicate the type of the subinterface to be [`bridged`](../../kb/ifaces.md#subinterfaces), this makes the interfaces only attachable to a network instance of `mac-vrf` type with MAC learning and layer-2 forwarding enabled.
+Configuration of an access interface is nothing special, we already [configured leaf-spine interfaces](fabric.md#leaf-spine-interfaces) at the fabric configuration stage, so the steps are all familiar. The only detail worth mentioning here is that we have to indicate the type of the subinterface to be `bridged`, this makes the interfaces only attachable to a network instance of `mac-vrf` type with MAC learning and layer-2 forwarding enabled.
 
 The following config is applied to both leaf switches:
 
