@@ -74,7 +74,7 @@ The vendor field must be set to `NOKIA` when working with Nokia SR Linux nodes.
 
 ### Model
 
-With the `model` field a user indicates which particular model of a given Vendor should be used by the node. In the context of Nokia SR Linux, the `model` field drives the [hardware variant](../../../kb/hwtypes.md) that an SR Linux container will emulate.
+With the `model` field a user indicates which particular model of a given Vendor should be used by the node. In the context of Nokia SR Linux, the `model` field drives the hardware variant that an SR Linux container will emulate.
 
 ```proto
 nodes: {

@@ -38,7 +38,7 @@ title: Programmability
 
     Operators can leverage CLI plugins to customize the way CLI looks, feels, and reacts.
 
-    <small>:material-progress-wrench: Article coming soon...</small>
+    [:octicons-arrow-right-24: Reference](../cli/plugins/index.md)
 
 - :fontawesome-brands-golang:{ .lg .middle } **Go API**
 
@@ -59,16 +59,6 @@ title: Programmability
     Couple the fully-modelled configuration and state datastores with a versatile and simple Python language and you get a powerful automation execution framework running on the NOS.
 
     [:octicons-arrow-right-24: Checkout examples](../blog/tags.md#tag:event-handler)
-
-- :octicons-flame-24:{ .lg .middle } **NAPALM**
-
-    ---
-
-    Familiar with a multi-vendor network automation interface that spits fire?
-
-    With [`napalm-srlinux`](https://github.com/napalm-automation-community/napalm-srlinux) community driver we plug in the NAPALM ecosystem using gNMI as the underlying management interface.
-
-    [:octicons-arrow-right-24: Try yourself](https://github.com/napalm-automation-community/napalm-srlinux)
 
 - :material-ansible:{ .lg .middle } **Ansible**
 
@@ -103,6 +93,16 @@ title: Programmability
     We have SNMP, and it's fully programmable to define custom MIBs!
 
     [:octicons-arrow-right-24: SNMP Framework](../snmp/snmp_framework.md)
+
+- :octicons-flame-24:{ .lg .middle } **NAPALM**
+
+    ---
+
+    Familiar with a multi-vendor network automation interface that spits fire?
+
+    With [`napalm-srlinux`](https://github.com/napalm-automation-community/napalm-srlinux) community driver we plug in the NAPALM ecosystem using gNMI as the underlying management interface.
+
+    <small>:material-progress-wrench: [Refactoring needed...](https://github.com/napalm-automation-community/napalm-srlinux)</small>
 
 </div>
 

@@ -5,7 +5,7 @@ tags:
   - mpls
 ---
 
-<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/hellt/drawio-js@main/embed2.js" async></script>
+<script type="text/javascript" src="https://viewer.diagrams.net/js/viewer-static.min.js" async></script>
 
 |                                |                                                                                                                                                                                                                  |
 | ------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -21,7 +21,13 @@ Multiprotocol Label Switching (MPLS) is a label switching technology that provid
 
 This short tutorial will guide you through the steps required to build an [LDP-based](https://datatracker.ietf.org/doc/html/rfc5036) MPLS core consisting of three SR Linux routers. LDP-based MPLS tunnels are commonly used to enable [BGP-free core network](http://bgphelp.com/2017/02/12/bgp-free-core/).
 
-The topology we will use for this interactive tutorial is dead simple - three routers connected in a point-to-point fashion:
+/// warning
+MPLS features are currently (at the time of this writing) supported only on SR Linux 7250 IXR-6e/10e and 7730 SXR platforms. Container images emulating these platforms require a license to operate.
+
+Without the license provided, the lab will not start.
+///
+
+The topology we will use for this interactive tutorial is quite simple - three routers connected in a point-to-point fashion:
 
 <div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:0,&quot;zoom&quot;:3,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/srl-labs/learn-srlinux/diagrams/mpls-ldp.drawio&quot;}"></div>
 
