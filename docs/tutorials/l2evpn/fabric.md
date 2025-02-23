@@ -471,7 +471,8 @@ As we will create a IBGP based EVPN control plane at a later stage, we need to c
 
 In the context of the VXLAN data plane, a special kind of a loopback needs to be created - `system0` interface.
 
-/// info
+/// admonition
+    type: subtle-note
 The `system0.0` interface hosts the loopback address used to originate and typically
 terminate VXLAN packets. This address is also used by default as the next-hop of all
 EVPN routes.
