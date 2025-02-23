@@ -15,6 +15,7 @@ IgnoreURLs:
   - https://github.com/srl-labs/learn-srlinux/edit/
   - twitter.com
   - https://linkedin.com/in
+  - https://linkedin.com/feed
   - https://www.nokia.com/networks/products/service-router-linux-NOS
   - https://www.nanog.org # responds with 403
 
