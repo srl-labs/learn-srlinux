@@ -66,3 +66,20 @@
   font-style: normal;
   font-display: swap;
 }
+
+@font-face {
+  font-family: 'NokiaPureText';
+  src: url('https://cdn.jsdelivr.net/gh/hellt/fonts@v0.1.0/nokia/NokiaPureText_Bd.eot');
+  /* IE9 Compat Modes */
+  src: url('https://cdn.jsdelivr.net/gh/hellt/fonts@v0.1.0/nokia/NokiaPureText_Bd.woff2') format('woff2'),
+    /* Super Modern Browsers */
+    url('https://cdn.jsdelivr.net/gh/hellt/fonts@v0.1.0/nokia/NokiaPureText_Bd.woff') format('woff'),
+    /* Pretty Modern Browsers */
+    url('https://cdn.jsdelivr.net/gh/hellt/fonts@v0.1.0/nokia/NokiaPureText_Bd.ttf') format('truetype'),
+    /* Safari, Android, iOS */
+    url('https://cdn.jsdelivr.net/gh/hellt/fonts@v0.1.0/nokia/NokiaPureText_Bd.svg#svgFontName') format('svg');
+  /* Legacy iOS */
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
