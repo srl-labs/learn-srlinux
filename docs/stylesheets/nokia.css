@@ -36,6 +36,12 @@
   max-width: 40rem;
 }
 
+/* on firefox strong was getting font weight 400, which was not bold */
+strong,
+b {
+  font-weight: bold;
+}
+
 body,
 input {
   font-weight: 300;
