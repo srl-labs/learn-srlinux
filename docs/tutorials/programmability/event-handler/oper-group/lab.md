@@ -11,23 +11,24 @@ As always, this tutorial will be backed up by a lab that readers can effortlessl
 3. L2 EVPN service[^1] configured across the leaves of the fabric
 4. A telemetry stack to demonstrate oper-group operations in action.
 
-<div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:0,&quot;zoom&quot;:3,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/srl-labs/learn-srlinux/diagrams/opergroup.drawio&quot;}"></div>
+-{{ diagram(url='srl-labs/learn-srlinux/diagrams/opergroup.drawio',zoom=2.1, title='', page=0) }}-
 
 ## Physical topology
 
-On a physical layer topology interconnections are layed down as follows:
-<div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:5,&quot;zoom&quot;:3,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/srl-labs/learn-srlinux/diagrams/opergroup.drawio&quot;}"></div>
+On a physical layer topology interconnections are laid down as follows:
+
+-{{ diagram(url='srl-labs/learn-srlinux/diagrams/opergroup.drawio',zoom=2.1, title='', page=5) }}-
 
 Each client is dual-homed to corresponding leaves; To achieve that, interfaces `eth1` and `eth2` are formed into a `bond0` interface.  
-On the leaves side, the access interface `Ethernet-1/1`` is part of a LAG interface that is "stretched" between a pair of leaves, forming a logical construct similar to MC-LAG.
+On the leaves side, the access interface `Ethernet-1/1` is part of a LAG interface that is "stretched" between a pair of leaves, forming a logical construct similar to MC-LAG.
 
-<div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:6,&quot;zoom&quot;:3,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/srl-labs/learn-srlinux/diagrams/opergroup.drawio&quot;}"></div>
+-{{ diagram(url='srl-labs/learn-srlinux/diagrams/opergroup.drawio',zoom=3, title='', page=6) }}-
 
 ## Fabric underlay
 
 In the underlay of a fabric leaves and spines run eBGP protocol to enable leaves to exchange reachability information for their `system0` interfaces.
 
-<div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:7,&quot;zoom&quot;:3,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/srl-labs/learn-srlinux/diagrams/opergroup.drawio&quot;}"></div>
+-{{ diagram(url='srl-labs/learn-srlinux/diagrams/opergroup.drawio',zoom=3, title='', page=7) }}-
 
 eBGP peerings are formed between each leaf and spine pair.
 
@@ -35,11 +36,11 @@ eBGP peerings are formed between each leaf and spine pair.
 
 To support BGP EVPN service, in the overlay iBGP peerings with EVPN address family are established from each leaf to each spine, with spines acting as route reflectors.
 
-<div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:8,&quot;zoom&quot;:3,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/srl-labs/learn-srlinux/diagrams/opergroup.drawio&quot;}"></div>
+-{{ diagram(url='srl-labs/learn-srlinux/diagrams/opergroup.drawio',zoom=3, title='', page=8) }}-
 
 From the EVPN service standpoint, the mac-vrf instance named `vrf-1` is created on leaves and `ES-1` ethernet segment is formed from a LAG interface.
 
-<div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:9,&quot;zoom&quot;:3,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/srl-labs/learn-srlinux/diagrams/opergroup.drawio&quot;}"></div>
+-{{ diagram(url='srl-labs/learn-srlinux/diagrams/opergroup.drawio',zoom=3, title='', page=9) }}-
 
 Ethernet segments are configured to be in an all-active mode to make sure that every access link is utilized in the fabric.
 
@@ -63,12 +64,12 @@ git clone https://github.com/srl-labs/opergroup-lab.git && cd opergroup-lab
 Lab repository contains startup configuration files for the fabric nodes, as well as necessary files for the telemetry stack to come up online operational. To deploy the lab:
 
 ```
-containerlab deploy -t opergroup.clab.yml
+containerlab deploy
 ```
 
-This will stand up a lab with an already pre-configured fabric using startup configs contained within [`configs`](https://github.com/srl-labs/opergroup-lab/tree/main/configs) directory.
+This will bring up a lab with an already pre-configured fabric using startup configs contained within [`configs`](https://github.com/srl-labs/opergroup-lab/tree/main/configs) directory.
 
-<div class="mxgraph" style="max-width:100%;border:1px solid transparent;margin:0 auto; display:block;" data-mxgraph="{&quot;page&quot;:10,&quot;zoom&quot;:3,&quot;highlight&quot;:&quot;#0000ff&quot;,&quot;nav&quot;:true,&quot;check-visible-state&quot;:true,&quot;resize&quot;:true,&quot;url&quot;:&quot;https://raw.githubusercontent.com/srl-labs/learn-srlinux/diagrams/opergroup.drawio&quot;}"></div>
+-{{ diagram(url='srl-labs/learn-srlinux/diagrams/opergroup.drawio',zoom=3, title='', page=10) }}-
 
 The deployed lab starts up in a pre-provisioned step, where underlay/overlay configuration has already been done. We proceed with oper-group use case exploration in the next chapter of this tutorial.
 

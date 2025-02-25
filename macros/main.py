@@ -9,7 +9,7 @@ def define_env(env):
     """
 
     @env.macro
-    def diagram(url, page, title, zoom=2):
+    def diagram(url, page: int, title: str, zoom: int = 2):
         """
         Diagram macro
         """
@@ -45,7 +45,7 @@ def define_env(env):
 """
 
         return video_tmpl
-    
+
     @env.macro
     def youtube(url):
         """
