@@ -2,7 +2,7 @@
 comments: true
 ---
 
-<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/hellt/drawio-js@main/embed2.js" async></script>
+<script type="text/javascript" src="https://viewer.diagrams.net/js/viewer-static.min.js" async></script>
 
 Now that we are [aware of a potential traffic blackholing](problem-statement.md#traffic-loss-scenario) that may happen in the all-active EVPN-based fabrics it is time to meet one of the remediation tactics.
 
