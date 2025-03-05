@@ -18,6 +18,7 @@ IgnoreURLs:
   - https://linkedin.com/feed
   - https://www.nokia.com/networks/products/service-router-linux-NOS
   - https://www.nanog.org # responds with 403
+  - x.com
 
 IgnoreDirectoryMissingTrailingSlash: true
 IgnoreAltMissing: true
