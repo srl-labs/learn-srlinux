@@ -7,13 +7,14 @@ tags:
 
 Ansible collection for SR Linux is identified with `nokia.srlinux` fully qualified collection name and contains the plugins and modules to interface with SR Linux devices.
 
-| Summary               |                                              |
-| --------------------- | -------------------------------------------- |
-| **Collection name**   | `nokia.srlinux`                              |
-| **Galaxy URL**        | [nokia/srlinux][coll-url]                    |
-| **Github repository** | [nokia/srlinux-ansible-collection][repo-url] |
-| **SR Linux version**  | >=23.3.1[^1]                                 |
-| **Python version**    | >=3.6                                        |
+| Summary                         |                                              |
+| ------------------------------- | -------------------------------------------- |
+| **Collection name**             | `nokia.srlinux`                              |
+| **Galaxy URL**                  | [nokia/srlinux][coll-url]                    |
+| **Ansible Automation Platform** | [nokia/srlinux][aap-coll-url]                |
+| **Github repository**           | [nokia/srlinux-ansible-collection][repo-url] |
+| **SR Linux version**            | >=23.3.1[^1]                                 |
+| **Python version**              | >=3.10                                       |
 
 Modules contained within this collection fully conform to the idempotence principles of Ansible, as well as provide first-class support for diff and check functionality[^2].
 
@@ -263,6 +264,7 @@ Create the `hosts` file as shown in the previous section and you're ready to try
 [ansible-conn-modes]: https://docs.ansible.com/ansible/latest/plugins/connection.html
 [jsonrpc-tutorial]: ../../tutorials/programmability/json-rpc/basics.md
 [ansible-httpapi-conn-plugin]: https://docs.ansible.com/ansible/latest/plugins/httpapi.html
+[aap-coll-url]: https://console.redhat.com/ansible/automation-hub/repo/published/nokia/srlinux/
 
 [^1]: `nokia.srlinux` collection requires SR Linux 23.3.1 or later.
 [^2]: See [`config`][config] module for details.
