@@ -16,14 +16,16 @@ This blog post explains how to contribute a blog article to our portal and what 
 
 <!-- more -->
 
-!!!question "What should I write about? Or should I even start writing?"
-    Likely the hardest thing in writing is to start. You may have dozens of doubts preventing you start writing.
+/// admonition | What should I write about? Or should I even start writing?
+    type: question
+Likely the hardest thing in writing is to start. You may have dozens of doubts preventing you start writing.
 
-    *Is this interesting to anyone? Isn't it too obvious? Is it too short/long?*
+*Is this interesting to anyone? Isn't it too obvious? Is it too short/long?*
 
-    The best advice here might be just to start writing and reiterate as you go. Nothing is perfect, and we welcome all to embrace the joy of writing, which helps to structure your own thoughts and get a firmer grip on the topic.
+The best advice here might be just to start writing and reiterate as you go. Nothing is perfect, and we welcome all to embrace the joy of writing, which helps to structure your own thoughts and get a firmer grip on the topic.
 
-    SR Linux appreciates modern network architectures, network automation/orchestration and programmability. Anything that falls under and in-between these domains will make a great blog post.
+SR Linux appreciates modern network architectures, network automation/orchestration and programmability. Anything that falls under and in-between these domains will make a great blog post.
+///
 
 ## Creating a blog post
 
@@ -58,61 +60,69 @@ This portal uses the famous [mkdocs-material](https://squidfunk.github.io/mkdocs
 
 We would like to highlight a few UI elements we use all the time and hope you'll also like them.
 
-!!!tip
-    Check the [mkdocs-material reference](https://squidfunk.github.io/mkdocs-material/reference/) for a deep dive in the ocean of options and elements mkdocs-material theme provides.
+/// admonition
+    type: tip
+Check the [mkdocs-material reference](https://squidfunk.github.io/mkdocs-material/reference/) for a deep dive in the ocean of options and elements mkdocs-material theme provides.
+///
 
 ### Tabs
 
 Tabs help to visually organize the content and improve readability an awful lot.
 
-``` title="Content tabs with code blocks"
-=== "C"
+```` title="Content tabs with code blocks"
+/// tab | C
 
-    ``` c
-    #include <stdio.h>
+``` c
+#include <stdio.h>
 
-    int main(void) {
-      printf("Hello world!\n");
-      return 0;
-    }
-    ```
-
-=== "C++"
-
-    ``` c++
-    #include <iostream>
-
-    int main(void) {
-      std::cout << "Hello world!" << std::endl;
-      return 0;
-    }
-    ```
+int main(void) {
+    printf("Hello world!\n");
+    return 0;
+}
 ```
+
+///
+/// tab | C++
+
+``` c++
+#include <iostream>
+
+int main(void) {
+    std::cout << "Hello world!" << std::endl;
+    return 0;
+}
+```
+
+///
+
+````
 
 <div class="result" markdown>
 
-=== "C"
+/// tab | C
 
-    ``` c
-    #include <stdio.h>
+``` c
+#include <stdio.h>
 
-    int main(void) {
-      printf("Hello world!\n");
-      return 0;
-    }
-    ```
+int main(void) {
+    printf("Hello world!\n");
+    return 0;
+}
+```
 
-=== "C++"
+///
+/// tab | C++
 
-    ``` c++
-    #include <iostream>
+``` c++
+#include <iostream>
 
-    int main(void) {
-      std::cout << "Hello world!" << std::endl;
-      return 0;
-    }
-    ```
+int main(void) {
+    std::cout << "Hello world!" << std::endl;
+    return 0;
+}
+```
 
+///
 </div>
 
 ### Code
@@ -122,14 +132,15 @@ Nowadays, code is everywhere. With a few styling aids you can make your code blo
 A regular code block with a syntax highlighting uses code fences style:
 
 ```` markdown title="Code block"
-``` py
+```py
 import tensorflow as tf
 ```
+
 ````
 
 <div class="result" markdown>
 
-``` py
+```py
 import tensorflow as tf
 ```
 
@@ -139,8 +150,8 @@ import tensorflow as tf
 
 To add a title to a code block, use the `title` attribute:
 
-```` markdown title="Code block with title"
-``` py title="bubble_sort.py"
+````markdown title="Code block with title"
+```py title="bubble_sort.py"
 def bubble_sort(items):
     for i in range(len(items)):
         for j in range(len(items) - 1 - i):
@@ -151,7 +162,7 @@ def bubble_sort(items):
 
 <div class="result" markdown>
 
-``` py title="bubble_sort.py"
+```py title="bubble_sort.py"
 def bubble_sort(items):
     for i in range(len(items)):
         for j in range(len(items) - 1 - i):
@@ -168,8 +179,8 @@ option directly after the shortcode, whereas `<start>` represents the starting
 line number. A code block can start from a line number other than `1`, which
 allows to split large code blocks for readability:
 
-```` markdown title="Code block with line numbers"
-``` py linenums="1"
+````markdown title="Code block with line numbers"
+```py linenums="1"
 def bubble_sort(items):
     for i in range(len(items)):
         for j in range(len(items) - 1 - i):
@@ -180,7 +191,7 @@ def bubble_sort(items):
 
 <div class="result" markdown>
 
-``` py linenums="1"
+```py linenums="1"
 def bubble_sort(items):
     for i in range(len(items)):
         for j in range(len(items) - 1 - i):
@@ -196,8 +207,8 @@ Specific lines can be highlighted by passing the line numbers to the `hl_lines`
 argument placed right after the language shortcode. Note that line counts start
 at `1`, regardless of the starting line number specified:
 
-```` markdown title="Code block with highlighted lines"
-``` py hl_lines="2 3"
+````markdown title="Code block with highlighted lines"
+```py hl_lines="2 3"
 def bubble_sort(items):
     for i in range(len(items)):
         for j in range(len(items) - 1 - i):
@@ -208,7 +219,7 @@ def bubble_sort(items):
 
 <div class="result" markdown>
 
-``` py linenums="1" hl_lines="2 3"
+```py linenums="1" hl_lines="2 3"
 def bubble_sort(items):
     for i in range(len(items)):
         for j in range(len(items) - 1 - i):
@@ -224,8 +235,8 @@ Code annotations can be placed anywhere in a code block where a comment for the
 language of the block can be placed, e.g. for JavaScript in `#!js // ...` and
 `#!js /* ... */`, for YAML in `#!yaml # ...`, etc.:
 
-```` markdown title="Code block with annotation"
-``` yaml
+````markdown title="Code block with annotation"
+```yaml
 theme:
   features:
     - content.code.annotate # (1)!
@@ -243,32 +254,159 @@ theme:
     - content.code.annotate # (1)!
 ```
 
-1. :man_raising_hand: I'm a code annotation! I can contain `code`, __formatted
-    text__, images, ... basically anything that can be written in Markdown.
+1. :man_raising_hand: I'm a code annotation! I can contain `code`, **formatted
+    text**, images, ... basically anything that can be written in Markdown.
 
 </div>
 
 ### Admonitions
 
-[Admonitions](https://squidfunk.github.io/mkdocs-material/reference/admonitions/) is a great way to emphasize a piece of information. Check the original documentation for all the customizations available for admonitions.
+[Admonitions](https://squidfunk.github.io/mkdocs-material/reference/admonitions/) is a great way to emphasize a piece of information. Here is a list of admonitions you may use most often:
 
-``` markdown title="Admonition"
-!!! note
+//// tab | Note
 
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla et euismod
-    nulla. Curabitur feugiat, tortor non consequat finibus, justo purus auctor
-    massa, nec semper lorem quam in massa.
+```markdown
+/// note
+
+This is a note
+///
 ```
 
 <div class="result" markdown>
 
-!!! note
+/// note
 
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla et euismod
-    nulla. Curabitur feugiat, tortor non consequat finibus, justo purus auctor
-    massa, nec semper lorem quam in massa.
-
+This is a note
+///
 </div>
+////
+//// tab | Warning
+
+```markdown
+/// warning
+
+This is a warning
+///
+```
+
+<div class="result" markdown>
+
+/// warning
+
+This is a warning
+///
+</div>
+////
+//// tab | Tip
+
+```markdown
+/// tip
+
+This is a tip
+///
+```
+
+<div class="result" markdown>
+
+/// tip
+
+This is a tip
+///
+</div>
+////
+
+#### Admonition's title
+
+Often it is desired to name the admonition block to provide some context to the reader. To achieve this, add a title of the admonition to the block type, like this:
+
+```markdown
+/// note | This note now has a `title`
+This is a note with a title
+///
+```
+
+<div class="result" markdown>
+
+/// note | This note now has a `title`
+This is a note with a title
+///
+</div>
+
+#### Collapsible admonitions
+
+A perfect way to provide large amounts of auxiliary information is to use a collapsed admonition that will only be displayed when the user clicks on the title.  
+To make an admonition collapsed, change the block type to `details` and add the `type` of the admonition you want to use.
+
+For example, to make a collapsed Note, use the following code:
+
+```markdown
+/// details
+    type: note
+
+This is a collapsed note
+///
+```
+
+<div class="result" markdown>
+
+/// details | This collapsed note opens on click
+    type: note
+
+This is a collapsed note
+///
+</div>
+
+### Images
+
+To add an image to your post, use the following shortcode:
+
+```markdown
+-{{% raw %}}-
+-{{image(url='https://gitlab.com/rdodin/pics/-/wikis/uploads/23ce60488a6e1b9b2faf082b2c7be77b/image.png')}}-
+-{{% endraw %}}-
+```
+
+<div class="result" markdown>
+
+-{{image(url='https://gitlab.com/rdodin/pics/-/wikis/uploads/23ce60488a6e1b9b2faf082b2c7be77b/image.png')}}-
+</div>
+
+By default, the image will be displayed in its original size and with a shadow around it.
+
+To control the image width, use the `width` parameter of the short code that sets the width in percentage of the available page width:
+
+```markdown
+-{{% raw %}}-
+-{{image(url='https://gitlab.com/rdodin/pics/-/wikis/uploads/23ce60488a6e1b9b2faf082b2c7be77b/image.png')}}-
+-{{% endraw %}}-
+```
+
+<div class="result" markdown>
+
+-{{image(url='https://gitlab.com/rdodin/pics/-/wikis/uploads/23ce60488a6e1b9b2faf082b2c7be77b/image.png', width=30)}}-
+</div>
+
+### Diagrams
+
+The drawio/diagrams.net diagramming tool is a great way to create diagrams. Diagrams are better than images in every way. If you invest in creating diagrams instead of generating images, you will be able to version control, and easily edit them as your project evolves.
+
+To embed a diagram, use the following shortcode and add a script element to your page at the bottom:
+
+```markdown
+-{{% raw %}}-
+-{{ diagram(url='srl-labs/srlinux-getting-started/main/diagrams/get-started.drawio', title='Default SR Linux prompt', page=0) }}-
+
+<script type="text/javascript" src="https://viewer.diagrams.net/js/viewer-static.min.js" async></script>
+-{{% endraw %}}-
+```
+
+<div class="result">
+
+-{{ diagram(url='srl-labs/srlinux-getting-started/main/diagrams/get-started.drawio', title='Default SR Linux prompt', page=0) }}-
+</div>
+
+- The `page` parameter (0-indexed) selects which page in the drawio file to display.
+- The `zoom` parameter (integer) sets x-times zoom factor. If your diagran renders too small with the default zoom factor, set it to a higher value.
 
 ### Icons
 
@@ -353,3 +491,5 @@ Get notified when a new post is published using one of the [subscription options
 
 [authors-file]: https://github.com/srl-labs/learn-srlinux/blob/main/docs/blog/.authors.yml
 [date]: https://github.com/srl-labs/learn-srlinux/blob/main/docs/blog/posts/2022/blog-launch.md?plain=1#L2
+
+<script type="text/javascript" src="https://viewer.diagrams.net/js/viewer-static.min.js" async></script>

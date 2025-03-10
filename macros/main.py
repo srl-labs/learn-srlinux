@@ -59,3 +59,26 @@ def define_env(env):
 """
 
         return yt_tmpl
+
+    @env.macro
+    def image(url: str, width: int = 0, title: str = "", shadow: bool = True):
+        """
+        Image macro
+        :param url: image URL
+        :param width: image width in percent
+        :param title: image title
+        :param shadow: whether to add shadow to the image
+        """
+
+        shadow_component = ""
+        if shadow:
+            shadow_component = ".img-shadow"
+
+        width_component = ""
+        if width is not None and width != 0:
+            width_component = f"width={width}%"
+
+        return f"""<figure markdown>
+  ![image]({url}){{{shadow_component} {width_component} }}
+  {f"<figcaption>{title}</figcaption>" if title else ""}
+</figure>"""
