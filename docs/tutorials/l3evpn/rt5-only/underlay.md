@@ -79,7 +79,7 @@ Let's got through a step by step process of an interface configuration on a `lea
     The prompt will indicate we entered the candidate configuration mode. In the following steps we will enter the commands to make changes to the candidate config and at the end we will commit.
 
 2. As a next step, we create a subinterface with index 1 under a physical `ethernet-1/49` interface that connects leaf1 to spine.
-    In contrast with the L2 EVPN Tutorial, we will not configure an explicit IP address, but enable IPv6 with Router Advertisement messages on it . An IPv6 Link Local Address will be automatically configured for this interface.
+    In contrast with the L2 EVPN Tutorial, we will not configure an explicit IP address, but enable IPv6 with Router Advertisement messages for it. An IPv6 Link Local Address will be automatically configured for this interface.
 
     The enablement of the `router-advertisement` on the IPv6 interface results in a router sending RA messages to directly connected peers, informing them of the interface's IP address. This will facilitate ARP/ND cache population.
 
@@ -92,11 +92,15 @@ Let's got through a step by step process of an interface configuration on a `lea
                 router-advertisement {
                     router-role {
                         admin-state enable
+                        max-advertisement-interval 10
+                        min-advertisement-interval 4
                     }
                 }
             }
         }
     ```
+
+    Note, that the default, RFC-based values for min and max advertisement interval are quite high, so we lower them to 4 and 10 seconds respectively to have a faster unnumbered discovery.
 
 3. Attach the configured subinterfaces to the default network instance (aka GRT).
 
