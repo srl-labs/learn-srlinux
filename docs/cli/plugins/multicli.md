@@ -2,32 +2,25 @@
 
 <script type="text/javascript" src="https://viewer.diagrams.net/js/viewer-static.min.js" async></script>
 
-SR Linux is the industry's most modern Network Operating System (NOS) enabling unmatched automation and programmability features. One of its capabilities is the ability to customize the CLI on SR Linux.
+SR Linux is the industry's most modern Network Operating System (NOS) enabling unmatched automation and programmability features. One of its capabilities is the ability to [customize the CLI](index.md) on SR Linux.
 
-All SR Linux CLI `show` commands shipped with the software are written in executable python scripts leveraging the state yang models.
+All `show` commands shipped with the SR Linux software are written in executable python scripts leveraging the model-driven infrastructure to query the state.
 
-Users are allowed to take those python scripts, modify them to fit their use case or build a brand new CLI command leveraging the same state models.
+Users are allowed to take those python scripts, modify them to fit their use case or build a brand new CLI command leveraging the same workflow as our R&D team.  
+These user-provided CLI scripts are called **Custom CLI plugins** in SR Linux.
 
-These customized CLI scripts are called **Custom CLI plugins** in SR Linux.
+Since everything in SR Linux is modeled in YANG from the ground up, this allows the user to accesses any state object or attribute in the system and display it in the format they are familiar with.
 
-Since everything is modeled in yang from the ground up, this allows the user to use CLI to access any state object or attribute in the system and display it in the format they are familiar with.
-
-So a valid question arises:
-
-/// admonition | Question
-    type: question
-
-Can we make SR Linux CLI look and feel like another NOS for show commands?
-///
-
+So a valid question arises - can we make SR Linux CLI look and feel like another NOS for show commands?  
 The simple answer is a big **YES WE CAN**.
 
 Let's take an example for the BGP neighbor show command on 4 different Operating Systems.
 
 /// tab | SR Linux
 
-```srl
-# show network-instance default protocols bgp neighbor
+```
+$ show network-instance default protocols bgp neighbor
+
 -------------------------------------------------------------------------------------------------------------------------------------------------------
 BGP neighbor summary for network-instance "default"
 Flags: S static, D dynamic, L discovered by LLDP, B BFD enabled, - disabled, * slow
@@ -54,8 +47,9 @@ Summary:
 
 /// tab | Arista
 
-```srl
-# show ip bgp summary
+```
+$ show ip bgp summary
+
 BGP summary information for VRF default
 Router identifier 1.1.1.1, local AS number 64501
 Neighbor Status Codes: m – Under maintenance
@@ -70,8 +64,9 @@ Neighbor Status Codes: m – Under maintenance
 
 /// tab | Cisco NX-OS
 
-```srl
-# show ip bgp summary
+```
+$ show ip bgp summary
+
 BGP summary information for VRF default, address family IPv4 Unicast
 BGP router identifier 1.1.1.1, local AS number 64501
 
@@ -87,8 +82,9 @@ Neighbor        V    AS    MsgRcvd   MsgSent   InQ  OutQ  Up/Down   State/PfxRcd
 
 /// tab | Nokia SR OS
 
-```srl
-# show router bgp summary
+```
+$ show router bgp summary
+
 ===============================================================================
  BGP Router ID:1.1.1.1              AS:64501      Local AS:64501     
 ===============================================================================
@@ -139,13 +135,13 @@ What if someone can run all those 4 commands on a single NOS?
 
 This is the power of custom CLI plugins in SR Linux. All the 4 outputs seen above are from the same SR Linux node.
 
-## Introducing MultiCLI project for SR Linux plugins
+## Introducing MultiCLI project for SR Linux
 
 MultiCLI project is an open source initiative to build SR Linux plugins for 3rd party NOS show commands.
 
 The objective of the project is to help with user onboarding, training and re-use of existing tools in a network while adopting SR Linux.
 
-The first phase of this project includes commands from 4 different NOS - Arista EOS, Cisco NX-OS, Juniper JUNOS and Nokia SR OS.
+The first phase of this project includes commands from 4 different NOS - Arista EOS, Cisco NX-OS, Juniper JunOS and Nokia SR OS.
 
 Visit the [MultiCLI](https://github.com/srl-labs/MultiCLI/) git repo to see these plugins and try them using the built-in lab in the repo.
 
@@ -155,7 +151,7 @@ As you test these plugins, you will notice some cool CLI features that comes nat
 
 1. The native command auto-completion feature also applies to plugins.
 
-2. Using the `tab` key will display the next options that can be naviagated using the arrow keys on your keyboard.
+2. Using the `tab` key will display the next options that can be navigated using the arrow keys on your keyboard.
 
 3. As you type in a keyword, you will see a lighter shade of the full keyword.
 
