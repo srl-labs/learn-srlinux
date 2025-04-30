@@ -96,6 +96,7 @@ nav:
       - CLI Plugins:
           - cli/plugins/index.md
           - Getting started: cli/plugins/getting-started.md
+          - MultiCLI Project: cli/plugins/multicli.md
   - Tutorials:
       # - SR Linux tutorials: tutorials/about.md
       - tutorials/index.md
