@@ -1,7 +1,5 @@
 # SR Linux MultiCLI project
 
-<script type="text/javascript" src="https://viewer.diagrams.net/js/viewer-static.min.js" async></script>
-
 SR Linux is the industry's most modern Network Operating System (NOS) enabling unmatched automation and programmability features. One of its capabilities is the ability to [customize the CLI](index.md) on SR Linux.
 
 All `show` commands shipped with the SR Linux software are written in executable python scripts leveraging the model-driven infrastructure to query the state.
