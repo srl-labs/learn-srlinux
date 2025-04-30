@@ -74,7 +74,7 @@ The topology consists of:
 
 ### Kubernetes Service
 
-To illustrate the integration between the workloads running in the k8s cluster and the IP fabric, we will deploy a simple NGINX Echo service replicated across the three k8s nodes. A [MetalLB](https://metallb.universe.tf/)-based [LoadBalancer](https://tkng.io/services/loadbalancer/) service is created to expose the NGINX Echo instances to the fabric and the outside world by establishing BGP sessions with Leaf switches to announce the IP addresses of the exposed services to the IP fabric.
+To illustrate the integration between the workloads running in the k8s cluster and the IP fabric, we will deploy a simple NGINX Echo service replicated across the three k8s nodes. A [MetalLB](https://metallb.universe.tf/)-based [LoadBalancer](https://www.tkng.io/services/loadbalancer/) service is created to expose the NGINX Echo instances to the fabric and the outside world by establishing BGP sessions with Leaf switches to announce the IP addresses of the exposed services to the IP fabric.
 
 !!!note
     The external IP address that a Load Balancer associates with the service is often called a "virtual IP address" or "VIP".
