@@ -43,6 +43,12 @@ This portal does not substitute but augments the official SR Linux documentation
     2. https://doc.srlinux.dev/rn22-11-2 for a direct link to Release Notes.
 3. Nokia Network Infrastructure documentation collection - https://bit.ly/iondoc
 
+## SR Linux videos
+
+If your way of learning is through videos, you will appreciate short and to-the-point videos introducing various SR Linux concepts on Nokia's YouTube channel. This [YouTube playlist](https://www.youtube.com/playlist?list=PLgKNvl454Bxe-ZRGR3huFBQajVSH6Ns4J) is for you to explore.
+
+-{{youtube(url="https://www.youtube.com/embed/-EV8XnJp7zY?si=-KYJt47ROwbqdgED")}}-
+
 ## My DCF Learning Labs
 
 More than just a lab service, **My DCF Learning Labs** offers lab exercises complete with inline instructions and solutions, giving you everything you need in one easy-to-use browser-based application - access multiple lab types and exercises to develop your SR Linux skills.
