@@ -55,9 +55,9 @@ In less than a minute, you should have the lab running with the summary table of
 +---+---------+--------------+------------------------------------+---------------+---------+----------------+----------------------+
 | 1 | client1 | 9b3955f9ab50 | ghcr.io/srl-labs/network-multitool | linux         | running | 172.20.20.8/24 | 2001:172:20:20::8/64 |
 | 2 | client2 | 50d068413361 | ghcr.io/srl-labs/network-multitool | linux         | running | 172.20.20.4/24 | 2001:172:20:20::4/64 |
-| 3 | leaf1   | f1643c11603b | ghcr.io/nokia/srlinux:24.7.2       | nokia_srlinux | running | 172.20.20.7/24 | 2001:172:20:20::7/64 |
-| 4 | leaf2   | fb50f174cb73 | ghcr.io/nokia/srlinux:24.7.2       | nokia_srlinux | running | 172.20.20.6/24 | 2001:172:20:20::6/64 |
-| 5 | spine1  | 8162d45caac9 | ghcr.io/nokia/srlinux:24.7.2       | nokia_srlinux | running | 172.20.20.5/24 | 2001:172:20:20::5/64 |
+| 3 | leaf1   | f1643c11603b | ghcr.io/nokia/srlinux:24.10.4      | nokia_srlinux | running | 172.20.20.7/24 | 2001:172:20:20::7/64 |
+| 4 | leaf2   | fb50f174cb73 | ghcr.io/nokia/srlinux:24.10.4      | nokia_srlinux | running | 172.20.20.6/24 | 2001:172:20:20::6/64 |
+| 5 | spine1  | 8162d45caac9 | ghcr.io/nokia/srlinux:24.10.4      | nokia_srlinux | running | 172.20.20.5/24 | 2001:172:20:20::5/64 |
 +---+---------+--------------+------------------------------------+---------------+---------+----------------+----------------------+
 ```
 
@@ -130,9 +130,9 @@ Warning: Permanently added 'leaf1' (ED25519) to the list of known hosts.
 :                                                              :
 : Get started: https://learn.srlinux.dev                       :
 : Container:   https://go.srlinux.dev/container-image          :
-: Docs:        https://doc.srlinux.dev/24-7                    :
-: Rel. notes:  https://doc.srlinux.dev/rn24-7-2                :
-: YANG:        https://yang.srlinux.dev/v24.7.2                :
+: Docs:        https://doc.srlinux.dev/24-10                   :
+: Rel. notes:  https://doc.srlinux.dev/rn24-10-4               :
+: YANG:        https://yang.srlinux.dev/v24.10.4               :
 : Discord:     https://go.srlinux.dev/discord                  :
 : Contact:     https://go.srlinux.dev/contact-sales            :
 ................................................................

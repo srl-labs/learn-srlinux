@@ -187,7 +187,6 @@ theme:
     - search.suggest
     - content.code.annotate
     - content.code.copy
-    - content.code.select
     - content.action.edit
     - toc.follow
     - content.tooltips
@@ -347,6 +346,8 @@ extra_css:
   - stylesheets/nokia-fonts.css
   - stylesheets/diagrams.css
   - stylesheets/animations.css
+  - stylesheets/expandable-blocks.css
 
 extra_javascript:
   - javascripts/sh-annotation.js
+  - javascripts/expandable-blocks.js

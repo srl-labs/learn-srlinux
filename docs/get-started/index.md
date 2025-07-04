@@ -25,7 +25,7 @@ SR Linux uses the following release numbering convention:
 
 The last minor release of the year (e.g 24.10) - is considered the long term release and will get security and bug fixes longer than the other minor releases in the same major release.
 
-This getting started tutorial is based on **SR Linux 24.7.2** version and will adapt to newer releases over time. If you are using a different version, you may see slight differences in the command outputs.  
+This getting started tutorial is based on **SR Linux 24.10.X** version and will adapt to newer releases over time. If you are using a different version, you may see slight differences in the command outputs.  
 Let us know in the comments, or in our [Discord](https://discord.gg/tZvgjQ6PZf), if you would notice any discrepancies.
 ///
 
