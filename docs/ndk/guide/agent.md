@@ -145,6 +145,10 @@ application-name:
     #   'imm' - runs on the imm
     #   'cpm' - runs on the cpm (default)
     launch-restrictions: ['hw:cpm', 'hw:chassis:imm']
+    # [Optional] The list of linux capabilities to grant to the application.
+    # The capabilities are specified as a list of capability keys (without the 'CAP_' prefix).
+    capability-bounding-set:
+        - NET_ADMIN
     yang-modules:
         # [Mandatory] The names of the YANG modules to load. This is usually the file-name without '.yang'
         names: [module-name, other-module-name]

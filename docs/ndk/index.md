@@ -36,7 +36,7 @@ Browse our [Apps Catalog](apps/index.md) with a growing list of NDK apps that No
 A list of links to various NDK artifacts:
 
 * NDK Proto files: [`nokia/srlinux-ndk-protobufs`](https://github.com/nokia/srlinux-ndk-protobufs)
-* [Generated NDK Service documentation](https://rawcdn.githack.com/nokia/srlinux-ndk-protobufs/v0.2.0/doc/index.html)
+* [Generated NDK Service documentation](https://ndk.srlinux.dev)
 * Go bindings for NDK: [`nokia/srlinux-ndk-go`](https://github.com/nokia/srlinux-ndk-go)
 * Python bindings for NDK: [`nokia/srlinux-ndk-py`](https://github.com/nokia/srlinux-ndk-py)
 
