@@ -56,7 +56,7 @@ The side panel contains the list of messages that are used by the service that c
 
 Every service has a link to the source code of the protobuf definitions that constitute it and, if available, a link to the documentation.
 
-<center>![pic4](https://gitlab.com/rdodin/pics/-/wikis/uploads/b3eaf69cb12234238492ffa68a7253ae/image.png){: .img-shadow width="70%" }</center>
+<center markdown>![pic4](https://gitlab.com/rdodin/pics/-/wikis/uploads/b3eaf69cb12234238492ffa68a7253ae/image.png){: .img-shadow width="70%" }</center>
 
 ## Version selection
 

@@ -14,7 +14,7 @@ The year is 2023. You wake up to a subtle 'ping' from your phone 📱, signifyin
 Rollback to the present day, where I can confidentially share that this is exactly the kind of scenario that our engineers had in mind when they designed the new [Event Handler](https://learn.srlinux.dev/tutorials/programmability/event-handler/oper-group/oper-group-intro/) feature for SR Linux. Because you can never have enough flexibility to add just the right amount of automation, configuring things properly and - critically - keeping track of changes to the configuration (and whichever #!$!! person made them)
 <!-- more -->
 
-<center>![image](https://user-images.githubusercontent.com/2031627/198035448-1a2c3987-d2fb-48ff-81b8-2322498d40b9.png){: class="img-shadow"}</center>
+<center markdown>![image](https://user-images.githubusercontent.com/2031627/198035448-1a2c3987-d2fb-48ff-81b8-2322498d40b9.png){: class="img-shadow"}</center>
 <center><small>"Backup config" event handler instance config</small></center>
 
 To make things more practical, take a look at [this Python script](https://github.com/jbemmel/opergroup-lab/blob/main/backup_config.py) which uses [the Event Handler](https://documentation.nokia.com/srlinux/22-6/SR_Linux_Book_Files/Event_Handler_Guide/eh-overview.html) mechanism to scp a backup of the config to any destination of your choice, whenever something or someone commits a change.
