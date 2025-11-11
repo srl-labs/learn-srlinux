@@ -15,7 +15,7 @@ tags:
 | **Lab name**                   | evpn01                                                                                                                                                                                                                                                                                                                                                             |
 | **Packet captures**            | [EVPN IMET routes exchange][capture-imets], [RT2 routes exchange with ICMP in datapath][capture-rt2-datapath]                                                                                                                                                                                                                                                      |
 | **Main ref documents**         | [RFC 7432 - BGP MPLS-Based Ethernet VPN](https://datatracker.ietf.org/doc/html/rfc7432)<br/>[RFC 8365 - A Network Virtualization Overlay Solution Using Ethernet VPN (EVPN)](https://datatracker.ietf.org/doc/html/rfc8365)<br/>[Nokia 7220 SR Linux Advanced Solutions Guide][adv-sol-guide-evpn-l2]<br/>[Nokia 7220 SR Linux EVPN-VXLAN Guide][evpn-vxlan-guide] |
-| **Version information**[^1]    | [`containerlab:0.48.6`][clab-install], [`srlinux:23.10.1`][srlinux-container], [`docker-ce:23.0.3`][docker-install]                                                                                                                                                                                                                                                |
+| **Version information**[^1]    | [`containerlab:0.71.1`][clab-install], [`srlinux:25.10`][srlinux-container], [`docker-ce:27.5.1`][docker-install]                                                                                                                                                                                                                                                |
 
 Ethernet Virtual Private Network (EVPN) is a standard technology in multi-tenant Data Centers (DCs) and provides a control plane framework for many functions.  
 In this tutorial we will configure a **VXLAN based Layer 2 EVPN service**[^3] in a tiny CLOS fabric and at the same get to know SR Linux better!
@@ -46,23 +46,27 @@ The [containerlab file][topofile] that describes the lab topology is referenced 
 Save[^2] the contents of this file under `evpn01.clab.yml` name and you are ready to deploy:
 
 ```
-$ containerlab deploy -t evpn01.clab.yml
+containerlab deploy -t evpn01.clab.yml
+```
+
+<div class="embed-result">
+```{.text .no-copy .no-select}
 INFO[0000] Containerlab v0.48.6 started
-INFO[0000] Parsing & checking topology file: evpn01.clab.yml 
-INFO[0005] Creating lab directory: /root/srl-labs/learn-srlinux/clab-evpn01 
+INFO[0000] Parsing & checking topology file: evpn01.clab.yml
+INFO[0005] Creating lab directory: /root/srl-labs/learn-srlinux/clab-evpn01
 INFO[0005] Creating container: "srv2"
 INFO[0005] Creating container: "srv1"
 INFO[0005] Creating container: "spine1"
 INFO[0005] Creating container: "leaf1"
 INFO[0005] Creating container: "leaf2"
-INFO[0006] Creating virtual wire: srv2:eth1 <--> leaf2:e1-1 
-INFO[0006] Creating virtual wire: leaf2:e1-49 <--> spine1:e1-2 
-INFO[0006] Creating virtual wire: leaf1:e1-49 <--> spine1:e1-1 
-INFO[0006] Creating virtual wire: srv1:eth1 <--> leaf1:e1-1 
-INFO[0007] Running postdeploy actions for Nokia SR Linux 'spine1' node 
-INFO[0007] Running postdeploy actions for Nokia SR Linux 'leaf1' node 
-INFO[0007] Running postdeploy actions for Nokia SR Linux 'leaf2' node 
-INFO[0021] Adding containerlab host entries to /etc/hosts file 
+INFO[0006] Creating virtual wire: srv2:eth1 <--> leaf2:e1-1
+INFO[0006] Creating virtual wire: leaf2:e1-49 <--> spine1:e1-2
+INFO[0006] Creating virtual wire: leaf1:e1-49 <--> spine1:e1-1
+INFO[0006] Creating virtual wire: srv1:eth1 <--> leaf1:e1-1
+INFO[0007] Running postdeploy actions for Nokia SR Linux 'spine1' node
+INFO[0007] Running postdeploy actions for Nokia SR Linux 'leaf1' node
+INFO[0007] Running postdeploy actions for Nokia SR Linux 'leaf2' node
+INFO[0021] Adding containerlab host entries to /etc/hosts file
 +---+--------------------+--------------+---------------------------------+---------------+---------+----------------+----------------------+
 | # |        Name        | Container ID |              Image              |     Kind      |  State  |  IPv4 Address  |     IPv6 Address     |
 +---+--------------------+--------------+---------------------------------+---------------+---------+----------------+----------------------+
@@ -73,19 +77,23 @@ INFO[0021] Adding containerlab host entries to /etc/hosts file
 | 5 | clab-evpn01-srv2   | 2a63a6135a9c | ghcr.io/hellt/network-multitool | linux         | running | 172.20.20.5/24 | 2001:172:20:20::5/64 |
 +---+--------------------+--------------+---------------------------------+---------------+---------+----------------+----------------------+
 ```
+</div>
 
 A few seconds later containerlab finishes the deployment with providing a summary table that outlines connection details of the deployed nodes. In the "Name" column we have the names of the deployed containers and those names can be used to reach the nodes, for example to connect to the SSH of `leaf1`:
 
 ```bash
-# default credentials admin:NokiaSrl1!
-ssh clab-evpn01-leaf1
+ssh clab-evpn01-leaf1 #(1)!
 ```
+
+1. Default credentials `admin:NokiaSrl1!`
 
 With the lab deployed we are ready to embark on our learn-by-doing EVPN configuration journey!
 
 /// note
 We advise the newcomers not to skip the [Configuration Basics Guide][conf-basics-guide] as it provides just enough details to survive in the configuration waters we are about to get in.
 ///
+
+**[:octicons-arrow-right-24: Next: Fabric Configuration](fabric.md)**
 
 [topofile]: https://github.com/srl-labs/learn-srlinux/blob/master/labs/evpn01.clab.yml
 [clab-install]: https://containerlab.srlinux.dev/install/

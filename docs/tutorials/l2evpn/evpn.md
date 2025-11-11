@@ -53,8 +53,8 @@ Then for each leaf we add a new BGP neighbor addressed by the remote `system0` i
 
     /network-instance default protocols bgp
         group iBGP-overlay {
-            export-policy all
-            import-policy all
+            export-policy [ all ]
+            import-policy [ all ]
             peer-as 100
             afi-safi ipv4-unicast {
                 admin-state disable
@@ -84,8 +84,8 @@ Then for each leaf we add a new BGP neighbor addressed by the remote `system0` i
 
     /network-instance default protocols bgp
         group iBGP-overlay {
-            export-policy all
-            import-policy all
+            export-policy [ all ]
+            import-policy [ all ]
             peer-as 100
             afi-safi ipv4-unicast {
                 admin-state disable
@@ -394,13 +394,13 @@ For your convenience, in case you want to jump over the config routines and star
                             admin-state enable
                         }
                         group eBGP-underlay {
-                            export-policy all
-                            import-policy all
+                            export-policy [ all ]
+                            import-policy [ all ]
                             peer-as 201
                         }
                         group iBGP-overlay {
-                            export-policy all
-                            import-policy all
+                            export-policy [ all ]
+                            import-policy [ all ]
                             peer-as 100
                             afi-safi ipv4-unicast {
                                 admin-state disable
@@ -520,13 +520,13 @@ For your convenience, in case you want to jump over the config routines and star
                             admin-state enable
                         }
                         group eBGP-underlay {
-                            export-policy all
-                            import-policy all
+                            export-policy [ all ]
+                            import-policy [ all ]
                             peer-as 201
                         }
                         group iBGP-overlay {
-                            export-policy all
-                            import-policy all
+                            export-policy [ all ]
+                            import-policy [ all ]
                             peer-as 100
                             afi-safi ipv4-unicast {
                                 admin-state disable
@@ -637,8 +637,8 @@ For your convenience, in case you want to jump over the config routines and star
                         autonomous-system 201
                         router-id 10.0.1.1
                         group eBGP-underlay {
-                            export-policy all
-                            import-policy all
+                            export-policy [ all ]
+                            import-policy [ all ]
                         }
                         afi-safi ipv4-unicast {
                             admin-state enable
