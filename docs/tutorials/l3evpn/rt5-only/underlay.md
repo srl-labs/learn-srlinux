@@ -309,7 +309,7 @@ commit now
 
 ## eBGP Unnumbered for Underlay Routing
 
-Now we will set up the eBGP routing protocol that will be used for exchang loopback addresses throughout the fabric. These loopbacks will be used to set up iBGP EVPN peerings, which we will cover in the following chapter.
+Now we will set up the eBGP routing protocol that will be used for exchange loopback addresses throughout the fabric. These loopbacks will be used to set up iBGP EVPN peerings, which we will cover in the following chapter.
 
 The eBGP setup is done according to the following diagram:
 
@@ -357,7 +357,7 @@ Here is a breakdown of the configuration steps done on `leaf1` and you will find
     Next, we will create a routing policy that matches on the prefix set we just created and accepts them.
 
     ```{.srl .no-select}
-    set / routing-policy policy system-loopbacks-policy statement 1 match prefix-set system-loopbacks
+    set / routing-policy policy system-loopbacks-policy statement 1 match prefix prefix-set system-loopbacks
     set / routing-policy policy system-loopbacks-policy statement 1 action policy-result accept
     ```
 
@@ -366,8 +366,8 @@ Here is a breakdown of the configuration steps done on `leaf1` and you will find
   
     ```{.srl .no-select}
     set / network-instance default protocols bgp group underlay
-    set / network-instance default protocols bgp group underlay export-policy system-loopbacks-policy
-    set / network-instance default protocols bgp group underlay import-policy system-loopbacks-policy
+    set / network-instance default protocols bgp group underlay export-policy [ system-loopbacks-policy ]
+    set / network-instance default protocols bgp group underlay import-policy [ system-loopbacks-policy ]
     ```
 
 5. **Enable `ipv4-unicast` Address Family**  
