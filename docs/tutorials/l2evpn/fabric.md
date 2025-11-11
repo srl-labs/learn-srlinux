@@ -24,10 +24,9 @@ Let's start with configuring the IP interfaces on the inter-switch links to ensu
 
 On each leaf and spine we will bring up the relevant [interface](../../get-started/interface.md) and address its routed subinterface to achieve L3 connectivity.
 
-We begin with connecting to the CLI of our nodes via SSH[^1]:
+We begin with connecting to the CLI of our leaf1 node via SSH[^1]:
 
 ```bash
-# connecting to leaf1
 ssh clab-evpn01-leaf1
 ```
 
@@ -301,10 +300,10 @@ Here is a breakdown of the steps that are needed to configure EBGP on `leaf1` to
     A:leaf1# peer-as 201                                                                               
 
     --{ +* candidate shared default }--[ network-instance default protocols bgp group eBGP-underlay ]--
-    A:leaf1# export-policy all
+    A:leaf1# export-policy [ all ]
 
     --{ +* candidate shared default }--[ network-instance default protocols bgp group eBGP-underlay ]--
-    A:leaf1# import-policy all
+    A:leaf1# import-policy [ all ]
     ```
 
 1. **Configure neighbor**  
@@ -330,8 +329,8 @@ Here is a breakdown of the steps that are needed to configure EBGP on `leaf1` to
     +                 autonomous-system 101
     +                 router-id 10.0.0.1
     +                 group eBGP-underlay {
-    +                     export-policy all
-    +                     import-policy all
+    +                     export-policy [ all ]
+    +                     import-policy [ all ]
     +                     peer-as 201
     +                 }
     +                 afi-safi ipv4-unicast {
@@ -370,8 +369,8 @@ network-instance default {
             autonomous-system 101
             router-id 10.0.0.1
             group eBGP-underlay {
-                export-policy all
-                import-policy all
+                export-policy [ all ]
+                import-policy [ all ]
                 peer-as 201
             }
             afi-safi ipv4-unicast {
@@ -403,8 +402,8 @@ network-instance default {
             autonomous-system 102
             router-id 10.0.0.2
             group eBGP-underlay {
-                export-policy all
-                import-policy all
+                export-policy [ all ]
+                import-policy [ all ]
                 peer-as 201
             }
             afi-safi ipv4-unicast {
@@ -437,8 +436,8 @@ network-instance default {
             autonomous-system 201
             router-id 10.0.1.1
             group eBGP-underlay {
-                export-policy all
-                import-policy all
+                export-policy [ all ]
+                import-policy [ all ]
             }
             afi-safi ipv4-unicast {
                 admin-state enable
@@ -776,8 +775,8 @@ set / network-instance default protocols bgp
 set / network-instance default protocols bgp autonomous-system 101
 set / network-instance default protocols bgp router-id 10.0.0.1
 set / network-instance default protocols bgp group eBGP-underlay
-set / network-instance default protocols bgp group eBGP-underlay export-policy all
-set / network-instance default protocols bgp group eBGP-underlay import-policy all
+set / network-instance default protocols bgp group eBGP-underlay export-policy [ all ]
+set / network-instance default protocols bgp group eBGP-underlay import-policy [ all ]
 set / network-instance default protocols bgp group eBGP-underlay peer-as 201
 set / network-instance default protocols bgp afi-safi ipv4-unicast
 set / network-instance default protocols bgp afi-safi ipv4-unicast admin-state enable
@@ -824,8 +823,8 @@ set / network-instance default protocols bgp
 set / network-instance default protocols bgp autonomous-system 102
 set / network-instance default protocols bgp router-id 10.0.0.2
 set / network-instance default protocols bgp group eBGP-underlay
-set / network-instance default protocols bgp group eBGP-underlay export-policy all
-set / network-instance default protocols bgp group eBGP-underlay import-policy all
+set / network-instance default protocols bgp group eBGP-underlay export-policy [ all ]
+set / network-instance default protocols bgp group eBGP-underlay import-policy [ all ]
 set / network-instance default protocols bgp group eBGP-underlay peer-as 201
 set / network-instance default protocols bgp afi-safi ipv4-unicast
 set / network-instance default protocols bgp afi-safi ipv4-unicast admin-state enable
@@ -877,8 +876,8 @@ set / network-instance default protocols bgp
 set / network-instance default protocols bgp autonomous-system 201
 set / network-instance default protocols bgp router-id 10.0.1.1
 set / network-instance default protocols bgp group eBGP-underlay
-set / network-instance default protocols bgp group eBGP-underlay export-policy all
-set / network-instance default protocols bgp group eBGP-underlay import-policy all
+set / network-instance default protocols bgp group eBGP-underlay export-policy [ all ]
+set / network-instance default protocols bgp group eBGP-underlay import-policy [ all ]
 set / network-instance default protocols bgp afi-safi ipv4-unicast
 set / network-instance default protocols bgp afi-safi ipv4-unicast admin-state enable
 set / network-instance default protocols bgp neighbor 192.168.11.1
@@ -892,6 +891,8 @@ commit now
 ```
 
 ///
+
+**[:octicons-arrow-right-24: Next: EVPN Configuration](evpn.md)**
 
 [^1]: default SR Linux credentials are `admin:NokiaSrl1!`.
 [^2]: the snippets were extracted with `info interface ethernet-1/x` command issued in running mode.
