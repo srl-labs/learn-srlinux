@@ -12,7 +12,7 @@ If you have installed the [fcli](https://github.com/srl-labs/nornir-srl) tool, y
 
 === "LLDP neighbors"
     ```bash
-    ❯ fcli lldp
+    ❯ fcli -t topo.clab.yml lldp
                                LLDP Neighbors
     +----------------------------------------------------------------------------+
     | Node         | interface     | Nbr-System | Nbr-port      | Nbr-port-desc  |
@@ -42,7 +42,7 @@ If you have installed the [fcli](https://github.com/srl-labs/nornir-srl) tool, y
     ```
 === "Network instances and interfaces"
     ```bash
-    ❯ fcli ni
+    ❯ fcli -t topo.clab.yml ni
                                                Network Instances and interfaces                                            
     +---------------------------------------------------------------------------------------------------------------------+
     | Node         | NI   | oper | type   | router-id | Subitf  | assoc-ni | if-oper | ipv4                 | mtu  | vlan |
@@ -161,14 +161,14 @@ Copy the files in `intent_examples/infra/underlay_with_fabric_intent` into the `
 
 ```bash
 cp intent_examples/infra/underlay_with_fabric_intent/* intent
-ansible-playbook -i inv -e intent_dir=${PWD}/intent --diff playbooks/cf_fabric.yml
+uv run ansible-playbook -i inv -e intent_dir=${PWD}/intent --diff playbooks/cf_fabric.yml
 ```
 
 This will deploy the underlay configuration to all the nodes of the fabric. Let's check the fabric status with `fcli`:
 
 === "BGP Peers"
     ```bash
-    ❯ fcli bgp-peers
+    ❯ fcli -t topo.clab.yml bgp-peers
                                                                           BGP Peers
                                                               Inventory filter:{'fabric': 'yes'}
     +------------------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -216,7 +216,7 @@ This will deploy the underlay configuration to all the nodes of the fabric. Let'
     ```
 === "Network instances and interfaces"
     ```bash
-    ❯ fcli ni
+    ❯ fcli -t topo.clab.yml ni
                                                      Network Instances and interfaces
                                                     Inventory filter:{'fabric': 'yes'}
     +-----------------------------------------------------------------------------------------------------------------------------------------+
@@ -268,7 +268,7 @@ Alternatively, we could opt to use _BGP unnumbered_ inter-switch links (dynamic 
 
 === "BGP peers with BGP unnumbered peers"
     ```bash
-    ❯ fcli bgp-peers
+    ❯ fcli -t topo.clab.yml bgp-peers
                                                                                     BGP Peers                                                                                      
     +----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
     |              |         |                                       | AF: EVPN  | AF: IPv4  | AF: IPv6  |                |         |               |          |         |             |
@@ -321,7 +321,7 @@ Alternative to a Fabric Intent, we can use level-1 Infra Intents. This gives mor
 
 ```bash
 rm -f intent/* && cp intent_examples/infra/underlay_with_level1_intents/* ./intent
-ansible-playbook -i inv -e intent_dir=${PWD}/intent --diff playbooks/cf_fabric.yml
+uv run ansible-playbook -i inv -e intent_dir=${PWD}/intent --diff playbooks/cf_fabric.yml
 ```
 
 The schema files for these level-1 intents exist in the `playbooks/roles/infra/criteria` directory. There is a JSON-schema file per top-level level-1 resource.
@@ -391,7 +391,7 @@ Copy over above 2 files from `intent_examples/services` into `intent/` and run t
 
 ```
 cp intent_examples/services/mh_access-1.yml intent_examples/services/host_infra_itf_tags.yml intent
-ansible-playbook -i inv -e intent_dir=${PWD}/intent --diff playbooks/cf_fabric.yml
+uv run ansible-playbook -i inv -e intent_dir=${PWD}/intent --diff playbooks/cf_fabric.yml
 ```
 
 !!!note
@@ -401,7 +401,7 @@ Check the relevant state of the fabric:
 
 === "LAGs"
     ```bash
-    ❯ fcli lag
+    ❯ fcli -t topo.clab.yml lag
                                                                                           LAGs
                                                                            Inventory filter:{'fabric': 'yes'}
     +--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -414,7 +414,7 @@ Check the relevant state of the fabric:
     ```
 === "Ethernet Segments"
     ```bash
-    ❯ fcli es
+    ❯ fcli -t topo.clab.yml es
                                      Ethernet Segments
                               Inventory filter:{'fabric': 'yes'}
     +--------------------------------------------------------------------------------------------+
@@ -452,14 +452,14 @@ Let's copy this file from the intent examples directory and deploy it:
 
 ```
 cp intent_examples/services/l2vpn_101.yml intent
-ansible-playbook -i inv -e intent_dir=${PWD}/intent --diff playbooks/cf_fabric.yml
+uv run ansible-playbook -i inv -e intent_dir=${PWD}/intent --diff playbooks/cf_fabric.yml
 ```
 
 Check the state of the service and the Ethernet Segments in the fabric with `fcli`:
 
 === "Network Instances"
     ```bash
-    ❯ fcli ni -f ni=subnet-1
+    ❯ fcli -t topo.clab.yml ni -f ni=subnet-1
                                      Network Instances and interfaces
                                       Fields filter:{'ni': 'subnet-1'}
     +-----------------------------------------------------------------------------------------------------------+
@@ -472,7 +472,7 @@ Check the state of the service and the Ethernet Segments in the fabric with `fcl
     ```
 === "Ethernet Segments"
     ```bash
-    ❯ fcli es
+    ❯ fcli -t topo.clab.yml es
                                                        Ethernet Segments
     +------------------------------------------------------------------------------------------------------------------------------+
     | Node         | name  | esi                           | mh-mode    | oper | itf  | ni-peers                                   |
@@ -496,14 +496,14 @@ The `mh_access_2.yml` file contains the 2 extra `mh_access` intents, the `l2vpn_
 ```
 cp intent_examples/services/mh_access-2.yml intent
 cp intent_examples/services/l2vpn_101bis.yml intent/l2vpn_101.yml # replaces the previous
-ansible-playbook -i inv -e intent_dir=${PWD}/intent --diff playbooks/cf_fabric.yml
+uv run ansible-playbook -i inv -e intent_dir=${PWD}/intent --diff playbooks/cf_fabric.yml
 ```
 
 Verify the LAGs, ES's and mac-vrf `subnet-1`:
 
 === "LAGs"
     ```bash
-    ❯ fcli lag
+    ❯ fcli -t topo.clab.yml lag
                                                                                           LAGs
     +--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
     | Node         | lag  | oper | mtu  | min | desc      | type | speed | stby-sig | lacp-key | lacp-itvl | lacp-mode | lacp-sysid        | lacp-prio | act    | member-itf | member-oper |
@@ -521,7 +521,7 @@ Verify the LAGs, ES's and mac-vrf `subnet-1`:
     ```
 === "Ethernet Segments"
     ```bash
-    ❯ fcli es
+    ❯ fcli -t topo.clab.yml es
                                                           Ethernet Segments
     +------------------------------------------------------------------------------------------------------------------------------+
     | Node         | name  | esi                           | mh-mode    | oper | itf  | ni-peers                                   |
@@ -539,7 +539,7 @@ Verify the LAGs, ES's and mac-vrf `subnet-1`:
     ```
 === "mac-vrf `subnet-1`"
     ```bash
-    ❯ fcli ni -f ni=subnet-1
+    ❯ fcli -t topo.clab.yml ni -f ni=subnet-1
                                           Network Instances and interfaces
                                           Fields filter:{'ni': 'subnet-1'}
     +-----------------------------------------------------------------------------------------------------------+
@@ -587,7 +587,7 @@ Verify the mac-table of `subnet-1`:
 
 === "mac-vrf `subnet-1`"
     ```bash
-    ❯ fcli mac -f ni=subnet-1
+    ❯ fcli -t topo.clab.yml mac -f ni=subnet-1
                                                             MAC Table
                                                   Fields filter:{'ni': 'subnet-1'}
     +--------------------------------------------------------------------------------------------------------------------------+
@@ -699,12 +699,12 @@ Now the L3VPN service is defined using the two L2VPN intents (subnets) together 
 cp intent_examples/services/mh_access-3.yml intent
 cp intent_examples/services/l2vpn_102.yml intent
 cp intent_examples/services/l3vpn_2001.yml intent
-ansible-playbook -i inv -e intent_dir=${PWD}/intent --diff playbooks/cf_fabric.yml
+uv ansible-playbook -i inv -e intent_dir=${PWD}/intent --diff playbooks/cf_fabric.yml
 ```
 
 === "ip-vrf `ipvrf-1`"
     ```bash
-    ❯ fcli ni -f ni=ipvrf-1
+    ❯ fcli -t topo.clab.yml ni -f ni=ipvrf-1
                                                Network Instances and interfaces
                                                 Fields filter:{'ni': 'ipvrf-1'}
     +----------------------------------------------------------------------------------------------------------------------+
@@ -746,7 +746,7 @@ You can now verify inter-subnet routing between clients in different subnets.
     ```
 === "ARP table"
     ```bash
-    ❯ fcli arp -f ni="*ipvrf-1*"
+    ❯ fcli -t topo.clab.yml arp -f ni="*ipvrf-1*"
                                                     ARP table
                                         Fields filter:{'ni': '*ipvrf-1*'}
     +-------------------------------------------------------------------------------------------------------+
@@ -814,7 +814,7 @@ The `cf_fabric` playbook leverages the _commit confirm_ functionality of SR Linu
 To use this functionality, specify the extra variable `confirm_timeout` when you run the playbook, e.g.:
 
 ```bash
-ansible-playbook -i inv -e intent_dir=${PWD}/intent -e confirm_timeout=60 --diff playbooks/cf_fabric.yml 
+uv run ansible-playbook -i inv -e intent_dir=${PWD}/intent -e confirm_timeout=60 --diff playbooks/cf_fabric.yml 
 ```
 
 This will make the playbook run interactive and it will ask for explicit confirmation to leave the latest commit intact. If no confirmation is given, the commits are rolled back after the specified timeout.
