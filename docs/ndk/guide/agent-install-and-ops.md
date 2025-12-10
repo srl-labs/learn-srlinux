@@ -34,13 +34,13 @@ The only thing that nFPM requires of a user is to create a configuration file wi
 
 ### nFPM installation
 
-nFPM offers many [installation options](https://nfpm.goreleaser.com/install/) for all kinds of operating systems and environments. In the course of this guide, we will use the universal [nFPM docker image](https://nfpm.goreleaser.com/install/#running-with-docker).
+nFPM offers many [installation options](https://nfpm.goreleaser.com/docs/install/) for all kinds of operating systems and environments. In the course of this guide, we will use the universal [nFPM docker image](https://nfpm.goreleaser.com/docs/install/#running-with-docker).
 
 ### nFPM configuration file
 
 nFPM configuration file is the way of letting nFPM know how to build a package for the software artifacts that users created.
 
-The complete list of options the `nfpm.yml` file can have is documented on the [project's site](https://nfpm.goreleaser.com/configuration/). Here we will have a look at the configuration file that is suitable for a typical NDK application written in Go.
+The complete list of options the `nfpm.yml` file can have is documented on the [project's site](https://nfpm.goreleaser.com/docs/configuration/). Here we will have a look at the configuration file that is suitable for a typical NDK application written in Go.
 
 The file named `ndkDemo.yml` with the following contents will instruct nFPM how to build a package:
 
