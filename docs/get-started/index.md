@@ -25,7 +25,7 @@ SR Linux uses the following release numbering convention:
 
 The last minor release of the year (e.g 24.10) - is considered the long term release and will get security and bug fixes longer than the other minor releases in the same major release.
 
-This getting started tutorial is based on **SR Linux 24.7.2** version and will adapt to newer releases over time. If you are using a different version, you may see slight differences in the command outputs.  
+This getting started tutorial is based on **SR Linux 24.10.X** version and will adapt to newer releases over time. If you are using a different version, you may see slight differences in the command outputs.  
 Let us know in the comments, or in our [Discord](https://discord.gg/tZvgjQ6PZf), if you would notice any discrepancies.
 ///
 
@@ -42,6 +42,12 @@ This portal does not substitute but augments the official SR Linux documentation
     1. https://doc.srlinux.dev/22-11 for the main documentation pages of SR Linux 22.11 release.
     2. https://doc.srlinux.dev/rn22-11-2 for a direct link to Release Notes.
 3. Nokia Network Infrastructure documentation collection - https://bit.ly/iondoc
+
+## SR Linux videos
+
+If your way of learning is through videos, you will appreciate short and to-the-point videos introducing various SR Linux concepts on Nokia's YouTube channel. This [YouTube playlist](https://www.youtube.com/playlist?list=PLgKNvl454Bxe-ZRGR3huFBQajVSH6Ns4J) is for you to explore.
+
+-{{youtube(url="https://www.youtube.com/embed/-EV8XnJp7zY?si=-KYJt47ROwbqdgED")}}-
 
 ## My DCF Learning Labs
 

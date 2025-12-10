@@ -76,6 +76,8 @@ greeter:
 
 7. The source directories where to search for the YANG modules. The `/opt/greeter/yang` directory should contain a YANG module with the `greeter` name.
 
+    If your agent imports any existing SR Linux YANG modules, you should add the `/opt/srlinux/models/srl_nokia` directory to the list of source directories.
+
 ///details | Complete list of config files parameters
 
 ```yaml
@@ -143,6 +145,10 @@ application-name:
     #   'imm' - runs on the imm
     #   'cpm' - runs on the cpm (default)
     launch-restrictions: ['hw:cpm', 'hw:chassis:imm']
+    # [Optional] The list of linux capabilities to grant to the application.
+    # The capabilities are specified as a list of capability keys (without the 'CAP_' prefix).
+    capability-bounding-set:
+        - NET_ADMIN
     yang-modules:
         # [Mandatory] The names of the YANG modules to load. This is usually the file-name without '.yang'
         names: [module-name, other-module-name]

@@ -10,7 +10,7 @@ Monitoring-obsessed networkers would be pleased with SR Linux 100% YANG coverage
 
 **We are happy to chat with you all!** And the chosen venue for our new-forming SR Linux Community[^1] is the SR Linux Discord Server which everyone can join!
 
-<center>[:fontawesome-brands-discord: Join SR Linux Discord Server](https://discord.gg/tZvgjQ6PZf){ .md-button .md-button--primary }</center>
+<center markdown>[:fontawesome-brands-discord: Join SR Linux Discord Server](https://discord.gg/tZvgjQ6PZf){ .md-button .md-button--primary }</center>
 
 <!-- ## Always-ON SR Linux
 It is extremely easy and hassle free to run SR Linux, thanks to the [public container image](get-started.md#getting-the-image) and topology builder tool - [containerlab](https://containerlab.srlinux.dev).

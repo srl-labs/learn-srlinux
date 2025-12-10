@@ -44,6 +44,10 @@ Leveraging gRPC and protobufs provides some substantial benefits for NDK users:
 
 NDK is composed of a collection of gRPC services, each of which enables custom applications to interact with a particular subsystem on an SR Linux NOS, delivering a high level of integration and extensibility.
 
+/// note
+Starting with SR Linux 25.3.1, the NDK service is disabled by default. Users should enable it by configuring the `system ndk-server admin-state enable` leaf in the system configuration.
+///
+
 With this architecture, NDK applications act as gRPC clients that execute remote procedure calls (RPC) on a system that runs a gRPC server.
 
 On SR Linux, `ndk_mgr` is the application that runs the NDK gRPC server. Fig 3. shows how custom agents interact via gRPC with NDK, and NDK facilitates communication between custom apps and the rest of the system via IDB's pub/sub interface.

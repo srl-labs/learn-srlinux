@@ -19,5 +19,6 @@ The following table shows the mapping between SR Linux and NDK releases:
 | [v0.2.0](0.2.md) | 23.10.1              |          |
 | [v0.3.0](0.3.md) | 24.3.1               |          |
 | [v0.4.0](0.4.md) | 24.10.1              |          |
+| [v0.5.0](0.5.md) | 25.3.1               | Breaking changes! |
 
 [^1]: SR Linux release where NDK changes were introduced.

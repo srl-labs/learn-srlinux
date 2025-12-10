@@ -677,7 +677,7 @@ Let's look at the example where we use the `show interface` command:
 ```srl
 --{ running }--[  ]--
 A:leaf1# show interface mgmt0
-===========================================================================================================================================
+============================================================================
 mgmt0 is up, speed 1G, type None
   mgmt0.0 is up
     Network-instances:
@@ -687,8 +687,8 @@ mgmt0 is up, speed 1G, type None
     IPv4 addr    : 172.20.20.3/24 (dhcp, preferred)
     IPv6 addr    : 2001:172:20:20::3/64 (dhcp, preferred)
     IPv6 addr    : fe80::42:acff:fe14:1403/64 (link-layer, preferred)
--------------------------------------------------------------------------------------------------------------------------------------------
-=============================================================================
+----------------------------------------------------------------------------
+============================================================================
 ```
 
 Note, how after the `show` command we provide the context in the same way as we would use to enter into the interface context. The same schema applies to the `show` command.

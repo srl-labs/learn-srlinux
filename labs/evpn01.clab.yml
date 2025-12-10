@@ -3,20 +3,20 @@ name: evpn01
 topology:
   kinds:
     nokia_srlinux:
-      image: ghcr.io/nokia/srlinux:23.10.1
+      image: ghcr.io/nokia/srlinux:25.10
     linux:
-      image: ghcr.io/hellt/network-multitool
+      image: ghcr.io/srl-labs/network-multitool:latest
 
   nodes:
     leaf1:
       kind: nokia_srlinux
-      type: ixrd2
+      type: ixr-d2
     leaf2:
       kind: nokia_srlinux
-      type: ixrd2
+      type: ixr-d2
     spine1:
       kind: nokia_srlinux
-      type: ixrd3
+      type: ixr-d3
     srv1:
       kind: linux
       exec:
