@@ -4,22 +4,20 @@ SR Linux is a modern Network Operating System (NOS), and it should come as no su
 
 In this article, we provide a step-by-step guide to perform a software upgrade (or a downgrade) using the gRPC gNOI service.
 
-## Introduction
-
 gRPC is an HTTP/2-based RPC (Remote Procedure Call) framework that allows for the management and operation of a destination device. gRPC operates using a client-server model. In the networking world, the server is typically a switch or router.
 
 Within the gRPC framework, the following services are defined for specific functions. Each service has a set of defined RPCs, and each RPC has a set of inputs and output methods.
 
-- gNMI (gRPC-based Network Management Interface):  
+- **gNMI** (gRPC-based Network Management Interface):  
   gNMI RPCs can be used to configure, retrieve state, or stream telemetry from a destination device. This is by far the most popular gRPC service in the networking industry today.
 
-- gNOI (gRPC-based Network Operations Interface):  
+- **gNOI** (gRPC-based Network Operations Interface):  
   gNOI RPCs can be used to manage device operations such as ping, traceroute, reboot, and software upgrade.
 
-- gNSI (gRPC-based Network Security Interface):  
+- **gNSI** (gRPC-based Network Security Interface):  
   gNSI RPCs can be used to manage security and accounting-related configuration.
 
-- gRIBI (gRPC-based Routing Information Base Injection):  
+- **gRIBI** (gRPC-based Routing Information Base Injection):  
   gRIBI RPCs can be used to inject routes into the device RIB for traffic steering and traffic engineering.
 
 Refer to the [gNxI](https://gnxi.srlinux.dev) page for details on each RPC.
@@ -97,7 +95,6 @@ gnoic version
 A software upgrade cannot be executed on an SR Linux docker image in Containerlab. A physical device is required for this purpose.
 ///
 
-
 ### Enable gNOI service in SR Linux
 
 gNOI service configuration is under gRPC. To simplify our process, we will use unencrypted (non-TLS) communication between gNOI client and the switch.
@@ -150,6 +147,7 @@ We will use the gNOI OS verify RPC for this purpose.
 On the VM, run:
 
 ///tab | gNOIc command
+
 ```bash
 gnoic -a 10.0.1.204 -u admin -p admin --insecure os verify
 ```
@@ -179,10 +177,10 @@ We will use the gNOI OS Install RPC to transfer the image to the switch.
 
 The Install RPC is a synchronous RPC that transfers the image in chunks and performs a checksum at the end of the transfer.
 
-<!-- md:option type:info -->
-
-:   !!! info
-    Starting SR Linux 25.3, there is a rate limit applied by default for synchronous RPCs. Before attempting an OS Install RPC on versions 25.3 or later, increase the rate limit under `system grpc-server <name> rate-limit`.
+/// admonition
+    type: info
+Starting with SR Linux 25.3, there is a rate limit applied by default for synchronous RPCs. Before attempting an OS Install RPC on versions 25.3 or later, increase the rate limit under `system grpc-server <name> rate-limit`.
+///
 
 On the VM, run:
 
@@ -257,10 +255,10 @@ After successfully transferring the software image, we can proceed to activate t
 
 We will use the gNOI OS Activate RPC for this purpose.
 
-<!-- md:option type:info -->
-
-:   !!! info
-    By default, the Activate RPC will perform a reboot of the device to activate the new software. To avoid a reboot during activation (and perform reboot at a later time), use the `--no-reboot` flag in the gnoic command.
+/// admonition
+    type: info
+By default, the Activate RPC will perform a reboot of the device to activate the new software. To avoid a reboot during activation (and perform reboot at a later time), use the `--no-reboot` flag in the gnoic command.
+///
 
 Run the following command to activate the new software with a device reboot.
 
@@ -284,6 +282,7 @@ INFO[0004] target "10.0.1.204:57400" activate response "activate_ok:{}"
 After the device boots up successfully, verify the current software version of the device and confirm that the software upgrade was a success.
 
 ///tab | gNOIc command
+
 ```bash
 gnoic -a 10.0.1.204 -u admin -p admin --insecure os verify
 ```
@@ -301,10 +300,10 @@ gnoic -a 10.0.1.204 -u admin -p admin --insecure os verify
 
 ///
 
-<!-- md:option type:success -->
-
-:   !!! success
-        We have successfully upgraded the device to 25.10
+/// admonition
+    type: success
+We have successfully upgraded the device to 25.10
+///
 
 ## Software downgrade procedure
 
@@ -368,6 +367,7 @@ INFO[0003] target "10.0.1.204:57400" activate response "activate_ok:{}"
 ### Verify the current version
 
 ///tab | gNOIc command
+
 ```bash
 gnoic -a 10.0.1.204 -u admin -p admin --insecure os verify
 ```
@@ -385,10 +385,10 @@ gnoic -a 10.0.1.204 -u admin -p admin --insecure os verify
 
 ///
 
-<!-- md:option type:success -->
-
-:   !!! success
-        We have successfully downgraded the device to 24.10.5
+/// admonition
+    type: success
+We have successfully downgraded the device to 24.10.5
+///
 
 ## Summary
 
