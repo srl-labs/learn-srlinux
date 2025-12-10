@@ -15,13 +15,18 @@ The following sections assume you are in the `intent-based-ansible-lab` director
 
 ## Install Ansible and dependencies
 
-- To run the playbooks in the above repo, Ansible and related dependencies must be installed. The recommended way is to create a Python virtual environment and install the packages in that environment. Next to the Python packages, the `nokia.srlinux` Ansible collection is required that provides the connection plugin to interact with SR Linux using JSON-RPC.
+- To run the playbooks in the above repo, Ansible and related dependencies must be installed. The recommended way is to use uv. Next to the Python packages, the `nokia.srlinux` Ansible collection is required that provides the connection plugin to interact with SR Linux using JSON-RPC.
 
-    ```bash title="Creating a venv and installing dependencies"
-    python3 -mvenv .venv
-    source .venv/bin/activate
-    pip install -U pip && pip install -r requirements.txt
-    ansible-galaxy collection install nokia.srlinux    
+
+    ```bash title="Installing dependencies"
+    # Install uv (Linux/macOS)
+    curl -LsSf https://astral.sh/uv/install.sh | sh
+
+    # Sync uv
+    uv sync
+
+    # Install the Nokia SR Linux Ansible collection
+    uv run ansible-galaxy collection install nokia.srlinux
     ```
 
 - Ensure you have the [Containerlab](https://containerlab.dev/install)[^2] installed and are meeting its installation requirements.
@@ -30,7 +35,7 @@ The following sections assume you are in the `intent-based-ansible-lab` director
   `fcli` is not required to run the project, but it's useful to verify the state of the fabric after running the playbook and is used throughout this tutorial to illustrate the effects of the Ansible playbooks. It is packaged in a container and run via a shell alias via the following command:
 
     ```bash
-    source .aliases.rc
+    uv tool install git+https://github.com/srl-labs/nornir-srl
     ```
 
 ## Deploying the lab
@@ -38,7 +43,7 @@ The following sections assume you are in the `intent-based-ansible-lab` director
 You need an SR Linux test topology to run the Ansible playbook and roles against. We will use [Containerlab](https://containerlab.dev/) to create a lab environment with 6 SR Linux nodes: 4 leaves and 2 spines:
 
 ```bash
-sudo containerlab deploy -t topo.yml --reconfigure
+containerlab deploy -t topo.clab.yml --reconfigure
 ```
 
 This will create a lab environment with 6 SR Linux nodes and a set of Linux containers to act as hosts:
@@ -51,7 +56,7 @@ This will create a lab environment with 6 SR Linux nodes and a set of Linux cont
 Containerlab populates the `/etc/hosts` file on the host machine with the IP addresses of the deployed nodes. This allows Ansible to connect to the nodes that has a matching inventory file inside the `inv` directory.
 
 ```bash title="Verifying that all lab nodes are up and running"
-sudo containerlab inspect -t topo.yml
+containerlab inspect -t topo.clab.yml
 ```
 
 With the lab deployed, we can now explore the project's structure and understand the role's layout that powers the intent-based configuration management.
