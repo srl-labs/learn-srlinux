@@ -31,6 +31,8 @@ nav:
           - Wildcards and ranges: blog/posts/2023/cli-ranges.md
       - SNMP:
           - SNMP Framework: snmp/snmp_framework.md
+      - gNOI:
+          - Software Upgrade: mgmt/gnoi_sw_upgrade.md
 
   # - Knowledge Base:
   #     - Hardware types: kb/hwtypes.md
