@@ -7,7 +7,7 @@ docs:
 
 # serve the doc site locally with full site rendered on each change (slower)
 .PHONY: serve-docs-full
-serve-insiders:
+serve-docs-full:
 	docker run -it --rm -p 8001:8000 -v $$(pwd):/docs registry.srlinux.dev/pub/mkdocs-material-insiders:$(MKDOCS_INS_VER)
 
 # serve the doc site locally with dirty reload (faster, but toc updates may require a manual stop/start)
