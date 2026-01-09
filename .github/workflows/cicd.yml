@@ -9,11 +9,11 @@ on:
   pull_request:
 
 env:
-  MKDOCS_MATERIAL_VER: 9.6.16-insiders-4.53.16-hellt
+  MKDOCS_MATERIAL_IMAGE: ghcr.io/eda-labs/mkdocs-material:v9.7.1-1
 
 jobs:
   docs-test:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
 
@@ -24,7 +24,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - run: docker run -v $(pwd):/docs --entrypoint mkdocs ghcr.io/srl-labs/mkdocs-material-insiders:$MKDOCS_MATERIAL_VER build --clean --strict
+      - run: docker run -v $(pwd):/docs --entrypoint mkdocs ${MKDOCS_MATERIAL_IMAGE} build --clean --strict
 
       - name: Cache htmltest external links
         id: cache-htmltest
@@ -71,7 +71,7 @@ jobs:
   #     - run: docker run -v $(pwd):/docs --entrypoint ash ghcr.io/srl-labs/mkdocs-material-insiders:$MKDOCS_MATERIAL_VER -c 'git config --global --add safe.directory /docs; mkdocs gh-deploy --force'
 
   publish-docs:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     env:
       BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
     steps:
@@ -89,7 +89,7 @@ jobs:
 
       - name: Build docs
         run: |
-          docker run --env CI=true --env MKDOCS_GIT_COMMITTERS_APIKEY=${{ secrets.GITHUB_TOKEN }} -v $(pwd):/docs --user $(id -u):$(id -g) --entrypoint mkdocs ghcr.io/srl-labs/mkdocs-material-insiders:$MKDOCS_MATERIAL_VER build
+          docker run --env CI=true --env MKDOCS_GIT_COMMITTERS_APIKEY=${{ secrets.GITHUB_TOKEN }} -v $(pwd):/docs --user $(id -u):$(id -g) --entrypoint mkdocs ${MKDOCS_MATERIAL_IMAGE} build
 
       - name: Publish to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3
