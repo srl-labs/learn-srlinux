@@ -33,7 +33,7 @@ Hitting the <kbd>?</kbd> in the CLI will list all available **local** commands:
 <!-- --8<-- [start:local-in-running] -->
 ```srl
 --{ running }--[  ]--
-A:leaf1# <pressed ? key>
+A:admin@leaf1# <pressed ? key>
 Local commands:
   acl               Top level container for configuration and operational state related to access control lists (ACLs)
   bfd               Context to configure BFD parameters and report BFD sessions state
@@ -56,7 +56,7 @@ If you press <kbd>?</kbd> again, you will see all available commands, local and 
 
 ```srl
 --{ running }--[  ]--
-A:leaf1# <pressed ? key> <pressed ? key again>
+A:admin@leaf1# <pressed ? key> <pressed ? key again>
 Local commands:
   acl               Top level container for configuration and operational state related to access control lists (ACLs)
   bfd               Context to configure BFD parameters and report BFD sessions state
@@ -118,7 +118,7 @@ As said, in this mode a user can execute operational and show commands. To give 
 Ping is an operational command.
 
 --{ running }--[  ]--
-A:leaf1# ping network-instance mgmt 172.20.20.1
+A:admin@leaf1# ping network-instance mgmt 172.20.20.1
 Using network instance mgmt
 PING 172.20.20.1 (172.20.20.1) 56(84) bytes of data.
 64 bytes from 172.20.20.1: icmp_seq=1 ttl=64 time=5.59 ms
@@ -130,7 +130,7 @@ PING 172.20.20.1 (172.20.20.1) 56(84) bytes of data.
 
 ```srl
 --{ running }--[  ]--
-A:leaf1# show version
+A:admin@leaf1# show version
 --------------------------------------------------
 Hostname             : leaf1
 Chassis Type         : 7220 IXR-D2L
@@ -154,10 +154,10 @@ The `candidate` mode is the mode in which a user performs configuration changes 
 
 ```srl title="Enter candidate mode from running mode"
 --{ running }--[  ]--
-A:leaf1# enter candidate
+A:admin@leaf1# enter candidate
 
 --{ candidate shared default }--[  ]--
-A:leaf1#
+A:admin@leaf1#
 ```
 
 You can immediately notice how the prompt changed. Now it shows the following information:
@@ -177,10 +177,10 @@ Think about counters, like interface statistics, or the system uptime, or BGP pe
 
 ```srl title="Enter candidate mode from running mode"
 --{ running }--[  ]--
-A:leaf1# enter state
+A:admin@leaf1# enter state
 
 --{ state }--[  ]--
-A:leaf1#
+A:admin@leaf1#
 ```
 
 /// admonition | Changing between CLI modes
@@ -219,17 +219,17 @@ Let's select `mgmt0` or type it in and press <kbd>Enter</kbd> to enter the `inte
 
 ```srl
 --{ running }--[  ]--
-A:leaf1# interface mgmt0
+A:admin@leaf1# interface mgmt0
 
 --{ running }--[ interface mgmt0 ]--
-A:leaf1#
+A:admin@leaf1#
 ```
 
 The prompt changed to show the current context - `[ interface mgmt0 ]`. Recall, that SR Linux CLI is context-aware, therefore using the <kbd>?</kbd> key now will show you the different local commands, as you are standing in a different current context.
 
 ```srl
 --{ running }--[ interface mgmt0 ]--
-A:leaf1# <pressed ? key>
+A:admin@leaf1# <pressed ? key>
 Local commands:
   admin-state*      The configured, desired state of the interface
   description*      A user-configured description of the interface
@@ -253,14 +253,14 @@ By typing `subinterface` and pressing <kbd>TAB</kbd> you will see autosuggested 
 
 ```srl title="Accept suggested subinterface index with TAB key"
 --{ running }--[ interface mgmt0 ]--
-A:leaf1# subinterface 0
+A:admin@leaf1# subinterface 0
 ```
 
 Now the prompt changed to show the current context - `[ interface mgmt0 subinterface 0 ]`.
 
 ```srl
 --{ running }--[ interface mgmt0 subinterface 0 ]--
-A:leaf1#
+A:admin@leaf1#
 ```
 
 ### Exiting contexts
@@ -269,19 +269,18 @@ To exit from the current context use `exit` command, that takes an optional argu
 
 ```srl title="<code>exit</code> brings you one level up in the context hierarchy"
 --{ running }--[ interface mgmt0 subinterface 0 ]--
-A:leaf1# exit
-
+A:admin@leaf1# exit
 --{ running }--[ interface mgmt0 ]--
-A:leaf1#
+A:admin@leaf1#
 ```
 
 If you want to exit to a specific parent context from the current one, you can leverage `exit to` variant:
 
 ```srl
 --{ running }--[ interface mgmt0 subinterface 0 ]--
-A:leaf1# exit to <context>
-                  interface
-                  root     
+A:admin@leaf1# exit to <context>
+                       interface
+                       root
 ```
 
 The autosuggestion window will list all parent contexts (`interface`, `root`) that you can exit to from your current context.
@@ -290,10 +289,10 @@ And lastly, you can also navigate to whatever context from any other context by 
 
 ```srl
 --{ running }--[ interface mgmt0 subinterface 0 ]--
-A:leaf1# / system information
+A:admin@leaf1# / system information
 
 --{ running }--[ system information ]--
-A:leaf1#
+A:admin@leaf1#
 ```
 
 ### Command scope
@@ -302,7 +301,7 @@ When you're in a context, your commands are scoped to that context. For example,
 
 ```srl
 --{ running }--[ interface mgmt0 subinterface 0 ]--
-A:leaf1# tree
+A:admin@leaf1# tree
 subinterface
 +-- type
 +-- description
@@ -318,7 +317,7 @@ If you want to change the context of a given command you provide the context as 
 
 ```srl
 --{ running }--[ interface mgmt0 subinterface 0 ]--
-A:leaf1# tree /system information
+A:admin@leaf1# tree /system information
 information
 +-- contact
 +-- location
@@ -328,7 +327,7 @@ Even `show` commands that we will explore later are context-aware. For example, 
 
 ```srl
 --{ running }--[ interface mgmt0 subinterface 0 ]--
-A:leaf1# show version
+A:admin@leaf1# show version
 Parsing error: Unknown token 'version'.
 Options are ['#', '..', '/', '>', '>>', 'all', 'brief', 'detail', 'queue-detail', '|', '}']
 ```
@@ -337,7 +336,7 @@ And that is because in the current context there is no `version` command that `s
 
 ```srl
 --{ running }--[ interface mgmt0 subinterface 0 ]--
-A:leaf1# show / version
+A:admin@leaf1# show / version
 -----------------------------------------------------
 Hostname             : leaf1
 Chassis Type         : 7220 IXR-D2L
@@ -354,17 +353,17 @@ While we are in the running mode, lets go once again to the `mgmt0` interface co
 
 ```srl
 --{ running }--[  ]--
-A:leaf1# interface mgmt0
+A:admin@leaf1# interface mgmt0
 
 --{ running }--[ interface mgmt0 ]--
-A:leaf1#
+A:admin@leaf1#
 ```
 
 Now let's run the `info` command:
 
 ```srl
 --{ running }--[ interface mgmt0 ]--
-A:leaf1# info
+A:admin@leaf1# info
     admin-state enable
     subinterface 0 {
         admin-state enable
@@ -389,10 +388,10 @@ What happens, if we switch to the `state` mode right from the `interface mgmt0` 
 
 ```srl
 --{ running }--[ interface mgmt0 ]--
-A:leaf1# enter state
+A:admin@leaf1# enter state
 
 --{ state }--[ interface mgmt0 ]--
-A:leaf1# info
+A:admin@leaf1# info
     admin-state enable
     mtu 1514
     ifindex 1077952510
@@ -427,7 +426,7 @@ Even though `info` behaves differently depending on the CLI mode, you don't need
 
 ```srl
 --{ state }--[ interface mgmt0 ]--
-A:leaf1# info from running
+A:admin@leaf1# info from running
     admin-state enable
     subinterface 0 {
         admin-state enable
@@ -451,7 +450,7 @@ There was a lot of information when we ran `info` while in the `state` mode. If 
 
 ```srl
 --{ state }--[ interface mgmt0 ]--
-A:leaf1# info depth 1
+A:admin@leaf1# info depth 1
     admin-state enable
     mtu 1514
     ifindex 1077952510
@@ -498,36 +497,38 @@ A:leaf1# info depth 1
     }
 ```
 
-### with context
+### path context
 
-Another useful argument to the `info` command is context argument that is the last element of the command. It allows you to specify the context from which you want to retrieve the information. It would be not cool to first ask you to move in a certain context to retrieve the information from.
-
-Thus, you can simply provide the target context as the last argument to the `info` command. And you can combine it with the `from` and `depth` arguments as well.
+The last positional argument of the `info` command sets the context from which you want to retrieve the information. This allows you to fetch information from any context without changing your current context.  
+Simply provide the target context as the last argument to the `info` command.
 
 ```srl
---{ state }--[ interface mgmt0 ]--
-A:leaf1# info from running /system banner
+--{ running }--[  ]--
+A:admin@leaf1# info from state /system information
+    description "SRLinux-v25.10.1-399-g90c1dbe35ef 7220 IXR-D2L Copyright (c) 2000-2025 Nokia."
+    current-datetime "2026-01-09T08:48:07.062Z (now)"
+    last-booted "2026-01-09T08:28:48.317Z (19 minutes ago)"
+    version v25.10.1-399-g90c1dbe35ef
+```
+
+> And you can combine it with the `from` and `depth` arguments as well.
+
+When `info` is executed with the path argument, it will return information from the specified context as shown above. In case it is desired to get information from the provided context but from the root of the context tree, add `with-context` argument to the `info` command:
+
+```srl
+--{ running }--[  ]--
+A:admin@leaf1# info with-context from state /system information
     system {
-        banner {
-            login-banner "................................................................
-:                  Welcome to Nokia SR Linux!                  :
-:              Open Network OS for the NetOps era.             :
-:                                                              :
-:    This is a freely distributed official container image.    :
-:                      Use it - Share it                       :
-:                                                              :
-: Get started: https://learn.srlinux.dev                       :
-: Container:   https://go.srlinux.dev/container-image          :
-: Docs:        https://doc.srlinux.dev/24-7                    :
-: Rel. notes:  https://doc.srlinux.dev/rn24-7-2                :
-: YANG:        https://yang.srlinux.dev/v24.7.2                :
-: Discord:     https://go.srlinux.dev/discord                  :
-: Contact:     https://go.srlinux.dev/contact-sales            :
-................................................................
-"
+        information {
+            description "SRLinux-v25.10.1-399-g90c1dbe35ef 7220 IXR-D2L Copyright (c) 2000-2025 Nokia. Kernel 6.17.8-orbstack-00308-g8f9c941121b1 #1 SMP PREEMPT Thu Nov 20 09:34:02 UTC 2025"
+            current-datetime "2026-01-09T08:56:36.142Z (now)"
+            last-booted "2026-01-09T08:28:48.317Z (27 minutes ago)"
+            version v25.10.1-399-g90c1dbe35ef
         }
     }
 ```
+
+What changed is that now the output starts from the root of the state tree, showing the full path to the `/system/information` context.
 
 ## Output modifiers
 
@@ -541,7 +542,7 @@ Can be useful when you want to see the large output of the `info` or `show` comm
 
 ```srl
 --{ state }--[ interface mgmt0 ]--
-A:leaf1# info | more
+A:admin@leaf1# info | more
     admin-state enable
     mtu 1514
     ifindex 1077952510
@@ -588,7 +589,7 @@ It is primarily used with the `info` output. For example, if you want to convert
 
 ```srl
 --{ running }--[ interface mgmt0 ]--
-A:leaf1# info | as json
+A:admin@leaf1# info | as json
 {
   "name": "mgmt0",
   "admin-state": "enable",
@@ -617,7 +618,7 @@ A:leaf1# info | as json
 
 ```srl
 --{ running }--[ interface mgmt0 ]--
-A:leaf1# info | as yaml
+A:admin@leaf1# info | as yaml
 ---
 name: mgmt0
 admin-state: enable
@@ -653,7 +654,7 @@ Naturally, the first command you execute on a system is the `show version` comma
 
 ```srl
 --{ running }--[ interface mgmt0 ]--
-A:leaf1# show /version
+A:admin@leaf1# show /version
 --------------------------------------------------
 Hostname             : leaf1
 Chassis Type         : 7220 IXR-D2L
@@ -676,7 +677,7 @@ Let's look at the example where we use the `show interface` command:
 
 ```srl
 --{ running }--[  ]--
-A:leaf1# show interface mgmt0
+A:admin@leaf1# show interface mgmt0
 ============================================================================
 mgmt0 is up, speed 1G, type None
   mgmt0.0 is up
@@ -697,20 +698,20 @@ Another, more elaborated example is showing the `bgp` summary of the management 
 
 ```srl
 --{ running }--[  ]--
-A:leaf1# show network-instance mgmt protocols bgp summary
+A:admin@leaf1# show network-instance mgmt protocols bgp summary
 ```
 
 It doesn't yield any output, since we don't have any BGP sessions configured, but it is a good example of how the show command follows the same schema, because to enter into the bgp context for configuration we would type the following:
 
 ```srl
 --{ running }--[  ]--
-A:leaf1# enter candidate
+A:admin@leaf1# enter candidate
 
 --{ candidate shared default }--[  ]--
-A:leaf1# network-instance mgmt protocols bgp
+A:admin@leaf1# network-instance mgmt protocols bgp
 
 --{ * candidate shared default }--[ network-instance mgmt protocols bgp ]--
-A:leaf1#
+A:admin@leaf1#
 ```
 
 _Konsequent, praktisch, gut._

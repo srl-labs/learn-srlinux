@@ -39,7 +39,7 @@ Everything is ready for the lab deployment. We are going to spin up this lovely 
 How do we deploy it? Enter in some directory where the lab is about to be cloned and run this one-liner:
 
 ```{.bash .no-select}
-sudo containerlab deploy -c -t \
+containerlab deploy -c -t \
   https://github.com/srl-labs/srlinux-getting-started #(1)!
 ```
 
@@ -55,9 +55,9 @@ In less than a minute, you should have the lab running with the summary table of
 +---+---------+--------------+------------------------------------+---------------+---------+----------------+----------------------+
 | 1 | client1 | 9b3955f9ab50 | ghcr.io/srl-labs/network-multitool | linux         | running | 172.20.20.8/24 | 2001:172:20:20::8/64 |
 | 2 | client2 | 50d068413361 | ghcr.io/srl-labs/network-multitool | linux         | running | 172.20.20.4/24 | 2001:172:20:20::4/64 |
-| 3 | leaf1   | f1643c11603b | ghcr.io/nokia/srlinux:24.10.4      | nokia_srlinux | running | 172.20.20.7/24 | 2001:172:20:20::7/64 |
-| 4 | leaf2   | fb50f174cb73 | ghcr.io/nokia/srlinux:24.10.4      | nokia_srlinux | running | 172.20.20.6/24 | 2001:172:20:20::6/64 |
-| 5 | spine1  | 8162d45caac9 | ghcr.io/nokia/srlinux:24.10.4      | nokia_srlinux | running | 172.20.20.5/24 | 2001:172:20:20::5/64 |
+| 3 | leaf1   | f1643c11603b | ghcr.io/nokia/srlinux:25.10        | nokia_srlinux | running | 172.20.20.7/24 | 2001:172:20:20::7/64 |
+| 4 | leaf2   | fb50f174cb73 | ghcr.io/nokia/srlinux:25.10        | nokia_srlinux | running | 172.20.20.6/24 | 2001:172:20:20::6/64 |
+| 5 | spine1  | 8162d45caac9 | ghcr.io/nokia/srlinux:25.10        | nokia_srlinux | running | 172.20.20.5/24 | 2001:172:20:20::5/64 |
 +---+---------+--------------+------------------------------------+---------------+---------+----------------+----------------------+
 ```
 
@@ -131,8 +131,8 @@ Warning: Permanently added 'leaf1' (ED25519) to the list of known hosts.
 : Get started: https://learn.srlinux.dev                       :
 : Container:   https://go.srlinux.dev/container-image          :
 : Docs:        https://doc.srlinux.dev/24-10                   :
-: Rel. notes:  https://doc.srlinux.dev/rn24-10-4               :
-: YANG:        https://yang.srlinux.dev/v24.10.4               :
+: Rel. notes:  https://doc.srlinux.dev/rn25-10-1               :
+: YANG:        https://yang.srlinux.dev/v25.10.1               :
 : Discord:     https://go.srlinux.dev/discord                  :
 : Contact:     https://go.srlinux.dev/contact-sales            :
 ................................................................
@@ -142,7 +142,7 @@ Welcome to the srlinux CLI.
 Type 'help' (and press <ENTER>) if you need any help using this.
 
 --{ running }--[  ]--
-A:leaf1#
+A:admin@leaf1#
 
 ```
 </div>
@@ -157,15 +157,15 @@ Alright, we are in, let's get familiar with the SR Linux CLI!
 Here are some useful commands to manage your lab:
 
 ```bash title="List lab nodes"
-sudo containerlab inspect --all
+containerlab inspect --all
 ```
 
 ```bash title="destroy the get started lab (execute from within the <code>srlinux-getting-started</code> directory)"
-sudo containerlab destroy -c
+containerlab destroy -c
 ```
 
 ```bash title="redeploy the get started lab"
-sudo containerlab deploy -c -t \
+containerlab redeploy -c -t \
   https://github.com/srl-labs/srlinux-getting-started
 ```
 

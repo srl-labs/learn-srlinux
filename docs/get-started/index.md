@@ -25,7 +25,7 @@ SR Linux uses the following release numbering convention:
 
 The last minor release of the year (e.g 24.10) - is considered the long term release and will get security and bug fixes longer than the other minor releases in the same major release.
 
-This getting started tutorial is based on **SR Linux 24.10.X** version and will adapt to newer releases over time. If you are using a different version, you may see slight differences in the command outputs.  
+This getting started tutorial is based on **SR Linux 25.10.X** version and will adapt to newer releases over time. If you are using a different version, you may see slight differences in the command outputs.  
 Let us know in the comments, or in our [Discord](https://discord.gg/tZvgjQ6PZf), if you would notice any discrepancies.
 ///
 
@@ -39,8 +39,8 @@ This portal does not substitute but augments the official SR Linux documentation
 
 1. SR Linux documentation collection - https://documentation.nokia.com/srlinux
 2. Short and sweet URLs with the release version being part of the URL
-    1. https://doc.srlinux.dev/22-11 for the main documentation pages of SR Linux 22.11 release.
-    2. https://doc.srlinux.dev/rn22-11-2 for a direct link to Release Notes.
+    1. https://doc.srlinux.dev/25-10 for the main documentation pages of SR Linux 25.10 release.
+    2. https://doc.srlinux.dev/rn25-10-1 for a direct link to Release Notes[^1].
 3. Nokia Network Infrastructure documentation collection - https://bit.ly/iondoc
 
 ## SR Linux videos
@@ -54,3 +54,4 @@ If your way of learning is through videos, you will appreciate short and to-the-
 More than just a lab service, **My DCF Learning Labs** offers lab exercises complete with inline instructions and solutions, giving you everything you need in one easy-to-use browser-based application - access multiple lab types and exercises to develop your SR Linux skills.
 
 [Learn more](https://www.nokia.com/networks/training/dcf/my-dcf-learning-labs/?utm_source=Learn+SR+Linux) about My DCF Learning Labs and [watch a tutorial](https://www.youtube.com/watch?v=ycDNLoYrdko), or [request your free access now](https://forms.office.com/e/x8d1P1rdNt).
+[^1]: You need to have an account on Nokia support portal to access the Release Notes.
