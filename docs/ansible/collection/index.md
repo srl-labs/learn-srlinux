@@ -13,7 +13,7 @@ Ansible collection for SR Linux is identified with `nokia.srlinux` fully qualifi
 | **Galaxy URL**                  | [nokia/srlinux][coll-url]                    |
 | **Ansible Automation Platform** | [nokia/srlinux][aap-coll-url]                |
 | **Github repository**           | [nokia/srlinux-ansible-collection][repo-url] |
-| **Tutorial**                    | [link][tutorial-link] |
+| **Tutorial**                    | [Using nokia.srlinux collection][tutorial-link] |
 | **SR Linux version**            | >=23.3.1[^1]                                 |
 | **Python version**              | >=3.10                                       |
 
