@@ -95,3 +95,7 @@ Common Ansible return values such as `changed`, `failed` and common SR Linux val
 ### result
 
 List of responses for each command using the specified output format.
+
+## Examples
+
+For examples see the [tutorial](../../tutorials/programmability/ansible/using-nokia-srlinux-collection.md).
