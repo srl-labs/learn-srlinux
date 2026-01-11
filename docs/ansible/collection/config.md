@@ -404,6 +404,8 @@ Consider the following output when a wrong path is value is used in the `update`
 
 ## Examples
 
+Some typical use cases of this module are described below, for additional examples see the [tutorial](../../tutorials/programmability/ansible/using-nokia-srlinux-collection.md).
+
 ### adding an interface
 
 Let's see step by step how to use the `config` module to add the `ethernet-1/1` interface to a device.

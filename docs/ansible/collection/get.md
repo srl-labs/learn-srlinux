@@ -168,6 +168,8 @@ Consider the following output when a wrong path is used by the user of a module:
 
 ## Examples
 
+Some typical use cases of this module are described below, for additional examples see the [tutorial](../../tutorials/programmability/ansible/using-nokia-srlinux-collection.md).
+
 ### Single path
 
 The most simple example of using the `get` module is to retrieve a single path which may point to any YANG node of a chosen datastore.

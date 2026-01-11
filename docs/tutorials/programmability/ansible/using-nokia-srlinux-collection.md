@@ -29,9 +29,6 @@ title: Using nokia.srlinux Ansible collection
 
 [^1]: the following versions have been used to create this tutorial. The newer versions might work; please pin the version to the mentioned ones if they don't.
 
-!!!note
-    This is an updated tutorial that uses the new [`nokia.srlinux`][nokia-srlinux-collection] Ansible collection. The previous version of this tutorial that uses Ansible URI module is deprecated but still can be found [here](ansible-with-uri.md).
-
 In the [JSON-RPC Basics](../json-rpc/basics.md) tutorial, we focused on the JSON-RPC interface mechanics and its capabilities. The examples we used there used a well-known `curl` command-line utility to put the focal point on the JSON-RPC itself and some automation framework.
 
 Arguably, using `curl` for network automation tasks that aren't trivial may be challenging and likely lead to hairy bash scripting. Instead, network ops teams prefer to use home-grown automation that leverages programming languages or configuration management tools like Ansible[^2] fitted to the networking purpose.
