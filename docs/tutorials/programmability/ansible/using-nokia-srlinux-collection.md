@@ -137,9 +137,9 @@ all:
 ### Container
 
 Ansible is infamous for breaking things when you least expect it. For that reason, we [caged](../../../ansible/collection/index.md#container-image) the beast.  
-We [created a pipeline](https://github.com/nokia/srlinux-ansible-collection/blob/main/.github/workflows/container-build.yml) that builds container images for each release of our collection making sure that our users have one worry less during their automation journey.
+We [created a pipeline](https://github.com/nokia/srlinux-ansible-integration/blob/main/.github/workflows/container-build.yml) that builds container images for each release of our collection making sure that our users have one worry less during their automation journey.
 
-Throughout this tutorial we will be using `ghcr.io/nokia/srlinux-ansible-collection/2.15.5/py3.11:v0.3.0` container image that as the url suggests is based on `ansible-core==2.15.5` with `python 3.11` running srlinux collection v0.3.0.
+Throughout this tutorial we will be using `ghcr.io/nokia/srlinux-ansible-integration/2.15.5/py3.11:v0.3.0` container image that as the url suggests is based on `ansible-core==2.15.5` with `python 3.11` running srlinux collection v0.3.0.
 
 To save some finger energy we will create a handy alias `ansible-playbook` that runs our container image with the `ansible-inventory.yml` file being already loaded:
 
@@ -148,7 +148,7 @@ alias ansible-playbook='docker run --rm -it \
   -v $(pwd):/ansible \(1)
   -v ~/.ssh:/root/.ssh \(2)
   -v /etc/hosts:/etc/hosts \(3)
-  ghcr.io/nokia/srlinux-ansible-collection/2.15.5/py3.11:v0.4.0 \
+  ghcr.io/nokia/srlinux-ansible-integration/2.15.5/py3.11:v0.4.0 \
   ansible-playbook -i clab-2srl/ansible-inventory.yml $@'
 ```
 

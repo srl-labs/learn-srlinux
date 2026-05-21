@@ -196,7 +196,7 @@ We hope that you will find the SR Linux collection useful and will be able to us
 
 The `cli` module should help you with operational tasks and the `check` and `diff` modes should make your automation more robust and error-proof.
 
-We are eager to hear from you if you find any functionality missing or if you have any suggestions on how to improve the collection. Please leave comments below or [open an issue](https://github.com/nokia/srlinux-ansible-collection/issues) on GitHub.
+We are eager to hear from you if you find any functionality missing or if you have any suggestions on how to improve the collection. Please leave comments below or [open an issue](https://github.com/nokia/srlinux-ansible-integration/issues) on GitHub.
 
 [collection-doc-link]: ../../../ansible/collection/index.md
 [config-module]: ../../../ansible/collection/config.md
