@@ -344,4 +344,4 @@ ok: [clab-ansible-srl] => {
 
 Get module is implemented in the [`get.py`][get-gh-url] file.
 
-[get-gh-url]: https://github.com/nokia/srlinux-ansible-collection/blob/main/plugins/modules/get.py
+[get-gh-url]: https://github.com/nokia/srlinux-ansible-integration/blob/main/plugins/modules/get.py

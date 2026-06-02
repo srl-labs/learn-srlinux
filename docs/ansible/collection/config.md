@@ -577,7 +577,7 @@ The `config` module supports per-task [commit confirmation](#confirm_timeout). T
 Config module is implemented in the [`config.py`][config-gh-url] file.
 
 [ansible-check-diff]: https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_checkmode.html
-[config-gh-url]: https://github.com/nokia/srlinux-ansible-collection/blob/main/plugins/modules/config.py
+[config-gh-url]: https://github.com/nokia/srlinux-ansible-integration/blob/main/plugins/modules/config.py
 
 [^1]: Effectively, the configuration is sent twice to the device. First, to check if a diff is non-empty, and if not, second time to apply the configuration set. In this case, the diff happens on SR Linux box and is not calculated locally.
 [^2]: The diff returned is the same as the one returned by the `diff` CLI command.
