@@ -92,7 +92,7 @@ enter candidate
             bgp-instance 1 {
                 ethernet-segment ES-1 {
                     admin-state enable
-                    esi 01:11:11:11:11:11:11:00:00:01
+                    esi 00:11:11:11:11:11:11:00:00:01
                     multi-homing-mode all-active
                     interface lag1 {
                     }
