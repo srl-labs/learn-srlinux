@@ -300,7 +300,7 @@ Bob reads the YANG tree just fine, as intended!
 
 ## Bonus: RADIUS PCAP
 
-If you are curious to see how the RADIUS messages look like, there is no better way to do that than to capture the RADIUS traffic. Containerlab makes it [easy to capture](https://containerlab.dev/manual/wireshark/) the traffic on the lab nodes. And [here is a pcapng][pcap] I captured while logging in as the `alice` user.
+If you are curious to see how the RADIUS messages look like, there is no better way to do that than to capture the RADIUS traffic. Containerlab makes it [easy to capture](https://containerlab.dev/manual/wireshark/) the traffic on the lab nodes. And [here is a pcapng][pcap] I captured while logging in as the `alice` user[^1].
 
 Here is how the Access-Accept message looks like with the vendor-specific attribute that contains the roles for the user:
 
@@ -331,3 +331,5 @@ RADIUS Protocol
 [clab]: https://containerlab.dev/
 [radius-config]: https://documentation.nokia.com/srlinux/23-10/books/config-basics/secur-access.html#authorization-use-radius-server
 [pcap]: https://gitlab.com/rdodin/pics/-/wikis/uploads/6a00c0c6f6c9039376f32a2c596f0653/srlinux-radius-authentication.pcapng
+
+[^1]: PCAP was captured prior to the release 26.3.1 and hence uses the `Timetra-Profile` VSA.
