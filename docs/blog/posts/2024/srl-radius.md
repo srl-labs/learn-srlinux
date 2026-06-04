@@ -47,7 +47,7 @@ Authenticating users is the bread and butter of the RADIUS protocol, but how doe
 
 ### SR Linux and Roles
 
-Authorization via role based access control is performed for all SR Linux user types including the default local user admin[^1]. Users can be configured with a set of one or more roles that define the privileges for which they are authorized in the system.
+Authorization via role based access control is performed for all SR Linux user types including the default local user admin. Users can be configured with a set of one or more roles that define the privileges for which they are authorized in the system.
 
 A role consists of one or more rules, which specify a schema path the role can have privileges for, and a corresponding action, which can be read, write, or deny. After authentication, a user is authorized to perform the specified action defined in the path for the role the user is assigned.
 
@@ -74,13 +74,24 @@ Consider the following `authorize` file for the FreeRADIUS server:
 
 ```conf
 "alice" Cleartext-Password := "alice123"
-      Timetra-Profile := "admin"
+      Timetra-SRL-Auth-User-Role := "admin"
 
 "bob" Cleartext-Password := "bob123"
-      Timetra-Profile := "viewer"
+      Timetra-SRL-Auth-User-Role := "viewer"
 ```
 
-The `Timetra-Profile` attribute is a custom attribute that is used to convey the roles for the user. The `authorize` file above configures the `alice` user with the `admin` role and the `bob` user with the `viewer` role. The `admin` and `viewer` roles should be configured on the SR Linux device for the authorization to work.
+The `Timetra-SRL-Auth-User-Role` attribute is a custom attribute that is used to convey the roles for the user. The `authorize` file above configures the `alice` user with the `admin` role and the `bob` user with the `viewer` role. The `admin` and `viewer` roles should be configured on the SR Linux device for the authorization to work.
+
+/// warning
+Release 26.3.1 renames the RADIUS VSAs with SR Linux-specific names:
+
+- In RADIUS authentication, the `Timetra-Profile` VSA is now `Timetra-SRL-Auth-User-Role`. `Timetra-Profile` is an invalid VSA starting in Release 26.3.1.
+- In RADIUS accounting, the `Timetra-Cmd` VSA is now `Timetra-SRL-Cmd`. `Timetra-Cmd` is no longer sent starting in Release 26.3.1.
+
+All roles in the `Timetra-SRL-Auth-User-Role` VS
+
+A new combined SR Linux and SR OS `dictionary-freeradius.txt` distribution package is available in the software distribution.
+///
 
 Here is a flow diagram that illustrates the authentication and authorization process:
 
@@ -92,31 +103,31 @@ sequenceDiagram
 
     Note over S: has "admin" role and radius server configured
 
-    Note over R: has user "alice" configured with "admin" role<br/>encoded in "Timetra-Profile" attribute
+    Note over R: has user "alice" configured with "admin" role<br/>encoded in "Timetra-SRL-Auth-User-Role" attribute
 
     C->>S: Logs in as "alice" with SSH
     S->>R: Sends Access-Request<br/>with "alice" username and password
-    R->>S: Sends Access-Accept<br/>with "Timetra-Profile" attribute value set to "admin"
-    Note over S: Parses "Timetra-Profile" attribute<br/>and authorizes "alice" with "admin" role
+    R->>S: Sends Access-Accept<br/>with "Timetra-SRL-Auth-User-Role" attribute value set to "admin"
+    Note over S: Parses "Timetra-SRL-Auth-User-Role" attribute<br/>and authorizes "alice" with "admin" role
 ```
 
 Don't fret if it is not crystal clear yet, we will go through the whole client and server configuration in the lab section below.
 
 ## Lab
 
-The lab environment ([srl-labs/freeradius-lab][lab-repo]) for this post features a single SR Linux node and a FreeRADIUS server, all running in containers.
+The lab environment ([srl-labs/freeradius-lab][lab-repo]) for this post features a single SR Linux v26.3 node and a FreeRADIUS server.
 
 ```yaml title="freeradius.clab.yml"
 --8<-- "https://raw.githubusercontent.com/srl-labs/freeradius-lab/main/freeradius.clab.yml"
 ```
 
-Deploy this lab with [Containerlab][clab] >= 0.49.0 using the following command:
+Deploy this lab with [Containerlab][clab] using the following command:
 
 ```bash
-sudo clab dep -c -t srl-labs/freeradius-lab
+clab dep -c -t srl-labs/freeradius-lab
 ```
 
-We assign the radius node with a static v4 address of `127.20.20.111` to make it deterministic and easy to rememeber when we get to configuring the SR Linux device. Additionally we add `-X` flag to the freeradius process to enable debugging output.
+We assign the radius node with a static IPv4 address of `127.20.20.111` to make it deterministic and easy to remember when we get to configuring the SR Linux device. Additionally we add `-X` flag to the freeradius process to enable debugging output.
 
 ## RADIUS Server Configuration
 
@@ -135,7 +146,13 @@ The FreeRADIUS server is configured with:
     --8<-- "https://raw.githubusercontent.com/srl-labs/freeradius-lab/main/raddb/mods-config/files/authorize"
     ```
 
-Both files are mounted into the FreeRADIUS container using bind mounts. When the lab is deployed, the FreeRADIUS server will already be configured with the users and the SR Linux device as a RADIUS client, so we can move on to configuring the SR Linux device.
+3. the `dictionary` file that contains the custom VSA attributes for SR Linux used in the `authorize` file. The file includes the two custom VSA attributes used with SR Linux and were copied from the `dictionary-freeradius.txt` file provided within the SR Linux software distribution package.
+
+    ```conf title="dictionary"
+    --8<-- "https://raw.githubusercontent.com/srl-labs/freeradius-lab/main/raddb/dictionary"
+    ```
+
+Files are mounted into the FreeRADIUS container using bind mounts. When the lab is deployed, the FreeRADIUS server will already be configured with the users and the SR Linux device as a RADIUS client, so we can move on to configuring the SR Linux device.
 
 ## SR Linux Configuration
 
@@ -166,9 +183,9 @@ A:srl#
 Following the [SR Linux User Guide][radius-config], we create an AAA group called "RADIUS-DEMO" that lists our RADIUS server IP:
 
 ```srl
-set / system aaa server-group RADIUS-DEMO type radius
-set / system aaa server-group RADIUS-DEMO server 172.20.20.111 network-instance mgmt
-set / system aaa server-group RADIUS-DEMO server 172.20.20.111 radius secret-key clab-demo
+/ system aaa server-group RADIUS-DEMO type radius
+/ system aaa server-group RADIUS-DEMO server 172.20.20.111 network-instance mgmt
+/ system aaa server-group RADIUS-DEMO server 172.20.20.111 radius secret-key clab-demo
 ```
 
 Note, that we use the statically assigned IP address of the RADIUS server and the shared secret that we defined in the `clients.conf` file.
@@ -178,29 +195,27 @@ Note, that we use the statically assigned IP address of the RADIUS server and th
 Next, we create the `admin` and `viewer` roles that we defined in the `authorize` file on the FreeRADIUS server:
 
 ```srl
-set / system aaa authorization role "admin" services [ cli gnmi gnoi json-rpc ftp ]
-set / system configuration role "admin" rule / action write
+/ system aaa authorization role "admin" services [ cli gnmi gnoi json-rpc ftp ]
+/ system configuration role "admin" rule / action write
 
-set / system aaa authorization role "viewer" services [ cli gnmi gnoi json-rpc ftp ]
-set / system configuration role "viewer" rule / action read
+/ system aaa authorization role "viewer" services [ cli gnmi gnoi json-rpc ftp ]
+/ system configuration role "viewer" rule / action read
 ```
 
 Pay attention to the way we configure the roles. First we configure the `services` that the role is authorized for, and then we configure the rules that defines the path and the allowed action for the role. The `admin` role is authorized for all services and has write access to the entire YANG tree. The `viewer` role is authorized for all services and has read access to the entire YANG tree.
 
-We apply the configuration and exit the configuration mode:
+Next, we configure the authentication order to first try the RADIUS server group and then fall back to the local user authentication:
+
+```srl
+/ system aaa authentication authentication-method [ RADIUS-DEMO local ]
+```
+
+Lastly, we apply the configuration by committing it and exiting the configuration mode:
 
 ```srl
 --{ * candidate shared default }--[  ]--
 A:srl# commit now
 All changes have been committed. Leaving candidate mode.
-```
-
-### Authentication Order
-
-Finally, we configure the authentication order to use the RADIUS server group we created above:
-
-```srl
-set / system aaa authentication authentication-method [ RADIUS-DEMO local ]
 ```
 
 ## Testing RADIUS Authentication and Authorization
@@ -220,14 +235,15 @@ Let's verify that SR Linux sees `alice` user as a remote user:
 ```srl
 --{ + running }--[  ]--
 A:srl# show system aaa authentication session *
-  +----+-----------+--------------+-----------------------+----------+-----+-------------------+--------------------------+-------+
-  | ID | User name | Service name | Authentication method | Priv-lvl | TTY |    Remote host    |        Login time        | Role  |
-  +====+===========+==============+=======================+==========+=====+===================+==========================+=======+
-  | 47 | alice*    | sshd         | RADIUS-DEMO           |          | ssh | 2001:172:20:20::1 | 2024-01-05T00:27:43.299Z | admin |
-  +----+-----------+--------------+-----------------------+----------+-----+-------------------+--------------------------+-------+
+  +----+-----------+--------------+-----------------------+----------+-------+-------------------+------------------+--------------------------+-------+
+  | ID | User name | Service name | Authentication method | Priv-lvl |  TTY  |    Remote host    | Network instance |        Login time        | Role  |
+  +====+===========+==============+=======================+==========+=======+===================+==================+==========================+=======+
+  | 13 | alice     | sshd         | RADIUS-DEMO           |          | ssh   | 3fff:172:20:20::1 | mgmt             | 2026-06-04T07:07:26.713Z | admin |
+  | 14 | alice*    | srlinux-cli  | RADIUS-DEMO           |          | pts/9 | 3fff:172:20:20::1 | mgmt             | 2026-06-04T07:07:26.934Z | admin |
+  +----+-----------+--------------+-----------------------+----------+-------+-------------------+------------------+--------------------------+-------+
 ```
 
-As the table shows, our `alice` user is indeed authenticated via RADIUS for the `sshd` service and has the `admin` role. Let's verify that the user can write to the entire YANG tree:
+As the table shows, our `alice` user is indeed authenticated via RADIUS for the `sshd` and `srlinux-cli` services and has the `admin` role. Let's verify that the user can write to the entire YANG tree:
 
 ```srl
 --{ + running }--[  ]--
@@ -239,7 +255,7 @@ A:srl# commit now
 All changes have been committed. Leaving candidate mode.
 ```
 
-Beatiful! Now let's log out and log in as the `bob` user and verify that the user has the `viewer` role and can only read the YANG tree.
+Looks good! Now let's log out and log in as the `bob` user and verify that the user has the `viewer` role and can only read the YANG tree.
 
 ```bash
 ssh bob@clab-radius-srl
@@ -250,11 +266,12 @@ Using the `bob123` password that we provided in the `authorize` file, we should 
 ```srl
 --{ + running }--[  ]--
 A:srl# show system aaa authentication session *
-  +----+-----------+--------------+-----------------------+----------+-----+-------------------+--------------------------+--------+
-  | ID | User name | Service name | Authentication method | Priv-lvl | TTY |    Remote host    |        Login time        |  Role  |
-  +====+===========+==============+=======================+==========+=====+===================+==========================+========+
-  | 48 | bob*      | sshd         | RADIUS-DEMO           |          | ssh | 2001:172:20:20::1 | 2024-01-05T00:34:34.942Z | viewer |
-  +----+-----------+--------------+-----------------------+----------+-----+-------------------+--------------------------+--------+
+  +----+-----------+--------------+-----------------------+----------+-------+-------------------+------------------+--------------------------+--------+
+  | ID | User name | Service name | Authentication method | Priv-lvl |  TTY  |    Remote host    | Network instance |        Login time        |  Role  |
+  +====+===========+==============+=======================+==========+=======+===================+==================+==========================+========+
+  | 15 | bob       | sshd         | RADIUS-DEMO           |          | ssh   | 3fff:172:20:20::1 | mgmt             | 2026-06-04T07:09:50.850Z | viewer |
+  | 16 | bob*      | srlinux-cli  | RADIUS-DEMO           |          | pts/9 | 3fff:172:20:20::1 | mgmt             | 2026-06-04T07:09:51.083Z | viewer |
+  +----+-----------+--------------+-----------------------+----------+-------+-------------------+------------------+--------------------------+--------+
 ```
 
 Can bob write to the YANG tree? Let's try:
@@ -267,7 +284,7 @@ A:srl# set / system information contact bob@clab
 Error: No authorization to execute command: 'delete / system information contact alice@clab'
 ```
 
-Oh ho! Looks like bob is not authorized to write to the YANG tree (as intended). Let's try to read the YANG tree:
+As expected, bob is not authorized to write to the YANG tree (as intended). Let's try to read the YANG tree:
 
 ```srl
 --{ + candidate shared default }--[  ]--
@@ -279,11 +296,11 @@ A:srl# info from state /system information contact
     }
 ```
 
-Bob reads the YANG tree just fine, as we intended!
+Bob reads the YANG tree just fine, as intended!
 
 ## Bonus: RADIUS PCAP
 
-If you are curious to see how the RADIUS messages look like, there is no better way to do that than to capture the RADIUS traffic. Containerlab makes it [easy to capture](https://containerlab.dev/manual/wireshark/) the traffic on the lab nodes. And [here is a pcapng][pcap] I captured while logging in as the `alice` user.
+If you are curious to see how the RADIUS messages look like, there is no better way to do that than to capture the RADIUS traffic. Containerlab makes it [easy to capture](https://containerlab.dev/manual/wireshark/) the traffic on the lab nodes. And [here is a pcapng][pcap] I captured while logging in as the `alice` user[^1].
 
 Here is how the Access-Accept message looks like with the vendor-specific attribute that contains the roles for the user:
 
@@ -315,4 +332,4 @@ RADIUS Protocol
 [radius-config]: https://documentation.nokia.com/srlinux/23-10/books/config-basics/secur-access.html#authorization-use-radius-server
 [pcap]: https://gitlab.com/rdodin/pics/-/wikis/uploads/6a00c0c6f6c9039376f32a2c596f0653/srlinux-radius-authentication.pcapng
 
-[^1]: With the exception of the linuxadmin/root users, which are permitted write access to all commands in the command tree.
+[^1]: PCAP was captured prior to the release 26.3.1 and hence uses the `Timetra-Profile` VSA.
