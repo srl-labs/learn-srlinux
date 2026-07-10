@@ -79,6 +79,7 @@ nav:
               - ndk/apps/index.md
               - EVPN Proxy: ndk/apps/evpn-proxy.md
               - kButler: ndk/apps/kbutler.md
+              - NoPorts: ndk/apps/noports.md
               - Prometheus Telemetry Exporter: ndk/apps/srl-prom-exporter.md
               - SR Linux GPT: ndk/apps/srl-gpt.md
               - Satellite Tracker: ndk/apps/satellite.md

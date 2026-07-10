@@ -28,6 +28,13 @@ SR Linux EVPN Proxy agent that allows bridging EVPN domains with domains that on
 kButler agent ensures that for every worker node which hosts an application with an exposed service, there is a corresponding FIB entry for the service's external IP with a next-hop of the worker node.  
 [:octicons-arrow-right-24: Read more](kbutler.md)
 
+### NoPorts
+
+:material-language-go: · [`atsign-foundation/noports-srlinux`](https://github.com/atsign-foundation/noports-srlinux)
+
+NoPorts agent makes sshnpd a native SR Linux feature: SSH and gNMI access to the router with no inbound listening ports open on the management plane, configured from the SR Linux CLI with on-router APKAM key enrollment.  
+[:octicons-arrow-right-24: Read more](noports.md)
+
 ### Prometheus Exporter
 
 :material-language-go: · [`karimra/srl-prometheus-exporter`](https://github.com/karimra/srl-prometheus-exporter)
