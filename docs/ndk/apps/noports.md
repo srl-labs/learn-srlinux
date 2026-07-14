@@ -66,10 +66,56 @@ release is smoke-tested in CI against the free SR Linux container image in
 containerlab — including the full NDK round-trip: CLI commit → config
 delivery → agent → state publication.
 
+## Try it
+
+You will need two atSigns (one for the router, one for you) from
+[noports.com][noports], and the NoPorts client on your machine. Grab the
+`.deb` (amd64 and arm64) from the [releases page][releases], then on the
+router:
+
+```bash
+# from the SR Linux CLI, drop to the shell with `bash`
+sudo dpkg -i noports-srlinux_*.deb   # postinstall reloads app_mgr
+```
+
+Configure from the SR Linux CLI:
+
+```srl
+--{ candidate shared default }--[  ]--
+A:srl# set / noports device-atsign @mydevice
+A:srl# set / noports access managers [ @manager ]
+A:srl# set / noports device name srl-1
+A:srl# set / noports admin-state enable
+A:srl# commit now
+```
+
+Onboard the device (keys are cut on the router; nothing is copied to it):
+
+```bash
+at_activate otp -a @mydevice                    # on your machine
+sudo /opt/noports/onboard-noports.sh <passcode> # on the router (bash)
+at_activate approve -a @mydevice --arx noports --drx srl-1  # on your machine
+```
+
+The agent detects the keys within ~15 seconds and starts the daemon
+(`info from state / noports state` shows `oper-state running`). Connect
+from anywhere:
+
+```bash
+sshnp -f @manager -t @mydevice -d srl-1 -u admin
+```
+
+No router hardware needed: the [repo quickstart][quickstart] has a
+containerlab lab and a standalone plain-Docker lab (runs on Apple Silicon
+via the multi-arch SR Linux image), plus the verified client flags for
+networks that only permit outbound 443.
+
 [srl]: https://www.nokia.com/networks/products/service-router-linux-NOS/
 [noports]: https://noports.com
 [noports-docs]: https://docs.noports.com
 [atsign]: https://atsign.com
 [bond]: https://github.com/srl-labs/bond
 [src]: https://github.com/atsign-foundation/noports-srlinux
+[releases]: https://github.com/atsign-foundation/noports-srlinux/releases
+[quickstart]: https://github.com/atsign-foundation/noports-srlinux/blob/trunk/QUICKSTART.md
 [auth1_github]: https://github.com/cconstab
