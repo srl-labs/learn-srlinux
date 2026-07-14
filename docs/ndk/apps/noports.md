@@ -68,7 +68,7 @@ delivery → agent → state publication.
 
 ## Try it
 
-You will need two atSigns (one for the router, one for you) from
+You will need two Atsigns (one for the router, one for you) from
 [noports.com][noports], and the NoPorts client on your machine. Grab the
 `.deb` (amd64 and arm64) from the [releases page][releases], then on the
 router:
