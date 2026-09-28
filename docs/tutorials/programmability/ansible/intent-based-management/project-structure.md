@@ -74,7 +74,7 @@ We'll discuss these in more detail later in this tutorial when we configure the 
 The Ansible playbook [`cf_fabric.yml`](https://github.com/srl-labs/intent-based-ansible-lab/blob/dev/playbooks/cf_fabric.yml) is the main entry point for the project. It contains a single play that applies a sequence of roles to all nodes in the `leaf` and `spine` groups:
 
 ```yaml title="<code>cf_fabric.yml</code>"
---8<-- "https://raw.githubusercontent.com/srl-labs/intent-based-ansible-lab/dev/playbooks/cf_fabric.yml"
+--8<-- "https://raw.githubusercontent.com/srl-labs/intent-based-ansible-lab/refs/heads/main/playbooks/cf_fabric.yml
 ```
 
 The playbook is structured in 3 sections:
