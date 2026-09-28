@@ -12,7 +12,7 @@ Ansible collection for SR Linux is identified with `nokia.srlinux` fully qualifi
 | **Collection name**             | `nokia.srlinux`                              |
 | **Galaxy URL**                  | [nokia/srlinux][coll-url]                    |
 | **Ansible Automation Platform** | [nokia/srlinux][aap-coll-url]                |
-| **Github repository**           | [nokia/srlinux-ansible-collection][repo-url] |
+| **Github repository**           | [nokia/srlinux-ansible-integration][repo-url] |
 | **Tutorial**                    | [Using nokia.srlinux collection][tutorial-link] |
 | **SR Linux version**            | >=23.3.1[^1]                                 |
 | **Python version**              | >=3.10                                       |
@@ -115,7 +115,7 @@ Collection is installed at the collections path. Default location is `~/.ansible
 
 ### Container image
 
-To simplify the usage of the collection, we provide a container image that contains the collection and all its dependencies. To accommodate for the different Ansible versions, we provide multiple images based on the underlying `ansible-core` and the python version. The full list of available images and their tags can be found in the [Github container registry](https://github.com/orgs/nokia/packages?repo_name=srlinux-ansible-collection).
+To simplify the usage of the collection, we provide a container image that contains the collection and all its dependencies. To accommodate for the different Ansible versions, we provide multiple images based on the underlying `ansible-core` and the python version. The full list of available images and their tags can be found in the [Github container registry](https://github.com/orgs/nokia/packages?repo_name=srlinux-ansible-integration).
 
 The easiest way to use the image is to create an alias for the `ansible-playbook` command.
 
@@ -124,7 +124,7 @@ alias ansible-playbook="docker run --rm -it \
   -v $(pwd):/ansible \
   -v ~/.ssh:/root/.ssh \
   -v /etc/hosts:/etc/hosts \
-  ghcr.io/nokia/srlinux-ansible-collection/2.15.5/py3.11:v0.3.0 ansible-playbook $@"
+  ghcr.io/nokia/srlinux-ansible-integration/2.15.5/py3.11:v0.3.0 ansible-playbook $@"
 ```
 
 ???tip "How to test this container?"
@@ -256,7 +256,7 @@ Save the file as `ansible.clab.yml` and deploy the lab with `containerlab deploy
 Create the `hosts` file as shown in the previous section and you're ready to tryout the modules of this collection.
 
 [coll-url]: https://galaxy.ansible.com/nokia/srlinux/
-[repo-url]: https://github.com/nokia/srlinux-ansible-collection
+[repo-url]: https://github.com/nokia/srlinux-ansible-integration
 [get]: get.md
 [config]: config.md
 [cli]: cli.md
