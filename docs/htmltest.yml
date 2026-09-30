@@ -2,7 +2,7 @@
 # using https://github.com/wjdp/htmltest
 DirectoryPath: ./site
 IgnoreURLs:
-  - fonts.gstatic.com
+  - fonts.gstatic.co
   - www.nokia.com/networks/solutions/data-center-switching-fabric/
   - https://www.linkedin.com/in/ # any linkedin user http check will return 999 code.
   - documentation.nokia.com
